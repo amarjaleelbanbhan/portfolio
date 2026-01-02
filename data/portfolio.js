@@ -35,10 +35,10 @@ export const personalInfo = {
 // 📊 STATS - Numbers that appear on homepage
 // ============================================
 export const stats = [
-  { label: 'Google Certifications', value: 3, suffix: '+' },
+  { label: 'Certifications', value: 11, suffix: '+' },
   { label: 'Projects Completed', value: 10, suffix: '+' },
   { label: 'GitHub Commits', value: 500, suffix: '+' },
-  { label: 'Courses Completed', value: 9, suffix: '+' },
+  { label: 'Courses Completed', value: 15, suffix: '+' },
 ];
 
 // ============================================
@@ -96,21 +96,22 @@ export const projects = [
 // 🏆 ACHIEVEMENTS & CERTIFICATIONS
 // ============================================
 export const achievements = [
-  {
-    title: 'Google AI Essentials',
-    organization: 'Google',
-    date: '2025',
-    type: 'certification', // certification, award, achievement
-    verifyLink: 'https://coursera.org/share/cccb05b37cae8b86455d73751d5c101a',
-    icon: '🤖',
-  },
+  // Google Professional Certificates
   {
     title: 'Google Cybersecurity Professional',
     organization: 'Google',
-    date: '2025',
+    date: 'Nov 2025',
     type: 'certification',
-    verifyLink: 'https://www.coursera.org/account/accomplishments/specialization/U2DN4IX0N6H7',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/specialization/MDMFD7XJJXL4',
     icon: '🔒',
+  },
+  {
+    title: 'Google AI Essentials',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/0YL581G13RX6',
+    icon: '🤖',
   },
   {
     title: 'Google Data Analytics Professional',
@@ -120,15 +121,72 @@ export const achievements = [
     verifyLink: 'https://www.coursera.org/account/accomplishments/specialization/W0BZT6HTJXZE',
     icon: '📊',
   },
-  // ➕ ADD MORE ACHIEVEMENTS HERE:
-  // {
-  //   title: 'Achievement Name',
-  //   organization: 'Company/Org',
-  //   date: '2025',
-  //   type: 'award', // or 'certification', 'achievement'
-  //   verifyLink: 'https://...',
-  //   icon: '🏆',
-  // },
+  // Google Individual Courses
+  {
+    title: 'Discover the Art of Prompting',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/TUEGAHF57ZTM',
+    icon: '💬',
+  },
+  {
+    title: 'Introduction to AI',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/2D6R17WJ0GV4',
+    icon: '🧠',
+  },
+  {
+    title: 'Maximize Productivity With AI Tools',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/IFKTQQ411CQZ',
+    icon: '⚡',
+  },
+  {
+    title: 'Use AI Responsibly',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/CVLTNGKIT1XW',
+    icon: '🛡️',
+  },
+  {
+    title: 'Foundations of Cybersecurity',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/50E0LB750MEX',
+    icon: '🔐',
+  },
+  {
+    title: 'Play It Safe: Manage Security Risks',
+    organization: 'Google',
+    date: 'Aug 2025',
+    type: 'certification',
+    verifyLink: 'https://www.coursera.org/account/accomplishments/verify/2GA0972VLLSD',
+    icon: '🛡️',
+  },
+  // Udemy Certificates
+  {
+    title: 'Python Bootcamp: Master Python with Real-World Projects',
+    organization: 'Udemy',
+    date: 'Jun 2025',
+    type: 'certification',
+    verifyLink: 'https://www.udemy.com/certificate/UC-ea3dcd47-fe5c-4073-b11b-15d417c0f56a/',
+    icon: '🐍',
+  },
+  {
+    title: 'HTML Fundamentals',
+    organization: 'Udemy',
+    date: 'Jun 2021',
+    type: 'certification',
+    verifyLink: 'https://www.udemy.com/certificate/UC-4c91f9fa-2aee-4eaf-8274-806cce39ca59/',
+    icon: '🌐',
+  },
 ];
 
 // ============================================
