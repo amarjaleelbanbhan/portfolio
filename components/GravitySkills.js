@@ -22,7 +22,7 @@ export default function GravitySkills() {
     const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Events } = Matter;
 
     const width = containerRef.current.clientWidth;
-    const height = 500;
+    const height = window.innerWidth < 640 ? 350 : 500;
 
     // Create engine
     const engine = Engine.create();

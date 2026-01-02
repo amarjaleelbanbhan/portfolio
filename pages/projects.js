@@ -34,7 +34,7 @@ export default function Projects() {
           A snapshot of recent work spanning full-stack delivery, AI-assisted experiences, and robust backend services.
         </p>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
         {projectsData.map((project) => (
           <ProjectCard key={project.title} {...project} />
         ))}

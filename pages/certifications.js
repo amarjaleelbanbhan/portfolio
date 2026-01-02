@@ -58,7 +58,7 @@ export default function Certifications() {
           Credentials that reflect a focus on security, analytics, and applied AI.
         </p>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
         {certifications.map((cert) => (
           <CertificationCard key={cert.name} {...cert} />
         ))}

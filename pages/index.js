@@ -31,16 +31,16 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-glow">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 text-glow">
               <GlitchText text={personalInfo.name.toUpperCase()} />
             </h1>
-            <p className="text-xl md:text-2xl text-slate-200 font-light tracking-wide mb-3">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-200 font-light tracking-wide mb-3 px-2">
               {personalInfo.title} | {personalInfo.tagline}
             </p>
-            <p className="text-lg text-accent font-semibold mb-6">
+            <p className="text-base md:text-lg text-accent font-semibold mb-6">
               Building Tomorrow's Solutions Today.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
               <NeonButton onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>
                 INITIATE PROTOCOL
               </NeonButton>
@@ -82,7 +82,7 @@ export default function Home() {
             TECH_STACK
           </motion.h2>
           <div className="glass-panel">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               {Object.entries(skills.categories).map((category, idx) => (
                 <motion.div
                   key={category[0]}
@@ -126,7 +126,7 @@ export default function Home() {
           >
             FEATURED_PROJECTS
           </motion.h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {featuredProjects.map((project, idx) => (
               <motion.div
                 key={project.title}

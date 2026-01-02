@@ -28,7 +28,19 @@ a {
 .section-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .section-container {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding: 4rem 1.5rem;
+  }
 }
 
 @keyframes scanlines-scroll {

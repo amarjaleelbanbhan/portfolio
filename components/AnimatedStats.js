@@ -72,7 +72,7 @@ export default function AnimatedStats() {
               className="glass-panel p-6 text-center hover:border-neon-cyan/50 transition-all duration-300 group"
             >
               {/* Number */}
-              <div className="text-4xl md:text-5xl font-bold text-neon-green mb-2 group-hover:scale-110 transition-transform">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-neon-green mb-2 group-hover:scale-110 transition-transform">
                 <CountUp end={stat.value} suffix={stat.suffix} />
               </div>
               
