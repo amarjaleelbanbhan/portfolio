@@ -1,0 +1,42 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio site built with Next.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "portfolio",
+    "nextjs",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@formspree/react": "^3.0.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
+    "chart.js": "^4.5.1",
+    "framer-motion": "^12.23.26",
+    "matter-js": "^0.20.0",
+    "next": "^16.1.1",
+    "react": "^19.2.3",
+    "react-confetti": "^6.4.0",
+    "react-dom": "^19.2.3",
+    "react-markdown": "^10.1.0",
+    "three": "^0.182.0",
+    "tsparticles": "^3.9.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.13"
+  }
+}

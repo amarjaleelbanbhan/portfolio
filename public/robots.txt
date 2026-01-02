@@ -1,0 +1,7 @@
+# Robots.txt for Amar Jaleel Portfolio
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://amarjaleel.vercel.app/sitemap.xml
