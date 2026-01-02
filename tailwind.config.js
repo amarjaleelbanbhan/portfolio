@@ -9,7 +9,11 @@ export default {
     extend: {
       colors: {
         midnight: "#0f172a",
+        "midnight-light": "#1e293b",
         accent: "#14b8a6",
+        "neon-cyan": "#14b8a6",
+        "neon-green": "#22c55e",
+        "neon-magenta": "#d946ef",
       },
       typography: {
         DEFAULT: {

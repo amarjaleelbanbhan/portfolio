@@ -5,6 +5,13 @@
 :root {
   color: #e2e8f0;
   background-color: #0f172a;
+  
+  /* Neon color variables */
+  --neon-cyan: #14b8a6;
+  --neon-green: #22c55e;
+  --neon-magenta: #d946ef;
+  --midnight: #0f172a;
+  --midnight-light: #1e293b;
 }
 
 body {
