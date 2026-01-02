@@ -27,8 +27,8 @@ export const personalInfo = {
     instagram: 'https://instagram.com/amarjaleel_',
   },
   
-  // Resume - Put your PDF in /public folder
-  resumeFile: '/resume.pdf',
+  // Resume - Put your HTML resume in /public folder
+  resumeFile: '/resume.html',
 };
 
 // ============================================

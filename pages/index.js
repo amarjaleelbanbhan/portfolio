@@ -8,7 +8,8 @@ import dynamic from 'next/dynamic';
 import ResumeButton from '@/components/ResumeButton';
 import Achievements from '@/components/Achievements';
 import Education from '@/components/Education';
-import { skills, projects, personalInfo } from '../data/portfolio';
+import SpotlightGrid from '@/components/SpotlightGrid';
+import { projects, personalInfo } from '../data/portfolio';
 
 // Dynamic imports for interactive components
 const AnimatedStats = dynamic(() => import('../components/AnimatedStats'), { ssr: false });
@@ -71,41 +72,8 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* Skills Matrix */}
-        <section className="section-container">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl font-bold text-slate-100 mb-8 text-glow"
-          >
-            TECH_STACK
-          </motion.h2>
-          <div className="glass-panel">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {Object.entries(skills.categories).map((category, idx) => (
-                <motion.div
-                  key={category[0]}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: idx * 0.1 }}
-                >
-                  <p className="text-cyan-400 font-code text-sm mb-4 tracking-widest">&gt; {category[0].toUpperCase()}</p>
-                  <div className="space-y-3 flex flex-col">
-                    {category[1].map((skill) => (
-                      <div
-                        key={skill}
-                        className="px-3 py-2 border border-accent text-accent text-sm font-code rounded transition-all duration-300 hover:bg-accent/10 hover:shadow-[0_0_10px_rgba(20,184,166,0.4)] cursor-default"
-                      >
-                        {skill}
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Skills Matrix - Interactive Spotlight Grid */}
+        <SpotlightGrid />
 
         {/* Animated Stats */}
         <AnimatedStats />
