@@ -72,15 +72,24 @@ export const projects = [
     image: '/projects/bus.png',
     featured: true,
   },
-  // ➕ ADD MORE PROJECTS HERE:
-  // {
-  //   title: 'Project Name',
-  //   description: 'What it does',
-  //   tags: ['Tech1', 'Tech2'],
-  //   link: 'https://live-demo.com',
-  //   github: 'https://github.com/...',
-  //   featured: false,
-  // },
+  {
+    title: 'EduResource Hub',
+    description: 'A comprehensive web platform helping students discover 306+ free educational resources across 102+ categories with smart search and real-time filtering.',
+    tags: ['JavaScript', 'HTML5', 'CSS3', 'JSON', 'GitHub Pages'],
+    link: 'https://amarjaleelbanbhan.github.io/EduResource_Hub/',
+    github: 'https://github.com/amarjaleelbanbhan/EduResource_Hub',
+    image: '/projects/eduresource.png',
+    featured: true,
+  },
+  {
+    title: 'MediTalk - AI Voice Agent',
+    description: 'AI-powered voice agent for medical consultation that analyzes symptoms and provides preliminary diagnosis using ML (85% accuracy).',
+    tags: ['Python', 'Machine Learning', 'Flask', 'Streamlit', 'Docker'],
+    link: 'https://github.com/amarjaleelbanbhan/MediTalk_AI_Agent',
+    github: 'https://github.com/amarjaleelbanbhan/MediTalk_AI_Agent',
+    image: '/projects/meditalk.png',
+    featured: true,
+  },
 ];
 
 // ============================================
