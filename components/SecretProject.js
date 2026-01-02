@@ -147,7 +147,11 @@ export default function SecretProject() {
               : 'bg-red-500/20 text-red-400 border border-red-500'
           }`}
         >
-          {isUnlocked ? '🔓 UNLOCKED' : '🔐 LOCKED'}
+          {isUnlocked ? (
+            <span className="flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg> UNLOCKED</span>
+          ) : (
+            <span className="flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> LOCKED</span>
+          )}
         </span>
       </div>
 
@@ -155,11 +159,11 @@ export default function SecretProject() {
         <>
           {/* Instructions */}
           <p className="text-gray-400 text-sm mb-2">
-            🎯 Match the <span className="text-[var(--neon-cyan)]">cyan wave</span> to the{' '}
+            <span className="inline-flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg></span> Match the <span className="text-[var(--neon-cyan)]">cyan wave</span> to the{' '}
             <span className="text-[var(--neon-green)]">green target</span> to unlock!
           </p>
           <p className="text-gray-500 text-xs mb-4">
-            💡 <strong>How to play:</strong> Use the sliders below to adjust the cyan wave&apos;s frequency and amplitude until it perfectly overlaps the green target wave. Get above 95% match to unlock!
+            <span className="inline-flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg></span> <strong>How to play:</strong> Use the sliders below to adjust the cyan wave&apos;s frequency and amplitude until it perfectly overlaps the green target wave. Get above 95% match to unlock!
           </p>
 
           {/* Wave Canvas */}
@@ -214,14 +218,18 @@ export default function SecretProject() {
           </div>
 
           {/* Hint */}
-          <p className="text-gray-500 text-xs mt-4 text-center">
-            💡 Hint: Target frequency ≈ 0.02, amplitude ≈ 40
+          <p className="text-gray-500 text-xs mt-4 text-center flex items-center justify-center gap-1">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg> Hint: Target frequency ≈ 0.02, amplitude ≈ 40
           </p>
         </>
       ) : (
         /* Unlocked Content */
         <div className="text-center py-6 animate-pulse">
-          <div className="text-6xl mb-4">🤖</div>
+          <div className="mb-4">
+            <svg className="w-16 h-16 mx-auto text-[var(--neon-cyan)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
           <h4 className="text-xl font-bold text-[var(--neon-cyan)] mb-2">
             Autonomous Drone Swarm
           </h4>
@@ -239,8 +247,9 @@ export default function SecretProject() {
               </span>
             ))}
           </div>
-          <p className="text-[var(--neon-green)] text-xs">
-            🎉 You cracked the code! This project is currently in stealth mode.
+          <p className="text-[var(--neon-green)] text-xs flex items-center justify-center gap-1">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            You cracked the code! This project is currently in stealth mode.
           </p>
           <button
             onClick={() => {
@@ -248,9 +257,10 @@ export default function SecretProject() {
               setFrequency(0.01);
               setAmplitude(20);
             }}
-            className="mt-4 px-4 py-2 text-sm text-white bg-white/10 border border-white/20 rounded hover:bg-white/20 transition-colors"
+            className="mt-4 px-4 py-2 text-sm text-white bg-white/10 border border-white/20 rounded hover:bg-white/20 transition-colors flex items-center gap-2 mx-auto"
           >
-            🔄 Lock Again
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            Lock Again
           </button>
         </div>
       )}

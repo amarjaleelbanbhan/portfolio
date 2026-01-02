@@ -223,24 +223,26 @@ export default function TerminalGame() {
           {gameState === 'idle' && (
             <button
               onClick={startGame}
-              className="w-full py-3 text-sm font-bold text-black bg-[var(--neon-green)] rounded hover:bg-[var(--neon-cyan)] transition-colors shadow-[0_0_20px_var(--neon-green)]"
+              className="w-full py-3 text-sm font-bold text-black bg-[var(--neon-green)] rounded hover:bg-[var(--neon-cyan)] transition-colors shadow-[0_0_20px_var(--neon-green)] flex items-center justify-center gap-2"
             >
-              🚀 INITIALIZE BRUTE FORCE
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              INITIALIZE BRUTE FORCE
             </button>
           )}
 
           {gameState === 'lost' && (
             <button
               onClick={resetGame}
-              className="w-full py-3 text-sm font-bold text-white bg-red-600 rounded hover:bg-red-500 transition-colors"
+              className="w-full py-3 text-sm font-bold text-white bg-red-600 rounded hover:bg-red-500 transition-colors flex items-center justify-center gap-2"
             >
-              🔄 ACCESS DENIED. RETRY?
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              ACCESS DENIED. RETRY?
             </button>
           )}
 
           {gameState === 'won' && (
             <div className="text-center">
-              <p className="text-[var(--neon-cyan)] text-sm mb-3">🎉 SYSTEM BREACHED SUCCESSFULLY!</p>
+              <p className="text-[var(--neon-cyan)] text-sm mb-3 flex items-center justify-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> SYSTEM BREACHED SUCCESSFULLY!</p>
               <button
                 onClick={resetGame}
                 className="px-6 py-2 text-sm font-bold text-white bg-white/10 border border-[var(--neon-cyan)] rounded hover:bg-[var(--neon-cyan)]/20 transition-colors"

@@ -94,9 +94,12 @@ export default function Navbar() {
               download
               target="_blank"
               rel="noopener noreferrer"
-              className="block px-3 py-3 bg-neon-cyan text-midnight font-semibold rounded-md text-center mt-2"
+              className="block px-3 py-3 bg-neon-cyan text-midnight font-semibold rounded-md text-center mt-2 flex items-center justify-center gap-2"
             >
-              📄 Download Resume
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download Resume
             </a>
           </div>
         </div>

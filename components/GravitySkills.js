@@ -175,17 +175,21 @@ export default function GravitySkills() {
   return (
     <div className="glass-panel p-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-[var(--neon-cyan)] flex items-center gap-2">
-          <span>🎮</span> Interactive Skills
+        <h2 className="text-xl font-bold text-[var(--neon-cyan)] flex items-center gap-3">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Interactive Skills
         </h2>
         <button
           onClick={handleShake}
           className="px-4 py-2 text-sm font-medium text-white bg-white/10 border border-[var(--neon-cyan)]/50 rounded-lg hover:bg-[var(--neon-cyan)]/20 hover:border-[var(--neon-cyan)] transition-all duration-300 hover:shadow-[0_0_15px_var(--neon-cyan)]"
         >
-          🔄 Shake
+          Reset
         </button>
       </div>
-      <p className="text-gray-400 text-sm mb-3">👆 Drag and throw the skill pills!</p>
+      <p className="text-gray-400 text-sm mb-3">Drag and throw the skill pills!</p>
       <div ref={containerRef} className="relative w-full rounded-lg overflow-hidden border border-white/10">
         <canvas ref={canvasRef} className="w-full" />
       </div>

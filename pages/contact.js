@@ -20,9 +20,17 @@ function Toast({ message, type, onClose }) {
   return (
     <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg border ${bgColor} shadow-lg animate-pulse`}>
       <div className="flex items-center gap-3">
-        <span>{type === 'success' ? '✅' : '❌'}</span>
+        {type === 'success' ? (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        )}
         <span>{message}</span>
-        <button onClick={onClose} className="ml-2 hover:opacity-70">✕</button>
+        <button onClick={onClose} className="ml-2 hover:opacity-70">×</button>
       </div>
     </div>
   );

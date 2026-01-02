@@ -2,10 +2,27 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { achievements } from '../data/portfolio';
 
-const typeIcons = {
-  certification: '📜',
-  award: '🏆',
-  achievement: '⭐',
+// Professional SVG icons for each type
+const TypeIcon = ({ type }) => {
+  if (type === 'certification') {
+    return (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+      </svg>
+    );
+  }
+  if (type === 'award') {
+    return (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+    </svg>
+  );
 };
 
 const typeColors = {
@@ -47,7 +64,9 @@ export default function Achievements() {
               
               {/* Icon & Type */}
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">{item.icon || typeIcons[item.type]}</span>
+                <div className="text-neon-cyan">
+                  <TypeIcon type={item.type} />
+                </div>
                 <span className={`text-xs uppercase tracking-wider px-2 py-1 rounded bg-gradient-to-r ${typeColors[item.type] || typeColors.certification} text-midnight font-semibold`}>
                   {item.type}
                 </span>

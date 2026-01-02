@@ -53,9 +53,11 @@ export default function ResumeButton({ className = '', variant = 'default' }) {
           <motion.span
             animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-lg"
+            className="block"
           >
-            ✨
+            <svg className="w-4 h-4 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21l2.3-7-6-4.6h7.6L12 2z" />
+            </svg>
           </motion.span>
         </span>
       )}

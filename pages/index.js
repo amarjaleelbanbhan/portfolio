@@ -42,7 +42,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
               <NeonButton onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>
-                INITIATE PROTOCOL
+                VIEW MY WORK
               </NeonButton>
               <ResumeButton variant="large" />
             </div>
@@ -65,7 +65,7 @@ export default function Home() {
                 Computer Science degree.
               </p>
               <p className="text-slate-300 italic">
-                💡 <span className="text-accent">Mission:</span> To leverage technology responsibly and create meaningful impact.
+                <span className="text-accent">Mission:</span> To leverage technology responsibly and create meaningful impact.
               </p>
             </div>
           </motion.div>
