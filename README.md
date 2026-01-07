@@ -1,43 +1,46 @@
-# 🚀 Amar Jaleel Portfolio
 
-A modern, cyberpunk-themed portfolio website built with Next.js, featuring interactive elements, animated statistics, and a unique wave-matching Easter egg game.
+# amarjaleel.me
 
-![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black?logo=next.js)
-![React](https://img.shields.io/badge/React-19.2.3-61DAFB?logo=react)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.13-38B2AC?logo=tailwind-css)
-![License](https://img.shields.io/badge/License-MIT-green)
+**Amar Jaleel**  
+[LinkedIn](https://www.linkedin.com/in/amar-jaleel/) | [GitHub](https://github.com/amarjaleelbanbhan) | banbhanamarjalil@gmail.com
 
-## ✨ Features
+---
 
-- 🎨 **Cyberpunk Theme** - Neon colors, glitch effects, and futuristic UI
-- 📊 **Animated Statistics** - Count-up animations for achievements
-- 🎮 **Interactive Elements**:
-  - Gravity-based skills visualization (Matter.js)
-  - Terminal-style navigation game
-  - Secret wave-matching puzzle to unlock hidden content
-- 📱 **Fully Responsive** - Works on all device sizes
-- ⚡ **Fast Loading** - Optimized with dynamic imports
-- 🔍 **SEO Optimized** - Meta tags, sitemap, and robots.txt included
-- 🎯 **Easy to Customize** - All content managed through a single data file
+Welcome to my personal portfolio! This site showcases my work, skills, and achievements in AI, Cybersecurity, and Data Science.
+
+> "I’m Amar Jaleel — a passionate developer, lifelong learner, and builder of intelligent solutions. I love exploring new technologies and sharing knowledge with the community."
+
+**Live Demo:** 👉 [amarjaleel.me](https://amarjaleel.me)
+
+---
+
+## 🚀 About Me
+
+- 🔬 AI & Data Science Enthusiast
+- 🛡️ Cybersecurity Explorer
+- 💡 Problem Solver & Innovator
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 16
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **Physics**: Matter.js
-- **Effects**: React Confetti, Custom CSS animations
+- Next.js, React, Tailwind CSS
+- Node.js, JavaScript, Python
+- Git, GitHub Actions, Vercel
 
-## 📁 Project Structure
+## 📂 Features
 
-```
-portfolio/
-├── components/          # React components
-│   ├── Achievements.js  # Certifications display
-│   ├── AnimatedStats.js # Counting statistics
-│   ├── Education.js     # Education timeline
-│   ├── GravitySkills.js # Interactive skill bubbles
-│   ├── Hero.js          # Landing section
+- Interactive project gallery
+- Skills visualization
+- Downloadable resume
+- Contact form
+
+## 🌐 Live Demo
+
+Check out the live site: [amarjaleel.me](https://amarjaleel.me)
+
+## 📫 Contact
+
+Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/amar-jaleel/)
+or email: banbhanamarjalil@gmail.com
 │   ├── LoadingScreen.js # Initial loading animation
 │   ├── SecretProject.js # Wave-matching Easter egg
 │   └── TerminalGame.js  # Terminal navigation game
