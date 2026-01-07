@@ -45,6 +45,7 @@ export const projects = [
   },
 ];
 ```
+
 # amarjaleel.me
 
 Personal portfolio site. Built with Next.js because it's fast and I didn't want to mess with routing.
@@ -94,6 +95,7 @@ export const projects = [
 ```
 
 Replace these files:
+
 - `/public/images/hero-portrait.jpg` - your photo
 - `/public/resume.pdf` - your resume
 - `/public/projects/*` - project screenshots if you want them
@@ -143,8 +145,8 @@ MIT
 
 ## Contact
 
-Amar Jaleel  
-banbhanamarjalil@gmail.com  
+Amar Jaleel
+banbhanamarjalil@gmail.com
 [LinkedIn](https://www.linkedin.com/in/amar-jaleel/) · [GitHub](https://github.com/amarjaleelbanbhan)
 
 ---
@@ -157,7 +159,8 @@ Star it if you use it.
 - npm or yarn
 
 ### Installation
->>>>>>> 55e4f2f (docs: update README.md with concise personal version)
+
+
 
 ```bash
 git clone https://github.com/amarjaleelbanbhan/portfolio.git
@@ -200,6 +203,7 @@ export const projects = [
 ```
 
 Replace these files:
+
 - `/public/images/hero-portrait.jpg` - your photo
 - `/public/resume.pdf` - your resume
 - `/public/projects/*` - project screenshots if you want them
@@ -249,8 +253,8 @@ MIT
 
 ## Contact
 
-Amar Jaleel  
-banbhanamarjalil@gmail.com  
+Amar Jaleel
+banbhanamarjalil@gmail.com
 [LinkedIn](https://www.linkedin.com/in/amarjaleel/) · [GitHub](https://github.com/amarjaleelbanbhan)
 
 ---
