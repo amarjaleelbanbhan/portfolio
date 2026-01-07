@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #e2e8f0;
+  background-color: #0f172a;
+  
+  /* Neon color variables */
+  --neon-cyan: #14b8a6;
+  --neon-green: #22c55e;
+  --neon-magenta: #d946ef;
+  --midnight: #0f172a;
+  --midnight-light: #1e293b;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at 20% 20%, rgba(20, 184, 166, 0.12), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.12), transparent 20%),
+    #0f172a;
+  color: #e2e8f0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .section-container {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding: 4rem 1.5rem;
+  }
+}
+
+@keyframes scanlines-scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(10px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.5) 2px,
+    rgba(0, 0, 0, 0.5) 4px
+  );
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 50;
+  animation: scanlines-scroll 8s linear infinite;
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.clip-hexagon {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(15, 240, 252, 0.8), 0 0 20px rgba(15, 240, 252, 0.4);
+}
+
+.box-glow {
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+}
+
+.glass-panel {
+  background: rgba(10, 10, 26, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(15, 240, 252, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.drop-shadow-neon {
+  filter: drop-shadow(0 0 18px rgba(0, 255, 136, 0.35));
+}

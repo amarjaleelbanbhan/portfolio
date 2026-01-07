@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amar Jaleel - Resume</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      background: #fff;
+    }
+    
+    @media print {
+      body {
+        padding: 20px;
+      }
+    }
+    
+    header {
+      text-align: center;
+      border-bottom: 3px solid #14b8a6;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      color: #0f172a;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+    
+    .tagline {
+      font-size: 1.1rem;
+      color: #14b8a6;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    
+    .contact-info a {
+      color: #14b8a6;
+      text-decoration: none;
+    }
+    
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+    
+    section {
+      margin-bottom: 25px;
+    }
+    
+    h2 {
+      font-size: 1.2rem;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    h3 {
+      font-size: 1rem;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    
+    .date {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-style: italic;
+    }
+    
+    .organization {
+      color: #14b8a6;
+      font-weight: 500;
+    }
+    
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    li {
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    
+    li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: #14b8a6;
+    }
+    
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .skill-category h4 {
+      font-size: 0.9rem;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+    
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .skill-tag {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .project-item, .cert-item, .edu-item {
+      margin-bottom: 15px;
+    }
+    
+    .project-description {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 5px;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    
+    .tech {
+      background: #ecfdf5;
+      color: #059669;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+    }
+    
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    @media (max-width: 600px) {
+      .skills-grid, .two-col {
+        grid-template-columns: 1fr;
+      }
+      .contact-info {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AMAR JALEEL</h1>
+    <p class="tagline">Full-Stack Tech Enthusiast | AI • Cybersecurity • Data Analytics</p>
+    <div class="contact-info">
+      <span>📧 <a href="mailto:banbhanamarjalil@gmail.com">banbhanamarjalil@gmail.com</a></span>
+      <span>📱 +92 344 443 2197</span>
+      <span>🔗 <a href="https://www.linkedin.com/in/amarjaleel/">LinkedIn</a></span>
+      <span>💻 <a href="https://github.com/amarjaleelbanbhan">GitHub</a></span>
+      <span>📍 Pakistan</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Professional Summary</h2>
+    <p>Passionate tech enthusiast with a strong foundation in Artificial Intelligence, Cybersecurity, and Data Analytics. Currently pursuing a Computer Science degree with hands-on experience in full-stack development, machine learning, and security practices. Committed to leveraging technology responsibly to create meaningful impact.</p>
+  </section>
+
+  <section>
+    <h2>Technical Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-category">
+        <h4>Programming Languages</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">R</span>
+          <span class="skill-tag">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>AI / Machine Learning</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">TensorFlow</span>
+          <span class="skill-tag">Scikit-Learn</span>
+          <span class="skill-tag">Pandas</span>
+          <span class="skill-tag">NumPy</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Data & Analytics</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">Tableau</span>
+          <span class="skill-tag">Power BI</span>
+          <span class="skill-tag">Excel</span>
+          <span class="skill-tag">Google Analytics</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Cybersecurity</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">Wireshark</span>
+          <span class="skill-tag">Kali Linux</span>
+          <span class="skill-tag">OWASP</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Web & Cloud</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">Next.js</span>
+          <span class="skill-tag">Node.js</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">Google Cloud</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Tools & Platforms</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">VS Code</span>
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">Streamlit</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+    
+    <div class="project-item">
+      <h3>MediTalk - AI Voice Agent</h3>
+      <p class="project-description">AI-powered voice agent for medical consultation that analyzes symptoms and provides preliminary diagnosis using ML with 85% accuracy. Features multi-symptom analysis, voice interface, and REST API.</p>
+      <div class="tech-stack">
+        <span class="tech">Python</span>
+        <span class="tech">Machine Learning</span>
+        <span class="tech">Flask</span>
+        <span class="tech">Streamlit</span>
+        <span class="tech">Docker</span>
+      </div>
+    </div>
+    
+    <div class="project-item">
+      <h3>EduResource Hub</h3>
+      <p class="project-description">Comprehensive web platform helping students discover 306+ free educational resources across 102+ categories with smart search and real-time filtering.</p>
+      <div class="tech-stack">
+        <span class="tech">JavaScript</span>
+        <span class="tech">HTML5</span>
+        <span class="tech">CSS3</span>
+        <span class="tech">JSON</span>
+      </div>
+    </div>
+    
+    <div class="project-item">
+      <h3>ZakatLink</h3>
+      <p class="project-description">Full-stack Zakat management platform with authentication and payment processing.</p>
+      <div class="tech-stack">
+        <span class="tech">Node.js</span>
+        <span class="tech">TypeScript</span>
+        <span class="tech">React</span>
+      </div>
+    </div>
+    
+    <div class="project-item">
+      <h3>Smart Notebook</h3>
+      <p class="project-description">AI-powered web application with automatic diagram generation capabilities.</p>
+      <div class="tech-stack">
+        <span class="tech">AI</span>
+        <span class="tech">Next.js</span>
+        <span class="tech">Mermaid.js</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Certifications</h2>
+    <div class="two-col">
+      <div class="cert-item">
+        <h3>Google Cybersecurity Professional</h3>
+        <p><span class="organization">Google</span> • <span class="date">Nov 2025</span></p>
+      </div>
+      <div class="cert-item">
+        <h3>Google AI Essentials</h3>
+        <p><span class="organization">Google</span> • <span class="date">Aug 2025</span></p>
+      </div>
+      <div class="cert-item">
+        <h3>Google Data Analytics Professional</h3>
+        <p><span class="organization">Google</span> • <span class="date">2025</span></p>
+      </div>
+      <div class="cert-item">
+        <h3>Python Bootcamp</h3>
+        <p><span class="organization">Udemy</span> • <span class="date">Jun 2025</span></p>
+      </div>
+      <div class="cert-item">
+        <h3>Introduction to AI</h3>
+        <p><span class="organization">Google</span> • <span class="date">Aug 2025</span></p>
+      </div>
+      <div class="cert-item">
+        <h3>Foundations of Cybersecurity</h3>
+        <p><span class="organization">Google</span> • <span class="date">Aug 2025</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="edu-item">
+      <h3>Bachelor of Science in Computer Science</h3>
+      <p><span class="organization">Currently Pursuing</span></p>
+      <p class="project-description">Focus areas: Artificial Intelligence, Cybersecurity, Data Analytics</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Languages</h2>
+    <ul>
+      <li>English (Professional)</li>
+      <li>Urdu (Native)</li>
+    </ul>
+  </section>
+</body>
+</html>
