@@ -18,7 +18,10 @@ export default function RealmIndex({
   onHover: (slug: string | null) => void;
   onSelect: (slug: string) => void;
 }) {
-  const [open, setOpen] = useState(true);
+  // collapsed by default on small screens to avoid covering the map
+  const [open, setOpen] = useState(
+    () => typeof window === "undefined" || window.innerWidth >= 768,
+  );
 
   const groups = LAYER_ORDER.map((layer) => ({
     layer,

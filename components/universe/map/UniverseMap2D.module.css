@@ -59,3 +59,11 @@
   outline-offset: 4px;
   border-radius: var(--radius-full);
 }
+
+/* Shrink nodes on very small screens so the layered layout doesn't crowd */
+@media (max-width: 480px) {
+  .node { width: 22px; height: 22px; }
+  .orb { width: 11px; height: 11px; }
+  .core { width: 32px; height: 32px; }
+  .core .orb { width: 18px; height: 18px; }
+}

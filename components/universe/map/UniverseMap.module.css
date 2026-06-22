@@ -81,6 +81,13 @@
 
 @media (max-width: 640px) {
   .statusBar { font-size: 0.56rem; }
+  /* keep the travel hint clear of NEXUS (bottom-right ~104px) */
+  .hint {
+    left: var(--space-md);
+    right: calc(104px + var(--space-md));
+    transform: none;
+    text-align: left;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

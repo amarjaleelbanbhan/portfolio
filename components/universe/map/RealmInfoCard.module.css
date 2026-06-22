@@ -97,3 +97,17 @@
   letter-spacing: 0.12em;
   color: var(--text-dim);
 }
+
+/* On phones, dock the card to a top band so the bottom stays clear for
+   NEXUS (bottom-right) and the travel hint (bottom-center). */
+@media (max-width: 640px) {
+  .card {
+    left: var(--space-md);
+    right: var(--space-md);
+    width: auto;
+    bottom: auto;
+    top: 60px;
+    max-height: 44vh;
+    overflow-y: auto;
+  }
+}

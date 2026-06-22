@@ -24,7 +24,7 @@
   /* — TEXT — */
   --text-primary: #E8EAF0;
   --text-secondary: #A6ACBE;
-  --text-dim: #64748B;
+  --text-dim: #768499; /* ~5.3:1 on --void — meets WCAG AA for small text */
   --text-glow: #FFFFFF;
 
   /* — SEMANTIC — */
