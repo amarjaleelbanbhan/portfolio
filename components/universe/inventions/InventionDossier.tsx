@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+import { useModalA11y } from "@/lib/useModalA11y";
 import { CLASS_META, type Invention } from "./inventionData";
 import EngineeringTimeline from "./EngineeringTimeline";
 import SystemBlueprint from "./SystemBlueprint";
@@ -18,9 +20,18 @@ export default function InventionDossier({
   onClose: () => void;
 }) {
   const meta = CLASS_META[invention.classRoman];
+  const ref = useRef<HTMLDivElement>(null);
+  useModalA11y(ref, onClose);
 
   return (
-    <div className={s.dossier} role="dialog" aria-modal="true" aria-label={`${invention.name} dossier`}>
+    <div
+      ref={ref}
+      tabIndex={-1}
+      className={s.dossier}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="inv-title"
+    >
       <div className={s.dossierInner} style={{ ["--rp" as string]: meta.color }}>
         <button type="button" className={s.dclose} onClick={onClose} aria-label="Close dossier">
           ×
@@ -34,7 +45,7 @@ export default function InventionDossier({
             <p className={s.dclass}>
               {meta.label} · CLASS {invention.classRoman}
             </p>
-            <h2 className={s.dtitle}>{invention.name}</h2>
+            <h2 id="inv-title" className={s.dtitle}>{invention.name}</h2>
             <p className={s.dsub}>{invention.className}</p>
           </div>
         </header>

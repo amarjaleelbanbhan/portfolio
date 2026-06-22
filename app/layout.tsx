@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Orbitron, JetBrains_Mono, Inter } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "@/styles/tokens.css";
 import "@/styles/universe.css";
 
@@ -24,7 +25,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://amarjaleel.dev"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "CODEX INFINITUM — Amar Jaleel · AI Product Engineer",
     template: "%s · CODEX INFINITUM",

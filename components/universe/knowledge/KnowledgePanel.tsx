@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import { useUniverseStore } from "@/store/universeStore";
+import { useModalA11y } from "@/lib/useModalA11y";
 import { REALM_BY_SLUG } from "@/lib/realms";
 import { LEARNING_PATHS, masteryCounts, type Snapshot } from "./knowledgeData";
 import MasteryConstellation from "./MasteryConstellation";
@@ -21,6 +23,9 @@ export default function KnowledgePanel() {
   const unlockedSkills = useUniverseStore((st) => st.unlockedSkills);
   const bootCompleted = useUniverseStore((st) => st.bootCompleted);
 
+  const ref = useRef<HTMLDivElement>(null);
+  useModalA11y(ref, () => toggle(false), open);
+
   if (!open) return null;
 
   const snap: Snapshot = { bootCompleted, visitedRealms, unlockedSkills };
@@ -33,14 +38,21 @@ export default function KnowledgePanel() {
   };
 
   return (
-    <div className={s.overlay} role="dialog" aria-modal="true" aria-label="Knowledge Mastery">
+    <div
+      ref={ref}
+      tabIndex={-1}
+      className={s.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="km-title"
+    >
       <div className={s.sheet}>
-        <button type="button" className={s.close} onClick={() => toggle(false)} aria-label="Close">
+        <button type="button" className={s.close} onClick={() => toggle(false)} aria-label="Close Knowledge Mastery">
           ×
         </button>
 
         <header>
-          <p className={s.ptitle}>KNOWLEDGE MASTERY</p>
+          <p id="km-title" className={s.ptitle}>KNOWLEDGE MASTERY</p>
           <p className={s.psub}>Abilities are not badges. They are transformations — knowledge become capability.</p>
         </header>
 
