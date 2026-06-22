@@ -11,6 +11,8 @@ import Motherboard3DScene from "./Motherboard3DScene";
 import Motherboard2DCanvas from "./Motherboard2DCanvas";
 import Generic3DScene from "./Generic3DScene";
 import Generic2DCanvas from "./Generic2DCanvas";
+import NetworkPathwaysScene from "./scenes/NetworkPathwaysScene";
+import NetworkPathways2D from "./scenes/NetworkPathways2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -21,7 +23,7 @@ interface EnvironmentLayerProps {
 /**
  * EnvironmentLayer — determines the current device tier and mounts the correct
  * background environment:
- *   - High/Medium Tier (1 & 2): R3F 3D motherboard city scene or generic landmark nodes scene.
+ *   - High/Medium Tier (1 & 2): R3F 3D motherboard city scene, networking pathways, or generic landmark nodes scene.
  *   - Low Tier (0): Flat, high-performance Canvas2D schematic drawing.
  *   - Reduced Motion: R3F scene with static camera/no animation.
  */
@@ -45,6 +47,7 @@ export default function EnvironmentLayer({
 
   const use3D = tier > 0;
   const isSiliconFoundry = slug === "silicon-foundry";
+  const isNetworkPathways = slug === "network-pathways";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -61,6 +64,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isNetworkPathways ? (
+              <NetworkPathwaysScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -72,6 +80,8 @@ export default function EnvironmentLayer({
         </div>
       ) : isSiliconFoundry ? (
         <Motherboard2DCanvas tier={tier} reduced={reduced} />
+      ) : isNetworkPathways ? (
+        <NetworkPathways2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}

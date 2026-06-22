@@ -27,17 +27,22 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 10.4 — Living Knowledge Worlds: ✅ DONE & TESTED.**
-Refactored the Silicon Foundry motherboard scene into a reusable **Living Realm Engine**:
-- **Unified Registry**: Created `lib/environments/types.ts` and `lib/environments/registry.ts` as the single source of truth for CS landmarks, welcome lines, simulation steps, and metadata.
-- **Progressive Learning**: Added Beginner (conceptual hooks), Intermediate (operation logs), and Expert (engineering specifications) tabs to the landmark descriptions.
-- **Extended Landmarks**: Extended data structure to track difficulty levels, skills unlocked, and cross-realm links.
-- **Master Journey ("Follow the Data")**: Structured cross-realm paths (Code Helix -> Kernel -> Silicon Foundry -> Network Pathways -> Cyber Citadel -> Data Archives -> Neural Nebula -> Cloud Expanse).
-- **Generic Backdrop System**: Created `RealmEnvironment.tsx` wrapper, `Generic3DScene.tsx` (renders glowing nodes at 3D coordinates), and `Generic2DCanvas.tsx` (Canvas2D fallback hit-detector), automatically rendering any registry-configured world.
-- **Interactive HUD**: Implemented `FloatingHUDPanel.tsx` and `SignalTracer.tsx` for responsive tabs, skill chips, and project links.
-- **Foundry Conversion**: Refactored `Motherboard3DScene.tsx` meshes and base plane to bind with the Zustand store, selecting objects on click.
+**PHASE 10.5 — Network Pathways World: ✅ DONE & TESTED.**
+Implemented the custom networking environment and simulations using the Living Realm Engine:
+- **Registry Update**: Populated `lib/environments/registry.ts` with coordinates, difficulty levels, skill unlocks, and cross-realm links for the 5 networking landmarks.
+- **Cinematic 3D Scene**: Created `scenes/NetworkPathwaysScene.tsx` in R3F, rendering Client Terminal, DNS Beacon (orbiting scanner ring), Router Hub, Firewall Gate (scanning laser shield), and Server Core. Bound cameras to store state, performing cinematic "Packet POV" panning over active steps.
+- **Canvas2D Fallback Backdrop**: Created `scenes/NetworkPathways2D.tsx` drawing a high-performance vector node diagram with click hit-testing.
+- **Advanced Packet Simulation**: Created `NetworkPathwaysVisualizer.tsx` executing Canvas2D animations for:
+  - TCP/IP Layer Elevator (Application -> Transport -> Internet -> Physical).
+  - Packet POV creation (message fragments & attaching TCP/IP header envelopes).
+  - DNS Discovery (Root -> TLD -> Auth server queries).
+  - TCP Handshake (SYN -> SYN-ACK -> ACK pulses).
+  - Router Decision mesh (displaying Blocked, Congested, and Selected routes).
+  - Firewall header scanning laser sweeps and verification states.
+  - Server unordered packet sorting and HTTP 200 OK readout.
+- **Integration**: Updated `EnvironmentLayer.tsx` dynamic backdrops and `SignalVisualizer.tsx` dispatcher.
 - **Build**: ✓ Verified clean node tsc typecheck + next build (11 routes static green).
-**Next gate:** Phase 10.5 — Network Pathways environment and packet simulations.
+**Next gate:** Phase 10.6 — The Kernel (OS control room, process queue scheduling, and Virtual Memory mapping).
 
 ---
 
@@ -238,7 +243,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 10.3 — Silicon Foundry Motherboard Environment** ✅ (R3F 3D motherboard city, arrival sequence, floating holographic panels/labels, Canvas2D fallback, build green 11 routes)
 - [x] **Phase 10.3.5 — Immersion Quality Pass** ✅ (Upgraded Universe Map planet nodes, network connections, zoom transitions, holographic index, projected light beam dialog box, atmospheric motherboard fog)
 - [x] **Phase 10.4 — Living Realm Engine:** Extract environment registry, cinematic director and generic object layers for future immersive realms. ✅
-- [ ] **Phase 10.5 — Network Pathways environment:** Build network pathways background, router landmarks, and HELO packet simulation visualizer.
+- [x] **Phase 10.5 — Network Pathways environment:** Build network pathways background, router landmarks, and HELO packet simulation visualizer. ✅
+- [ ] **Phase 10.6 — The Kernel environment:** Build kernel control room background, scheduler/memory manager landmarks, and process spawn thread simulation.
 - [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
@@ -255,9 +261,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Living Realm Engine is established.** Phase 10.4 delivered the generic registry, dynamic 3D/2D environment layers, responsive HUD tab layout, and wired store triggers. Silicon Foundry motherboard city and logic structures are converted to utilize the dynamic data patterns. Next recommended: **Phase 10.5** — Network Pathways (global network pathways background, DNS radar/router landmarks, and HELO packet simulation tracer).
+**Network Pathways world is established.** Phase 10.5 delivered the R3F 3D backdrop scene (Packet POV pans), Canvas2D fallback vector map, and advanced packet visualizer (TCP/IP Elevator, DNS Recursive Discovery, TCP Handshake, Router Decision mesh, Firewall inspection sweeps, and Server reconstruction). Next recommended: **Phase 10.6** — The Kernel (operating system control room grid, process scheduler queue rings, MMU/virtual memory mapping layouts, and application context-switching process thread simulation).
 
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-23 · End of Phase 10.4 (Living Knowledge Worlds; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 10.5 (Network Pathways World; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

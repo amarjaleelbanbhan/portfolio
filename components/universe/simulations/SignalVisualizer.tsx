@@ -2,9 +2,11 @@ import { useEffect, useRef } from "react";
 import type { DeviceTier } from "@/lib/deviceTier";
 import { particleBudget } from "@/lib/deviceTier";
 import { startTickEngine } from "@/lib/simulations/engine";
+import NetworkPathwaysVisualizer from "./NetworkPathwaysVisualizer";
 import styles from "./SignalVisualizer.module.css";
 
 interface SignalVisualizerProps {
+  slug: string;
   stepId: string;
   /** false on tier 0 / reduced-motion: draw one accurate static frame, no loop */
   animate: boolean;
@@ -31,9 +33,21 @@ function lerp(a: number, b: number, t: number) {
  * draw functions, switched by `stepId`. `animate=false` draws a single
  * correct still frame (reduced-motion / tier 0 contract).
  */
-export default function SignalVisualizer({ stepId, animate, tier, color, colorSecondary }: SignalVisualizerProps) {
+export default function SignalVisualizer({ slug, stepId, animate, tier, color, colorSecondary }: SignalVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef({ w: 0, h: 0 });
+
+  if (slug === "network-pathways") {
+    return (
+      <NetworkPathwaysVisualizer
+        stepId={stepId}
+        animate={animate}
+        tier={tier}
+        color={color}
+        colorSecondary={colorSecondary}
+      />
+    );
+  }
 
   // Resize: match canvas resolution to its CSS box (capped DPR for perf).
   useEffect(() => {

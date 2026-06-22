@@ -85,6 +85,7 @@ export default function RealmSimulationStage({ slug }: { slug: string }) {
       <p className={styles.kicker}>{definition.title}</p>
 
       <SignalVisualizer
+        slug={slug}
         stepId={step.id}
         animate={animate}
         tier={tier}
