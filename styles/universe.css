@@ -48,6 +48,19 @@ h1, h2, h3 {
 /* tabular numerals so animating counters never jitter (doc 5 §3.3) */
 .tnum { font-variant-numeric: tabular-nums; }
 
+/* Screen-reader-only utility (visually hidden, still announced) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }

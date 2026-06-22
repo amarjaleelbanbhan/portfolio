@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 0 — Foundation & Scaffolding: ✅ COMPLETE & TESTED (green production build).**
-The universe foundation now coexists with the preserved v1 (Legacy Archive).
-**Next gate:** awaiting user approval to begin **Phase 1 — The Boot Sequence**.
+**PHASE 1 — The Boot Sequence: ✅ COMPLETE & TESTED (green build + tsc clean).**
+The birth moment (Human → Machine → Universe) is live at `/`. Phases 0 + 1 done.
+**Next gate:** awaiting user approval to begin **Phase 2 — The Universe Map**.
 
 ---
 
@@ -84,6 +84,14 @@ portfolio/
   - `lib/realms.ts` (15-realm typed registry), `lib/deviceTier.ts` (tiers/budget), `store/universeStore.ts` (Zustand + persist).
   - **Legacy preserved as route-based archive:** v1 pages `git mv`'d → `pages/legacy/*`; internal links updated (Navbar, Hero, index); imports re-aliased to `@/`.
   - **Green production build:** App `/` + Pages `/legacy/*` coexist; all 9 routes prerender.
+- ✅ **Phase 1 — Boot Sequence** (canon doc 2 Act 1 / doc 6 §3):
+  - Reusable system under `components/universe/boot/`: `CircuitGrid` (breathing/igniting void grid), `PowerCore` (proximity-ignition power trigger + click shockwave), `SystemTerminal` (GSAP-typed readout), `BootSequence` (orchestrator), `bootScript.ts` (deterministic FULL + EXPRESS timelines — no random text).
+  - `components/universe/UniverseGate.tsx` (client) chooses full vs **express** boot from persisted `bootCompleted`, detects reduced-motion, owns boot→handoff; `HandoffPlaceholder.tsx` = the prepared handoff state ("inside the answer"; map arrives Phase 2).
+  - `app/page.tsx` now renders `<UniverseGate/>` (removed Phase-0 placeholder + its CSS).
+  - **GSAP** drives the typewriter timeline; **Zustand** `completeBoot()` persists the skip/express logic.
+  - Skip via on-screen button **and** `Esc`. Full **reduced-motion** path: static readout + "[ ENTER ]" control; SR-only `aria-live` boot summary; `.sr-only` util added.
+  - **Tested:** `next build` green (9 routes prerender) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** no map / realms / NEXUS character / AI chat / projects / 3D — only the boot + handoff stub.
 
 ---
 
@@ -116,8 +124,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 
 ## 7. PENDING TASKS (the phase roadmap)
 - [x] **Phase 0 — Foundation/Scaffolding** ✅
-- [ ] **Phase 1 — Boot Sequence** (doc 2 Act 1 / doc 6 §3): void + breathing grid, power button, GSAP boot terminal (~22s; 6s express on return via `bootCompleted`), localStorage skip, particle→map handoff. *Replaces `app/page.tsx` placeholder.*
-- [ ] **Phase 2 — Universe Map** (doc 2 Act 3 / doc 4): R3F canvas, starfield, 15 realm nodes, orbital drift, hover info cards, travel transition, 2D fallback (tier 0).
+- [x] **Phase 1 — Boot Sequence** ✅ (`components/universe/boot/` + `UniverseGate` + `HandoffPlaceholder`)
+- [ ] **Phase 2 — Universe Map** (doc 2 Act 3 / doc 4): R3F canvas, starfield, 15 realm nodes, orbital drift, hover info cards, travel transition, 2D fallback (tier 0). **Replaces `HandoffPlaceholder`** as the boot's destination. Wire `lib/realms.ts` + `lib/deviceTier.ts` + `enterRealm`.
 - [ ] **Phase 3 — NEXUS** (doc 3 / doc 6 §7): morphing polyhedron, 4 modes/5 states, dialogue panel, scroll-velocity, color bleed.
 - [ ] **Phase 4 — First realm vertical slice** (Neural Nebula end-to-end) — proves the realm pattern.
 - [ ] **Phase 5 — Remaining realms** + connective layers + structural realms.
@@ -139,7 +147,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 1 — The Boot Sequence.** It replaces the `app/page.tsx` placeholder with the canonical machine-awakening: void + breathing grid → power button → GSAP boot terminal → particle handoff stub (the map arrives Phase 2). Will use GSAP + Zustand `bootCompleted` for the skip/express logic. Then test → update this file → commit → STOP.
+**Get user approval to begin Phase 2 — The Universe Map.** It replaces `HandoffPlaceholder` as the boot's destination: an R3F `<Canvas>` with starfield + the 15 realm nodes (from `lib/realms.ts`) in orbital drift, hover info cards, the travel transition, and a CSS/SVG 2D fallback for tier-0 devices (`lib/deviceTier.ts`). Boot already calls into the gate, so Phase 2 swaps the post-boot view and wires `enterRealm`. Then test → update this file → commit → STOP.
+
+> Phase-1 integration note for Phase 2: the boot finishes by setting `entered=true` in `UniverseGate`. Replace `<HandoffPlaceholder/>` there with `<UniverseMap/>`. Keep the "replay boot" affordance somewhere (e.g. a hidden settings control) per canon.
 
 ---
-*Last updated: 2026-06-22 · End of Phase 0 (Foundation, build green). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 1 (Boot Sequence; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

@@ -1,46 +1,32 @@
-.entry {
+.arrived {
   position: relative;
   min-height: 100dvh;
   display: grid;
   place-items: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--realm-primary) 10%, transparent), transparent 55%),
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--realm-primary) 10%, transparent), transparent 55%),
     var(--void);
+  animation: arrive var(--duration-slow) var(--ease-enter);
 }
 
-/* The breathing circuit grid (doc 2 §1.1) — subtle, at low opacity */
-.grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--hairline) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
-  background-size: 44px 44px;
-  opacity: 0.5;
-  mask-image: radial-gradient(circle at 50% 42%, black, transparent 70%);
-  animation: breathe 6s var(--ease-universe) infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { opacity: 0.28; }
-  50% { opacity: 0.6; }
+@keyframes arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .center {
-  position: relative;
-  z-index: var(--z-content);
   text-align: center;
   padding: var(--space-lg);
   max-width: 60ch;
+  z-index: var(--z-content);
 }
 
 .kicker {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--signal);
+  color: var(--ok);
   margin: 0 0 var(--space-lg);
 }
 
@@ -54,39 +40,43 @@
   margin: 0;
 }
 
-.tagline {
+.line {
   font-size: var(--fs-lg);
   color: var(--text-secondary);
-  margin: var(--space-md) 0 var(--space-2xl);
+  margin: var(--space-md) 0 var(--space-xl);
 }
 
 .note {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-dim);
-  margin: 0 0 var(--space-xl);
+  margin: 0 0 var(--space-2xl);
 }
 
 .links {
   display: flex;
+  gap: var(--space-md);
   justify-content: center;
+  flex-wrap: wrap;
 }
 
-.legacyLink {
+.link {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-secondary);
+  background: transparent;
   padding: var(--space-sm) var(--space-lg);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
+  cursor: pointer;
   transition:
-    border-color var(--duration-fast) var(--ease-universe),
     color var(--duration-fast) var(--ease-universe),
+    border-color var(--duration-fast) var(--ease-universe),
     box-shadow var(--duration-fast) var(--ease-universe),
     transform var(--duration-fast) var(--ease-universe);
 }
 
-.legacyLink:hover {
+.link:hover {
   color: var(--text-primary);
   border-color: var(--realm-primary);
   box-shadow: var(--glow-rest);
@@ -103,5 +93,4 @@
   font-size: var(--fs-xs);
   letter-spacing: 0.3em;
   color: var(--text-dim);
-  z-index: var(--z-chrome);
 }
