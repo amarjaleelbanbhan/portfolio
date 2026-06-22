@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 6 — Invention Archive: ✅ COMPLETE & TESTED (green build + tsc clean).**
-Projects now live as inventions. 13 of 15 places explorable. Phases 0–6 done.
-**Next gate:** awaiting user approval to begin **Phase 7 — RPG Knowledge System** (or Architect's Core / Observatory).
+**PHASE 7 — Architect's Core & Observatory: ✅ COMPLETE & TESTED (green build + tsc clean).**
+The creator + the ending are in. Every meaningful place now has presence. Phases 0–7 done.
+**Next gate:** awaiting user approval to begin **Phase 8 — RPG Knowledge System**.
 
 ---
 
@@ -135,6 +135,14 @@ portfolio/
   - **NEXUS:** arrival line for the archive ("These are not files. They are proof that knowledge became reality…"); per-invention NEXUS quote shown inside each dossier.
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** no résumé page, no normal portfolio cards, no fake metrics, no contact section, no Gemini chat.
+- ✅ **Phase 7 — Architect's Core & Observatory** (canon doc 4 §1/§8 / doc 2 Act 6): the identity + ending layer (Creator Chamber, not About/Contact pages).
+  - `lib/creator.ts`: typed identity content — AI Product Engineer, origin question, 5-step journey, focus, **Knowledge DNA** (realm→trait), mission, future interests, horizon, invitation. A Journey Archive, not a résumé.
+  - `components/universe/chambers/`: `ArchitectCore` (who built this — journey + focus + Knowledge DNA strands that link back to each realm via `enterRealm`), `Observatory` (the ending — current mission, future direction, on-the-horizon, **Transmission System**: LinkedIn/GitHub/Email channels from `data/portfolio.js`, no form), shared `chambers.module.css`.
+  - **Routing:** `architect-core` + `the-observatory` are now enterable and intercepted in `UniverseGate` (custom chambers, not `RealmShell`). Map CTAs: "MEET THE ARCHITECT →", "ENTER OBSERVATORY →". (The Phase-5 `RealmContent` for the-observatory remains as latent data; chamber routing wins.)
+  - **NEXUS:** arrival line for architect-core ("You have seen the universe. Now meet its architect…"); observatory keeps its frontier farewell line.
+  - Cross-links: ArchitectCore "Continue to The Observatory →"; Observatory "Return to the universe".
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** no résumé page, no boring timeline, no RPG yet, no Gemini chat.
 
 ---
 
@@ -175,8 +183,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 5 — Expand the realms** ✅ (12 realms now explorable; Legacy routes to `/legacy`)
   - _Deferred polish (later):_ per-realm challenge mini-games (doc 4 §14.2), bespoke per-realm arrival cinematics/3D interiors, realm-specific particle systems.
 - [x] **Phase 6 — Invention Archive** ✅ (`components/universe/inventions/` — CLASS I–V dossiers, VisiRoD + CommentFellows + public works, realm cross-links)
-- [ ] **Phase 7 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph. **Next candidate.** Foundation exists (`unlockedSkills` in store; each realm grants a skill via `RealmContent.skill`). Build a skill-tree view (e.g. from Architect's Core or a dedicated panel) that visualizes unlocked abilities + learning paths (doc 6 §6.2). Could pair with making **Architect's Core** (About/personal) and **The Observatory** (contact) real — confirm scope with user.
-- [ ] **Phase 8 — Observatory/Contact + endings** (doc 2 Act 6).
+- [x] **Phase 7 — Architect's Core & Observatory** ✅ (`components/universe/chambers/` — Creator Chamber + ending/transmission; both enterable from the map)
+- [ ] **Phase 8 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph. **Next.** Foundation exists (`unlockedSkills` persisted; every `RealmContent.skill` + invention + Knowledge DNA feeds it). Build a skill/abilities view (a dedicated panel, or surfaced in Architect's Core) visualizing unlocked abilities, the learning paths (doc 6 §6.2), and achievements.
 - [ ] **Phase 9 — Polish:** perf/Lighthouse, device tiers, a11y, reduced-motion, SEO/JSON-LD, cross-browser.
 
 ---
@@ -192,9 +200,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval for Phase 7.** Strongest candidate: the **RPG Knowledge System** — a skill-tree / abilities view that visualizes the skills unlocked across realms (`unlockedSkills` already persisted; every `RealmContent.skill` + each invention feeds it), plus learning paths (doc 6 §6.2) and achievements. Alternatively, make the two remaining non-enterable places real: **Architect's Core** (the About/origin — personal, was deferred) and **The Observatory** (the contact/transmission ending, doc 2 Act 6). Recommend confirming with the user which to tackle next, since the brief deferred "personal portfolio" and "contact" in earlier phases.
+**Get user approval to begin Phase 8 — the RPG Knowledge System.** Visualize mastery: a skill/abilities view over the persisted `unlockedSkills` (each `RealmContent.skill` + the Knowledge DNA + inventions feed it), the learning paths (doc 6 §6.2 — Theory/Systems/Intelligence/Security/Builder), and achievements (doc 6 §6.3). Likely a dedicated panel/overlay reachable from the universe shell or Architect's Core; could also light up "constellations" on the map for learning paths. Then test → update this file → commit → STOP.
 
-> State ready for Phase 7: `unlockedSkills[]` (persisted) + `unlockSkill`; realm skills in `realmContent.ts`; invention→realm cross-links exist. The map's `RealmInfoCard` gates entry via `isEnterable()` + special cases (legacy → `/legacy`, invention-archive → archive). Remaining non-enterable: `architect-core`, and that's it besides connective-only nodes already handled.
+> State ready: `unlockedSkills[]` + `unlockSkill` (persisted); realm skills in `realmContent.ts`; `lib/creator.ts` Knowledge DNA; invention→realm cross-links. After Phase 8, remaining work is mostly **Phase 9 polish** (perf/Lighthouse, a11y sweep, reduced-motion audit, SEO, per-realm challenge mini-games & richer 3D arrival cinematics that were deferred). All 15 places now reachable; only connective nodes (kernel/network/cloud as full interiors are realms now too) — nothing orphaned.
 
 ---
-*Last updated: 2026-06-22 · End of Phase 6 (Invention Archive; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 7 (Architect's Core & Observatory; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

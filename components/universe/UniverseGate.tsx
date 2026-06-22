@@ -8,6 +8,8 @@ import NexusCompanion from "./nexus/NexusCompanion";
 import RealmShell from "./realms/RealmShell";
 import { isEnterable } from "./realms/realmContent";
 import InventionArchive from "./inventions/InventionArchive";
+import ArchitectCore from "./chambers/ArchitectCore";
+import Observatory from "./chambers/Observatory";
 
 /**
  * Client gate for the universe entry.
@@ -45,6 +47,10 @@ export default function UniverseGate() {
       <>
         {currentRealm === "invention-archive" ? (
           <InventionArchive onExit={exitRealm} />
+        ) : currentRealm === "architect-core" ? (
+          <ArchitectCore onExit={exitRealm} />
+        ) : currentRealm === "the-observatory" ? (
+          <Observatory onExit={exitRealm} />
         ) : currentRealm && isEnterable(currentRealm) ? (
           <RealmShell slug={currentRealm} onExit={exitRealm} />
         ) : (

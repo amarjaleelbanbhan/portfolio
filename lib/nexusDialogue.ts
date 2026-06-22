@@ -80,6 +80,8 @@ export const ENTER_LINES: Record<string, string> = {
     "This is the edge of the known. Past it: fog — the territories not yet charted. That is not a failure. It is a promise. What comes next is the part you might write.",
   "invention-archive":
     "These are not files. They are proof that knowledge became reality — each one a problem nobody had filed an issue for yet. Open one. See what the realms build when they work together.",
+  "architect-core":
+    "You have seen the universe. Now meet its architect — the mind that arranged every realm you walked. It started with a child and one stubborn question: how does this machine work?",
 };
 
 export function enterLine(slug: string | null): string | null {
