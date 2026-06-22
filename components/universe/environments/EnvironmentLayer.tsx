@@ -19,6 +19,8 @@ import CodeHelixScene from "./scenes/CodeHelixScene";
 import CodeHelix2D from "./scenes/CodeHelix2D";
 import DataArchivesScene from "./scenes/DataArchivesScene";
 import DataArchives2D from "./scenes/DataArchives2D";
+import CyberCitadelScene from "./scenes/CyberCitadelScene";
+import CyberCitadel2D from "./scenes/CyberCitadel2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -57,6 +59,7 @@ export default function EnvironmentLayer({
   const isKernel = slug === "the-kernel";
   const isCodeHelix = slug === "code-helix";
   const isDataArchives = slug === "data-archives";
+  const isCitadel = slug === "the-citadel";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -93,6 +96,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isCitadel ? (
+              <CyberCitadelScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -112,6 +120,8 @@ export default function EnvironmentLayer({
         <CodeHelix2D tier={tier} reduced={reduced} />
       ) : isDataArchives ? (
         <DataArchives2D tier={tier} reduced={reduced} />
+      ) : isCitadel ? (
+        <CyberCitadel2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}
