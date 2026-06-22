@@ -42,7 +42,7 @@ Implemented the custom networking environment and simulations using the Living R
   - Server unordered packet sorting and HTTP 200 OK readout.
 - **Integration**: Updated `EnvironmentLayer.tsx` dynamic backdrops and `SignalVisualizer.tsx` dispatcher.
 - **Build**: ✓ Verified clean node tsc typecheck + next build (11 routes static green).
-**Next gate:** Phase 10.6 — The Kernel (OS control room, process queue scheduling, and Virtual Memory mapping).
+**Next gate:** Phase 10.7 — Code Helix (programming world, compilers, AST translations, and runtime call stack simulations).
 
 ---
 
@@ -244,8 +244,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 10.3.5 — Immersion Quality Pass** ✅ (Upgraded Universe Map planet nodes, network connections, zoom transitions, holographic index, projected light beam dialog box, atmospheric motherboard fog)
 - [x] **Phase 10.4 — Living Realm Engine:** Extract environment registry, cinematic director and generic object layers for future immersive realms. ✅
 - [x] **Phase 10.5 — Network Pathways environment:** Build network pathways background, router landmarks, and HELO packet simulation visualizer. ✅
-- [ ] **Phase 10.6 — The Kernel environment:** Build kernel control room background, scheduler/memory manager landmarks, and process spawn thread simulation.
-- [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended.
+- [x] **Phase 10.6 — The Kernel environment:** Build kernel control room background, scheduler/memory manager landmarks, and process spawn thread simulation. ✅
+- [ ] **Phase 10.7 — Code Helix environment:** Build code forge, compiler AST visualization, algorithm arena, and runtime event loop simulation.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---

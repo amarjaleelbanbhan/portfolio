@@ -3,6 +3,7 @@ import type { DeviceTier } from "@/lib/deviceTier";
 import { particleBudget } from "@/lib/deviceTier";
 import { startTickEngine } from "@/lib/simulations/engine";
 import NetworkPathwaysVisualizer from "./NetworkPathwaysVisualizer";
+import TheKernelVisualizer from "./TheKernelVisualizer";
 import styles from "./SignalVisualizer.module.css";
 
 interface SignalVisualizerProps {
@@ -40,6 +41,18 @@ export default function SignalVisualizer({ slug, stepId, animate, tier, color, c
   if (slug === "network-pathways") {
     return (
       <NetworkPathwaysVisualizer
+        stepId={stepId}
+        animate={animate}
+        tier={tier}
+        color={color}
+        colorSecondary={colorSecondary}
+      />
+    );
+  }
+
+  if (slug === "the-kernel") {
+    return (
+      <TheKernelVisualizer
         stepId={stepId}
         animate={animate}
         tier={tier}

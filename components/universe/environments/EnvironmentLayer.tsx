@@ -13,6 +13,8 @@ import Generic3DScene from "./Generic3DScene";
 import Generic2DCanvas from "./Generic2DCanvas";
 import NetworkPathwaysScene from "./scenes/NetworkPathwaysScene";
 import NetworkPathways2D from "./scenes/NetworkPathways2D";
+import TheKernelScene from "./scenes/TheKernelScene";
+import TheKernel2D from "./scenes/TheKernel2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -48,6 +50,7 @@ export default function EnvironmentLayer({
   const use3D = tier > 0;
   const isSiliconFoundry = slug === "silicon-foundry";
   const isNetworkPathways = slug === "network-pathways";
+  const isKernel = slug === "the-kernel";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -69,6 +72,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isKernel ? (
+              <TheKernelScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -82,6 +90,8 @@ export default function EnvironmentLayer({
         <Motherboard2DCanvas tier={tier} reduced={reduced} />
       ) : isNetworkPathways ? (
         <NetworkPathways2D tier={tier} reduced={reduced} />
+      ) : isKernel ? (
+        <TheKernel2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}
