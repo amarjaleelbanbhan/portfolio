@@ -69,6 +69,8 @@
 }
 
 .enter {
+  display: block;
+  text-align: center;
   margin-top: var(--space-md);
   width: 100%;
   font-family: var(--font-mono);

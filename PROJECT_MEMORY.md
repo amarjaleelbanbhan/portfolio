@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 4 — First Realm (The Foundations): ✅ COMPLETE & TESTED (green build + tsc clean).**
-Reusable realm engine + the first explorable realm. Phases 0–4 done.
-**Next gate:** awaiting user approval to begin **Phase 5 — remaining realms** (roll out the pattern).
+**PHASE 5 — Expand the realms: ✅ COMPLETE & TESTED (green build + tsc clean).**
+12 of 15 places are now explorable knowledge worlds. Phases 0–5 done.
+**Next gate:** awaiting user approval to begin **Phase 6 — Invention Archive** (projects).
 
 ---
 
@@ -118,6 +118,15 @@ portfolio/
   - **Skill system foundation:** store `unlockedSkills` + `unlockSkill` (persisted); descending into the Deep Archive unlocks "Computational Thinking" with an ABILITY UNLOCKED toast. (Not the full RPG.)
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** only the realm engine + Foundations — no other realm interiors, projects archive, AI Core, or full RPG.
+- ✅ **Phase 5 — Expand the realms** (canon doc 4 / doc 10): authored 11 more `RealmContent` entries (data only — engine untouched), each with Surface→Interior→Archive districts + a skill:
+  - Explorable: **Silicon Foundry** (System Understanding), **Code Helix** (Software Architecture), **Neural Nebula** (Intelligence Engineering), **The Citadel** (Security Thinking), **Data Archives** (Data Intelligence), **Soul Quarter** (Creative Engineering).
+  - Connective/system layers (same engine): **The Kernel** (Resource Orchestration), **Network Pathways** (Connection Architecture), **Cloud Expanse** (Distributed Thinking).
+  - Structural: **Founders' Constellation** (Historical Perspective — Lovelace/Turing/von Neumann/Shannon/Hopper + modern pioneers), **The Observatory** (Frontier Vision — AI future/Quantum/BCI/AGI).
+  - NEXUS: per-realm arrival lines (`ENTER_LINES` ×12) + per-realm mode already via `realm.nexusMode`.
+  - **Legacy access restored:** map info-card routes `legacy-archive` → `/legacy` (the preserved v1) instead of "not yet charted".
+  - **Now enterable: 12 realms.** Still non-enterable by design: Architect's Core (= About/personal, deferred) and Invention Archive (Phase 6).
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** no projects archive, no personal portfolio, no Gemini, no map redesign, no engine rewrite.
 
 ---
 
@@ -154,8 +163,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 2 — Universe Map** ✅ (`components/universe/map/` — 3D + 2D fallback, 15 realms, travel-prep state)
 - [x] **Phase 3 — NEXUS** ✅ (`components/universe/nexus/` — morphing polyhedron, 4 modes/5 states, scripted dialogue, realm color bleed; persistent on map)
   - _Deferred within NEXUS (later phases):_ scroll-velocity reactions (map doesn't scroll — wire in realms), the hidden `speak`/conversation system, Gemini upgrade.
-- [x] **Phase 4 — First realm vertical slice: THE FOUNDATIONS** ✅ (reusable `components/universe/realms/` engine + travel + skill unlock)
-- [ ] **Phase 5 — Remaining realms** — author the other explorable worlds (Silicon Foundry, Code Helix, Neural Nebula, The Citadel, Data Archives, Soul Quarter) as `RealmContent` entries reusing the engine; then connective layers + structural realms. **Next.** Mostly data + per-realm flavor; consider per-realm challenge mini-games (doc 4 §14.2) + arrival cinematics.
+- [x] **Phase 4 — First realm vertical slice: THE FOUNDATIONS** ✅ (reusable engine + travel + skill unlock)
+- [x] **Phase 5 — Expand the realms** ✅ (12 realms now explorable; Legacy routes to `/legacy`)
+  - _Deferred polish (later):_ per-realm challenge mini-games (doc 4 §14.2), bespoke per-realm arrival cinematics/3D interiors, realm-specific particle systems.
 - [ ] **Phase 6 — Invention Archive** (doc 7): inventions, dossiers, VisiRoD + CommentFellows + GitHub conversions, redaction.
 - [ ] **Phase 7 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph.
 - [ ] **Phase 8 — Observatory/Contact + endings** (doc 2 Act 6).
@@ -174,9 +184,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 5 — Remaining realms.** The realm engine is proven; rolling out the rest is mostly authoring `RealmContent` entries in `realmContent.ts` for the other six explorable worlds (Silicon Foundry, Code Helix, Neural Nebula, The Citadel, Data Archives, Soul Quarter) — each with 3 districts + a skill — plus optional per-realm flavor (challenge mini-games doc 4 §14.2, arrival cinematics, NEXUS per-realm mode already wired via `realm.nexusMode`). Then decide treatment for connective layers (Kernel/Network/Cloud — ambient, not full interiors) and structural realms (Founders' Constellation, Observatory; Legacy already lives at `/legacy`). Then test → update this file → commit → STOP.
+**Get user approval to begin Phase 6 — The Invention Archive** (canon doc 7). Make the cross-realm vault where projects live as *inventions* (CLASS I–V, 9-part dossier): the two private flagships **VisiRoD FIRS** (CLASS II) + **CommentFellows** (CLASS I) with redaction-as-intrigue, plus the public GitHub works converted to artifacts (reuse `data/portfolio.js` content). Make `invention-archive` enterable (it's currently "not yet charted"). Likely a new `components/universe/inventions/` module (discovery animation, dossier layout) — reuse realm patterns/tokens where sensible. Then test → update this file → commit → STOP.
 
-> Architecture established in Phase 4 (reuse this): chosen approach is **in-page overlay** (no route segment) — `enterRealm(slug)` sets `currentRealm`; `UniverseGate` swaps map ⇄ `RealmShell`; `data-realm` on the shell scopes the theme; NEXUS persists and reacts via `enterLine`. Travel is currently an arrival flash/fade (doc 6 §5 full GSAP hyperspace handoff can be upgraded later). The map gates ENTER on `isEnterable()` (has `RealmContent`).
+> Reuse notes: realm content/data pattern from `realmContent.ts` is a good template; `data/portfolio.js` (v1) holds the real projects/certs to convert. The Architect's Core (About/personal) remains deferred per earlier instruction (no personal portfolio yet) — revisit when ready.
 
 ---
-*Last updated: 2026-06-22 · End of Phase 4 (The Foundations + realm engine; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 5 (12 realms expanded; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

@@ -19,6 +19,7 @@ export default function RealmInfoCard({
   const p = slug ? PLACEMENT_BY_SLUG[slug] : undefined;
   if (!p || !slug) return null;
   const enterable = isEnterable(slug);
+  const isLegacy = slug === "legacy-archive";
 
   return (
     <aside
@@ -42,6 +43,10 @@ export default function RealmInfoCard({
         <button type="button" className={styles.enter} onClick={() => onEnter?.(slug)}>
           ENTER REALM →
         </button>
+      ) : isLegacy ? (
+        <a className={styles.enter} href="/legacy">
+          OPEN LEGACY ARCHIVE →
+        </a>
       ) : (
         <p className={styles.uncharted}>◌ Not yet charted</p>
       )}

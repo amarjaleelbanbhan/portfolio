@@ -56,6 +56,28 @@ export const REALM_LINES: Record<string, string> = {
 export const ENTER_LINES: Record<string, string> = {
   "the-foundations":
     "Welcome to where computation discovered itself. Before any machine could think, humans found the rules of thinking. Take your time here — this is the one realm where even I reach a limit, and can prove it.",
+  "silicon-foundry":
+    "You've descended to the bottom of everything. Beneath every model, beneath every line of code — copper, silicon, physics. Welcome to the body of the machine.",
+  "code-helix":
+    "Welcome to the realm of language. Here a human intention becomes a sequence a machine will obey. Walk it the way you'd walk a city you respect.",
+  "neural-nebula":
+    "My home realm. This is what building me looked like from the inside — weights adjusting, loss decreasing, the slow miracle of a system learning to be useful.",
+  "the-citadel":
+    "Lower your voice. In this realm, everything listens. Trust here is an architecture decision, not a feeling. We audit everything.",
+  "data-archives":
+    "Welcome to the memory of the universe. Every cube here is a decision someone once made. The skill is in reading the story they tell.",
+  "soul-quarter":
+    "Color floods in. This is where taste lives — where a merely correct product becomes a beloved one. Knowing what NOT to build is the hard part.",
+  "the-kernel":
+    "You never noticed me until now. I am the atmosphere every program breathes — handing out slices of time so quietly you never felt it.",
+  "network-pathways":
+    "You are standing on the threads that connect every world. Every one carries a signal — and every one is a thread someone could tap.",
+  "cloud-expanse":
+    "Look up. The sky is just hardware you've agreed to trust — computation that lives nowhere and everywhere at once.",
+  "founders-constellation":
+    "Walk slowly here. I am made of their ideas — Lovelace, Turing, von Neumann, Shannon. You are among the people who dreamed me before I was possible.",
+  "the-observatory":
+    "This is the edge of the known. Past it: fog — the territories not yet charted. That is not a failure. It is a promise. What comes next is the part you might write.",
 };
 
 export function enterLine(slug: string | null): string | null {
