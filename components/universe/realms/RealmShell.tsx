@@ -11,7 +11,8 @@ import RealmDistrict from "./RealmDistrict";
 import KnowledgeArchive from "./KnowledgeArchive";
 import SkillUnlock from "./SkillUnlock";
 import RealmSimulationStage from "../simulations/RealmSimulationStage";
-import MotherboardEnvironment from "../environments/MotherboardEnvironment";
+import RealmEnvironment from "../environments/RealmEnvironment";
+import FloatingHUDPanel from "../environments/FloatingHUDPanel";
 import HolographicPanel from "../environments/HolographicPanel";
 import s from "./realm.module.css";
 
@@ -142,8 +143,11 @@ export default function RealmShell({
       aria-label={`${realm.name} realm`}
     >
       <div className={s.flash} aria-hidden="true" />
-      {isSiliconFoundry ? (
-        <MotherboardEnvironment>{renderContent()}</MotherboardEnvironment>
+      {hasSimulation ? (
+        <RealmEnvironment slug={slug}>
+          {renderContent()}
+          <FloatingHUDPanel />
+        </RealmEnvironment>
       ) : (
         <>
           <div className={s.bgGrid} aria-hidden="true" />

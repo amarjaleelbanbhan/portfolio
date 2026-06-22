@@ -2,21 +2,25 @@
 
 import { type ReactNode, useState, useEffect } from "react";
 import { useUniverseStore } from "@/store/universeStore";
+import { getRealmKnowledge } from "@/lib/environments/registry";
 import EnvironmentLayer from "./EnvironmentLayer";
 import styles from "./MotherboardEnvironment.module.css";
 
-interface MotherboardEnvironmentProps {
+interface RealmEnvironmentProps {
+  slug: string;
   children: ReactNode;
 }
 
 /**
- * MotherboardEnvironment — coordinates the Silicon Foundry background environment.
- * Renders the R3F/2D Canvas layer, suppresses early NEXUS arrival lines, and triggers
- * them after the camera flight sequence reveals the city.
+ * RealmEnvironment — coordinates dynamic realm backgrounds.
+ * Instantiates the EnvironmentLayer with the appropriate slug,
+ * triggers NEXUS's welcome dialogue once the entrance flight completes,
+ * and overlays the HTML controls.
  */
-export default function MotherboardEnvironment({
+export default function RealmEnvironment({
+  slug,
   children,
-}: MotherboardEnvironmentProps) {
+}: RealmEnvironmentProps) {
   const sayNexus = useUniverseStore((s) => s.sayNexus);
   const setNexusAnimState = useUniverseStore((s) => s.setNexusAnimState);
   const [arrivalComplete, setArrivalComplete] = useState(false);
@@ -26,23 +30,26 @@ export default function MotherboardEnvironment({
   };
 
   useEffect(() => {
-    if (arrivalComplete) {
-      // Direct timed dialogue sequence once camera reveals the motherboard city
-      const timer = setTimeout(() => {
-        if (sayNexus && setNexusAnimState) {
-          sayNexus("We are no longer looking at the machine. We are inside it.");
-          setNexusAnimState("SPEAKING");
-        }
-      }, 500);
+    setArrivalComplete(false);
+  }, [slug]);
 
-      return () => clearTimeout(timer);
+  useEffect(() => {
+    if (arrivalComplete) {
+      const knowledge = getRealmKnowledge(slug);
+      if (knowledge && sayNexus && setNexusAnimState) {
+        const timer = setTimeout(() => {
+          sayNexus(knowledge.welcomeSpeech);
+          setNexusAnimState("SPEAKING");
+        }, 500);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [arrivalComplete, sayNexus, setNexusAnimState]);
+  }, [arrivalComplete, slug, sayNexus, setNexusAnimState]);
 
   return (
     <div className={styles.environmentWrapper}>
-      {/* 3D R3F / 2D Canvas Motherboard backdrop layer */}
-      <EnvironmentLayer slug="silicon-foundry" onArrivalComplete={handleArrivalComplete} />
+      {/* Dynamic 3D/2D background layer */}
+      <EnvironmentLayer slug={slug} onArrivalComplete={handleArrivalComplete} />
 
       {/* Grid overlay mask to darken edges and merge with void */}
       <div className={styles.ambientFog} />

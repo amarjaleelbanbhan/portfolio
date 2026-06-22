@@ -9,20 +9,24 @@ import {
 } from "@/lib/deviceTier";
 import Motherboard3DScene from "./Motherboard3DScene";
 import Motherboard2DCanvas from "./Motherboard2DCanvas";
+import Generic3DScene from "./Generic3DScene";
+import Generic2DCanvas from "./Generic2DCanvas";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
+  slug: string;
   onArrivalComplete: () => void;
 }
 
 /**
  * EnvironmentLayer — determines the current device tier and mounts the correct
- * motherboard environment:
- *   - High/Medium Tier (1 & 2): R3F 3D motherboard city scene with light, depth, camera animations.
+ * background environment:
+ *   - High/Medium Tier (1 & 2): R3F 3D motherboard city scene or generic landmark nodes scene.
  *   - Low Tier (0): Flat, high-performance Canvas2D schematic drawing.
  *   - Reduced Motion: R3F scene with static camera/no animation.
  */
 export default function EnvironmentLayer({
+  slug,
   onArrivalComplete,
 }: EnvironmentLayerProps) {
   const [mounted, setMounted] = useState(false);
@@ -40,6 +44,7 @@ export default function EnvironmentLayer({
   }
 
   const use3D = tier > 0;
+  const isSiliconFoundry = slug === "silicon-foundry";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -51,14 +56,24 @@ export default function EnvironmentLayer({
             gl={{ antialias: tier >= 2, powerPreference: "high-performance" }}
           >
             <color attach="background" args={["#050508"]} />
-            <Motherboard3DScene
-              reduced={reduced}
-              onArrivalComplete={onArrivalComplete}
-            />
+            {isSiliconFoundry ? (
+              <Motherboard3DScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
+            ) : (
+              <Generic3DScene
+                slug={slug}
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
+            )}
           </Canvas>
         </div>
-      ) : (
+      ) : isSiliconFoundry ? (
         <Motherboard2DCanvas tier={tier} reduced={reduced} />
+      ) : (
+        <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}
     </div>
   );

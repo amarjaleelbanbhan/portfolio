@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useUniverseStore } from "@/store/universeStore";
 import { REALM_BY_SLUG } from "@/lib/realms";
@@ -8,7 +6,7 @@ import {
   prefersReducedMotion as detectReduced,
   type DeviceTier,
 } from "@/lib/deviceTier";
-import { getSimulation } from "@/lib/simulations/registry";
+import { getRealmKnowledge } from "@/lib/environments/registry";
 import SignalVisualizer from "./SignalVisualizer";
 import SimulationControls from "./SimulationControls";
 import styles from "./RealmSimulationStage.module.css";
@@ -23,7 +21,7 @@ const STEP_DURATION_MS = 4200;
  * below it becomes "details if you want them."
  */
 export default function RealmSimulationStage({ slug }: { slug: string }) {
-  const definition = getSimulation(slug);
+  const definition = getRealmKnowledge(slug);
   const realm = REALM_BY_SLUG[slug];
 
   const [mounted, setMounted] = useState(false);
@@ -34,6 +32,7 @@ export default function RealmSimulationStage({ slug }: { slug: string }) {
 
   const sayNexus = useUniverseStore((s) => s.sayNexus);
   const setNexusAnimState = useUniverseStore((s) => s.setNexusAnimState);
+  const selectLandmark = useUniverseStore((s) => s.selectLandmark);
 
   const autoplayTimer = useRef<number | null>(null);
 
@@ -62,6 +61,11 @@ export default function RealmSimulationStage({ slug }: { slug: string }) {
     const step = definition.steps[activeIndex];
     sayNexus(step.nexusLine);
     setNexusAnimState("SPEAKING");
+    if (step.activeLandmarkId) {
+      selectLandmark(step.activeLandmarkId);
+    } else {
+      selectLandmark(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, activeIndex, definition]);
 

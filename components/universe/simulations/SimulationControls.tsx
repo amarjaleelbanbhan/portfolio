@@ -1,6 +1,6 @@
 "use client";
 
-import type { SimStep } from "@/lib/simulations/types";
+import type { SimulationStep as SimStep } from "@/lib/environments/types";
 import styles from "./SimulationControls.module.css";
 
 interface SimulationControlsProps {

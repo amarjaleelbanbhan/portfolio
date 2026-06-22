@@ -1,10 +1,9 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
+import { useUniverseStore } from "@/store/universeStore";
 import HolographicPanel from "./HolographicPanel";
 import s from "./MotherboardEnvironment.module.css";
 
@@ -18,6 +17,8 @@ export default function Motherboard3DScene({
   onArrivalComplete,
 }: Motherboard3DSceneProps) {
   const { camera } = useThree();
+  const selectLandmark = useUniverseStore((s) => s.selectLandmark);
+  const activeLandmark = useUniverseStore((s) => s.activeLandmark);
 
   // Animation timeline state properties
   const timelineState = useRef({
@@ -280,7 +281,15 @@ export default function Motherboard3DScene({
       <directionalLight position={[10, 20, 5]} intensity={0.25} color="#FFF7E6" />
 
       {/* ── Motherboard Base Plane ── */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -3.01, 0]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -3.01, 0]}
+        receiveShadow
+        onClick={(e) => {
+          e.stopPropagation();
+          selectLandmark(null);
+        }}
+      >
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial color="#050706" roughness={0.7} metalness={0.4} />
       </mesh>
@@ -290,9 +299,28 @@ export default function Motherboard3DScene({
 
       {/* ── Traces (Circuit Highways) ── */}
       {/* Central highway trace mesh */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.98, 7]}>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -2.98, 7]}
+        onClick={(e) => {
+          e.stopPropagation();
+          selectLandmark("bus-highways");
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
+      >
         <planeGeometry args={[0.2, 22]} />
-        <meshBasicMaterial color="#B45309" opacity={0.35} transparent />
+        <meshBasicMaterial
+          color={activeLandmark === "bus-highways" ? "#FFF7E6" : "#B45309"}
+          opacity={activeLandmark === "bus-highways" ? 0.8 : 0.35}
+          transparent
+        />
       </mesh>
       {/* RAM bus trace mesh */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.25, -2.98, -10]}>
@@ -321,11 +349,29 @@ export default function Motherboard3DScene({
       </mesh>
 
       {/* ── Processor Tower (CPU) ── */}
-      <group position={[0, 0, -10]}>
+      <group
+        position={[0, 0, -10]}
+        onClick={(e) => {
+          e.stopPropagation();
+          selectLandmark("cpu-tower");
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
+      >
         {/* Layer 1: Base socket */}
         <mesh position={[0, -2.8, 0]}>
           <boxGeometry args={[11, 0.4, 11]} />
-          <meshStandardMaterial color="#1E2321" roughness={0.5} metalness={0.8} />
+          <meshStandardMaterial
+            color={activeLandmark === "cpu-tower" ? "#2B3530" : "#1E2321"}
+            roughness={0.5}
+            metalness={0.8}
+          />
         </mesh>
 
         {/* Layer 2: Ring connector collar */}
@@ -343,7 +389,12 @@ export default function Motherboard3DScene({
         {/* Core Die: Pulsing glowing center */}
         <mesh ref={cpuCoreRef} position={[0, -1.3, 0]}>
           <boxGeometry args={[3, 1, 3]} />
-          <meshBasicMaterial color="#F59E0B" toneMapped={false} transparent opacity={0.85} />
+          <meshBasicMaterial
+            color={activeLandmark === "cpu-tower" ? "#FFF7E6" : "#F59E0B"}
+            toneMapped={false}
+            transparent
+            opacity={0.85}
+          />
         </mesh>
 
         {/* Vertical processing energy pillar */}
@@ -353,7 +404,10 @@ export default function Motherboard3DScene({
             <meshBasicMaterial
               color="#F59E0B"
               transparent
-              opacity={0.18 + Math.sin(THREE.MathUtils.degToRad(Date.now() * 0.08)) * 0.05}
+              opacity={
+                (activeLandmark === "cpu-tower" ? 0.35 : 0.18) +
+                Math.sin(THREE.MathUtils.degToRad(Date.now() * 0.08)) * 0.05
+              }
               blending={THREE.AdditiveBlending}
               side={THREE.DoubleSide}
             />
@@ -374,26 +428,56 @@ export default function Motherboard3DScene({
       </group>
 
       {/* ── Memory Skyscrapers (RAM Modules) ── */}
-      <group position={[7.5, 0, -10]}>
+      <group
+        position={[7.5, 0, -10]}
+        onClick={(e) => {
+          e.stopPropagation();
+          selectLandmark("ram-city");
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
+      >
         {/* RAM Tower 1 */}
         <mesh position={[0, 0.5, -3]}>
           <boxGeometry args={[0.5, 7, 1.8]} />
-          <meshStandardMaterial color="#0B130E" roughness={0.4} metalness={0.8} />
+          <meshStandardMaterial
+            color={activeLandmark === "ram-city" ? "#1B2F23" : "#0B130E"}
+            roughness={0.4}
+            metalness={0.8}
+          />
         </mesh>
         {/* RAM Tower 2 */}
         <mesh position={[0, 0.5, -1]}>
           <boxGeometry args={[0.5, 7, 1.8]} />
-          <meshStandardMaterial color="#0B130E" roughness={0.4} metalness={0.8} />
+          <meshStandardMaterial
+            color={activeLandmark === "ram-city" ? "#1B2F23" : "#0B130E"}
+            roughness={0.4}
+            metalness={0.8}
+          />
         </mesh>
         {/* RAM Tower 3 */}
         <mesh position={[0, 0.5, 1]}>
           <boxGeometry args={[0.5, 7, 1.8]} />
-          <meshStandardMaterial color="#0B130E" roughness={0.4} metalness={0.8} />
+          <meshStandardMaterial
+            color={activeLandmark === "ram-city" ? "#1B2F23" : "#0B130E"}
+            roughness={0.4}
+            metalness={0.8}
+          />
         </mesh>
         {/* RAM Tower 4 */}
         <mesh position={[0, 0.5, 3]}>
           <boxGeometry args={[0.5, 7, 1.8]} />
-          <meshStandardMaterial color="#0B130E" roughness={0.4} metalness={0.8} />
+          <meshStandardMaterial
+            color={activeLandmark === "ram-city" ? "#1B2F23" : "#0B130E"}
+            roughness={0.4}
+            metalness={0.8}
+          />
         </mesh>
 
         {/* Vertical animated data block cubes inside skyscrapers */}
@@ -403,7 +487,10 @@ export default function Motherboard3DScene({
             [-3, -1, 1, 3].map((zVal, idx) => (
               <mesh key={idx} position={[0, -2, zVal]}>
                 <boxGeometry args={[0.55, 0.4, 0.4]} />
-                <meshBasicMaterial color="#00F5FF" toneMapped={false} />
+                <meshBasicMaterial
+                  color={activeLandmark === "ram-city" ? "#FFF7E6" : "#00F5FF"}
+                  toneMapped={false}
+                />
               </mesh>
             ))}
         </group>
@@ -415,6 +502,53 @@ export default function Motherboard3DScene({
               <div className={s.floatingText}>
                 <span className={s.labelTitle}>MEMORY ARRAY</span>
                 <span className={s.labelValue}>DDR5 — ADDRESS CHANNELS</span>
+              </div>
+            </HolographicPanel>
+          </Html>
+        )}
+      </group>
+
+      {/* ── Logic Gate Factory (Added in Phase 10.4) ── */}
+      <group
+        position={[-7.5, -1, -5]}
+        onClick={(e) => {
+          e.stopPropagation();
+          selectLandmark("logic-factory");
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
+      >
+        {/* Base plate */}
+        <mesh position={[0, -1.9, 0]}>
+          <boxGeometry args={[4, 0.4, 4]} />
+          <meshStandardMaterial
+            color={activeLandmark === "logic-factory" ? "#2B3530" : "#1E2321"}
+            roughness={0.5}
+            metalness={0.8}
+          />
+        </mesh>
+        {/* Glowing logical cylinders */}
+        <mesh position={[0, -0.7, 0]}>
+          <cylinderGeometry args={[1.0, 1.0, 2.0, 12]} />
+          <meshBasicMaterial
+            color={activeLandmark === "logic-factory" ? "#FFF7E6" : "#EF4444"}
+            transparent
+            opacity={0.7}
+          />
+        </mesh>
+        {/* Floating 3D HTML callout label */}
+        {arrivalDone && (
+          <Html position={[0, 1.2, 0]} center distanceFactor={14}>
+            <HolographicPanel className={s.floatingLabel}>
+              <div className={s.floatingText}>
+                <span className={s.labelTitle}>LOGIC GATES</span>
+                <span className={s.labelValue}>AND / OR / NOT PRIMITIVES</span>
               </div>
             </HolographicPanel>
           </Html>

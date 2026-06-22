@@ -10,10 +10,22 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { DeviceTier } from "@/lib/deviceTier";
+import type { KnowledgeLevel } from "@/lib/environments/types";
 
 export type TransitionPhase = "idle" | "exiting" | "entering" | "complete";
 export type NexusMode = "ARCHITECT" | "CYBER" | "QUEST" | "MENTOR" | "AMBIENT";
 export type NexusAnimState = "IDLE" | "SPEAKING" | "THINKING" | "ALERT" | "EXCITED";
+
+export type MasterJourneyPhase = 
+  | "code-creation" 
+  | "kernel-scheduler" 
+  | "silicon-execution" 
+  | "network-hop" 
+  | "citadel-check" 
+  | "database-lookup" 
+  | "neural-inference" 
+  | "cloud-deployment"
+  | null;
 
 interface UniverseState {
   // — Navigation —
@@ -49,6 +61,12 @@ interface UniverseState {
   webglSupported: boolean;
   prefersReducedMotion: boolean;
 
+  // — Living Realm Environment State (runtime) —
+  activeLandmark: string | null;
+  activeLevel: KnowledgeLevel;
+  activeSimStep: number;
+  activeMasterJourneyPhase: MasterJourneyPhase;
+
   // — Actions —
   enterRealm: (slug: string) => void;
   exitRealm: () => void;
@@ -69,6 +87,12 @@ interface UniverseState {
     prefersReducedMotion: boolean;
   }) => void;
   addTime: (seconds: number) => void;
+
+  // — Living Realm Actions —
+  selectLandmark: (id: string | null) => void;
+  setLevel: (level: KnowledgeLevel) => void;
+  setSimStep: (index: number) => void;
+  setMasterJourneyPhase: (phase: MasterJourneyPhase) => void;
 }
 
 export const useUniverseStore = create<UniverseState>()(
@@ -98,6 +122,11 @@ export const useUniverseStore = create<UniverseState>()(
       deviceTier: 2,
       webglSupported: true,
       prefersReducedMotion: false,
+
+      activeLandmark: null,
+      activeLevel: "beginner",
+      activeSimStep: 0,
+      activeMasterJourneyPhase: null,
 
       enterRealm: (slug) =>
         set((s) => ({
@@ -144,6 +173,11 @@ export const useUniverseStore = create<UniverseState>()(
 
       addTime: (seconds) =>
         set((s) => ({ totalTimeInUniverse: s.totalTimeInUniverse + seconds })),
+
+      selectLandmark: (activeLandmark) => set({ activeLandmark }),
+      setLevel: (activeLevel) => set({ activeLevel }),
+      setSimStep: (activeSimStep) => set({ activeSimStep }),
+      setMasterJourneyPhase: (activeMasterJourneyPhase) => set({ activeMasterJourneyPhase }),
     }),
     {
       name: "codex-infinitum",

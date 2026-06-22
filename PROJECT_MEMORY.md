@@ -27,16 +27,17 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 10.3.5 — Immersion Quality Pass: ✅ DONE & TESTED.**
-Rebuilt the entire Universe Map and companion HUD to remove all remaining "website dashboard" feeling:
-- **Digital Worlds Map**: Upgraded flat hexagons in `RealmNode.tsx` to customized 3D planet energy cores (Silicon Foundry has spinning circuit rings, Neural Nebula has pulsing outer wireframe shell, The Citadel has faceted shielded core with orbiting plates, Data Archives has nested counter-rotating database cubes, Code Helix has sliding code rings). Add mouse parallax and double-layer background/foreground `Stars` for deep spatial dust depth.
-- **Data Pulses**: Animated electrical/data packets flowing along the connections in `EnergyConnections.tsx`.
-- **Exit Zoom Flight**: Replaced instant transition. Selecting a realm triggers a camera flight timeline that zooms directly into the node core (rushing into the circuits) and fades out navigation overlays before loading the realm.
-- **Holographic Nav**: Rebranded Realm Index to `"ARCHITECT NAVIGATION INTERFACE"`, collapsed by default, and wrapped in a `<HolographicPanel>` container for a transparent glass scanline terminal aesthetic.
-- **Projected Companion**: Dialogue panel shaped as a slanted HUD slice with a flickering light projection beam (`::after` clip-path) pointing down to the polyhedron. Added typing flashing cursor, AI thinking state delay (`[ SYS_RETRIEVING... ]`), and a glitch-shake container entrance. Added speaking waveform core vibration and energy rings to `NexusCore3D.tsx`.
-- **Motherboard City**: Enhanced `Motherboard3DScene.tsx` with distance fog, background skyscrapers, and extra electric traces to feel microscopic.
-- **Build**: ✓ Verified clean tsc typecheck + next build (11 routes static green).
-**Next gate:** Phase 10.4 — Living Realm Engine (extraction of reusable environment patterns).
+**PHASE 10.4 — Living Knowledge Worlds: ✅ DONE & TESTED.**
+Refactored the Silicon Foundry motherboard scene into a reusable **Living Realm Engine**:
+- **Unified Registry**: Created `lib/environments/types.ts` and `lib/environments/registry.ts` as the single source of truth for CS landmarks, welcome lines, simulation steps, and metadata.
+- **Progressive Learning**: Added Beginner (conceptual hooks), Intermediate (operation logs), and Expert (engineering specifications) tabs to the landmark descriptions.
+- **Extended Landmarks**: Extended data structure to track difficulty levels, skills unlocked, and cross-realm links.
+- **Master Journey ("Follow the Data")**: Structured cross-realm paths (Code Helix -> Kernel -> Silicon Foundry -> Network Pathways -> Cyber Citadel -> Data Archives -> Neural Nebula -> Cloud Expanse).
+- **Generic Backdrop System**: Created `RealmEnvironment.tsx` wrapper, `Generic3DScene.tsx` (renders glowing nodes at 3D coordinates), and `Generic2DCanvas.tsx` (Canvas2D fallback hit-detector), automatically rendering any registry-configured world.
+- **Interactive HUD**: Implemented `FloatingHUDPanel.tsx` and `SignalTracer.tsx` for responsive tabs, skill chips, and project links.
+- **Foundry Conversion**: Refactored `Motherboard3DScene.tsx` meshes and base plane to bind with the Zustand store, selecting objects on click.
+- **Build**: ✓ Verified clean node tsc typecheck + next build (11 routes static green).
+**Next gate:** Phase 10.5 — Network Pathways environment and packet simulations.
 
 ---
 
@@ -236,7 +237,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 10.2 — Enter the Machine Cinematic** ✅ (`CinematicCamera`, `BootTerminal`, `lib/journey/cinematicCamera.ts`; `JourneyDirector` updated; build green 11 routes; commit `706a06f`)
 - [x] **Phase 10.3 — Silicon Foundry Motherboard Environment** ✅ (R3F 3D motherboard city, arrival sequence, floating holographic panels/labels, Canvas2D fallback, build green 11 routes)
 - [x] **Phase 10.3.5 — Immersion Quality Pass** ✅ (Upgraded Universe Map planet nodes, network connections, zoom transitions, holographic index, projected light beam dialog box, atmospheric motherboard fog)
-- [ ] **Phase 10.4 — Living Realm Engine:** Extract environment registry, cinematic director and generic object layers for future immersive realms.
+- [x] **Phase 10.4 — Living Realm Engine:** Extract environment registry, cinematic director and generic object layers for future immersive realms. ✅
+- [ ] **Phase 10.5 — Network Pathways environment:** Build network pathways background, router landmarks, and HELO packet simulation visualizer.
 - [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
@@ -253,9 +255,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Vision realignment is underway.** Phase 10.3.5 delivered the Immersion Quality Pass, upgrading the Universe Map planet nodes, dialogue projections, and camera exit zoom transitions. Recommended next: **Phase 10.4** — Living Realm Engine (extraction of environment registry and generic director). Same protocol: plan → implement one slice → tsc+build → report → commit → stop. Also outstanding: the optional Phase 9 Lighthouse pass and the merge/deploy decision.
+**Living Realm Engine is established.** Phase 10.4 delivered the generic registry, dynamic 3D/2D environment layers, responsive HUD tab layout, and wired store triggers. Silicon Foundry motherboard city and logic structures are converted to utilize the dynamic data patterns. Next recommended: **Phase 10.5** — Network Pathways (global network pathways background, DNS radar/router landmarks, and HELO packet simulation tracer).
 
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-23 · End of Phase 10.3.5 (Immersion Quality Pass; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 10.4 (Living Knowledge Worlds; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

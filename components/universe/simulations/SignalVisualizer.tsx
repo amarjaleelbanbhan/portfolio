@@ -1,14 +1,11 @@
-"use client";
-
 import { useEffect, useRef } from "react";
 import type { DeviceTier } from "@/lib/deviceTier";
 import { particleBudget } from "@/lib/deviceTier";
 import { startTickEngine } from "@/lib/simulations/engine";
-import type { SimStepId } from "@/lib/simulations/types";
 import styles from "./SignalVisualizer.module.css";
 
 interface SignalVisualizerProps {
-  stepId: SimStepId;
+  stepId: string;
   /** false on tier 0 / reduced-motion: draw one accurate static frame, no loop */
   animate: boolean;
   tier: DeviceTier;
