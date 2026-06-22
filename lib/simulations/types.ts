@@ -5,7 +5,7 @@
  * the simulation is the primary experience (EXPERIENCE_TRANSFORMATION_PLAN.md §1).
  */
 
-export type SimStepId = "electricity" | "logic" | "cpu" | "memory" | "result";
+export type SimStepId = string;
 
 export interface SimStep {
   id: SimStepId;

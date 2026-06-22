@@ -41,6 +41,7 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
   const selectRealm = useUniverseStore((s) => s.selectRealm);
   const enterRealm = useUniverseStore((s) => s.enterRealm);
   const setDeviceProfile = useUniverseStore((s) => s.setDeviceProfile);
+  const setMasterJourneyPhase = useUniverseStore((s) => s.setMasterJourneyPhase);
 
   useEffect(() => {
     const r = detectReduced();
@@ -72,6 +73,11 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
     } else {
       enterRealm(slug);
     }
+  };
+
+  const startMasterJourney = () => {
+    setMasterJourneyPhase("code-creation");
+    handleEnterRealm("code-helix");
   };
 
   return (
@@ -117,6 +123,17 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
       <RealmIndex active={active} onHover={setHovered} onSelect={(slug) => selectRealm(slug)} />
 
       <RealmInfoCard slug={active} onEnter={handleEnterRealm} />
+
+      {!zoomingTo && (
+        <button
+          type="button"
+          className={styles.followData}
+          onClick={startMasterJourney}
+          aria-label="Start Follow the Data guided journey"
+        >
+          ⚡ FOLLOW THE DATA
+        </button>
+      )}
 
       <footer className={styles.hint} aria-live="polite">
         {selectedName ? (

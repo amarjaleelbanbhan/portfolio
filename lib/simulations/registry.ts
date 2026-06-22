@@ -6,48 +6,24 @@
  */
 
 import type { SimulationDefinition } from "./types";
+import { REALM_KNOWLEDGE } from "../environments/registry";
 
-const SILICON_FOUNDRY_SIM: SimulationDefinition = {
-  realmSlug: "silicon-foundry",
-  title: "Signal Path — Electricity to Result",
-  steps: [
-    {
-      id: "electricity",
-      label: "ELECTRICITY",
-      caption: "A voltage difference races through copper traces — the only raw material a computer ever has.",
-      nexusLine: "These highways carry billions of decisions every second.",
-    },
-    {
-      id: "logic",
-      label: "LOGIC GATES",
-      caption: "Two inputs meet a gate. AND, OR, and NOT are the only primitives — everything else is built from these three.",
-      nexusLine: "Observe the logic gates. This is where electricity becomes logic.",
-    },
-    {
-      id: "cpu",
-      label: "CPU CYCLE",
-      caption: "FETCH pulls an instruction from memory. DECODE figures out what it means. EXECUTE makes the ALU act on it.",
-      nexusLine: "Every instruction begins its journey here.",
-    },
-    {
-      id: "memory",
-      label: "MEMORY",
-      caption: "The CPU sends an address down the bus. RAM answers with the data that lived there.",
-      nexusLine: "These structures hold the thoughts before they become action.",
-    },
-    {
-      id: "result",
-      label: "RESULT",
-      caption: "The five stages collapse into one outcome — a bit, a byte, a decision the rest of the program can use.",
-      nexusLine: "The calculation is complete, and the cycle begins anew.",
-    },
-  ],
-};
-
-export const REALM_SIMULATIONS: Record<string, SimulationDefinition> = {
-  "silicon-foundry": SILICON_FOUNDRY_SIM,
-};
+export const REALM_SIMULATIONS: Record<string, SimulationDefinition> = Object.keys(REALM_KNOWLEDGE).reduce((acc, slug) => {
+  const knowledge = REALM_KNOWLEDGE[slug];
+  acc[slug] = {
+    realmSlug: knowledge.realmSlug,
+    title: knowledge.title,
+    steps: knowledge.steps.map((s) => ({
+      id: s.id,
+      label: s.label,
+      caption: s.caption,
+      nexusLine: s.nexusLine,
+    })),
+  };
+  return acc;
+}, {} as Record<string, SimulationDefinition>);
 
 export function getSimulation(slug: string): SimulationDefinition | null {
   return REALM_SIMULATIONS[slug] ?? null;
 }
+
