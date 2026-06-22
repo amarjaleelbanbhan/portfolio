@@ -93,3 +93,22 @@
 @media (prefers-reduced-motion: reduce) {
   .map { animation: none; }
 }
+
+/* ── Travel zoom-out transitions for overlays ── */
+.zooming .statusBar,
+.zooming .hint,
+.zooming :global(.aside),
+.zooming :global(aside) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -10px) !important;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out !important;
+}
+
+.zooming :global(nav) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateX(-15px) !important;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out !important;
+}
+

@@ -265,6 +265,9 @@ export default function Motherboard3DScene({
 
   return (
     <group>
+      {/* ── Atmospheric depth fog (creates massive landscape scale) ── */}
+      <fog attach="fog" args={["#050508", 8, 28]} />
+
       {/* ── Lights ── */}
       <ambientLight ref={ambientLightRef} intensity={0} />
       <pointLight
@@ -295,6 +298,15 @@ export default function Motherboard3DScene({
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.25, -2.98, -10]}>
         <planeGeometry args={[6.5, 0.15]} />
         <meshBasicMaterial color="#B45309" opacity={0.35} transparent />
+      </mesh>
+      {/* Distant background trace lines */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-10, -2.98, -16]}>
+        <planeGeometry args={[0.08, 14]} />
+        <meshBasicMaterial color="#B45309" opacity={0.15} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[10, -2.98, -16]}>
+        <planeGeometry args={[0.08, 14]} />
+        <meshBasicMaterial color="#B45309" opacity={0.15} transparent />
       </mesh>
 
       {/* ── Moving Electrical Pulses ── */}
@@ -408,6 +420,27 @@ export default function Motherboard3DScene({
           </Html>
         )}
       </group>
+
+      {/* ── Distant background skyscrapers (microscopic scale) ── */}
+      {arrivalDone && (
+        <group position={[0, -3, -32]}>
+          {/* Faint tower left */}
+          <mesh position={[-18, 5, 0]}>
+            <boxGeometry args={[1.8, 16, 1.8]} />
+            <meshStandardMaterial color="#070a09" roughness={0.7} metalness={0.8} />
+          </mesh>
+          {/* Faint tower right */}
+          <mesh position={[18, 5, 0]}>
+            <boxGeometry args={[1.8, 16, 1.8]} />
+            <meshStandardMaterial color="#070a09" roughness={0.7} metalness={0.8} />
+          </mesh>
+          {/* Distant logic block */}
+          <mesh position={[0, 2, -8]}>
+            <boxGeometry args={[14, 10, 2]} />
+            <meshStandardMaterial color="#070a09" roughness={0.8} metalness={0.7} />
+          </mesh>
+        </group>
+      )}
 
       {/* ── Circuit Highway (Static Text/Floating Label) ── */}
       {arrivalDone && (

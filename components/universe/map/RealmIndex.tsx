@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PLACEMENTS, LAYER_ORDER, type RealmPlacement } from "./realmLayout";
+import HolographicPanel from "../environments/HolographicPanel";
 import styles from "./RealmIndex.module.css";
 
 /**
@@ -18,10 +19,8 @@ export default function RealmIndex({
   onHover: (slug: string | null) => void;
   onSelect: (slug: string) => void;
 }) {
-  // collapsed by default on small screens to avoid covering the map
-  const [open, setOpen] = useState(
-    () => typeof window === "undefined" || window.innerWidth >= 768,
-  );
+  // collapsed by default to keep the world view dominant
+  const [open, setOpen] = useState(false);
 
   const groups = LAYER_ORDER.map((layer) => ({
     layer,
@@ -36,11 +35,11 @@ export default function RealmIndex({
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
       >
-        {open ? "☰ REALM INDEX" : "☰"}
+        {open ? "✕ CLOSE NAV" : "☰ NAVIGATE"}
       </button>
 
       {open && (
-        <div className={styles.scroll}>
+        <HolographicPanel title="ARCHITECT NAVIGATION INTERFACE" className={styles.scroll}>
           {groups.map((g) => (
             <div key={g.layer} className={styles.group}>
               <p className={styles.layerLabel}>{g.layer}</p>
@@ -63,7 +62,7 @@ export default function RealmIndex({
               ))}
             </div>
           ))}
-        </div>
+        </HolographicPanel>
       )}
     </nav>
   );

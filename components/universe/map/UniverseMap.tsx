@@ -32,6 +32,7 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
   const [reduced, setReduced] = useState(false);
   const [tier, setTier] = useState<DeviceTier>(2);
   const [webgl, setWebgl] = useState(true);
+  const [zoomingTo, setZoomingTo] = useState<string | null>(null);
 
   // hover lives in the store so NEXUS can react to it too
   const hovered = useUniverseStore((s) => s.hoveredRealm);
@@ -65,8 +66,19 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
   const use3D = webgl && tier > 0;
   const selectedName = selected ? PLACEMENT_BY_SLUG[selected]?.realm.name : null;
 
+  const handleEnterRealm = (slug: string) => {
+    if (use3D && !reduced) {
+      setZoomingTo(slug);
+    } else {
+      enterRealm(slug);
+    }
+  };
+
   return (
-    <main className={styles.map} aria-label="CODEX INFINITUM universe map">
+    <main
+      className={`${styles.map} ${zoomingTo ? styles.zooming : ""}`}
+      aria-label="CODEX INFINITUM universe map"
+    >
       <div className={styles.scene}>
         {use3D ? (
           <div className={styles.canvasHolder} aria-hidden="true">
@@ -75,8 +87,10 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
               reduced={reduced}
               hovered={hovered}
               selected={selected}
+              zoomingTo={zoomingTo}
               onHover={setHovered}
               onSelect={(slug) => selectRealm(slug)}
+              onZoomComplete={() => enterRealm(zoomingTo!)}
             />
           </div>
         ) : (
@@ -102,12 +116,12 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
 
       <RealmIndex active={active} onHover={setHovered} onSelect={(slug) => selectRealm(slug)} />
 
-      <RealmInfoCard slug={active} onEnter={enterRealm} />
+      <RealmInfoCard slug={active} onEnter={handleEnterRealm} />
 
       <footer className={styles.hint} aria-live="polite">
         {selectedName ? (
           <>
-            TRAVEL PREPARED → <strong>{selectedName}</strong> · realm interiors unlock in a later phase
+            TRAVEL PREPARED → <strong>{selectedName}</strong> · select ENTER REALM to launch travel
           </>
         ) : (
           <>Hover or focus a realm to inspect · select to prepare travel</>

@@ -27,13 +27,16 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 10.3 — Silicon Foundry Motherboard Environment: ✅ DONE & TESTED.**
-The first true cinematic 3D environment for Silicon Foundry realm. When slug is "silicon-foundry", a React Three Fiber scene creates an immersive motherboard city (endless grid, layered metallic processor tower with pulsing glowing core and rising energy pillar, RAM skyscrapers flanking the core with rising data block cubes, circuit highway traces with pulsing electricity).
-Arrival sequence details: starts in black -> first electric pulse fires -> camera follows trace close-up -> CPU core awakens & fades in lights -> RAM skyscrapers activate -> camera sweeps back to overview reveal -> NEXUS guides the visitor.
-Float labels physically in the 3D space beside hardware using R3F Html. Wrap individual topic cards, simulation controls, and deep archive panel in floating HolographicPanel skin (corner brackets, glow border, scan-line sweep).
-Performance optimized: only one WebGL canvas runs (3D Nexus core falls back to 2D when inside Silicon Foundry), geometries and materials are reused, and Tier 0 fallbacks to a high-performance Canvas2D top-down blueprint view (reduced-motion freezes the 3D scene in overview without GSAP flights).
-Build: ✓ Compiled in 29.0s, TypeScript checked, all 11 routes prerendered green.
-**Next gate:** Phase 10.4 — The Foundations / TuringTape simulation.
+**PHASE 10.3.5 — Immersion Quality Pass: ✅ DONE & TESTED.**
+Rebuilt the entire Universe Map and companion HUD to remove all remaining "website dashboard" feeling:
+- **Digital Worlds Map**: Upgraded flat hexagons in `RealmNode.tsx` to customized 3D planet energy cores (Silicon Foundry has spinning circuit rings, Neural Nebula has pulsing outer wireframe shell, The Citadel has faceted shielded core with orbiting plates, Data Archives has nested counter-rotating database cubes, Code Helix has sliding code rings). Add mouse parallax and double-layer background/foreground `Stars` for deep spatial dust depth.
+- **Data Pulses**: Animated electrical/data packets flowing along the connections in `EnergyConnections.tsx`.
+- **Exit Zoom Flight**: Replaced instant transition. Selecting a realm triggers a camera flight timeline that zooms directly into the node core (rushing into the circuits) and fades out navigation overlays before loading the realm.
+- **Holographic Nav**: Rebranded Realm Index to `"ARCHITECT NAVIGATION INTERFACE"`, collapsed by default, and wrapped in a `<HolographicPanel>` container for a transparent glass scanline terminal aesthetic.
+- **Projected Companion**: Dialogue panel shaped as a slanted HUD slice with a flickering light projection beam (`::after` clip-path) pointing down to the polyhedron. Added typing flashing cursor, AI thinking state delay (`[ SYS_RETRIEVING... ]`), and a glitch-shake container entrance. Added speaking waveform core vibration and energy rings to `NexusCore3D.tsx`.
+- **Motherboard City**: Enhanced `Motherboard3DScene.tsx` with distance fog, background skyscrapers, and extra electric traces to feel microscopic.
+- **Build**: ✓ Verified clean tsc typecheck + next build (11 routes static green).
+**Next gate:** Phase 10.4 — Living Realm Engine (extraction of reusable environment patterns).
 
 ---
 
@@ -232,7 +235,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 10.0 — Simulation Engine + Silicon Foundry** ✅ (`lib/simulations/` + `components/universe/simulations/`; `RealmShell` upgraded; only Silicon Foundry transformed)
 - [x] **Phase 10.2 — Enter the Machine Cinematic** ✅ (`CinematicCamera`, `BootTerminal`, `lib/journey/cinematicCamera.ts`; `JourneyDirector` updated; build green 11 routes; commit `706a06f`)
 - [x] **Phase 10.3 — Silicon Foundry Motherboard Environment** ✅ (R3F 3D motherboard city, arrival sequence, floating holographic panels/labels, Canvas2D fallback, build green 11 routes)
-- [ ] **Phase 10.4 — The Foundations / TuringTape simulation:** Turing machine head stepping along a tape, live truth-table evaluator, logic step integrations.
+- [x] **Phase 10.3.5 — Immersion Quality Pass** ✅ (Upgraded Universe Map planet nodes, network connections, zoom transitions, holographic index, projected light beam dialog box, atmospheric motherboard fog)
+- [ ] **Phase 10.4 — Living Realm Engine:** Extract environment registry, cinematic director and generic object layers for future immersive realms.
 - [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
@@ -249,9 +253,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Vision realignment is underway.** Phase 10.3 successfully delivered the first explorable environment (3D motherboard city) in Silicon Foundry without modifying other realms. Recommended next: **Phase 10.4** — author the next simulation/environment batch (The Foundations / TuringTape tape run and truth tables). Same protocol: plan → implement one slice → tsc+build → report → commit → stop. Also outstanding: the optional Phase 9 Lighthouse pass and the merge/deploy decision.
+**Vision realignment is underway.** Phase 10.3.5 delivered the Immersion Quality Pass, upgrading the Universe Map planet nodes, dialogue projections, and camera exit zoom transitions. Recommended next: **Phase 10.4** — Living Realm Engine (extraction of environment registry and generic director). Same protocol: plan → implement one slice → tsc+build → report → commit → stop. Also outstanding: the optional Phase 9 Lighthouse pass and the merge/deploy decision.
 
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-23 · End of Phase 10.3 (Silicon Foundry Motherboard Environment; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 10.3.5 (Immersion Quality Pass; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

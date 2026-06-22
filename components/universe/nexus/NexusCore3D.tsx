@@ -56,6 +56,8 @@ function Polyhedron({
   const group = useRef<THREE.Group>(null);
   const coreMat = useRef<THREE.MeshStandardMaterial>(null);
   const nucleus = useRef<THREE.Mesh>(null);
+  const ringARef = useRef<THREE.Mesh>(null);
+  const ringBRef = useRef<THREE.Mesh>(null);
   const t = useRef(0);
   const scale = useRef(1);
   const morph = useRef(1);
@@ -89,12 +91,23 @@ function Polyhedron({
         animState === "THINKING" ? 0.5 : animState === "ALERT" ? 1.6 : 1.0;
     }
 
-    // scale: state target + morph-pop recovery + breathing
+    // scale: state target + morph-pop recovery + breathing + waveform oscillation when speaking
     morph.current += (1 - morph.current) * 0.12;
     const breathe = reduced ? 1 : 1 + Math.sin(t.current * 1.6) * 0.03;
-    const targetScale = STATE_SCALE[animState] * morph.current * breathe;
+    const wave = animState === "SPEAKING" ? 1 + Math.sin(t.current * 14) * 0.05 : breathe;
+    const targetScale = STATE_SCALE[animState] * morph.current * wave;
     scale.current += (targetScale - scale.current) * 0.15;
     g.scale.setScalar(scale.current);
+
+    // animate energy rings
+    if (ringARef.current && !reduced) {
+      ringARef.current.rotation.x += delta * 0.4;
+      ringARef.current.rotation.y += delta * 0.15;
+    }
+    if (ringBRef.current && !reduced) {
+      ringBRef.current.rotation.y -= delta * 0.25;
+      ringBRef.current.rotation.z += delta * 0.45;
+    }
 
     // nucleus heartbeat
     if (nucleus.current && !reduced) {
@@ -125,6 +138,22 @@ function Polyhedron({
         <icosahedronGeometry args={[1, 0]} />
         <meshBasicMaterial color={color} wireframe transparent opacity={0.28} />
       </mesh>
+
+      {/* Concentric Energy Ring A */}
+      {!reduced && (
+        <mesh rotation={[Math.PI / 2, 0, 0]} ref={ringARef}>
+          <torusGeometry args={[1.5, 0.015, 8, 32]} />
+          <meshBasicMaterial color={color} transparent opacity={0.25} />
+        </mesh>
+      )}
+
+      {/* Concentric Energy Ring B */}
+      {!reduced && (
+        <mesh rotation={[0, Math.PI / 4, 0]} ref={ringBRef}>
+          <torusGeometry args={[1.8, 0.012, 8, 32]} />
+          <meshBasicMaterial color={color} transparent opacity={0.15} />
+        </mesh>
+      )}
 
       {/* nucleus — where knowledge lives */}
       <mesh ref={nucleus} scale={0.34}>

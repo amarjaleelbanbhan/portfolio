@@ -28,12 +28,12 @@
 .scroll {
   max-height: min(64vh, 520px);
   overflow-y: auto;
-  padding: var(--space-sm);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--hairline);
-  background: color-mix(in srgb, var(--surface-1) 64%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: var(--space-sm) !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .group { margin-bottom: var(--space-sm); }
