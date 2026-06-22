@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 3 — NEXUS Companion: ✅ COMPLETE & TESTED (green build + tsc clean).**
-The universe now has a voice: NEXUS lives on the map. Phases 0–3 done.
-**Next gate:** awaiting user approval to begin **Phase 4 — First Realm vertical slice**.
+**PHASE 4 — First Realm (The Foundations): ✅ COMPLETE & TESTED (green build + tsc clean).**
+Reusable realm engine + the first explorable realm. Phases 0–4 done.
+**Next gate:** awaiting user approval to begin **Phase 5 — remaining realms** (roll out the pattern).
 
 ---
 
@@ -110,6 +110,14 @@ portfolio/
   - `UniverseGate` renders `<NexusCompanion/>` alongside `<UniverseMap/>` (persistent). `RealmInfoCard` moved bottom-left to clear NEXUS (bottom-right).
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** NEXUS visual + scripted dialogue only — no AI chat backend, no realm interiors, no projects, no RPG.
+- ✅ **Phase 4 — First Realm vertical slice: THE FOUNDATIONS** (canon doc 4 / doc 10):
+  - **Reusable realm engine** in `components/universe/realms/`: `RealmShell` (orchestrator + arrival cinematic + `data-realm` theming), `RealmHeader`, `RealmNavigation` (district tabs + return-to-map), `RealmDistrict` (topic grid), `KnowledgeArchive` (gated deep layer), `SkillUnlock` (ability toast), shared `realm.module.css`. **Future realms only add data.**
+  - `realmContent.ts`: typed `RealmContent` model (3 districts + skill) + registry; **The Foundations** authored — Surface "The Hall of Axioms" (Logic/Math/Problem Solving), Interior "The Computation Engine" (Discrete Math/Boolean/Graphs/Algorithms/Complexity), gated Archive "The Incompleteness Vault" (Automata/Turing/Computability/Halting/P≠NP/Gödel) + skill "Computational Thinking".
+  - **Travel wired:** map `RealmInfoCard` shows ENTER for enterable realms → `enterRealm` sets `currentRealm` → `UniverseGate` renders `RealmShell` (arrival flash + fade); `onExit` → `exitRealm` back to map. Non-enterable realms show "not yet charted".
+  - **NEXUS reacts:** arrives in MENTOR mode, bleeds theme to gold/chalk, speaks the Foundations welcome (`enterLine`).
+  - **Skill system foundation:** store `unlockedSkills` + `unlockSkill` (persisted); descending into the Deep Archive unlocks "Computational Thinking" with an ABILITY UNLOCKED toast. (Not the full RPG.)
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** only the realm engine + Foundations — no other realm interiors, projects archive, AI Core, or full RPG.
 
 ---
 
@@ -146,9 +154,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 2 — Universe Map** ✅ (`components/universe/map/` — 3D + 2D fallback, 15 realms, travel-prep state)
 - [x] **Phase 3 — NEXUS** ✅ (`components/universe/nexus/` — morphing polyhedron, 4 modes/5 states, scripted dialogue, realm color bleed; persistent on map)
   - _Deferred within NEXUS (later phases):_ scroll-velocity reactions (map doesn't scroll — wire in realms), the hidden `speak`/conversation system, Gemini upgrade.
-- [ ] **Phase 4 — First realm vertical slice** (Neural Nebula end-to-end) — proves the realm pattern. **Next.** Will need: a realm route/transition (wire `enterRealm` + travel animation, doc 6 §5), the arrival cinematic, 3 districts (Surface/Interior/Archive), skill-unlock + challenge, NEXUS realm integration (MENTOR mode here).
-- [ ] **Phase 4 — First realm vertical slice** (Neural Nebula end-to-end) — proves the realm pattern.
-- [ ] **Phase 5 — Remaining realms** + connective layers + structural realms.
+- [x] **Phase 4 — First realm vertical slice: THE FOUNDATIONS** ✅ (reusable `components/universe/realms/` engine + travel + skill unlock)
+- [ ] **Phase 5 — Remaining realms** — author the other explorable worlds (Silicon Foundry, Code Helix, Neural Nebula, The Citadel, Data Archives, Soul Quarter) as `RealmContent` entries reusing the engine; then connective layers + structural realms. **Next.** Mostly data + per-realm flavor; consider per-realm challenge mini-games (doc 4 §14.2) + arrival cinematics.
 - [ ] **Phase 6 — Invention Archive** (doc 7): inventions, dossiers, VisiRoD + CommentFellows + GitHub conversions, redaction.
 - [ ] **Phase 7 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph.
 - [ ] **Phase 8 — Observatory/Contact + endings** (doc 2 Act 6).
@@ -167,9 +174,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 4 — First Realm vertical slice (Neural Nebula).** Build ONE realm end-to-end to establish the reusable realm pattern: wire `enterRealm` + the travel transition (doc 6 §5 — GSAP exit → route/state → arrival), the 3-second arrival cinematic, the three depth districts (Surface/Interior/Archive per doc 4), the skill-unlock + realm challenge, and NEXUS in MENTOR mode inside the realm. Decide realm routing approach: App Router segment (e.g. `app/(universe)/neural-nebula`) vs an in-page overlay state driven by `currentRealm`. Then test → update this file → commit → STOP.
+**Get user approval to begin Phase 5 — Remaining realms.** The realm engine is proven; rolling out the rest is mostly authoring `RealmContent` entries in `realmContent.ts` for the other six explorable worlds (Silicon Foundry, Code Helix, Neural Nebula, The Citadel, Data Archives, Soul Quarter) — each with 3 districts + a skill — plus optional per-realm flavor (challenge mini-games doc 4 §14.2, arrival cinematics, NEXUS per-realm mode already wired via `realm.nexusMode`). Then decide treatment for connective layers (Kernel/Network/Cloud — ambient, not full interiors) and structural realms (Founders' Constellation, Observatory; Legacy already lives at `/legacy`). Then test → update this file → commit → STOP.
 
-> Phase-3 integration notes for Phase 4: NEXUS already bleeds the global `data-realm` theme to the active realm and exposes MENTOR mode for Neural Nebula. The map's `selectedRealm` is the travel-prep signal; Phase 4 should turn "selected" into actual travel (set `currentRealm`, play transition, render the realm). Keep NEXUS persistent across the transition.
+> Architecture established in Phase 4 (reuse this): chosen approach is **in-page overlay** (no route segment) — `enterRealm(slug)` sets `currentRealm`; `UniverseGate` swaps map ⇄ `RealmShell`; `data-realm` on the shell scopes the theme; NEXUS persists and reacts via `enterLine`. Travel is currently an arrival flash/fade (doc 6 §5 full GSAP hyperspace handoff can be upgraded later). The map gates ENTER on `isEnterable()` (has `RealmContent`).
 
 ---
-*Last updated: 2026-06-22 · End of Phase 3 (NEXUS Companion; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 4 (The Foundations + realm engine; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

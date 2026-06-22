@@ -28,6 +28,7 @@ interface UniverseState {
   // — Progress (persisted) —
   visitedRealms: string[];
   unlockedEasterEggs: string[];
+  unlockedSkills: string[];
   totalTimeInUniverse: number;
 
   // — Boot (bootCompleted persisted) —
@@ -47,8 +48,10 @@ interface UniverseState {
 
   // — Actions —
   enterRealm: (slug: string) => void;
+  exitRealm: () => void;
   selectRealm: (slug: string | null) => void;
   hoverRealm: (slug: string | null) => void;
+  unlockSkill: (id: string) => void;
   setTransitionPhase: (phase: TransitionPhase) => void;
   completeBoot: (skipped?: boolean) => void;
   setNexusMode: (mode: NexusMode) => void;
@@ -75,6 +78,7 @@ export const useUniverseStore = create<UniverseState>()(
 
       visitedRealms: [],
       unlockedEasterEggs: [],
+      unlockedSkills: [],
       totalTimeInUniverse: 0,
 
       bootCompleted: false,
@@ -98,8 +102,17 @@ export const useUniverseStore = create<UniverseState>()(
             : [...s.visitedRealms, slug],
         })),
 
+      exitRealm: () => set((s) => ({ previousRealm: s.currentRealm, currentRealm: null })),
+
       selectRealm: (selectedRealm) => set({ selectedRealm }),
       hoverRealm: (hoveredRealm) => set({ hoveredRealm }),
+
+      unlockSkill: (id) =>
+        set((s) => ({
+          unlockedSkills: s.unlockedSkills.includes(id)
+            ? s.unlockedSkills
+            : [...s.unlockedSkills, id],
+        })),
 
       setTransitionPhase: (transitionPhase) => set({ transitionPhase }),
 
@@ -130,6 +143,7 @@ export const useUniverseStore = create<UniverseState>()(
       partialize: (s) => ({
         visitedRealms: s.visitedRealms,
         unlockedEasterEggs: s.unlockedEasterEggs,
+        unlockedSkills: s.unlockedSkills,
         totalTimeInUniverse: s.totalTimeInUniverse,
         bootCompleted: s.bootCompleted,
       }),

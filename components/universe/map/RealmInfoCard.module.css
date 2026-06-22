@@ -67,3 +67,31 @@
   background: color-mix(in srgb, var(--rp) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--rp) 28%, transparent);
 }
+
+.enter {
+  margin-top: var(--space-md);
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.12em;
+  color: var(--void);
+  background: var(--rp, var(--realm-primary));
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-universe),
+              box-shadow var(--duration-fast) var(--ease-universe);
+}
+.enter:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--rp) 50%, transparent);
+}
+
+.uncharted {
+  margin-top: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}

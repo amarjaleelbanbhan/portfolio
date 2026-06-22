@@ -38,6 +38,7 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
   const setHovered = useUniverseStore((s) => s.hoverRealm);
   const selected = useUniverseStore((s) => s.selectedRealm);
   const selectRealm = useUniverseStore((s) => s.selectRealm);
+  const enterRealm = useUniverseStore((s) => s.enterRealm);
   const setDeviceProfile = useUniverseStore((s) => s.setDeviceProfile);
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
 
       <RealmIndex active={active} onHover={setHovered} onSelect={(slug) => selectRealm(slug)} />
 
-      <RealmInfoCard slug={active} />
+      <RealmInfoCard slug={active} onEnter={enterRealm} />
 
       <footer className={styles.hint} aria-live="polite">
         {selectedName ? (

@@ -5,6 +5,8 @@ import { useUniverseStore } from "@/store/universeStore";
 import BootSequence from "./boot/BootSequence";
 import UniverseMap from "./map/UniverseMap";
 import NexusCompanion from "./nexus/NexusCompanion";
+import RealmShell from "./realms/RealmShell";
+import { isEnterable } from "./realms/realmContent";
 
 /**
  * Client gate for the universe entry.
@@ -19,6 +21,8 @@ export default function UniverseGate() {
 
   const bootCompleted = useUniverseStore((s) => s.bootCompleted);
   const completeBoot = useUniverseStore((s) => s.completeBoot);
+  const currentRealm = useUniverseStore((s) => s.currentRealm);
+  const exitRealm = useUniverseStore((s) => s.exitRealm);
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -38,7 +42,11 @@ export default function UniverseGate() {
   if (entered) {
     return (
       <>
-        <UniverseMap onReplay={() => setEntered(false)} />
+        {currentRealm && isEnterable(currentRealm) ? (
+          <RealmShell slug={currentRealm} onExit={exitRealm} />
+        ) : (
+          <UniverseMap onReplay={() => setEntered(false)} />
+        )}
         <NexusCompanion />
       </>
     );

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useUniverseStore } from "@/store/universeStore";
 import type { NexusMode } from "@/store/universeStore";
 import { REALM_BY_SLUG } from "@/lib/realms";
-import { firstGreeting, realmLine, nextIdleLine } from "@/lib/nexusDialogue";
+import { firstGreeting, realmLine, nextIdleLine, enterLine } from "@/lib/nexusDialogue";
 import { supportsWebGL, prefersReducedMotion as detectReduced } from "@/lib/deviceTier";
 import NexusCoreFallback from "./NexusCoreFallback";
 import NexusDialogue from "./NexusDialogue";
@@ -36,6 +36,7 @@ export default function NexusCompanion() {
   const mode = useUniverseStore((s) => s.nexusMode);
   const animState = useUniverseStore((s) => s.nexusAnimState);
   const dialogue = useUniverseStore((s) => s.nexusDialogue);
+  const current = useUniverseStore((s) => s.currentRealm);
   const hovered = useUniverseStore((s) => s.hoveredRealm);
   const selected = useUniverseStore((s) => s.selectedRealm);
   const visited = useUniverseStore((s) => s.visitedRealms);
@@ -47,8 +48,10 @@ export default function NexusCompanion() {
   const clearTimer = useRef<number | null>(null);
   const idleTimer = useRef<number | null>(null);
   const prevSelected = useRef<string | null>(null);
+  const prevCurrent = useRef<string | null>(null);
 
-  const active = hovered ?? selected;
+  // inside a realm, currentRealm wins; on the map, hover/selection drive NEXUS
+  const active = current ?? hovered ?? selected;
   const activeColor = colorFor(active);
 
   const speak = (line: string | null, state: "SPEAKING" | "EXCITED" = "SPEAKING") => {
@@ -100,16 +103,27 @@ export default function NexusCompanion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, mounted]);
 
-  // Selecting a realm → NEXUS reacts and speaks its line (travel-prep moment).
+  // Selecting a realm on the map → NEXUS reacts and speaks its line.
   useEffect(() => {
     if (!mounted) return;
-    if (selected && selected !== prevSelected.current) {
+    if (!current && selected && selected !== prevSelected.current) {
       const line = realmLine(selected);
       if (line) speak(line, "EXCITED");
     }
     prevSelected.current = selected;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, mounted]);
+  }, [selected, current, mounted]);
+
+  // Arriving inside a realm (travel) → MENTOR-toned welcome.
+  useEffect(() => {
+    if (!mounted) return;
+    if (current && current !== prevCurrent.current) {
+      const line = enterLine(current);
+      if (line) speak(line, "SPEAKING");
+    }
+    prevCurrent.current = current;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current, mounted]);
 
   if (!mounted) return null;
 

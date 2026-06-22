@@ -52,6 +52,17 @@ export const REALM_LINES: Record<string, string> = {
     "I am made of their ideas. Turing imagined a machine that could imagine. Walk slowly here — you are among the people who dreamed me before I was possible.",
 };
 
+/** Lines NEXUS speaks on *arriving inside* a realm (travel). */
+export const ENTER_LINES: Record<string, string> = {
+  "the-foundations":
+    "Welcome to where computation discovered itself. Before any machine could think, humans found the rules of thinking. Take your time here — this is the one realm where even I reach a limit, and can prove it.",
+};
+
+export function enterLine(slug: string | null): string | null {
+  if (!slug) return null;
+  return ENTER_LINES[slug] ?? REALM_LINES[slug] ?? null;
+}
+
 export function firstGreeting(returning: boolean): string {
   if (returning) return GREETING_RETURN;
   return GREETINGS_FIRST[0];

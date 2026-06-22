@@ -1,15 +1,24 @@
 "use client";
 
 import { PLACEMENT_BY_SLUG } from "./realmLayout";
+import { isEnterable } from "../realms/realmContent";
 import styles from "./RealmInfoCard.module.css";
 
 /**
  * Hover/focus detail panel for a realm (canon doc 2 §3.2 / doc 5 §7.4).
  * Shows name, identity, conceptual layer, purpose, and the CS concepts inside.
+ * Enterable realms get a travel CTA; the rest show as "not yet charted".
  */
-export default function RealmInfoCard({ slug }: { slug: string | null }) {
+export default function RealmInfoCard({
+  slug,
+  onEnter,
+}: {
+  slug: string | null;
+  onEnter?: (slug: string) => void;
+}) {
   const p = slug ? PLACEMENT_BY_SLUG[slug] : undefined;
-  if (!p) return null;
+  if (!p || !slug) return null;
+  const enterable = isEnterable(slug);
 
   return (
     <aside
@@ -28,6 +37,14 @@ export default function RealmInfoCard({ slug }: { slug: string | null }) {
           </li>
         ))}
       </ul>
+
+      {enterable ? (
+        <button type="button" className={styles.enter} onClick={() => onEnter?.(slug)}>
+          ENTER REALM →
+        </button>
+      ) : (
+        <p className={styles.uncharted}>◌ Not yet charted</p>
+      )}
     </aside>
   );
 }
