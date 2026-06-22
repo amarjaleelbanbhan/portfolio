@@ -1,0 +1,82 @@
+.index {
+  position: fixed;
+  top: var(--space-lg);
+  left: var(--space-lg);
+  z-index: var(--z-chrome);
+  width: min(76vw, 248px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.toggle {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.22em;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-md);
+  cursor: pointer;
+}
+.toggle:hover { color: var(--text-primary); border-color: var(--hairline-strong); }
+
+.scroll {
+  max-height: min(64vh, 520px);
+  overflow-y: auto;
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--surface-1) 64%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.group { margin-bottom: var(--space-sm); }
+
+.layerLabel {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: var(--space-xs) 0 var(--space-2xs);
+  padding-left: var(--space-xs);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 5px var(--space-xs);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-universe),
+              color var(--duration-fast) var(--ease-universe);
+}
+.item:hover,
+.item[aria-current="true"] {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--rp) 14%, transparent);
+  border-color: color-mix(in srgb, var(--rp) 36%, transparent);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--rp, var(--realm-primary));
+  box-shadow: 0 0 8px var(--rp, var(--realm-primary));
+  flex: none;
+}

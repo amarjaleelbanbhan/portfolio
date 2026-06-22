@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 1 — The Boot Sequence: ✅ COMPLETE & TESTED (green build + tsc clean).**
-The birth moment (Human → Machine → Universe) is live at `/`. Phases 0 + 1 done.
-**Next gate:** awaiting user approval to begin **Phase 2 — The Universe Map**.
+**PHASE 2 — The Universe Map: ✅ COMPLETE & TESTED (green build + tsc clean).**
+Boot now opens into the living, CS-structured map of 15 realms. Phases 0–2 done.
+**Next gate:** awaiting user approval to begin **Phase 3 — NEXUS Companion**.
 
 ---
 
@@ -92,6 +92,16 @@ portfolio/
   - Skip via on-screen button **and** `Esc`. Full **reduced-motion** path: static readout + "[ ENTER ]" control; SR-only `aria-live` boot summary; `.sr-only` util added.
   - **Tested:** `next build` green (9 routes prerender) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** no map / realms / NEXUS character / AI chat / projects / 3D — only the boot + handoff stub.
+- ✅ **Phase 2 — Universe Map** (canon doc 2 Act 3 / doc 4 / doc 10):
+  - `components/universe/map/realmLayout.ts`: CS-meaningful layered placement of all 15 realms (Core→Foundation→Physical→System→Creation→Intelligence→Protection→Future, History/Legacy as poles) + per-realm tagline/concepts + the relationship **EDGES** graph (the map teaches CS).
+  - 3D (R3F): `UniverseCanvas` (tier-aware: star count/AA/dpr scale down; no post-processing), `StarField`, `RealmOrbit` (layer rings), `RealmNode` (staggered appear, idle bob, active glow), `EnergyConnections` (single-draw LineSegments, fade-in), `OrbitControls` (constrained, slow auto-rotate, off under reduced-motion).
+  - 2D fallback: `UniverseMap2D` (SVG edges + accessible buttons, same layout/colors) for tier-0 / no-WebGL.
+  - Overlay chrome: `RealmInfoCard` (name/identity/layer/purpose/concepts on hover/focus), `RealmIndex` (accessible, keyboard-navigable legend grouped by layer — parallel nav for the 3D map), status bar + travel-prep hint.
+  - `UniverseMap` orchestrator: tier/WebGL/reduced detection → 3D or 2D; `dynamic(ssr:false)` for the canvas; drives hover + `selectRealm` (travel prep only).
+  - Store: added `selectedRealm` + `selectRealm` (travel preparation; not persisted).
+  - `UniverseGate` now hands off boot → `UniverseMap` (removed `HandoffPlaceholder`).
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** no realm interiors / NEXUS character / chat / projects / RPG — only the map + travel-prep state.
 
 ---
 
@@ -124,9 +134,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 
 ## 7. PENDING TASKS (the phase roadmap)
 - [x] **Phase 0 — Foundation/Scaffolding** ✅
-- [x] **Phase 1 — Boot Sequence** ✅ (`components/universe/boot/` + `UniverseGate` + `HandoffPlaceholder`)
-- [ ] **Phase 2 — Universe Map** (doc 2 Act 3 / doc 4): R3F canvas, starfield, 15 realm nodes, orbital drift, hover info cards, travel transition, 2D fallback (tier 0). **Replaces `HandoffPlaceholder`** as the boot's destination. Wire `lib/realms.ts` + `lib/deviceTier.ts` + `enterRealm`.
-- [ ] **Phase 3 — NEXUS** (doc 3 / doc 6 §7): morphing polyhedron, 4 modes/5 states, dialogue panel, scroll-velocity, color bleed.
+- [x] **Phase 1 — Boot Sequence** ✅ (`components/universe/boot/` + `UniverseGate`)
+- [x] **Phase 2 — Universe Map** ✅ (`components/universe/map/` — 3D + 2D fallback, 15 realms, travel-prep state)
+- [ ] **Phase 3 — NEXUS** (doc 3 / doc 6 §7): morphing polyhedron, 4 modes/5 states, dialogue panel, scroll-velocity, color bleed. Mounts in the universe shell (persistent, lower-right); reacts to `selectedRealm`/`currentRealm` color bleed. **Next phase.**
 - [ ] **Phase 4 — First realm vertical slice** (Neural Nebula end-to-end) — proves the realm pattern.
 - [ ] **Phase 5 — Remaining realms** + connective layers + structural realms.
 - [ ] **Phase 6 — Invention Archive** (doc 7): inventions, dossiers, VisiRoD + CommentFellows + GitHub conversions, redaction.
@@ -147,9 +157,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 2 — The Universe Map.** It replaces `HandoffPlaceholder` as the boot's destination: an R3F `<Canvas>` with starfield + the 15 realm nodes (from `lib/realms.ts`) in orbital drift, hover info cards, the travel transition, and a CSS/SVG 2D fallback for tier-0 devices (`lib/deviceTier.ts`). Boot already calls into the gate, so Phase 2 swaps the post-boot view and wires `enterRealm`. Then test → update this file → commit → STOP.
+**Get user approval to begin Phase 3 — NEXUS Companion** (canon doc 3 + doc 6 §7). Build the morphing-polyhedron companion (R3F) with its 4 personality modes + 5 animation states, a dialogue panel, scroll-velocity reactions, and the 1.2s realm-reactive color bleed. It should live in a **persistent universe shell** (lower-right), present on the map and reacting to `selectedRealm`. Likely introduce `components/universe/shell/` + a `nexus/` module, and a shell layout that wraps the map (and future realms). Then test → update this file → commit → STOP.
 
-> Phase-1 integration note for Phase 2: the boot finishes by setting `entered=true` in `UniverseGate`. Replace `<HandoffPlaceholder/>` there with `<UniverseMap/>`. Keep the "replay boot" affordance somewhere (e.g. a hidden settings control) per canon.
+> Phase-2 integration notes for Phase 3: the map sets `selectedRealm` (travel prep) — NEXUS can comment on selection and bleed to that realm's color (`lib/realms.ts` colors / `tokens.css` `[data-realm]`). Travel itself (entering a realm interior) is still unbuilt; `enterRealm` exists in the store but is not yet wired to a transition.
 
 ---
-*Last updated: 2026-06-22 · End of Phase 1 (Boot Sequence; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 2 (Universe Map; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

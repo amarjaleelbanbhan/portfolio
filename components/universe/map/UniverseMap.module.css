@@ -1,0 +1,83 @@
+.map {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--void);
+  animation: assemble var(--duration-cinematic) var(--ease-enter);
+}
+
+/* "the darkness opens" — the universe fades up as it assembles */
+@keyframes assemble {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+}
+
+.canvasSkeleton {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, #FBBF24 8%, transparent), transparent 50%),
+    var(--void);
+}
+
+.statusBar {
+  position: fixed;
+  top: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-chrome);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.22em;
+  color: var(--text-dim);
+  padding: var(--space-xs) var(--space-md);
+}
+
+.brand { color: var(--text-secondary); }
+.sep { opacity: 0.5; }
+.where { color: var(--signal); }
+
+.replay {
+  margin-left: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 2px var(--space-sm);
+  cursor: pointer;
+}
+.replay:hover { color: var(--text-secondary); border-color: var(--hairline-strong); }
+
+.hint {
+  position: fixed;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-chrome);
+  max-width: 90vw;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.hint strong { color: var(--text-primary); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .statusBar { font-size: 0.56rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map { animation: none; }
+}

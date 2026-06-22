@@ -19,6 +19,8 @@ interface UniverseState {
   // — Navigation —
   currentRealm: string | null;
   previousRealm: string | null;
+  /** realm chosen on the map but not yet travelled into (travel preparation) */
+  selectedRealm: string | null;
   transitionPhase: TransitionPhase;
 
   // — Progress (persisted) —
@@ -43,6 +45,7 @@ interface UniverseState {
 
   // — Actions —
   enterRealm: (slug: string) => void;
+  selectRealm: (slug: string | null) => void;
   setTransitionPhase: (phase: TransitionPhase) => void;
   completeBoot: (skipped?: boolean) => void;
   setNexusMode: (mode: NexusMode) => void;
@@ -63,6 +66,7 @@ export const useUniverseStore = create<UniverseState>()(
     (set, get) => ({
       currentRealm: null,
       previousRealm: null,
+      selectedRealm: null,
       transitionPhase: "idle",
 
       visitedRealms: [],
@@ -89,6 +93,8 @@ export const useUniverseStore = create<UniverseState>()(
             ? s.visitedRealms
             : [...s.visitedRealms, slug],
         })),
+
+      selectRealm: (selectedRealm) => set({ selectedRealm }),
 
       setTransitionPhase: (transitionPhase) => set({ transitionPhase }),
 

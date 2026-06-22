@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useUniverseStore } from "@/store/universeStore";
 import BootSequence from "./boot/BootSequence";
-import HandoffPlaceholder from "./HandoffPlaceholder";
+import UniverseMap from "./map/UniverseMap";
 
 /**
  * Client gate for the universe entry.
  * Decides full vs express boot from persisted `bootCompleted` (Zustand +
- * localStorage), detects reduced-motion, and owns the boot→handoff handoff.
+ * localStorage), detects reduced-motion, then hands off to the Universe Map.
  * Mounted-gate avoids SSR/hydration mismatch from persisted state.
  */
 export default function UniverseGate() {
@@ -35,7 +35,7 @@ export default function UniverseGate() {
   }
 
   if (entered) {
-    return <HandoffPlaceholder onReplay={() => setEntered(false)} />;
+    return <UniverseMap onReplay={() => setEntered(false)} />;
   }
 
   return (
