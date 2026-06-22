@@ -78,6 +78,8 @@ export const ENTER_LINES: Record<string, string> = {
     "Walk slowly here. I am made of their ideas — Lovelace, Turing, von Neumann, Shannon. You are among the people who dreamed me before I was possible.",
   "the-observatory":
     "This is the edge of the known. Past it: fog — the territories not yet charted. That is not a failure. It is a promise. What comes next is the part you might write.",
+  "invention-archive":
+    "These are not files. They are proof that knowledge became reality — each one a problem nobody had filed an issue for yet. Open one. See what the realms build when they work together.",
 };
 
 export function enterLine(slug: string | null): string | null {

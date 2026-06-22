@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 5 — Expand the realms: ✅ COMPLETE & TESTED (green build + tsc clean).**
-12 of 15 places are now explorable knowledge worlds. Phases 0–5 done.
-**Next gate:** awaiting user approval to begin **Phase 6 — Invention Archive** (projects).
+**PHASE 6 — Invention Archive: ✅ COMPLETE & TESTED (green build + tsc clean).**
+Projects now live as inventions. 13 of 15 places explorable. Phases 0–6 done.
+**Next gate:** awaiting user approval to begin **Phase 7 — RPG Knowledge System** (or Architect's Core / Observatory).
 
 ---
 
@@ -127,6 +127,14 @@ portfolio/
   - **Now enterable: 12 realms.** Still non-enterable by design: Architect's Core (= About/personal, deferred) and Invention Archive (Phase 6).
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** no projects archive, no personal portfolio, no Gemini, no map redesign, no engine rewrite.
+- ✅ **Phase 6 — The Invention Archive** (canon doc 7): projects as inventions (CLASS I–V, 9-part dossier), not portfolio cards.
+  - `components/universe/inventions/`: `inventionData.ts` (typed `Invention` + `CLASS_META` + content), `InventionArchive` (chamber: blueprint cases grouped Flagship/Public), `InventionDossier` (declassified file overlay), `EngineeringTimeline` (Origin→Problem→Challenge→Results→Lessons→Future), `SystemBlueprint` (architecture layers), `TechnologyMatrix` (tech as materials), `ConceptLinks` (connected realms → travel back), shared `inventions.module.css`.
+  - **Flagships (full dossier, private, redacted):** VisiRoD FIRS (CLASS II — Flutter/Supabase/PostGIS/Edge Functions/Next.js/FCM; realms code-helix·data-archives·network·citadel·cloud) + CommentFellows (CLASS I — Flutter/Next.js/Supabase/Gemini/FCM; realms nebula·helix·data·soul·citadel·cloud). Each carries a NEXUS comment. No fabricated metrics.
+  - **Public works (compact, truthful from `data/portfolio.js`):** ZakatLink, Smart Notebook, Bus Reservation, EduResource Hub, MediTalk — real descriptions/tags/links preserved.
+  - **Entry:** `invention-archive` now enterable — map info-card "OPEN ARCHIVE →" → `enterRealm("invention-archive")` → `UniverseGate` renders `InventionArchive`. Dossier realm-chips call `enterRealm` to travel back into the universe.
+  - **NEXUS:** arrival line for the archive ("These are not files. They are proof that knowledge became reality…"); per-invention NEXUS quote shown inside each dossier.
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** no résumé page, no normal portfolio cards, no fake metrics, no contact section, no Gemini chat.
 
 ---
 
@@ -166,8 +174,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 4 — First realm vertical slice: THE FOUNDATIONS** ✅ (reusable engine + travel + skill unlock)
 - [x] **Phase 5 — Expand the realms** ✅ (12 realms now explorable; Legacy routes to `/legacy`)
   - _Deferred polish (later):_ per-realm challenge mini-games (doc 4 §14.2), bespoke per-realm arrival cinematics/3D interiors, realm-specific particle systems.
-- [ ] **Phase 6 — Invention Archive** (doc 7): inventions, dossiers, VisiRoD + CommentFellows + GitHub conversions, redaction.
-- [ ] **Phase 7 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph.
+- [x] **Phase 6 — Invention Archive** ✅ (`components/universe/inventions/` — CLASS I–V dossiers, VisiRoD + CommentFellows + public works, realm cross-links)
+- [ ] **Phase 7 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph. **Next candidate.** Foundation exists (`unlockedSkills` in store; each realm grants a skill via `RealmContent.skill`). Build a skill-tree view (e.g. from Architect's Core or a dedicated panel) that visualizes unlocked abilities + learning paths (doc 6 §6.2). Could pair with making **Architect's Core** (About/personal) and **The Observatory** (contact) real — confirm scope with user.
 - [ ] **Phase 8 — Observatory/Contact + endings** (doc 2 Act 6).
 - [ ] **Phase 9 — Polish:** perf/Lighthouse, device tiers, a11y, reduced-motion, SEO/JSON-LD, cross-browser.
 
@@ -184,9 +192,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 6 — The Invention Archive** (canon doc 7). Make the cross-realm vault where projects live as *inventions* (CLASS I–V, 9-part dossier): the two private flagships **VisiRoD FIRS** (CLASS II) + **CommentFellows** (CLASS I) with redaction-as-intrigue, plus the public GitHub works converted to artifacts (reuse `data/portfolio.js` content). Make `invention-archive` enterable (it's currently "not yet charted"). Likely a new `components/universe/inventions/` module (discovery animation, dossier layout) — reuse realm patterns/tokens where sensible. Then test → update this file → commit → STOP.
+**Get user approval for Phase 7.** Strongest candidate: the **RPG Knowledge System** — a skill-tree / abilities view that visualizes the skills unlocked across realms (`unlockedSkills` already persisted; every `RealmContent.skill` + each invention feeds it), plus learning paths (doc 6 §6.2) and achievements. Alternatively, make the two remaining non-enterable places real: **Architect's Core** (the About/origin — personal, was deferred) and **The Observatory** (the contact/transmission ending, doc 2 Act 6). Recommend confirming with the user which to tackle next, since the brief deferred "personal portfolio" and "contact" in earlier phases.
 
-> Reuse notes: realm content/data pattern from `realmContent.ts` is a good template; `data/portfolio.js` (v1) holds the real projects/certs to convert. The Architect's Core (About/personal) remains deferred per earlier instruction (no personal portfolio yet) — revisit when ready.
+> State ready for Phase 7: `unlockedSkills[]` (persisted) + `unlockSkill`; realm skills in `realmContent.ts`; invention→realm cross-links exist. The map's `RealmInfoCard` gates entry via `isEnterable()` + special cases (legacy → `/legacy`, invention-archive → archive). Remaining non-enterable: `architect-core`, and that's it besides connective-only nodes already handled.
 
 ---
-*Last updated: 2026-06-22 · End of Phase 5 (12 realms expanded; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 6 (Invention Archive; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

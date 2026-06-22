@@ -7,6 +7,7 @@ import UniverseMap from "./map/UniverseMap";
 import NexusCompanion from "./nexus/NexusCompanion";
 import RealmShell from "./realms/RealmShell";
 import { isEnterable } from "./realms/realmContent";
+import InventionArchive from "./inventions/InventionArchive";
 
 /**
  * Client gate for the universe entry.
@@ -42,7 +43,9 @@ export default function UniverseGate() {
   if (entered) {
     return (
       <>
-        {currentRealm && isEnterable(currentRealm) ? (
+        {currentRealm === "invention-archive" ? (
+          <InventionArchive onExit={exitRealm} />
+        ) : currentRealm && isEnterable(currentRealm) ? (
           <RealmShell slug={currentRealm} onExit={exitRealm} />
         ) : (
           <UniverseMap onReplay={() => setEntered(false)} />
