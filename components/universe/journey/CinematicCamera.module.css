@@ -1,0 +1,104 @@
+/* ── Outer stage ──────────────────────────────────────────────── */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-boot);
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 46%,
+      color-mix(in srgb, var(--signal) 6%, transparent),
+      transparent 65%
+    ),
+    var(--void);
+}
+
+/* ── Architect cue text (above the power button) ─────────────── */
+.cue {
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-top: var(--space-2xl);
+  /* starts invisible; arrives after a short settle delay */
+  animation: cueArrive 1.0s var(--ease-universe) 0.5s both;
+}
+
+@keyframes cueArrive {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cueLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.3em;
+  color: color-mix(in srgb, var(--signal) 50%, transparent);
+  text-transform: uppercase;
+}
+
+.cueLine {
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.cueLine + .cueLine {
+  color: color-mix(in srgb, var(--signal) 85%, var(--text-primary));
+  font-weight: 500;
+}
+
+/* ── Power button zone ────────────────────────────────────────── */
+.powerZone {
+  grid-row: 2;
+  /* This is the element GSAP scales (the "camera" zooms through here) */
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* ── Canvas burst layer ───────────────────────────────────────── */
+.canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: calc(var(--z-boot) - 1); /* behind the power zone */
+  opacity: 0;
+  transition: opacity 100ms linear;
+}
+
+.canvas.active {
+  opacity: 1;
+}
+
+/* ── White-flash overlay ──────────────────────────────────────── */
+.flash {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  pointer-events: none;
+  z-index: calc(var(--z-boot) + 1);
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* ── Cue exit (triggered when power is pressed) ──────────────── */
+.cue.exiting {
+  animation: cueExit 0.3s var(--ease-universe) forwards;
+}
+
+@keyframes cueExit {
+  to { opacity: 0; transform: translateY(-12px); }
+}
+
+/* ── Reduced-motion overrides ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cue        { animation: none; opacity: 1; }
+  .cue.exiting { animation: none; opacity: 0; }
+  .canvas     { display: none; }
+}

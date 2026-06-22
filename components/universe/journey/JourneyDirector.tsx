@@ -2,51 +2,87 @@
 
 import { useState } from "react";
 import ArchitectAvatar from "./ArchitectAvatar";
+import CinematicCamera from "./CinematicCamera";
+import BootTerminal from "./BootTerminal";
 import BootSequence from "@/components/universe/boot/BootSequence";
 
-type Phase = "avatar" | "boot";
+/**
+ * Phase machine type.
+ *
+ * First-visit sequence:   avatar → cinematic → boot-terminal
+ * Return-visit sequence:  boot  (existing BootSequence, unchanged path)
+ */
+type Phase = "avatar" | "cinematic" | "boot-terminal" | "boot";
 
 /**
- * CODEX INFINITUM — Journey Director (Phase 10.1)
+ * CODEX INFINITUM — Journey Director (updated in Phase 10.2)
  * Canon: CINEMATIC_LAYER_PLAN.md §1.2
  *
- * The state machine that sequences the pre-universe experience for first-time
- * visitors. It sits between UniverseGate and BootSequence — a thin wrapper
- * that adds one phase before the existing boot, without touching BootSequence's
- * internals.
+ * Thin state machine that sequences the pre-universe experience.
+ * Sits between UniverseGate and its sub-components — never touches them
+ * internally. `completeBoot` and `setEntered` are owned by UniverseGate's
+ * `onComplete` handler; JourneyDirector just threads the callback through.
  *
- *   First visit:    avatar → boot → universe
- *   Return visit:   boot   → universe  (express=true skips the avatar entirely)
+ *   First visit:
+ *     "avatar"        — ArchitectAvatar (6-line monologue, Phase 10.1)
+ *       ↓
+ *     "cinematic"     — CinematicCamera (power button + dive into machine, Phase 10.2)
+ *       ↓
+ *     "boot-terminal" — BootTerminal (CircuitGrid igniting + SystemTerminal, Phase 10.2)
+ *       ↓ onComplete
+ *     Universe
  *
- * `completeBoot` and `setEntered` are owned by UniverseGate's `onComplete`
- * handler — JourneyDirector just threads the callback through.
+ *   Return visit (express=true):
+ *     "boot"          — BootSequence unmodified (express boot, identical to pre-10.1)
+ *       ↓ onComplete
+ *     Universe
  */
 export default function JourneyDirector({
   express = false,
   reduced = false,
   onComplete,
 }: {
+  /** true = returning visitor — skip avatar + cinematic, go straight to express boot */
   express?: boolean;
+  /** prefers-reduced-motion — threaded through to every child */
   reduced?: boolean;
+  /** fired when the full pre-universe sequence ends; UniverseGate owns completeBoot() */
   onComplete: (skipped: boolean) => void;
 }) {
-  /**
-   * Phase sequencing:
-   * - first visit (express=false) → "avatar" then "boot"
-   * - return visit (express=true)  → "boot" directly (same as before Phase 10.1)
-   */
   const [phase, setPhase] = useState<Phase>(express ? "boot" : "avatar");
+
+  // ── First-visit phases ──────────────────────────────────────────
 
   if (phase === "avatar") {
     return (
       <ArchitectAvatar
         reduced={reduced}
-        onDone={() => setPhase("boot")}
+        onDone={() => setPhase("cinematic")}
       />
     );
   }
 
-  // phase === "boot" — render the existing BootSequence completely unchanged
+  if (phase === "cinematic") {
+    return (
+      <CinematicCamera
+        reduced={reduced}
+        onDone={() => setPhase("boot-terminal")}
+      />
+    );
+  }
+
+  if (phase === "boot-terminal") {
+    return (
+      <BootTerminal
+        reduced={reduced}
+        onComplete={onComplete}
+      />
+    );
+  }
+
+  // ── Return-visit phase (phase === "boot") ───────────────────────
+  // Renders the existing BootSequence completely unchanged.
+  // express=true → EXPRESS_BOOT steps; power button still shown; Esc still works.
   return (
     <BootSequence
       express={express}
