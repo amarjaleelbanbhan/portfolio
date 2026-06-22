@@ -89,6 +89,10 @@ export function enterLine(slug: string | null): string | null {
   return ENTER_LINES[slug] ?? REALM_LINES[slug] ?? null;
 }
 
+/** NEXUS line when the Knowledge Mastery panel opens. */
+export const MASTERY_LINE =
+  "You are not collecting points. You are mapping understanding — watching knowledge become ability. Every realm you enter awakens another.";
+
 export function firstGreeting(returning: boolean): string {
   if (returning) return GREETING_RETURN;
   return GREETINGS_FIRST[0];

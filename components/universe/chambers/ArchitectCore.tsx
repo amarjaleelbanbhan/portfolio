@@ -12,6 +12,7 @@ import s from "./chambers.module.css";
  */
 export default function ArchitectCore({ onExit }: { onExit: () => void }) {
   const enterRealm = useUniverseStore((st) => st.enterRealm);
+  const toggleKnowledge = useUniverseStore((st) => st.toggleKnowledge);
 
   return (
     <main className={s.chamber} data-realm="architect-core" aria-label="The Architect's Core">
@@ -82,9 +83,14 @@ export default function ArchitectCore({ onExit }: { onExit: () => void }) {
       </section>
 
       <footer className={s.foot}>
-        <button type="button" className={s.next} onClick={() => enterRealm("the-observatory")}>
-          Continue to The Observatory →
-        </button>
+        <div style={{ display: "flex", gap: "var(--space-md)", flexWrap: "wrap", justifyContent: "center" }}>
+          <button type="button" className={s.next} onClick={() => toggleKnowledge(true)}>
+            ✦ View Knowledge Mastery
+          </button>
+          <button type="button" className={s.next} onClick={() => enterRealm("the-observatory")}>
+            Continue to The Observatory →
+          </button>
+        </div>
       </footer>
     </main>
   );

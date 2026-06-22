@@ -10,6 +10,8 @@ import { isEnterable } from "./realms/realmContent";
 import InventionArchive from "./inventions/InventionArchive";
 import ArchitectCore from "./chambers/ArchitectCore";
 import Observatory from "./chambers/Observatory";
+import KnowledgeButton from "./knowledge/KnowledgeButton";
+import KnowledgePanel from "./knowledge/KnowledgePanel";
 
 /**
  * Client gate for the universe entry.
@@ -57,6 +59,8 @@ export default function UniverseGate() {
           <UniverseMap onReplay={() => setEntered(false)} />
         )}
         <NexusCompanion />
+        <KnowledgeButton />
+        <KnowledgePanel />
       </>
     );
   }

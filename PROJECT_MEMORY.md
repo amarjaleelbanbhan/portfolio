@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 7 — Architect's Core & Observatory: ✅ COMPLETE & TESTED (green build + tsc clean).**
-The creator + the ending are in. Every meaningful place now has presence. Phases 0–7 done.
-**Next gate:** awaiting user approval to begin **Phase 8 — RPG Knowledge System**.
+**PHASE 8 — RPG Knowledge System: ✅ COMPLETE & TESTED (green build + tsc clean).**
+Knowledge mastery layer in: abilities, paths, achievements. Phases 0–8 done.
+**Next gate:** awaiting user approval to begin **Phase 9 — Polish** (perf/a11y/SEO + deferred flourishes).
 
 ---
 
@@ -143,6 +143,14 @@ portfolio/
   - Cross-links: ArchitectCore "Continue to The Observatory →"; Observatory "Return to the universe".
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** no résumé page, no boring timeline, no RPG yet, no Gemini chat.
+- ✅ **Phase 8 — RPG Knowledge System** (canon doc 4 Skills / doc 6 §6): knowledge becomes ability — not gamification (no XP/levels/badges/ranking).
+  - `components/universe/knowledge/`: `knowledgeData.ts` (5 mastery branches × abilities, 4 learning paths, 8 achievements + pure evaluators), `AbilityNode`, `KnowledgeTree`, `LearningPath`, `MasteryConstellation`, `AchievementArchive`, `KnowledgePanel` (overlay), `KnowledgeButton` (persistent trigger), `knowledge.module.css`.
+  - **All state DERIVED from real progress** (`visitedRealms` + `unlockedSkills` + `bootCompleted`): an ability is *locked* → *awakened* (realm visited) → *mastered* (Deep Archive skill unlocked). Branches: Foundation / System / Creation / Intelligence / Security. Paths: Architect / AI Engineer / Defender / Creator (stage = realm; clickable to travel). Achievements: First Awakening, Explorer, Cartographer, Deep Thinker, Builder, Historian, Architect, Horizon Seeker.
+  - Store: `+knowledgeOpen` + `toggleKnowledge`.
+  - **Access:** persistent "✦ MASTERY" button (top-right shell, all views) + a button in Architect's Core. Ability/stage clicks travel to the source realm.
+  - **NEXUS:** speaks on panel open — "You are not collecting points. You are mapping understanding…" (`MASTERY_LINE`).
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** no XP numbers, no fake levels, no childish badges, no competitive ranking.
 
 ---
 
@@ -184,7 +192,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
   - _Deferred polish (later):_ per-realm challenge mini-games (doc 4 §14.2), bespoke per-realm arrival cinematics/3D interiors, realm-specific particle systems.
 - [x] **Phase 6 — Invention Archive** ✅ (`components/universe/inventions/` — CLASS I–V dossiers, VisiRoD + CommentFellows + public works, realm cross-links)
 - [x] **Phase 7 — Architect's Core & Observatory** ✅ (`components/universe/chambers/` — Creator Chamber + ending/transmission; both enterable from the map)
-- [ ] **Phase 8 — RPG Knowledge System:** skill trees, abilities, learning paths, achievements, knowledge graph. **Next.** Foundation exists (`unlockedSkills` persisted; every `RealmContent.skill` + invention + Knowledge DNA feeds it). Build a skill/abilities view (a dedicated panel, or surfaced in Architect's Core) visualizing unlocked abilities, the learning paths (doc 6 §6.2), and achievements.
+- [x] **Phase 8 — RPG Knowledge System** ✅ (`components/universe/knowledge/` — branches, abilities, paths, achievements; derived from real progress)
+- [ ] **Phase 9 — Polish:** Lighthouse/perf, a11y sweep, reduced-motion audit, SEO/OG/sitemap, cross-browser/mobile. **Final phase.** Also fold in deferred flourishes: per-realm challenge mini-games (doc 4 §14.2), bespoke 3D arrival cinematics/particles per realm, the hidden `sudo enter` terminal + easter eggs (doc 2), scroll-velocity NEXUS reactions inside realms, optional sound (consent-first).
 - [ ] **Phase 9 — Polish:** perf/Lighthouse, device tiers, a11y, reduced-motion, SEO/JSON-LD, cross-browser.
 
 ---
@@ -200,9 +209,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 8 — the RPG Knowledge System.** Visualize mastery: a skill/abilities view over the persisted `unlockedSkills` (each `RealmContent.skill` + the Knowledge DNA + inventions feed it), the learning paths (doc 6 §6.2 — Theory/Systems/Intelligence/Security/Builder), and achievements (doc 6 §6.3). Likely a dedicated panel/overlay reachable from the universe shell or Architect's Core; could also light up "constellations" on the map for learning paths. Then test → update this file → commit → STOP.
+**The universe is functionally complete** (boot → map → 12 realm worlds + Invention Archive + Architect's Core + Observatory + Knowledge Mastery, with NEXUS throughout; v1 preserved at `/legacy`). Recommended next: **Phase 9 — Polish & deferred flourishes**, in small reviewable slices: (a) Lighthouse/perf pass + bundle check; (b) a11y sweep (focus order, labels, reduced-motion audit across all components); (c) SEO/OG images/sitemap for the universe; (d) the deferred *delight* — per-realm challenge mini-games (doc 4 §14.2), richer 3D arrival cinematics/particles, the `sudo enter` terminal + easter eggs (doc 2), in-realm scroll-velocity NEXUS reactions, optional consent-first sound. Suggest picking ONE slice per phase. Also outstanding: decide whether to **merge `codex-infinitum` → `main`** and deploy (Vercel).
 
-> State ready: `unlockedSkills[]` + `unlockSkill` (persisted); realm skills in `realmContent.ts`; `lib/creator.ts` Knowledge DNA; invention→realm cross-links. After Phase 8, remaining work is mostly **Phase 9 polish** (perf/Lighthouse, a11y sweep, reduced-motion audit, SEO, per-realm challenge mini-games & richer 3D arrival cinematics that were deferred). All 15 places now reachable; only connective nodes (kernel/network/cloud as full interiors are realms now too) — nothing orphaned.
+> Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-22 · End of Phase 7 (Architect's Core & Observatory; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 8 (RPG Knowledge System; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

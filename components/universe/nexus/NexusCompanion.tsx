@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useUniverseStore } from "@/store/universeStore";
 import type { NexusMode } from "@/store/universeStore";
 import { REALM_BY_SLUG } from "@/lib/realms";
-import { firstGreeting, realmLine, nextIdleLine, enterLine } from "@/lib/nexusDialogue";
+import { firstGreeting, realmLine, nextIdleLine, enterLine, MASTERY_LINE } from "@/lib/nexusDialogue";
 import { supportsWebGL, prefersReducedMotion as detectReduced } from "@/lib/deviceTier";
 import NexusCoreFallback from "./NexusCoreFallback";
 import NexusDialogue from "./NexusDialogue";
@@ -39,6 +39,7 @@ export default function NexusCompanion() {
   const current = useUniverseStore((s) => s.currentRealm);
   const hovered = useUniverseStore((s) => s.hoveredRealm);
   const selected = useUniverseStore((s) => s.selectedRealm);
+  const knowledgeOpen = useUniverseStore((s) => s.knowledgeOpen);
   const visited = useUniverseStore((s) => s.visitedRealms);
   const tier = useUniverseStore((s) => s.deviceTier);
   const setMode = useUniverseStore((s) => s.setNexusMode);
@@ -49,6 +50,7 @@ export default function NexusCompanion() {
   const idleTimer = useRef<number | null>(null);
   const prevSelected = useRef<string | null>(null);
   const prevCurrent = useRef<string | null>(null);
+  const prevKnowledge = useRef(false);
 
   // inside a realm, currentRealm wins; on the map, hover/selection drive NEXUS
   const active = current ?? hovered ?? selected;
@@ -124,6 +126,14 @@ export default function NexusCompanion() {
     prevCurrent.current = current;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current, mounted]);
+
+  // Opening the Knowledge Mastery panel → NEXUS reflects on growth.
+  useEffect(() => {
+    if (!mounted) return;
+    if (knowledgeOpen && !prevKnowledge.current) speak(MASTERY_LINE);
+    prevKnowledge.current = knowledgeOpen;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [knowledgeOpen, mounted]);
 
   if (!mounted) return null;
 

@@ -41,6 +41,9 @@ interface UniverseState {
   nexusDialogue: string | null;
   nexusVisible: boolean;
 
+  // — Knowledge mastery panel (runtime) —
+  knowledgeOpen: boolean;
+
   // — Device (runtime, not persisted) —
   deviceTier: DeviceTier;
   webglSupported: boolean;
@@ -52,6 +55,7 @@ interface UniverseState {
   selectRealm: (slug: string | null) => void;
   hoverRealm: (slug: string | null) => void;
   unlockSkill: (id: string) => void;
+  toggleKnowledge: (open?: boolean) => void;
   setTransitionPhase: (phase: TransitionPhase) => void;
   completeBoot: (skipped?: boolean) => void;
   setNexusMode: (mode: NexusMode) => void;
@@ -89,6 +93,8 @@ export const useUniverseStore = create<UniverseState>()(
       nexusDialogue: null,
       nexusVisible: true,
 
+      knowledgeOpen: false,
+
       deviceTier: 2,
       webglSupported: true,
       prefersReducedMotion: false,
@@ -113,6 +119,9 @@ export const useUniverseStore = create<UniverseState>()(
             ? s.unlockedSkills
             : [...s.unlockedSkills, id],
         })),
+
+      toggleKnowledge: (open) =>
+        set((s) => ({ knowledgeOpen: open ?? !s.knowledgeOpen })),
 
       setTransitionPhase: (transitionPhase) => set({ transitionPhase }),
 
