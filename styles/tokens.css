@@ -1,0 +1,156 @@
+/* ============================================================
+   CODEX INFINITUM — tokens.css  (single source of design truth)
+   Canon: universe-design/5_ui_ux_system.md + doc 4 §14.4 + doc 10
+   Powers the universe (app/). Supersedes the v1 neon tokens,
+   which now live only inside the Legacy Archive (pages/legacy).
+   ============================================================ */
+
+/* Registered realm color properties so the browser can interpolate
+   hex values natively for NEXUS's 1.2s color "bleed" (doc 6 §7.3). */
+@property --realm-primary   { syntax: "<color>"; inherits: true; initial-value: #FBBF24; }
+@property --realm-secondary { syntax: "<color>"; inherits: true; initial-value: #F59E0B; }
+@property --realm-accent    { syntax: "<color>"; inherits: true; initial-value: #FBBF24; }
+
+:root {
+  /* — VOID / SURFACES — */
+  --void: #050508;
+  --void-deep: #000008;
+  --surface-1: #0B0B12;
+  --surface-2: #13131D;
+  --surface-3: #1C1C28;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-strong: rgba(255, 255, 255, 0.16);
+
+  /* — TEXT — */
+  --text-primary: #E8EAF0;
+  --text-secondary: #A6ACBE;
+  --text-dim: #64748B;
+  --text-glow: #FFFFFF;
+
+  /* — SEMANTIC — */
+  --ok: #22C55E;
+  --warn: #F59E0B;
+  --danger: #EF4444;
+  --info: #38BDF8;
+  --signal: #00F5FF;
+
+  /* — REALM (defaults to Architect's Core; overridden by [data-realm]) — */
+  --realm-primary: #FBBF24;
+  --realm-secondary: #F59E0B;
+  --realm-accent: #FBBF24;
+  --realm-glow: color-mix(in srgb, var(--realm-primary) 60%, transparent);
+  --realm-glow-soft: color-mix(in srgb, var(--realm-primary) 24%, transparent);
+  --realm-wash: color-mix(in srgb, var(--realm-primary) 8%, var(--void));
+
+  /* — TYPE (font families injected by next/font as --font-* on <html>) — */
+  --font-display: var(--font-orbitron), "Orbitron", "Space Grotesk", sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+  --font-body: var(--font-inter), "Inter", system-ui, sans-serif;
+  --fs-display: clamp(2.99rem, 6vw, 4.77rem);
+  --fs-h1: clamp(2.44rem, 4vw, 3.05rem);
+  --fs-h2: 1.95rem;
+  --fs-h3: 1.56rem;
+  --fs-lg: 1.25rem;
+  --fs-base: 1rem;
+  --fs-sm: 0.8rem;
+  --fs-xs: 0.64rem;
+
+  /* — SPACE — */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6.5rem;
+  --space-4xl: 10rem;
+  --container: 1200px;
+
+  /* — RADIUS — */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  /* — ELEVATION / GLOW — */
+  --elev-1: 0 2px 8px rgba(0, 0, 0, 0.6);
+  --elev-2: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--hairline);
+  --elev-3: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--hairline-strong);
+  --glow-rest: 0 0 24px var(--realm-glow-soft);
+  --glow-hover: 0 0 40px var(--realm-glow), 0 0 0 1px var(--realm-primary);
+
+  /* — Z-INDEX — */
+  --z-abyss: -20;
+  --z-world: 0;
+  --z-content: 10;
+  --z-chrome: 100;
+  --z-nexus: 9999;
+  --z-overlay: 10000;
+  --z-boot: 10001;
+
+  /* — MOTION (full spec in doc 6) — */
+  --ease-universe: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-boot: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --duration-fast: 150ms;
+  --duration-mid: 350ms;
+  --duration-slow: 700ms;
+  --duration-cinematic: 1200ms;
+
+  /* — BREAKPOINTS (reference) — */
+  --bp-sm: 390px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+}
+
+/* ============================================================
+   REALM THEMES — one attribute on <html>/<body> re-themes all
+   chrome. Canonical palette: doc 4 §14.4 + doc 10.
+   ============================================================ */
+[data-realm="architect-core"]         { --realm-primary: #FBBF24; --realm-secondary: #F59E0B; --realm-accent: #FBBF24; }
+[data-realm="silicon-foundry"]         { --realm-primary: #F59E0B; --realm-secondary: #B45309; --realm-accent: #FFF7E6; }
+[data-realm="the-foundations"]         { --realm-primary: #EAB308; --realm-secondary: #F1F5F9; --realm-accent: #DC2626; }
+[data-realm="code-helix"]              { --realm-primary: #7C3AED; --realm-secondary: #8B5CF6; --realm-accent: #22C55E; }
+[data-realm="neural-nebula"]           { --realm-primary: #3B82F6; --realm-secondary: #06B6D4; --realm-accent: #8B5CF6; }
+[data-realm="the-citadel"]             { --realm-primary: #EF4444; --realm-secondary: #1F2937; --realm-accent: #22C55E; }
+[data-realm="data-archives"]           { --realm-primary: #7DD3FC; --realm-secondary: #F8FAFC; --realm-accent: #F59E0B; }
+[data-realm="soul-quarter"]            { --realm-primary: var(--prismatic, #C084FC); --realm-secondary: #F0ABFC; }
+[data-realm="founders-constellation"]  { --realm-primary: #B08D57; --realm-secondary: #F8FAFC; --realm-accent: #67E8F9; }
+[data-realm="the-observatory"]         { --realm-primary: #312E81; --realm-secondary: #F8FAFC; }
+[data-realm="legacy-archive"]          { --realm-primary: #78350F; --realm-secondary: #6B7280; --realm-accent: #92400E; }
+[data-realm="the-kernel"]              { --realm-primary: #94A3B8; --realm-secondary: #22D3EE; }
+[data-realm="network-pathways"]        { --realm-primary: #0D9488; --realm-secondary: #EA580C; }
+[data-realm="cloud-expanse"]           { --realm-primary: #38BDF8; --realm-secondary: #FFFFFF; }
+[data-realm="invention-archive"]       { --realm-primary: #00F5FF; --realm-secondary: #1E3A5F; }
+
+/* Soul Quarter — the one realm with no fixed hue (doc 5 §2.6) */
+@property --prismatic-hue { syntax: "<angle>"; inherits: true; initial-value: 280deg; }
+[data-realm="soul-quarter"] {
+  --prismatic: hsl(var(--prismatic-hue) 90% 68%);
+  animation: prismatic-drift 18s linear infinite;
+}
+@keyframes prismatic-drift { to { --prismatic-hue: 640deg; } }
+
+/* Smooth realm + NEXUS color bleed (doc 6 §7.3) */
+html {
+  transition:
+    --realm-primary var(--duration-cinematic) var(--ease-universe),
+    --realm-secondary var(--duration-cinematic) var(--ease-universe),
+    --realm-accent var(--duration-cinematic) var(--ease-universe);
+}
+
+/* Reduced-motion contract (doc 5 §9.2 / doc 6 §14): collapse durations,
+   freeze ambient hue. Content is never gated behind motion. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-mid: 0ms;
+    --duration-slow: 0ms;
+    --duration-cinematic: 0ms;
+  }
+  [data-realm="soul-quarter"] { animation: none; }
+}

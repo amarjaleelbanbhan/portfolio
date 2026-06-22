@@ -9,10 +9,10 @@ import ResumeButton from '@/components/ResumeButton';
 import Achievements from '@/components/Achievements';
 import Education from '@/components/Education';
 import SpotlightGrid from '@/components/SpotlightGrid';
-import { projects, personalInfo } from '../data/portfolio';
+import { projects, personalInfo } from '@/data/portfolio';
 
 // Dynamic imports for interactive components
-const AnimatedStats = dynamic(() => import('../components/AnimatedStats'), { ssr: false });
+const AnimatedStats = dynamic(() => import('@/components/AnimatedStats'), { ssr: false });
 
 // Get featured projects
 const featuredProjects = projects.filter(p => p.featured).slice(0, 3);
@@ -118,7 +118,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <NeonButton onClick={() => window.location.href = '/projects'}>
+            <NeonButton onClick={() => window.location.href = '/legacy/projects'}>
               VIEW ALL PROJECTS
             </NeonButton>
           </div>

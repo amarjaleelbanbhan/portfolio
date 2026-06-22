@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProjectCard from '@/components/ProjectCard';
-import { projects as projectsData } from '../data/portfolio';
+import { projects as projectsData } from '@/data/portfolio';
 
 // Dynamically import SecretProject to avoid SSR issues
 const SecretProject = dynamic(() => import('@/components/SecretProject'), {

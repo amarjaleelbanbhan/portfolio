@@ -1,0 +1,107 @@
+.entry {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--realm-primary) 10%, transparent), transparent 55%),
+    var(--void);
+}
+
+/* The breathing circuit grid (doc 2 §1.1) — subtle, at low opacity */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.5;
+  mask-image: radial-gradient(circle at 50% 42%, black, transparent 70%);
+  animation: breathe 6s var(--ease-universe) infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.6; }
+}
+
+.center {
+  position: relative;
+  z-index: var(--z-content);
+  text-align: center;
+  padding: var(--space-lg);
+  max-width: 60ch;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin: 0 0 var(--space-lg);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: var(--text-glow);
+  text-shadow: 0 0 40px var(--realm-glow);
+  margin: 0;
+}
+
+.tagline {
+  font-size: var(--fs-lg);
+  color: var(--text-secondary);
+  margin: var(--space-md) 0 var(--space-2xl);
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  margin: 0 0 var(--space-xl);
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+}
+
+.legacyLink {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--duration-fast) var(--ease-universe),
+    color var(--duration-fast) var(--ease-universe),
+    box-shadow var(--duration-fast) var(--ease-universe),
+    transform var(--duration-fast) var(--ease-universe);
+}
+
+.legacyLink:hover {
+  color: var(--text-primary);
+  border-color: var(--realm-primary);
+  box-shadow: var(--glow-rest);
+  transform: scale(1.02);
+}
+
+.foot {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.3em;
+  color: var(--text-dim);
+  z-index: var(--z-chrome);
+}

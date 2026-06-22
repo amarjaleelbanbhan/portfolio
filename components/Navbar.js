@@ -3,12 +3,13 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { personalInfo } from '../data/portfolio';
 
+// Legacy Archive lives under /legacy within CODEX INFINITUM (route-based archive)
 const links = [
-  { href: '/', label: 'Home' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/skills', label: 'Skills' },
-  { href: '/certifications', label: 'Certs' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/legacy', label: 'Home' },
+  { href: '/legacy/projects', label: 'Projects' },
+  { href: '/legacy/skills', label: 'Skills' },
+  { href: '/legacy/certifications', label: 'Certs' },
+  { href: '/legacy/contact', label: 'Contact' },
 ];
 
 export default function Navbar() {
@@ -19,7 +20,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 backdrop-blur bg-midnight/90 border-b border-white/5">
       <nav className="max-w-6xl mx-auto px-4 flex items-center justify-between py-3">
         {/* Logo */}
-        <Link href="/" className="text-lg font-semibold tracking-tight text-neon-cyan">
+        <Link href="/legacy" className="text-lg font-semibold tracking-tight text-neon-cyan">
           {personalInfo.name.split(' ')[0]}
           <span className="text-gray-400">.dev</span>
         </Link>

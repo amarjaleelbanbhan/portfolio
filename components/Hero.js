@@ -136,7 +136,7 @@ export default function Hero() {
                 View Work
               </a>
               <a
-                href="/contact"
+                href="/legacy/contact"
                 className="px-5 py-3 border border-accent rounded-lg text-accent hover:bg-accent/10 transition-all"
               >
                 Contact
