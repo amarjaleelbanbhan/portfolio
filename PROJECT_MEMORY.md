@@ -42,7 +42,7 @@ Implemented the custom networking environment and simulations using the Living R
   - Server unordered packet sorting and HTTP 200 OK readout.
 - **Integration**: Updated `EnvironmentLayer.tsx` dynamic backdrops and `SignalVisualizer.tsx` dispatcher.
 - **Build**: ✓ Verified clean node tsc typecheck + next build (11 routes static green).
-**Next gate:** Phase 10.8 — Data Archives (database world, query parsing, index trees, and transactional ACID storage vaults).
+**Next gate:** Phase 10.9 — Cyber Citadel (security world, threats scanner, OAuth token authentication, and TLS/cryptographic chambers).
 
 ---
 
@@ -246,7 +246,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 10.5 — Network Pathways environment:** Build network pathways background, router landmarks, and HELO packet simulation visualizer. ✅
 - [x] **Phase 10.6 — The Kernel environment:** Build kernel control room background, scheduler/memory manager landmarks, and process spawn thread simulation. ✅
 - [x] **Phase 10.7 — Code Helix environment:** Build code forge, compiler AST visualization, algorithm arena, and runtime event loop simulation. ✅
-- [ ] **Phase 10.8 — Data Archives environment:** Build database vault, optimizer query planner, index towers, and ACID data fetch simulation.
+- [x] **Phase 10.8 — Data Archives environment:** Build database vault, optimizer query planner, index towers, and ACID data fetch simulation. ✅
+- [ ] **Phase 10.9 — Cyber Citadel environment:** Build authentication gates, threat scanner shields, encryption chambers, and intrusion defense simulation.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---

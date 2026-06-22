@@ -17,6 +17,8 @@ import TheKernelScene from "./scenes/TheKernelScene";
 import TheKernel2D from "./scenes/TheKernel2D";
 import CodeHelixScene from "./scenes/CodeHelixScene";
 import CodeHelix2D from "./scenes/CodeHelix2D";
+import DataArchivesScene from "./scenes/DataArchivesScene";
+import DataArchives2D from "./scenes/DataArchives2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -54,6 +56,7 @@ export default function EnvironmentLayer({
   const isNetworkPathways = slug === "network-pathways";
   const isKernel = slug === "the-kernel";
   const isCodeHelix = slug === "code-helix";
+  const isDataArchives = slug === "data-archives";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -85,6 +88,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isDataArchives ? (
+              <DataArchivesScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -102,6 +110,8 @@ export default function EnvironmentLayer({
         <TheKernel2D tier={tier} reduced={reduced} />
       ) : isCodeHelix ? (
         <CodeHelix2D tier={tier} reduced={reduced} />
+      ) : isDataArchives ? (
+        <DataArchives2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}

@@ -5,6 +5,7 @@ import { startTickEngine } from "@/lib/simulations/engine";
 import NetworkPathwaysVisualizer from "./NetworkPathwaysVisualizer";
 import TheKernelVisualizer from "./TheKernelVisualizer";
 import CodeHelixVisualizer from "./CodeHelixVisualizer";
+import DataArchivesVisualizer from "./DataArchivesVisualizer";
 import styles from "./SignalVisualizer.module.css";
 
 interface SignalVisualizerProps {
@@ -66,6 +67,18 @@ export default function SignalVisualizer({ slug, stepId, animate, tier, color, c
   if (slug === "code-helix") {
     return (
       <CodeHelixVisualizer
+        stepId={stepId}
+        animate={animate}
+        tier={tier}
+        color={color}
+        colorSecondary={colorSecondary}
+      />
+    );
+  }
+
+  if (slug === "data-archives") {
+    return (
+      <DataArchivesVisualizer
         stepId={stepId}
         animate={animate}
         tier={tier}
