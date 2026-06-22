@@ -15,6 +15,8 @@ import NetworkPathwaysScene from "./scenes/NetworkPathwaysScene";
 import NetworkPathways2D from "./scenes/NetworkPathways2D";
 import TheKernelScene from "./scenes/TheKernelScene";
 import TheKernel2D from "./scenes/TheKernel2D";
+import CodeHelixScene from "./scenes/CodeHelixScene";
+import CodeHelix2D from "./scenes/CodeHelix2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -51,6 +53,7 @@ export default function EnvironmentLayer({
   const isSiliconFoundry = slug === "silicon-foundry";
   const isNetworkPathways = slug === "network-pathways";
   const isKernel = slug === "the-kernel";
+  const isCodeHelix = slug === "code-helix";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -77,6 +80,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isCodeHelix ? (
+              <CodeHelixScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -92,6 +100,8 @@ export default function EnvironmentLayer({
         <NetworkPathways2D tier={tier} reduced={reduced} />
       ) : isKernel ? (
         <TheKernel2D tier={tier} reduced={reduced} />
+      ) : isCodeHelix ? (
+        <CodeHelix2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}
