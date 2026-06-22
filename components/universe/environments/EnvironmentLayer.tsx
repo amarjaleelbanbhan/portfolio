@@ -21,6 +21,8 @@ import DataArchivesScene from "./scenes/DataArchivesScene";
 import DataArchives2D from "./scenes/DataArchives2D";
 import CyberCitadelScene from "./scenes/CyberCitadelScene";
 import CyberCitadel2D from "./scenes/CyberCitadel2D";
+import NeuralNebulaScene from "./scenes/NeuralNebulaScene";
+import NeuralNebula2D from "./scenes/NeuralNebula2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -60,6 +62,7 @@ export default function EnvironmentLayer({
   const isCodeHelix = slug === "code-helix";
   const isDataArchives = slug === "data-archives";
   const isCitadel = slug === "the-citadel";
+  const isNebula = slug === "neural-nebula";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -101,6 +104,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isNebula ? (
+              <NeuralNebulaScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -122,6 +130,8 @@ export default function EnvironmentLayer({
         <DataArchives2D tier={tier} reduced={reduced} />
       ) : isCitadel ? (
         <CyberCitadel2D tier={tier} reduced={reduced} />
+      ) : isNebula ? (
+        <NeuralNebula2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}

@@ -42,7 +42,7 @@ Implemented the custom networking environment and simulations using the Living R
   - Server unordered packet sorting and HTTP 200 OK readout.
 - **Integration**: Updated `EnvironmentLayer.tsx` dynamic backdrops and `SignalVisualizer.tsx` dispatcher.
 - **Build**: ✓ Verified clean node tsc typecheck + next build (11 routes static green).
-**Next gate:** Phase 11.0 — Neural Nebula (AI world, dataset loaders, forward weights propagation, and error backpropagation optimization).
+**Next gate:** Phase 11.1 — Cloud Expanse (modern system world, load balancing towers, horizontal server clusters, and telemetry metrics monitoring).
 
 ---
 
@@ -248,7 +248,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 10.7 — Code Helix environment:** Build code forge, compiler AST visualization, algorithm arena, and runtime event loop simulation. ✅
 - [x] **Phase 10.8 — Data Archives environment:** Build database vault, optimizer query planner, index towers, and ACID data fetch simulation. ✅
 - [x] **Phase 10.9 — Cyber Citadel environment:** Build authentication gates, threat scanner shields, encryption chambers, and intrusion defense simulation. ✅
-- [ ] **Phase 11.0 — Neural Nebula environment:** Build dataset rivers, neural layer grids, backpropagation accelerators, and neural weights adjustment simulation.
+- [x] **Phase 11.0 — Neural Nebula environment:** Build dataset rivers, neural layer grids, backpropagation accelerators, and neural weights adjustment simulation. ✅
+- [ ] **Phase 11.1 — Cloud Expanse environment:** Build load balancers, virtual machine scaling containers, prometheus telemetry, and autoscale request load simulation.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---
