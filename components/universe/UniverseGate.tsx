@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useUniverseStore } from "@/store/universeStore";
 import BootSequence from "./boot/BootSequence";
 import UniverseMap from "./map/UniverseMap";
+import NexusCompanion from "./nexus/NexusCompanion";
 
 /**
  * Client gate for the universe entry.
@@ -35,7 +36,12 @@ export default function UniverseGate() {
   }
 
   if (entered) {
-    return <UniverseMap onReplay={() => setEntered(false)} />;
+    return (
+      <>
+        <UniverseMap onReplay={() => setEntered(false)} />
+        <NexusCompanion />
+      </>
+    );
   }
 
   return (

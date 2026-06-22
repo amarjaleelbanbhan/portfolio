@@ -32,8 +32,10 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
   const [reduced, setReduced] = useState(false);
   const [tier, setTier] = useState<DeviceTier>(2);
   const [webgl, setWebgl] = useState(true);
-  const [hovered, setHovered] = useState<string | null>(null);
 
+  // hover lives in the store so NEXUS can react to it too
+  const hovered = useUniverseStore((s) => s.hoveredRealm);
+  const setHovered = useUniverseStore((s) => s.hoverRealm);
   const selected = useUniverseStore((s) => s.selectedRealm);
   const selectRealm = useUniverseStore((s) => s.selectRealm);
   const setDeviceProfile = useUniverseStore((s) => s.setDeviceProfile);

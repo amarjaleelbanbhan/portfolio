@@ -1,7 +1,7 @@
 .card {
   position: fixed;
   bottom: var(--space-lg);
-  right: var(--space-lg);
+  left: var(--space-lg);
   z-index: var(--z-chrome);
   width: min(86vw, 320px);
   padding: var(--space-lg);

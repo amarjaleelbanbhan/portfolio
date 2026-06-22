@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 2 — The Universe Map: ✅ COMPLETE & TESTED (green build + tsc clean).**
-Boot now opens into the living, CS-structured map of 15 realms. Phases 0–2 done.
-**Next gate:** awaiting user approval to begin **Phase 3 — NEXUS Companion**.
+**PHASE 3 — NEXUS Companion: ✅ COMPLETE & TESTED (green build + tsc clean).**
+The universe now has a voice: NEXUS lives on the map. Phases 0–3 done.
+**Next gate:** awaiting user approval to begin **Phase 4 — First Realm vertical slice**.
 
 ---
 
@@ -102,6 +102,14 @@ portfolio/
   - `UniverseGate` now hands off boot → `UniverseMap` (removed `HandoffPlaceholder`).
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** no realm interiors / NEXUS character / chat / projects / RPG — only the map + travel-prep state.
+- ✅ **Phase 3 — NEXUS Companion** (canon doc 3 / doc 6 §7 / doc 8 §NEXUS):
+  - `components/universe/nexus/`: `NexusCore3D` (R3F morphing polyhedron — cycles the 4 platonic solids, wireframe cage, heartbeat nucleus, realm color bleed, motion driven by 4 modes × 5 anim-states), `NexusCoreFallback` (CSS/SVG sigil for tier-0/no-WebGL/reduced), `NexusDialogue` (typed speech panel, aria-live), `NexusCompanion` (orchestrator).
+  - `lib/nexusDialogue.ts`: **pre-scripted** lines (canon doc 3 §5) — first/return greeting, per-realm line ×15, idle lines. **No AI/Gemini backend** (that's a later upgrade path).
+  - Behavior: greets on arrival; shifts mode + **bleeds the whole UI theme** to the active realm (`document.documentElement.dataset.realm`); idle patience (15s); speaks on realm selection (EXCITED) and on click.
+  - Store: added `hoveredRealm` + `hoverRealm` (map hover lifted to store so NEXUS reacts); reuses existing `nexusMode`/`nexusAnimState`/`nexusDialogue`.
+  - `UniverseGate` renders `<NexusCompanion/>` alongside `<UniverseMap/>` (persistent). `RealmInfoCard` moved bottom-left to clear NEXUS (bottom-right).
+  - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
+  - **Scope respected:** NEXUS visual + scripted dialogue only — no AI chat backend, no realm interiors, no projects, no RPG.
 
 ---
 
@@ -136,7 +144,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 0 — Foundation/Scaffolding** ✅
 - [x] **Phase 1 — Boot Sequence** ✅ (`components/universe/boot/` + `UniverseGate`)
 - [x] **Phase 2 — Universe Map** ✅ (`components/universe/map/` — 3D + 2D fallback, 15 realms, travel-prep state)
-- [ ] **Phase 3 — NEXUS** (doc 3 / doc 6 §7): morphing polyhedron, 4 modes/5 states, dialogue panel, scroll-velocity, color bleed. Mounts in the universe shell (persistent, lower-right); reacts to `selectedRealm`/`currentRealm` color bleed. **Next phase.**
+- [x] **Phase 3 — NEXUS** ✅ (`components/universe/nexus/` — morphing polyhedron, 4 modes/5 states, scripted dialogue, realm color bleed; persistent on map)
+  - _Deferred within NEXUS (later phases):_ scroll-velocity reactions (map doesn't scroll — wire in realms), the hidden `speak`/conversation system, Gemini upgrade.
+- [ ] **Phase 4 — First realm vertical slice** (Neural Nebula end-to-end) — proves the realm pattern. **Next.** Will need: a realm route/transition (wire `enterRealm` + travel animation, doc 6 §5), the arrival cinematic, 3 districts (Surface/Interior/Archive), skill-unlock + challenge, NEXUS realm integration (MENTOR mode here).
 - [ ] **Phase 4 — First realm vertical slice** (Neural Nebula end-to-end) — proves the realm pattern.
 - [ ] **Phase 5 — Remaining realms** + connective layers + structural realms.
 - [ ] **Phase 6 — Invention Archive** (doc 7): inventions, dossiers, VisiRoD + CommentFellows + GitHub conversions, redaction.
@@ -157,9 +167,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Get user approval to begin Phase 3 — NEXUS Companion** (canon doc 3 + doc 6 §7). Build the morphing-polyhedron companion (R3F) with its 4 personality modes + 5 animation states, a dialogue panel, scroll-velocity reactions, and the 1.2s realm-reactive color bleed. It should live in a **persistent universe shell** (lower-right), present on the map and reacting to `selectedRealm`. Likely introduce `components/universe/shell/` + a `nexus/` module, and a shell layout that wraps the map (and future realms). Then test → update this file → commit → STOP.
+**Get user approval to begin Phase 4 — First Realm vertical slice (Neural Nebula).** Build ONE realm end-to-end to establish the reusable realm pattern: wire `enterRealm` + the travel transition (doc 6 §5 — GSAP exit → route/state → arrival), the 3-second arrival cinematic, the three depth districts (Surface/Interior/Archive per doc 4), the skill-unlock + realm challenge, and NEXUS in MENTOR mode inside the realm. Decide realm routing approach: App Router segment (e.g. `app/(universe)/neural-nebula`) vs an in-page overlay state driven by `currentRealm`. Then test → update this file → commit → STOP.
 
-> Phase-2 integration notes for Phase 3: the map sets `selectedRealm` (travel prep) — NEXUS can comment on selection and bleed to that realm's color (`lib/realms.ts` colors / `tokens.css` `[data-realm]`). Travel itself (entering a realm interior) is still unbuilt; `enterRealm` exists in the store but is not yet wired to a transition.
+> Phase-3 integration notes for Phase 4: NEXUS already bleeds the global `data-realm` theme to the active realm and exposes MENTOR mode for Neural Nebula. The map's `selectedRealm` is the travel-prep signal; Phase 4 should turn "selected" into actual travel (set `currentRealm`, play transition, render the realm). Keep NEXUS persistent across the transition.
 
 ---
-*Last updated: 2026-06-22 · End of Phase 2 (Universe Map; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 3 (NEXUS Companion; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

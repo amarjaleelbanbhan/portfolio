@@ -21,6 +21,8 @@ interface UniverseState {
   previousRealm: string | null;
   /** realm chosen on the map but not yet travelled into (travel preparation) */
   selectedRealm: string | null;
+  /** realm currently hovered/focused on the map (shared with NEXUS) */
+  hoveredRealm: string | null;
   transitionPhase: TransitionPhase;
 
   // — Progress (persisted) —
@@ -46,6 +48,7 @@ interface UniverseState {
   // — Actions —
   enterRealm: (slug: string) => void;
   selectRealm: (slug: string | null) => void;
+  hoverRealm: (slug: string | null) => void;
   setTransitionPhase: (phase: TransitionPhase) => void;
   completeBoot: (skipped?: boolean) => void;
   setNexusMode: (mode: NexusMode) => void;
@@ -67,6 +70,7 @@ export const useUniverseStore = create<UniverseState>()(
       currentRealm: null,
       previousRealm: null,
       selectedRealm: null,
+      hoveredRealm: null,
       transitionPhase: "idle",
 
       visitedRealms: [],
@@ -95,6 +99,7 @@ export const useUniverseStore = create<UniverseState>()(
         })),
 
       selectRealm: (selectedRealm) => set({ selectedRealm }),
+      hoverRealm: (hoveredRealm) => set({ hoveredRealm }),
 
       setTransitionPhase: (transitionPhase) => set({ transitionPhase }),
 
