@@ -134,6 +134,21 @@
 }
 .lock { font-size: 0.8em; opacity: 0.8; }
 
+/* ---- Simulation details toggle ---- */
+.detailsToggle {
+  display: block;
+  margin: 0 auto var(--space-xl);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+}
+.detailsToggle:hover { color: var(--text-secondary); }
+
 /* ---- District ---- */
 .district { animation: fade var(--duration-mid) var(--ease-enter); }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }

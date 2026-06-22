@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 9.1 (audit) + 9.2 (Critical+Important fixes): ✅ DONE & TESTED.**
-Production-hardened: a11y modals, SEO files, code-split, WebGL, mobile, deps. Phases 0–9.2 done.
-**Next gate:** optional Nice-tier polish + deferred delight, then the **merge `codex-infinitum` → `main` + deploy** decision. (Do NOT merge/deploy without approval.)
+**PHASE 10.0 — Simulation Engine + first living realm (Silicon Foundry): ✅ DONE & TESTED.**
+Vision-realignment phase, driven by `IMMERSION_PLAYTEST_REPORT.md` (overall immersion 3.8/10 — "the atmosphere is the world; the UI is a brochure about the world") and `EXPERIENCE_TRANSFORMATION_PLAN.md`. Goal: simulation primary, text secondary — a visitor should understand a CS process by watching it, not by reading about it. The Silicon Foundry now runs a real 5-step signal simulation (Electricity → Logic Gates → CPU Cycle → Memory → Result) instead of static cards. The other 11 realms are **byte-for-byte unchanged** — `RealmShell` only activates the new stage when a simulation is registered for that slug.
+**Next gate:** Phase 10.1+ — extend the same engine to the next realm batch (Foundations + Kernel/Network/Cloud, per `EXPERIENCE_TRANSFORMATION_PLAN.md` §5), OR continue the optional Nice-tier/Lighthouse work from Phase 9. Merge `codex-infinitum` → `main` + deploy is still **NOT approved**.
 
 ---
 
@@ -158,6 +158,15 @@ portfolio/
   - **Slice 3 `a45d860`** (mobile + contrast): `--text-dim` → `#768499` (~5.3:1 AA); RealmIndex collapsed `<768px`; RealmInfoCard docks to top band `<640px`; travel hint clears NEXUS; 2D map nodes shrink `<480px`.
   - **Slice 4 `fe3b201`** (security): `npm audit fix` (no --force) 10→2 (all 4 high gone; 2 moderate need breaking Next downgrade, left); conservative security headers in `next.config.mjs` (no CSP).
   - All slices: `next build` green (11 routes incl. /sitemap.xml + /robots.txt) + `tsc --noEmit` exit 0.
+- ✅ **`IMMERSION_PLAYTEST_REPORT.md`** (provided): full playtest verdict — vision 10/10, writing 8/10, execution 3/10. Root cause pinpointed: every realm's `atmosphere` (hero prose describing a living world) is displayed once and then abandoned; `RealmDistrict` renders only static text cards underneath it.
+- ✅ **`EXPERIENCE_TRANSFORMATION_PLAN.md`**: the architecture response — a new `RealmSimulationEngine` layer, additive to (not replacing) the realm engine; one signature simulation per CS-process realm; `RealmShell` upgraded to lead with the simulation, demote cards to "details if you want them"; phased rollout 10.0→10.8; explicit stays-vs-replaced tables; no AI backend, no sound system, Knowledge/Invention/Observatory untouched.
+- ✅ **Phase 10.0 — Simulation Engine + Silicon Foundry** (first proof, one realm only):
+  - **New shared runtime** `lib/simulations/`: `types.ts` (`SimStep`/`SimulationDefinition`), `engine.ts` (`startTickEngine` — tier-gated RAF loop reusing `particleBudget()`/`DeviceTier`, auto-pause on tab-hidden, manual pause/resume), `registry.ts` (`REALM_SIMULATIONS` lookup + `getSimulation(slug)` — currently **one entry: `silicon-foundry`**).
+  - **New components** `components/universe/simulations/`: `RealmSimulationStage` (orchestrator — tier/reduced-motion detection, 5-step autoplay every 4.2s, narrates each step through the **real NEXUS companion** via `sayNexus`/`setNexusAnimState`, not a second voice), `SignalVisualizer` (Canvas2D — five real, named CS processes: PCB electron pulses → a live-evaluated AND/OR/NOT truth table → FETCH/DECODE/EXECUTE token relay across Memory/Control/ALU boxes → CPU↔RAM address/data round-trip → converged "RESULT" pulse), `SimulationControls` (step rail of 5 inspectable stages + step-back/forward + "▶ FOLLOW SIGNAL"/"⏸ PAUSE").
+  - **Fallback contract:** on tier 0 or `prefers-reduced-motion`, `SignalVisualizer` draws one accurate **static** frame per step (no RAF, no autoplay) instead of a separate poster component — same primitives, same correctness, just still. Visitor can still manually step through all 5 stages.
+  - **`RealmShell` upgrade:** new `hasSimulation = !!getSimulation(slug)`. When true (today: only Silicon Foundry), inserts `RealmSimulationStage` right after the header and collapses the existing district tabs' body behind a "▾ Explore the full archive — details, if you want them" toggle (Exit + tabs themselves stay always visible — they're chrome, not content). When false (the other 11 realms), renders **exactly as before** — zero visual/behavioral change.
+  - **Tested:** `next build` green (11 routes, unchanged) + `npx tsc --noEmit` exit 0. Verified existing dev server still serves `/` (HTTP 200) after the change. *(Note: canvas animation itself was not visually eyeballed in a browser by the agent this round — build/type-check are the evidence; a manual look at `/` → enter Silicon Foundry is recommended before calling Phase 10.1 next.)*
+  - **Scope respected:** no other realm touched, no content removed (district cards/topics/skill unlock all intact, just collapsed by default), no random decorative particles — every animation is a named, real CS process, no AI backend added to NEXUS.
 
 ---
 
@@ -202,9 +211,10 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 8 — RPG Knowledge System** ✅ (`components/universe/knowledge/`)
 - [x] **Phase 9.1 — Production Audit** ✅ (`PRODUCTION_AUDIT.md`)
 - [x] **Phase 9.2 — Production Fixes (Critical + Important)** ✅ (4 slices: a11y/SEO, perf/code-split/WebGL, mobile/contrast, security)
-- [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), bespoke 3D arrival cinematics/particles, `sudo enter` terminal + easter eggs (doc 2), in-realm scroll-velocity NEXUS, optional consent-first sound. **Run a real Lighthouse + device pass.**
+- [x] **Phase 10.0 — Simulation Engine + Silicon Foundry** ✅ (`lib/simulations/` + `components/universe/simulations/`; `RealmShell` upgraded; only Silicon Foundry transformed)
+- [ ] **Phase 10.1 — next simulation batch:** The Foundations (`TuringTapeSim`) + The Kernel/Network Pathways/Cloud Expanse, per `EXPERIENCE_TRANSFORMATION_PLAN.md` §5. **Awaiting approval to continue.**
+- [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended (not yet eyeballed by the agent — see Phase 10.0 note).
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
-- [ ] **Phase 9 — Polish:** perf/Lighthouse, device tiers, a11y, reduced-motion, SEO/JSON-LD, cross-browser.
 
 ---
 
@@ -219,9 +229,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**The universe is functionally complete** (boot → map → 12 realm worlds + Invention Archive + Architect's Core + Observatory + Knowledge Mastery, with NEXUS throughout; v1 preserved at `/legacy`). Recommended next: **Phase 9 — Polish & deferred flourishes**, in small reviewable slices: (a) Lighthouse/perf pass + bundle check; (b) a11y sweep (focus order, labels, reduced-motion audit across all components); (c) SEO/OG images/sitemap for the universe; (d) the deferred *delight* — per-realm challenge mini-games (doc 4 §14.2), richer 3D arrival cinematics/particles, the `sudo enter` terminal + easter eggs (doc 2), in-realm scroll-velocity NEXUS reactions, optional consent-first sound. Suggest picking ONE slice per phase. Also outstanding: decide whether to **merge `codex-infinitum` → `main`** and deploy (Vercel).
+**Vision realignment is underway.** Phase 10.0 proved the `RealmSimulationEngine` pattern on one realm (Silicon Foundry) without touching the other 11 or any of the protected systems (boot/map/NEXUS/Knowledge/Invention Archive/Observatory). Recommended next: **Phase 10.1** — author the next simulation batch per `EXPERIENCE_TRANSFORMATION_PLAN.md` §5 (Foundations, then Kernel/Network/Cloud), one slice at a time, same protocol (plan → implement → build+tsc → report → commit → stop). Also outstanding, unchanged: the optional Phase 9 Nice-tier/Lighthouse pass, and the **merge `codex-infinitum` → `main` + deploy** decision (still not approved).
 
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-22 · End of Phase 9.2 (production fixes; build green, tsc clean, audit 10→2). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 10.0 (simulation engine + Silicon Foundry; build green, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

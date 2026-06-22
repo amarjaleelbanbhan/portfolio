@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { REALM_BY_SLUG } from "@/lib/realms";
 import { useUniverseStore } from "@/store/universeStore";
 import { getRealmContent, type DistrictId } from "./realmContent";
+import { getSimulation } from "@/lib/simulations/registry";
 import RealmHeader from "./RealmHeader";
 import RealmNavigation from "./RealmNavigation";
 import RealmDistrict from "./RealmDistrict";
 import KnowledgeArchive from "./KnowledgeArchive";
 import SkillUnlock from "./SkillUnlock";
+import RealmSimulationStage from "../simulations/RealmSimulationStage";
 import s from "./realm.module.css";
 
 /**
@@ -31,10 +33,16 @@ export default function RealmShell({
   const [active, setActive] = useState<DistrictId>("surface");
   const [toast, setToast] = useState(false);
 
+  // Realms with a registered simulation lead with it; everything else (the
+  // current 11) renders exactly as before — this phase transforms ONE realm.
+  const hasSimulation = !!getSimulation(slug);
+  const [detailsOpen, setDetailsOpen] = useState(!hasSimulation);
+
   useEffect(() => {
     setActive("surface");
     setToast(false);
-  }, [slug]);
+    setDetailsOpen(!hasSimulation);
+  }, [slug, hasSimulation]);
 
   if (!realm || !content) {
     return (
@@ -72,25 +80,44 @@ export default function RealmShell({
       <div className={s.content}>
         <RealmHeader realm={realm} content={content} />
 
+        {hasSimulation && <RealmSimulationStage slug={slug} />}
+
+        {/* Exit + district tabs are chrome, not content — always reachable. */}
         <RealmNavigation
           districts={content.districts}
           active={active}
           archiveUnlocked={archiveUnlocked}
-          onSelect={setActive}
+          onSelect={(id) => {
+            setActive(id);
+            setDetailsOpen(true);
+          }}
           onExit={onExit}
         />
 
-        <div className={s.body}>
-          {activeDistrict.id === "archive" ? (
-            <KnowledgeArchive
-              district={activeDistrict}
-              unlocked={archiveUnlocked}
-              onUnlock={descend}
-            />
-          ) : (
-            <RealmDistrict district={activeDistrict} />
-          )}
-        </div>
+        {hasSimulation && (
+          <button
+            type="button"
+            className={s.detailsToggle}
+            aria-expanded={detailsOpen}
+            onClick={() => setDetailsOpen((o) => !o)}
+          >
+            {detailsOpen ? "▴ Hide the full archive" : "▾ Explore the full archive — details, if you want them"}
+          </button>
+        )}
+
+        {(!hasSimulation || detailsOpen) && (
+          <div className={s.body}>
+            {activeDistrict.id === "archive" ? (
+              <KnowledgeArchive
+                district={activeDistrict}
+                unlocked={archiveUnlocked}
+                onUnlock={descend}
+              />
+            ) : (
+              <RealmDistrict district={activeDistrict} />
+            )}
+          </div>
+        )}
       </div>
 
       {toast && <SkillUnlock skill={content.skill} onClose={() => setToast(false)} />}
