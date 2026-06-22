@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 8 — RPG Knowledge System: ✅ COMPLETE & TESTED (green build + tsc clean).**
-Knowledge mastery layer in: abilities, paths, achievements. Phases 0–8 done.
-**Next gate:** awaiting user approval to begin **Phase 9 — Polish** (perf/a11y/SEO + deferred flourishes).
+**PHASE 9.1 (audit) + 9.2 (Critical+Important fixes): ✅ DONE & TESTED.**
+Production-hardened: a11y modals, SEO files, code-split, WebGL, mobile, deps. Phases 0–9.2 done.
+**Next gate:** optional Nice-tier polish + deferred delight, then the **merge `codex-infinitum` → `main` + deploy** decision. (Do NOT merge/deploy without approval.)
 
 ---
 
@@ -151,6 +151,13 @@ portfolio/
   - **NEXUS:** speaks on panel open — "You are not collecting points. You are mapping understanding…" (`MASTERY_LINE`).
   - **Tested:** `next build` green (9 routes) + `npx tsc --noEmit` exit 0.
   - **Scope respected:** no XP numbers, no fake levels, no childish badges, no competitive ranking.
+- ✅ **Phase 9.1 — Production Audit** (`PRODUCTION_AUDIT.md`): evidence-based findings (perf/a11y/mobile/code/SEO/security) tagged Critical/Important/Nice. No fixes.
+- ✅ **Phase 9.2 — Production Fixes (Critical + Important)**, 4 slices, hardening only:
+  - **Slice 1 `986e386`** (a11y + SEO): `lib/useModalA11y.ts` (Esc/focus-trap/restore, WCAG 2.1.2/2.4.3) on `KnowledgePanel` + `InventionDossier`; removed stale `public/sitemap.xml`+`robots.txt`; added `app/sitemap.ts`+`app/robots.ts`+`lib/site.ts` (SITE_URL → also `metadataBase`).
+  - **Slice 2 `e8a8758`** (perf): `UniverseGate` lazy-loads all post-boot views via `next/dynamic` (three/R3F ~861KB now fetched only when the map mounts); NEXUS 3D only on `tier>=2 && !reduced` (CSS sigil otherwise — removes 2nd WebGL context on mid/low/reduced); decorative canvases `aria-hidden`.
+  - **Slice 3 `a45d860`** (mobile + contrast): `--text-dim` → `#768499` (~5.3:1 AA); RealmIndex collapsed `<768px`; RealmInfoCard docks to top band `<640px`; travel hint clears NEXUS; 2D map nodes shrink `<480px`.
+  - **Slice 4 `fe3b201`** (security): `npm audit fix` (no --force) 10→2 (all 4 high gone; 2 moderate need breaking Next downgrade, left); conservative security headers in `next.config.mjs` (no CSP).
+  - All slices: `next build` green (11 routes incl. /sitemap.xml + /robots.txt) + `tsc --noEmit` exit 0.
 
 ---
 
@@ -192,8 +199,11 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
   - _Deferred polish (later):_ per-realm challenge mini-games (doc 4 §14.2), bespoke per-realm arrival cinematics/3D interiors, realm-specific particle systems.
 - [x] **Phase 6 — Invention Archive** ✅ (`components/universe/inventions/` — CLASS I–V dossiers, VisiRoD + CommentFellows + public works, realm cross-links)
 - [x] **Phase 7 — Architect's Core & Observatory** ✅ (`components/universe/chambers/` — Creator Chamber + ending/transmission; both enterable from the map)
-- [x] **Phase 8 — RPG Knowledge System** ✅ (`components/universe/knowledge/` — branches, abilities, paths, achievements; derived from real progress)
-- [ ] **Phase 9 — Polish:** Lighthouse/perf, a11y sweep, reduced-motion audit, SEO/OG/sitemap, cross-browser/mobile. **Final phase.** Also fold in deferred flourishes: per-realm challenge mini-games (doc 4 §14.2), bespoke 3D arrival cinematics/particles per realm, the hidden `sudo enter` terminal + easter eggs (doc 2), scroll-velocity NEXUS reactions inside realms, optional sound (consent-first).
+- [x] **Phase 8 — RPG Knowledge System** ✅ (`components/universe/knowledge/`)
+- [x] **Phase 9.1 — Production Audit** ✅ (`PRODUCTION_AUDIT.md`)
+- [x] **Phase 9.2 — Production Fixes (Critical + Important)** ✅ (4 slices: a11y/SEO, perf/code-split/WebGL, mobile/contrast, security)
+- [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), bespoke 3D arrival cinematics/particles, `sudo enter` terminal + easter eggs (doc 2), in-realm scroll-velocity NEXUS, optional consent-first sound. **Run a real Lighthouse + device pass.**
+- [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 - [ ] **Phase 9 — Polish:** perf/Lighthouse, device tiers, a11y, reduced-motion, SEO/JSON-LD, cross-browser.
 
 ---
@@ -214,4 +224,4 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-22 · End of Phase 8 (RPG Knowledge System; build green, tsc clean). Branch: `codex-infinitum`. Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-22 · End of Phase 9.2 (production fixes; build green, tsc clean, audit 10→2). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
