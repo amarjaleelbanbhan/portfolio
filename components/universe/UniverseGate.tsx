@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useUniverseStore } from "@/store/universeStore";
 import dynamic from "next/dynamic";
-import BootSequence from "./boot/BootSequence";
+import JourneyDirector from "./journey/JourneyDirector";
 
 // Everything past the boot is code-split so the first paint ships only the
 // boot + shell — the universe (map, realms, archive, chambers, knowledge)
@@ -32,9 +32,9 @@ export default function UniverseGate() {
   const [reduced, setReduced] = useState(false);
 
   const bootCompleted = useUniverseStore((s) => s.bootCompleted);
-  const completeBoot = useUniverseStore((s) => s.completeBoot);
   const currentRealm = useUniverseStore((s) => s.currentRealm);
   const exitRealm = useUniverseStore((s) => s.exitRealm);
+  const completeBoot = useUniverseStore((s) => s.completeBoot);
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -72,8 +72,14 @@ export default function UniverseGate() {
     );
   }
 
+  /**
+   * JourneyDirector extends the pre-universe sequence with an avatar intro
+   * for first-time visitors, then hands off to BootSequence (unchanged).
+   * Return visitors (bootCompleted=true → express=true) skip the avatar
+   * and go straight to the express boot — identical to the prior behaviour.
+   */
   return (
-    <BootSequence
+    <JourneyDirector
       express={bootCompleted}
       reduced={reduced}
       onComplete={(skipped) => {
