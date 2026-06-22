@@ -23,6 +23,8 @@ import CyberCitadelScene from "./scenes/CyberCitadelScene";
 import CyberCitadel2D from "./scenes/CyberCitadel2D";
 import NeuralNebulaScene from "./scenes/NeuralNebulaScene";
 import NeuralNebula2D from "./scenes/NeuralNebula2D";
+import CloudExpanseScene from "./scenes/CloudExpanseScene";
+import CloudExpanse2D from "./scenes/CloudExpanse2D";
 import styles from "./EnvironmentLayer.module.css";
 
 interface EnvironmentLayerProps {
@@ -63,6 +65,7 @@ export default function EnvironmentLayer({
   const isDataArchives = slug === "data-archives";
   const isCitadel = slug === "the-citadel";
   const isNebula = slug === "neural-nebula";
+  const isCloud = slug === "cloud-expanse";
 
   return (
     <div className={styles.environment} aria-hidden="true">
@@ -109,6 +112,11 @@ export default function EnvironmentLayer({
                 reduced={reduced}
                 onArrivalComplete={onArrivalComplete}
               />
+            ) : isCloud ? (
+              <CloudExpanseScene
+                reduced={reduced}
+                onArrivalComplete={onArrivalComplete}
+              />
             ) : (
               <Generic3DScene
                 slug={slug}
@@ -132,6 +140,8 @@ export default function EnvironmentLayer({
         <CyberCitadel2D tier={tier} reduced={reduced} />
       ) : isNebula ? (
         <NeuralNebula2D tier={tier} reduced={reduced} />
+      ) : isCloud ? (
+        <CloudExpanse2D tier={tier} reduced={reduced} />
       ) : (
         <Generic2DCanvas slug={slug} tier={tier} reduced={reduced} />
       )}

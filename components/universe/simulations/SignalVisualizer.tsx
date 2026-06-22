@@ -8,6 +8,7 @@ import CodeHelixVisualizer from "./CodeHelixVisualizer";
 import DataArchivesVisualizer from "./DataArchivesVisualizer";
 import CyberCitadelVisualizer from "./CyberCitadelVisualizer";
 import NeuralNebulaVisualizer from "./NeuralNebulaVisualizer";
+import CloudExpanseVisualizer from "./CloudExpanseVisualizer";
 import styles from "./SignalVisualizer.module.css";
 
 interface SignalVisualizerProps {
@@ -105,6 +106,18 @@ export default function SignalVisualizer({ slug, stepId, animate, tier, color, c
   if (slug === "neural-nebula") {
     return (
       <NeuralNebulaVisualizer
+        stepId={stepId}
+        animate={animate}
+        tier={tier}
+        color={color}
+        colorSecondary={colorSecondary}
+      />
+    );
+  }
+
+  if (slug === "cloud-expanse") {
+    return (
+      <CloudExpanseVisualizer
         stepId={stepId}
         animate={animate}
         tier={tier}
