@@ -137,7 +137,9 @@ export default function NexusCompanion() {
 
   if (!mounted) return null;
 
-  const use3D = webgl && tier > 0;
+  // 3D NEXUS only on strong GPUs and when motion is allowed — avoids a second
+  // live WebGL context alongside the map on mid/low devices (perf, doc 9 audit).
+  const use3D = webgl && tier >= 2 && !reduced;
 
   const onClick = () => {
     if (idleTimer.current) window.clearTimeout(idleTimer.current);
@@ -150,7 +152,7 @@ export default function NexusCompanion() {
       <div className={styles.companion}>
         <button type="button" className={styles.button} aria-label="NEXUS — your guide to the universe" onClick={onClick}>
           {use3D ? (
-            <div className={styles.canvasWrap}>
+            <div className={styles.canvasWrap} aria-hidden="true">
               <NexusCore3D mode={mode} animState={animState} color={activeColor} reduced={reduced} />
             </div>
           ) : (

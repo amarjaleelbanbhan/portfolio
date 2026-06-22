@@ -69,14 +69,16 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
     <main className={styles.map} aria-label="CODEX INFINITUM universe map">
       <div className={styles.scene}>
         {use3D ? (
-          <UniverseCanvas
-            tier={tier}
-            reduced={reduced}
-            hovered={hovered}
-            selected={selected}
-            onHover={setHovered}
-            onSelect={(slug) => selectRealm(slug)}
-          />
+          <div className={styles.canvasHolder} aria-hidden="true">
+            <UniverseCanvas
+              tier={tier}
+              reduced={reduced}
+              hovered={hovered}
+              selected={selected}
+              onHover={setHovered}
+              onSelect={(slug) => selectRealm(slug)}
+            />
+          </div>
         ) : (
           <UniverseMap2D
             active={active}

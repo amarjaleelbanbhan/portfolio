@@ -17,6 +17,11 @@
   inset: 0;
 }
 
+.canvasHolder {
+  position: absolute;
+  inset: 0;
+}
+
 .canvasSkeleton {
   position: absolute;
   inset: 0;

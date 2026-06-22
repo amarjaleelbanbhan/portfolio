@@ -2,16 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useUniverseStore } from "@/store/universeStore";
+import dynamic from "next/dynamic";
 import BootSequence from "./boot/BootSequence";
-import UniverseMap from "./map/UniverseMap";
-import NexusCompanion from "./nexus/NexusCompanion";
-import RealmShell from "./realms/RealmShell";
-import { isEnterable } from "./realms/realmContent";
-import InventionArchive from "./inventions/InventionArchive";
-import ArchitectCore from "./chambers/ArchitectCore";
-import Observatory from "./chambers/Observatory";
-import KnowledgeButton from "./knowledge/KnowledgeButton";
-import KnowledgePanel from "./knowledge/KnowledgePanel";
+
+// Everything past the boot is code-split so the first paint ships only the
+// boot + shell — the universe (map, realms, archive, chambers, knowledge)
+// loads on demand. All are client-only (R3F / window access).
+const UniverseMap = dynamic(() => import("./map/UniverseMap"), {
+  ssr: false,
+  loading: () => <div style={{ position: "fixed", inset: 0, background: "var(--void)" }} aria-hidden="true" />,
+});
+const NexusCompanion = dynamic(() => import("./nexus/NexusCompanion"), { ssr: false });
+const RealmShell = dynamic(() => import("./realms/RealmShell"), { ssr: false });
+const InventionArchive = dynamic(() => import("./inventions/InventionArchive"), { ssr: false });
+const ArchitectCore = dynamic(() => import("./chambers/ArchitectCore"), { ssr: false });
+const Observatory = dynamic(() => import("./chambers/Observatory"), { ssr: false });
+const KnowledgeButton = dynamic(() => import("./knowledge/KnowledgeButton"), { ssr: false });
+const KnowledgePanel = dynamic(() => import("./knowledge/KnowledgePanel"), { ssr: false });
 
 /**
  * Client gate for the universe entry.
@@ -53,7 +60,7 @@ export default function UniverseGate() {
           <ArchitectCore onExit={exitRealm} />
         ) : currentRealm === "the-observatory" ? (
           <Observatory onExit={exitRealm} />
-        ) : currentRealm && isEnterable(currentRealm) ? (
+        ) : currentRealm ? (
           <RealmShell slug={currentRealm} onExit={exitRealm} />
         ) : (
           <UniverseMap onReplay={() => setEntered(false)} />
