@@ -27,9 +27,9 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 10.1 — Architect Avatar + Journey Director: ✅ DONE & TESTED.**
-Cinematic experience layer Phase 1 of N. Adds the missing human story frame before the machine boots. A holographic silhouette of the Architect speaks a 6-line monologue (first-visit only, gated on `bootCompleted`), then fades to reveal the existing `PowerCore` button. Uses the proven GSAP typewriter pattern from `SystemTerminal` — no new animation system. `JourneyDirector` is a thin state-machine wrapper (`"avatar" → "boot"`) inserted between `UniverseGate` and `BootSequence` — `BootSequence` is untouched. Return visitors (`bootCompleted=true` → `express=true`) skip the avatar entirely, going straight to the express boot identical to Phase 10.0 behaviour. Build: ✓ Compiled in 79s, TypeScript in 27.3s, 11 routes — all green.
-**Next gate:** Phase 10.2 — `CinematicCamera` "shrink into the machine" push during boot (GSAP transform wrapper, reuses `SignalVisualizer` draw functions per `CINEMATIC_LAYER_PLAN.md §3`), OR Phase 10.3 — `HolographicInterface` skin on Silicon Foundry panels. Merge `codex-infinitum` → `main` + deploy still **NOT approved**.
+**PHASE 10.2 — Enter the Machine Cinematic Transition: ✅ DONE & TESTED.**
+The cinematic bridge between ArchitectAvatar and the boot terminal. When the power button is pressed (first visit only), instead of immediately switching to SystemTerminal, a 3-act "enter the machine" experience plays: (1) Architect cue exits ("Ready? Let's go inside."), (2) Canvas2D trace burst fires — 20 PCB-style radial lines with leading-glow tips and 90° branches radiating from center, (3) GSAP scales the power zone to 6× at `power3.in` (camera crashing through the circuit board), (4) white-hot flash fills the screen, (5) `BootTerminal` mounts and fades from white — seamless bridge. Return visitors still go through unmodified `BootSequence`. Build: ✓ Compiled in 19.0s (cached), TypeScript in 12.9s, 11 routes — all green.
+**Next gate:** Phase 10.3 — `HolographicInterface` visual skin wrapper on Silicon Foundry's existing `RealmSimulationStage` + `SimulationControls` panels. Merge `codex-infinitum` → `main` + deploy still **NOT approved**.
 
 ---
 
@@ -160,7 +160,14 @@ portfolio/
   - All slices: `next build` green (11 routes incl. /sitemap.xml + /robots.txt) + `tsc --noEmit` exit 0.
 - ✅ **`IMMERSION_PLAYTEST_REPORT.md`** (provided): full playtest verdict — vision 10/10, writing 8/10, execution 3/10. Root cause pinpointed: every realm's `atmosphere` (hero prose describing a living world) is displayed once and then abandoned; `RealmDistrict` renders only static text cards underneath it.
 - ✅ **`EXPERIENCE_TRANSFORMATION_PLAN.md`**: the architecture response — a new `RealmSimulationEngine` layer, additive to (not replacing) the realm engine; one signature simulation per CS-process realm; `RealmShell` upgraded to lead with the simulation, demote cards to "details if you want them"; phased rollout 10.0→10.8; explicit stays-vs-replaced tables; no AI backend, no sound system, Knowledge/Invention/Observatory untouched.
-- ✅ **Phase 10.1 — Architect Avatar + Journey Director** (`components/universe/journey/` + `lib/journey/`):
+- ✅ **Phase 10.2 — Enter the Machine Cinematic Transition** (`components/universe/journey/` + `lib/journey/cinematicCamera.ts`):
+  - **Problem solved:** power button click went directly to boot terminal with no sense of "entering" the machine. First-time visitors needed the physical sensation of going inside.
+  - `lib/journey/cinematicCamera.ts`: pure GSAP timeline factory — `buildDiveTimeline()` (3-act: contract 0.22s → surge 1.6s power3.in → white flash 0.28s) + `reducedMotionDive()` (instant cut, 60ms paint settle). No React.
+  - `components/universe/journey/CinematicCamera.tsx` (+ `.module.css`): the cinematic bridge. Reuses `PowerCore` + `CircuitGrid` directly (both unmodified). Architect cue text: *"Ready? Let's go inside."* appears on mount. On power click: cue exits, CircuitGrid ignites, Canvas2D trace burst fires (20 PCB-style radial lines with leading-glow tips + 90° branches, amber/cyan color, tier-scaled: 20 full / 12 standard / 0 on tier-0), GSAP dive timeline runs, white flash fills screen, `onDone()` fires. Device-tier gated: tier-0/reduced-motion → instant cut via `reducedMotionDive`. Esc always works.
+  - `components/universe/journey/BootTerminal.tsx` (+ `.module.css`): the post-cinematic boot shell. Composes `CircuitGrid(igniting=true)` + `SystemTerminal(FULL_BOOT)` + skip button. Arrives by fading FROM white (CSS `bootTerminalArrive` animation), creating a seamless visual bridge from the flash. `BootSequence.tsx` byte-for-byte untouched.
+  - `JourneyDirector.tsx` updated: phase machine now `"avatar" → "cinematic" → "boot-terminal"` for first visits. Return visitors (`express=true`) still go straight to `BootSequence` (unchanged path).
+  - **Tested:** `tsc --noEmit` exit 0 · `next build` green (11 routes, compiled in 19.0s cached, TypeScript in 12.9s, 11/11 static pages).
+  - **Scope respected:** no realm changes, no Silicon Foundry simulation changes, no NEXUS rewrite, no store schema changes.
   - **Problem solved:** visitors entered the machine without meeting the person who built it. The experience jumped straight from void → terminal readout, with no human context for *why* they were there.
   - `lib/journey/avatarScript.ts`: typed `AvatarLine[]` data (6 lines + pauses, 4 kinds: `lead`/`mid`/`pivot`/`resolve`) — same `{ text, pause }` shape as `bootScript.ts`'s `BootStep`, so no new animation system needed.
   - `components/universe/journey/ArchitectAvatar.tsx` (+ `.module.css`): the Architect as a **guide**, not an About page. Pure CSS holographic silhouette (head orb + body trapezoid clip-path), digital scan-line sweep, corner holographic brackets — tier-0 safe, zero 3D/WebGL. GSAP typewriter identical to `SystemTerminal`'s proven pattern. Lines: *"I spent years using computers…" → "What actually happens after I press the power button?" → "Come with me. Let me show you the world behind the screen."* Esc + skip button always visible after first line; `aria-label` + `sr-only` summary for accessibility; reduced-motion: all lines appear instantly.
@@ -219,8 +226,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 9.1 — Production Audit** ✅ (`PRODUCTION_AUDIT.md`)
 - [x] **Phase 9.2 — Production Fixes (Critical + Important)** ✅ (4 slices: a11y/SEO, perf/code-split/WebGL, mobile/contrast, security)
 - [x] **Phase 10.0 — Simulation Engine + Silicon Foundry** ✅ (`lib/simulations/` + `components/universe/simulations/`; `RealmShell` upgraded; only Silicon Foundry transformed)
-- [x] **Phase 10.1 — Architect Avatar + Journey Director** ✅ (`lib/journey/avatarScript.ts` + `components/universe/journey/{ArchitectAvatar,JourneyDirector}`; `UniverseGate` wired; build green 11 routes; commit `5e42c78`)
-- [ ] **Phase 10.2 — CinematicCamera:** `lib/journey/cinematicCamera.ts` + `CinematicCamera` component — GSAP 2D transform push on boot sequence ("shrink into the machine"); reuses `SignalVisualizer` draw functions behind the terminal text; tier-0/reduced-motion snaps to end-state. Awaiting approval.
+- [x] **Phase 10.2 — Enter the Machine Cinematic** ✅ (`CinematicCamera`, `BootTerminal`, `lib/journey/cinematicCamera.ts`; `JourneyDirector` updated; build green 11 routes; commit `706a06f`)
+- [ ] **Phase 10.3 — HolographicInterface skin:** glass blur + scan-line sweep + corner brackets wrapper applied first to Silicon Foundry's `RealmSimulationStage` + `SimulationControls`. Pure CSS/markup wrap, zero logic changes. Awaiting approval.
 - [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended (not yet eyeballed by the agent — see Phase 10.0 note).
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
@@ -242,4 +249,4 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-23 · End of Phase 10.1 (Architect Avatar + JourneyDirector; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 10.2 (Enter the Machine cinematic; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
