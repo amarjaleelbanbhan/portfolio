@@ -57,7 +57,7 @@ export const ENTER_LINES: Record<string, string> = {
   "the-foundations":
     "Welcome to where computation discovered itself. Before any machine could think, humans found the rules of thinking. Take your time here — this is the one realm where even I reach a limit, and can prove it.",
   "silicon-foundry":
-    "You've descended to the bottom of everything. Beneath every model, beneath every line of code — copper, silicon, physics. Welcome to the body of the machine.",
+    "We are no longer looking at the machine. We are inside it. Welcome to the Silicon Foundry.",
   "code-helix":
     "Welcome to the realm of language. Here a human intention becomes a sequence a machine will obey. Walk it the way you'd walk a city you respect.",
   "neural-nebula":
@@ -86,6 +86,7 @@ export const ENTER_LINES: Record<string, string> = {
 
 export function enterLine(slug: string | null): string | null {
   if (!slug) return null;
+  if (slug === "silicon-foundry") return null; // Suppress immediate playback; MotherboardEnvironment triggers it after cinematic
   return ENTER_LINES[slug] ?? REALM_LINES[slug] ?? null;
 }
 

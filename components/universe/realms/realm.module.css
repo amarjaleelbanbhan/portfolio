@@ -300,7 +300,36 @@
   color: var(--text-secondary);
 }
 
+.stageHoloWrapper {
+  border: none !important;
+  background: transparent !important;
+  margin-bottom: var(--space-xl);
+}
+
+.stageHoloWrapper :global(.stage) {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.topicHolo {
+  height: 100%;
+  border-left: 2px solid var(--realm-primary) !important;
+  transition: transform var(--duration-fast) var(--ease-universe),
+              box-shadow var(--duration-fast) var(--ease-universe),
+              border-color var(--duration-fast) var(--ease-universe);
+}
+
+.topicHolo:hover {
+  transform: translateY(-4px);
+  border-color: var(--realm-primary) !important;
+  box-shadow: var(--glow-hover) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .enter, .flash, .district, .toast { animation: none; }
   .flash { display: none; }
+  .topicHolo:hover { transform: none; }
 }

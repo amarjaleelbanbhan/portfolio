@@ -1,0 +1,73 @@
+.environmentWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--void);
+}
+
+.ambientFog {
+  position: fixed;
+  inset: 0;
+  z-index: 2; /* Sits on top of the R3F canvas but below the page overlay */
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 35%,
+    rgba(5, 5, 8, 0.4) 65%,
+    rgba(5, 5, 8, 0.92) 100%
+  );
+}
+
+.pageOverlay {
+  position: relative;
+  z-index: 10; /* Sits on top of all layers */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+/* 3D Floating labels inside R3F Scene */
+.floatingLabel {
+  padding: 8px 12px !important;
+  min-width: 160px;
+  text-align: center;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: scale(0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) !important;
+}
+
+.floatingText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.labelTitle {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--realm-primary, #F59E0B);
+  text-transform: uppercase;
+}
+
+.labelValue {
+  font-family: var(--font-body);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #A6ACBE);
+  opacity: 0.8;
+}

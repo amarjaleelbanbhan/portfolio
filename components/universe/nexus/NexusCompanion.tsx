@@ -139,7 +139,8 @@ export default function NexusCompanion() {
 
   // 3D NEXUS only on strong GPUs and when motion is allowed — avoids a second
   // live WebGL context alongside the map on mid/low devices (perf, doc 9 audit).
-  const use3D = webgl && tier >= 2 && !reduced;
+  // ALSO disable it inside Silicon Foundry to keep only one major R3F canvas alive.
+  const use3D = webgl && tier >= 2 && !reduced && current !== "silicon-foundry";
 
   const onClick = () => {
     if (idleTimer.current) window.clearTimeout(idleTimer.current);

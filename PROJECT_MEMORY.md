@@ -27,9 +27,13 @@ All 15 are encoded in `lib/realms.ts` and `styles/tokens.css` (`[data-realm]` th
 
 ## 1. CURRENT PHASE
 
-**PHASE 10.2 — Enter the Machine Cinematic Transition: ✅ DONE & TESTED.**
-The cinematic bridge between ArchitectAvatar and the boot terminal. When the power button is pressed (first visit only), instead of immediately switching to SystemTerminal, a 3-act "enter the machine" experience plays: (1) Architect cue exits ("Ready? Let's go inside."), (2) Canvas2D trace burst fires — 20 PCB-style radial lines with leading-glow tips and 90° branches radiating from center, (3) GSAP scales the power zone to 6× at `power3.in` (camera crashing through the circuit board), (4) white-hot flash fills the screen, (5) `BootTerminal` mounts and fades from white — seamless bridge. Return visitors still go through unmodified `BootSequence`. Build: ✓ Compiled in 19.0s (cached), TypeScript in 12.9s, 11 routes — all green.
-**Next gate:** Phase 10.3 — `HolographicInterface` visual skin wrapper on Silicon Foundry's existing `RealmSimulationStage` + `SimulationControls` panels. Merge `codex-infinitum` → `main` + deploy still **NOT approved**.
+**PHASE 10.3 — Silicon Foundry Motherboard Environment: ✅ DONE & TESTED.**
+The first true cinematic 3D environment for Silicon Foundry realm. When slug is "silicon-foundry", a React Three Fiber scene creates an immersive motherboard city (endless grid, layered metallic processor tower with pulsing glowing core and rising energy pillar, RAM skyscrapers flanking the core with rising data block cubes, circuit highway traces with pulsing electricity).
+Arrival sequence details: starts in black -> first electric pulse fires -> camera follows trace close-up -> CPU core awakens & fades in lights -> RAM skyscrapers activate -> camera sweeps back to overview reveal -> NEXUS guides the visitor.
+Float labels physically in the 3D space beside hardware using R3F Html. Wrap individual topic cards, simulation controls, and deep archive panel in floating HolographicPanel skin (corner brackets, glow border, scan-line sweep).
+Performance optimized: only one WebGL canvas runs (3D Nexus core falls back to 2D when inside Silicon Foundry), geometries and materials are reused, and Tier 0 fallbacks to a high-performance Canvas2D top-down blueprint view (reduced-motion freezes the 3D scene in overview without GSAP flights).
+Build: ✓ Compiled in 29.0s, TypeScript checked, all 11 routes prerendered green.
+**Next gate:** Phase 10.4 — The Foundations / TuringTape simulation.
 
 ---
 
@@ -227,8 +231,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - [x] **Phase 9.2 — Production Fixes (Critical + Important)** ✅ (4 slices: a11y/SEO, perf/code-split/WebGL, mobile/contrast, security)
 - [x] **Phase 10.0 — Simulation Engine + Silicon Foundry** ✅ (`lib/simulations/` + `components/universe/simulations/`; `RealmShell` upgraded; only Silicon Foundry transformed)
 - [x] **Phase 10.2 — Enter the Machine Cinematic** ✅ (`CinematicCamera`, `BootTerminal`, `lib/journey/cinematicCamera.ts`; `JourneyDirector` updated; build green 11 routes; commit `706a06f`)
-- [ ] **Phase 10.3 — HolographicInterface skin:** glass blur + scan-line sweep + corner brackets wrapper applied first to Silicon Foundry's `RealmSimulationStage` + `SimulationControls`. Pure CSS/markup wrap, zero logic changes. Awaiting approval.
-- [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended (not yet eyeballed by the agent — see Phase 10.0 note).
+- [x] **Phase 10.3 — Silicon Foundry Motherboard Environment** ✅ (R3F 3D motherboard city, arrival sequence, floating holographic panels/labels, Canvas2D fallback, build green 11 routes)
+- [ ] **Phase 10.4 — The Foundations / TuringTape simulation:** Turing machine head stepping along a tape, live truth-table evaluator, logic step integrations.
+- [ ] **Remaining (optional):** Nice-tier from audit (dead store API + latent observatory RealmContent + duplicate NexusMode cleanup; real `metadataBase` domain; OG image; KnowledgePanel `<h1>`; font trims). Deferred *delight*: per-realm challenge mini-games (doc 4 §14.2), `sudo enter` terminal + easter eggs (doc 2), optional consent-first sound. **Run a real Lighthouse + device pass.** A manual browser look at the Silicon Foundry simulation is recommended.
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---
@@ -244,9 +249,9 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**Vision realignment is underway.** Phase 10.0 proved the `RealmSimulationEngine` pattern on one realm (Silicon Foundry) without touching the other 11 or any of the protected systems (boot/map/NEXUS/Knowledge/Invention Archive/Observatory). Recommended next: **Phase 10.1** — author the next simulation batch per `EXPERIENCE_TRANSFORMATION_PLAN.md` §5 (Foundations, then Kernel/Network/Cloud), one slice at a time, same protocol (plan → implement → build+tsc → report → commit → stop). Also outstanding, unchanged: the optional Phase 9 Nice-tier/Lighthouse pass, and the **merge `codex-infinitum` → `main` + deploy** decision (still not approved).
+**Vision realignment is underway.** Phase 10.3 successfully delivered the first explorable environment (3D motherboard city) in Silicon Foundry without modifying other realms. Recommended next: **Phase 10.4** — author the next simulation/environment batch (The Foundations / TuringTape tape run and truth tables). Same protocol: plan → implement one slice → tsc+build → report → commit → stop. Also outstanding: the optional Phase 9 Lighthouse pass and the merge/deploy decision.
 
 > Everything is on branch `codex-infinitum`; `main` still holds working v1. Build green, tsc clean. Two-router setup intact (app/ universe + pages/legacy).
 
 ---
-*Last updated: 2026-06-23 · End of Phase 10.2 (Enter the Machine cinematic; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 10.3 (Silicon Foundry Motherboard Environment; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

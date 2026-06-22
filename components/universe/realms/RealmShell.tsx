@@ -11,6 +11,8 @@ import RealmDistrict from "./RealmDistrict";
 import KnowledgeArchive from "./KnowledgeArchive";
 import SkillUnlock from "./SkillUnlock";
 import RealmSimulationStage from "../simulations/RealmSimulationStage";
+import MotherboardEnvironment from "../environments/MotherboardEnvironment";
+import HolographicPanel from "../environments/HolographicPanel";
 import s from "./realm.module.css";
 
 /**
@@ -68,6 +70,71 @@ export default function RealmShell({
     }
   };
 
+  const isSiliconFoundry = slug === "silicon-foundry";
+
+  const renderContent = () => (
+    <div className={s.content}>
+      <RealmHeader realm={realm} content={content} />
+
+      {hasSimulation && (
+        isSiliconFoundry ? (
+          <HolographicPanel className={s.stageHoloWrapper}>
+            <RealmSimulationStage slug={slug} />
+          </HolographicPanel>
+        ) : (
+          <RealmSimulationStage slug={slug} />
+        )
+      )}
+
+      {/* Exit + district tabs are chrome, not content — always reachable. */}
+      <RealmNavigation
+        districts={content.districts}
+        active={active}
+        archiveUnlocked={archiveUnlocked}
+        onSelect={(id) => {
+          setActive(id);
+          setDetailsOpen(true);
+        }}
+        onExit={onExit}
+      />
+
+      {hasSimulation && (
+        <button
+          type="button"
+          className={s.detailsToggle}
+          aria-expanded={detailsOpen}
+          onClick={() => setDetailsOpen((o) => !o)}
+        >
+          {detailsOpen ? "▴ Hide the full archive" : "▾ Explore the full archive — details, if you want them"}
+        </button>
+      )}
+
+      {(!hasSimulation || detailsOpen) && (
+        <div className={s.body}>
+          {activeDistrict.id === "archive" ? (
+            isSiliconFoundry ? (
+              <HolographicPanel>
+                <KnowledgeArchive
+                  district={activeDistrict}
+                  unlocked={archiveUnlocked}
+                  onUnlock={descend}
+                />
+              </HolographicPanel>
+            ) : (
+              <KnowledgeArchive
+                district={activeDistrict}
+                unlocked={archiveUnlocked}
+                onUnlock={descend}
+              />
+            )
+          ) : (
+            <RealmDistrict district={activeDistrict} />
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <main
       className={`${s.shell} ${s.enter}`}
@@ -75,50 +142,14 @@ export default function RealmShell({
       aria-label={`${realm.name} realm`}
     >
       <div className={s.flash} aria-hidden="true" />
-      <div className={s.bgGrid} aria-hidden="true" />
-
-      <div className={s.content}>
-        <RealmHeader realm={realm} content={content} />
-
-        {hasSimulation && <RealmSimulationStage slug={slug} />}
-
-        {/* Exit + district tabs are chrome, not content — always reachable. */}
-        <RealmNavigation
-          districts={content.districts}
-          active={active}
-          archiveUnlocked={archiveUnlocked}
-          onSelect={(id) => {
-            setActive(id);
-            setDetailsOpen(true);
-          }}
-          onExit={onExit}
-        />
-
-        {hasSimulation && (
-          <button
-            type="button"
-            className={s.detailsToggle}
-            aria-expanded={detailsOpen}
-            onClick={() => setDetailsOpen((o) => !o)}
-          >
-            {detailsOpen ? "▴ Hide the full archive" : "▾ Explore the full archive — details, if you want them"}
-          </button>
-        )}
-
-        {(!hasSimulation || detailsOpen) && (
-          <div className={s.body}>
-            {activeDistrict.id === "archive" ? (
-              <KnowledgeArchive
-                district={activeDistrict}
-                unlocked={archiveUnlocked}
-                onUnlock={descend}
-              />
-            ) : (
-              <RealmDistrict district={activeDistrict} />
-            )}
-          </div>
-        )}
-      </div>
+      {isSiliconFoundry ? (
+        <MotherboardEnvironment>{renderContent()}</MotherboardEnvironment>
+      ) : (
+        <>
+          <div className={s.bgGrid} aria-hidden="true" />
+          {renderContent()}
+        </>
+      )}
 
       {toast && <SkillUnlock skill={content.skill} onClose={() => setToast(false)} />}
     </main>
