@@ -20,6 +20,7 @@ const Observatory = dynamic(() => import("./chambers/Observatory"), { ssr: false
 const KnowledgeButton = dynamic(() => import("./knowledge/KnowledgeButton"), { ssr: false });
 const KnowledgePanel = dynamic(() => import("./knowledge/KnowledgePanel"), { ssr: false });
 const MasterJourneyHUD = dynamic(() => import("./journey/MasterJourneyHUD"), { ssr: false });
+const ArchitectTransmission = dynamic(() => import("./ArchitectTransmission"), { ssr: false });
 
 /**
  * Client gate for the universe entry.
@@ -70,6 +71,7 @@ export default function UniverseGate() {
         <KnowledgeButton />
         <KnowledgePanel />
         <MasterJourneyHUD />
+        <ArchitectTransmission />
       </>
     );
   }

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useUniverseStore } from "@/store/universeStore";
 import type { NexusMode } from "@/store/universeStore";
 import { REALM_BY_SLUG } from "@/lib/realms";
-import { firstGreeting, realmLine, nextIdleLine, enterLine, MASTERY_LINE } from "@/lib/nexusDialogue";
+import { firstGreeting, realmLine, nextIdleLine, enterLine, MASTERY_LINE, eventLine, type NexusEvent } from "@/lib/nexusDialogue";
 import { supportsWebGL, prefersReducedMotion as detectReduced } from "@/lib/deviceTier";
 import NexusCoreFallback from "./NexusCoreFallback";
 import NexusDialogue from "./NexusDialogue";
@@ -40,8 +40,10 @@ export default function NexusCompanion() {
   const hovered = useUniverseStore((s) => s.hoveredRealm);
   const selected = useUniverseStore((s) => s.selectedRealm);
   const knowledgeOpen = useUniverseStore((s) => s.knowledgeOpen);
+  const nexusEvent = useUniverseStore((s) => s.nexusEvent);
   const visited = useUniverseStore((s) => s.visitedRealms);
   const tier = useUniverseStore((s) => s.deviceTier);
+  const isJourneyActive = useUniverseStore((s) => s.activeMasterJourneyPhase !== null);
   const setMode = useUniverseStore((s) => s.setNexusMode);
   const setAnim = useUniverseStore((s) => s.setNexusAnimState);
   const say = useUniverseStore((s) => s.sayNexus);
@@ -51,6 +53,7 @@ export default function NexusCompanion() {
   const prevSelected = useRef<string | null>(null);
   const prevCurrent = useRef<string | null>(null);
   const prevKnowledge = useRef(false);
+  const prevEventToken = useRef(0);
 
   // inside a realm, currentRealm wins; on the map, hover/selection drive NEXUS
   const active = current ?? hovered ?? selected;
@@ -135,6 +138,17 @@ export default function NexusCompanion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [knowledgeOpen, mounted]);
 
+  // Signature-interaction event fired (packetSent / shieldBlocked / codeCreated)
+  // → NEXUS reacts with a one-line response, reusing the same speak/typing pipeline.
+  useEffect(() => {
+    if (!mounted || !nexusEvent) return;
+    if (nexusEvent.token === prevEventToken.current) return;
+    prevEventToken.current = nexusEvent.token;
+    const line = eventLine(nexusEvent.name as NexusEvent);
+    if (line) speak(line, "EXCITED");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nexusEvent, mounted]);
+
   if (!mounted) return null;
 
   // 3D NEXUS only on strong GPUs and when motion is allowed — avoids a second
@@ -150,7 +164,7 @@ export default function NexusCompanion() {
   return (
     <>
       <NexusDialogue line={dialogue} reduced={reduced} />
-      <div className={styles.companion}>
+      <div className={`${styles.companion}${isJourneyActive ? ` ${styles.journeyActive}` : ""}`}>
         <button type="button" className={styles.button} aria-label="NEXUS — your guide to the universe" onClick={onClick}>
           {use3D ? (
             <div className={styles.canvasWrap} aria-hidden="true">

@@ -39,6 +39,9 @@ export default function RealmNode({
   const subGroup2 = useRef<THREE.Group>(null);
   const subMesh1 = useRef<THREE.Mesh>(null);
   const subMesh2 = useRef<THREE.Mesh>(null);
+  const packetRefs = useRef<THREE.Mesh[]>([]);
+  const slotRefs = useRef<THREE.Mesh[]>([]);
+  const slotMatRefs = useRef<THREE.MeshBasicMaterial[]>([]);
 
   const { slug } = placement;
   const isCore = slug === "architect-core";
@@ -48,6 +51,8 @@ export default function RealmNode({
   const isNebula = slug === "neural-nebula";
   const isCitadel = slug === "the-citadel";
   const isArchives = slug === "data-archives";
+  const isNetwork = slug === "network-pathways";
+  const isKernel = slug === "the-kernel";
 
   // Size hierarchy based on realm category
   const baseScale = isCore ? 1.45 : isFoundry || isNebula || isCitadel || isHelix || isArchives ? 0.85 : 0.65;
@@ -114,6 +119,27 @@ export default function RealmNode({
       if (subGroup1.current) subGroup1.current.rotation.y += delta * 0.5;
       if (subMesh1.current) subMesh1.current.position.y = Math.sin(t.current * 2) * 0.6;
       if (subMesh2.current) subMesh2.current.position.y = -Math.sin(t.current * 2) * 0.6;
+    } else if (isNetwork) {
+      // Thin rotating "router" rings, plus packets orbiting near the node
+      // (suggesting traffic moving through the node, not just sitting there).
+      if (subMesh1.current) subMesh1.current.rotation.z += delta * 0.5;
+      if (subMesh2.current) subMesh2.current.rotation.z -= delta * 0.35;
+      packetRefs.current.forEach((m, i) => {
+        if (!m) return;
+        const speed = 0.9 + i * 0.15;
+        const radius = 0.95 + (i % 2) * 0.25;
+        const angle = t.current * speed + (i * Math.PI * 2) / packetRefs.current.length;
+        m.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.3) * 0.15, Math.sin(angle) * radius);
+      });
+    } else if (isKernel) {
+      // Rotating ring of scheduler "slots" — one lit brighter at a time, cycling.
+      if (subGroup1.current) subGroup1.current.rotation.y += delta * 0.18;
+      const activeSlot = Math.floor(t.current * 1.2) % slotMatRefs.current.length;
+      slotMatRefs.current.forEach((m, i) => {
+        if (!m) return;
+        const target = i === activeSlot ? 1 : 0.25;
+        m.opacity += (target - m.opacity) * 0.18;
+      });
     } else {
       // Slow orbital rotate for generic energy cores
       if (subGroup1.current) subGroup1.current.rotation.y += delta * 0.2;
@@ -320,6 +346,83 @@ export default function RealmNode({
             <torusGeometry args={[0.5, 0.03, 4, 16]} />
             <meshBasicMaterial color={color} transparent opacity={0.5} />
           </mesh>
+        </group>
+      );
+    }
+
+    if (isNetwork) {
+      const packetCount = 6;
+      return (
+        <group>
+          <mesh>
+            <icosahedronGeometry args={[0.7, 1]} />
+            <meshStandardMaterial
+              ref={mat}
+              color={color}
+              emissive={color}
+              emissiveIntensity={0.55}
+              roughness={0.4}
+              metalness={0.2}
+            />
+          </mesh>
+          {/* Two thin rotating rings — suggesting routers passing traffic through */}
+          <mesh ref={subMesh1} rotation={[Math.PI / 2.4, 0, 0]}>
+            <torusGeometry args={[1.0, 0.012, 6, 28]} />
+            <meshBasicMaterial color={color} transparent opacity={0.5} />
+          </mesh>
+          <mesh ref={subMesh2} rotation={[Math.PI / 2.4, 0, Math.PI / 3]}>
+            <torusGeometry args={[1.25, 0.01, 6, 28]} />
+            <meshBasicMaterial color={color} transparent opacity={0.35} />
+          </mesh>
+          {/* Small "packet" dots orbiting near the node */}
+          {Array.from({ length: packetCount }).map((_, i) => (
+            <mesh
+              key={i}
+              ref={(m) => {
+                if (m) packetRefs.current[i] = m;
+              }}
+            >
+              <sphereGeometry args={[0.05, 6, 6]} />
+              <meshBasicMaterial color={color} />
+            </mesh>
+          ))}
+        </group>
+      );
+    }
+
+    if (isKernel) {
+      const slotCount = 8;
+      return (
+        <group>
+          <mesh>
+            <sphereGeometry args={[0.55, 16, 16]} />
+            <meshStandardMaterial
+              ref={mat}
+              color={color}
+              emissive={color}
+              emissiveIntensity={0.7}
+              roughness={0.3}
+            />
+          </mesh>
+          {/* Rotating ring of scheduler "slots" — instanced boxes, one lit at a time */}
+          <group ref={subGroup1}>
+            {Array.from({ length: slotCount }).map((_, i) => {
+              const angle = (i / slotCount) * Math.PI * 2;
+              return (
+                <mesh key={i} position={[Math.cos(angle) * 1.05, 0, Math.sin(angle) * 1.05]}>
+                  <boxGeometry args={[0.16, 0.16, 0.08]} />
+                  <meshBasicMaterial
+                    ref={(m) => {
+                      if (m) slotMatRefs.current[i] = m;
+                    }}
+                    color={color}
+                    transparent
+                    opacity={0.25}
+                  />
+                </mesh>
+              );
+            })}
+          </group>
         </group>
       );
     }

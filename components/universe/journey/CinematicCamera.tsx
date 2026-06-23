@@ -143,6 +143,9 @@ export default function CinematicCamera({
   // DOM refs for GSAP
   const powerZoneRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
+  const dimmerRef = useRef<HTMLDivElement>(null);
+  const sparkRef = useRef<HTMLDivElement>(null);
+  const lastClickRef = useRef<{ clientX: number; clientY: number } | null>(null);
 
   // Canvas refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -212,39 +215,61 @@ export default function CinematicCamera({
   }, []);
 
   // ── Power button handler ────────────────────────────────────────
-  const onPowerActivate = useCallback(() => {
-    if (state === "activated") return;
-    setState("activated");
+  const onPowerActivate = useCallback(
+    (e?: { clientX: number; clientY: number }) => {
+      if (state === "activated") return;
+      setState("activated");
 
-    // 1. Architect cue text exits
-    setCueExiting(true);
+      // Position the anticipation-beat spark at the click location (falls back
+      // to viewport center if no coordinates are available, e.g. keyboard activation).
+      const spark = sparkRef.current;
+      if (spark) {
+        const x = e?.clientX ?? window.innerWidth / 2;
+        const y = e?.clientY ?? window.innerHeight / 2;
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+      }
 
-    // 2. Circuit grid ignites
-    setCircuitIgniting(true);
+      // 1. Architect cue text exits
+      setCueExiting(true);
 
-    // 3. Reduced-motion: instant cut, skip animation
-    if (reduced || tier === 0) {
-      reducedMotionDive(doneRef.current);
-      return;
-    }
+      // 2. Circuit grid ignites
+      setCircuitIgniting(true);
 
-    // 4. Canvas burst fires
-    startCanvasBurst();
+      // 3. Reduced-motion: hold the anticipation beat, then cut (no movement)
+      if (reduced || tier === 0) {
+        buildDiveTimeline({
+          stage: powerZoneRef.current ?? document.createElement("div"),
+          flash: flashRef.current ?? document.createElement("div"),
+          dimmer: dimmerRef.current,
+          spark: sparkRef.current,
+          reduced: true,
+          onComplete: () => reducedMotionDive(doneRef.current),
+        });
+        return;
+      }
 
-    // 5. GSAP dive timeline
-    const pz = powerZoneRef.current;
-    const fl = flashRef.current;
-    if (!pz || !fl) {
-      reducedMotionDive(doneRef.current);
-      return;
-    }
+      // 4. Canvas burst fires
+      startCanvasBurst();
 
-    buildDiveTimeline({
-      stage: pz,
-      flash: fl,
-      onComplete: doneRef.current,
-    });
-  }, [state, reduced, tier, startCanvasBurst]);
+      // 5. GSAP dive timeline (anticipation beat prepended)
+      const pz = powerZoneRef.current;
+      const fl = flashRef.current;
+      if (!pz || !fl) {
+        reducedMotionDive(doneRef.current);
+        return;
+      }
+
+      buildDiveTimeline({
+        stage: pz,
+        flash: fl,
+        dimmer: dimmerRef.current,
+        spark: sparkRef.current,
+        onComplete: doneRef.current,
+      });
+    },
+    [state, reduced, tier, startCanvasBurst]
+  );
 
   // Esc skips the whole cinematic
   useEffect(() => {
@@ -286,13 +311,24 @@ export default function CinematicCamera({
         </div>
 
         {/* ── Power button — reused from boot/, unmodified ── */}
-        <div ref={powerZoneRef} className={styles.powerZone}>
-          <PowerCore reduced={reduced} onActivate={onPowerActivate} />
+        <div
+          ref={powerZoneRef}
+          className={styles.powerZone}
+          onClickCapture={(e) => {
+            // Capture click coordinates for the anticipation-beat spark before
+            // PowerCore's own onActivate (no args) fires onPowerActivate().
+            lastClickRef.current = { clientX: e.clientX, clientY: e.clientY };
+          }}
+        >
+          <PowerCore reduced={reduced} onActivate={() => onPowerActivate(lastClickRef.current ?? undefined)} />
         </div>
-
-        {/* Bottom row — empty grid slot for layout balance */}
-        <div aria-hidden="true" />
       </section>
+
+      {/* Anticipation-beat dimmer — near-black overlay held briefly before the burst */}
+      <div ref={dimmerRef} className={styles.dimmer} aria-hidden="true" />
+
+      {/* Anticipation-beat spark — single point of light at the click location */}
+      <div ref={sparkRef} className={styles.spark} aria-hidden="true" />
 
       {/* White-flash overlay — sits above everything, GSAP drives it to opacity 1 */}
       <div ref={flashRef} className={styles.flash} aria-hidden="true" />

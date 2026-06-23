@@ -242,6 +242,7 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - ✅ **Phase 11.1 — Cloud Expanse environment:** Build load balancers, virtual machine scaling containers, prometheus telemetry, and autoscale request load simulation. ✅
 - ✅ **Phase 11.2 — Master Journey:** Implement "Follow The Data" journey button on the map, full sequential multi-realm simulation transitions, and completion dialog overlays. ✅
 - ✅ **Phase 12 — Experience Quality Audit:** Audit the entire user sequence, fix layout overlaps, implement direct navigation shortcuts for recruiters, and coordinate transition audio/dialogue narration sync. ✅
+- ✅ **Phase 13 — WOW Restoration Pass:** Deep experience audit (Director/Pixar/UX/recruiter/CS-teacher lens) found the journey was a "beautiful interactive CS encyclopedia" lacking emotion, identity, and interaction. Implemented the 6 highest-impact fixes (no new worlds, no engine rebuild). ✅
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---
@@ -259,9 +260,22 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 
 ---
 
-## 9. ▶️ NEXT RECOMMENDED ACTION
-**PHASE 12 COMPLETE: Experience Director Audit Passed.**
-The entire system compiles perfectly, builds clean, and passes visual/logical verification. The portfolio balances immersive digital world storytelling with clean, discoverable professional proofs for recruiters. CODEX INFINITUM is ready for merge and production launch.
+## 9.5 PHASE 13 — WOW RESTORATION PASS (log)
+Audit verdict before this phase: 5/10 — strong architecture, weak emotional payload; "encyclopedia not experience." Fixed 6 items, scoped to avoid new worlds/engine rebuilds:
+1. **Power-on anticipation beat** — `lib/journey/cinematicCamera.ts`, `components/universe/journey/CinematicCamera.tsx/.module.css`: 300-500ms dim+spark hold prepended to the dive timeline before the trace burst; respects reduced-motion.
+2. **Architect finale loop-close** — new `components/universe/chambers/ArchitectFinale.tsx`; wired into `Observatory.tsx`, `store/universeStore.ts` (new one-time flag), `MasterJourneyHUD.tsx`. Triggers on Master Journey completion OR 6+ realms visited; reuses ArchitectAvatar styling. Line: "I built CODEX to answer one question. Now you have walked through the answer."
+3. **NEXUS event-reaction system** — `lib/nexusDialogue.ts`, `components/universe/nexus/NexusCompanion.tsx`, `store/universeStore.ts` (`nexusEvent`/`fireNexusEvent`): NEXUS now reacts to specific visitor actions (packetSent/shieldBlocked/codeCreated), not just location. Added 2 "wondering" idle lines for personality.
+4. **Signature interactions (3 realms only, by design)** — new `components/universe/realms/RealmSignatureAction.tsx/.module.css`, wired via `RealmShell.tsx`: Network "SEND PACKET" (SVG path travel), Code Helix "CREATE CODE" (rung-grow), Cyber Citadel "DEFEND" (timed attack/block). Each fires its NEXUS event. Kernel/Data Archives/Neural Nebula/Cloud Expanse intentionally left passive for a future pass.
+5. **Persistent recruiter discovery affordance** — new `components/universe/ArchitectTransmission.tsx/.module.css`, mounted in `UniverseGate.tsx`: "VIEW CREATOR WORK" framed as an "Architect Transmission," visible from first post-boot screen, navigates to Invention Archive via existing `enterRealm()` state nav (no reload).
+6. **Map node visual identity** — `components/universe/map/RealmNode.tsx`: Network gained rotating router rings + orbiting packet dots; Kernel gained an instanced-box scheduler ring with a cycling lit slot. **Cloud Expanse explicitly deferred** (still generic-core) — next candidate if this phase is revisited.
+
+Verified: `tsc --noEmit` clean, `npm run build` green. Not committed — awaiting user approval per protocol.
 
 ---
-*Last updated: 2026-06-23 · End of Phase 12 (Experience Quality Audit; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+
+## 9. ▶️ NEXT RECOMMENDED ACTION
+**PHASE 13 COMPLETE: WOW Restoration implemented, build green, not yet committed.**
+Remaining gaps from the audit not addressed this pass (candidates for Phase 14): sound design (still fully silent), signature interactions for Kernel/Data Archives/Neural Nebula/Cloud Expanse, Cloud Expanse node identity, a midpoint narrative challenge tying realms together, and one hidden easter egg. Awaiting user review/approval before committing Phase 13 changes, then merge/deploy decision for `codex-infinitum` → `main`.
+
+---
+*Last updated: 2026-06-23 · End of Phase 13 (WOW Restoration Pass; build green, tsc clean, NOT committed). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

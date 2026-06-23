@@ -1,0 +1,169 @@
+/* Signature interaction widget — shared shell for Network / Code Helix / Citadel.
+   Reuses the realm color theme via [data-realm] CSS custom properties. */
+
+.wrap {
+  position: relative;
+  margin: var(--space-lg) auto var(--space-xl);
+  max-width: 520px;
+  padding: var(--space-lg);
+  border: 1px solid color-mix(in srgb, var(--realm-primary) 35%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--realm-primary) 6%, transparent);
+  text-align: center;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--realm-primary);
+  margin: 0 0 var(--space-sm);
+}
+
+.action {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--realm-primary);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--realm-primary) 14%, transparent);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.action:hover {
+  background: color-mix(in srgb, var(--realm-primary) 26%, transparent);
+}
+
+.action:active {
+  transform: scale(0.97);
+}
+
+.action:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.stage {
+  position: relative;
+  margin-top: var(--space-md);
+  height: 64px;
+}
+
+/* ── Network: packet traveling along an SVG path ── */
+.path {
+  width: 100%;
+  height: 64px;
+  overflow: visible;
+}
+
+.pathLine {
+  fill: none;
+  stroke: color-mix(in srgb, var(--realm-primary) 45%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 4 6;
+}
+
+.packet {
+  filter: drop-shadow(0 0 6px var(--realm-primary));
+}
+
+/* ── Code Helix: code line + rung pulse ── */
+.codeLine {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--realm-primary);
+  min-height: 1.4em;
+  opacity: 0;
+  animation: codeReveal 1.6s ease forwards;
+}
+
+@keyframes codeReveal {
+  0% { opacity: 0; transform: translateY(4px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.rung {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 4px;
+  margin-left: -18px;
+  border-radius: 2px;
+  background: var(--realm-primary);
+  box-shadow: 0 0 10px var(--realm-primary);
+  transform: scale(0, 1);
+  animation: rungGrow 0.5s ease forwards;
+}
+
+@keyframes rungGrow {
+  to { transform: scale(1, 1); }
+}
+
+/* ── Cyber Citadel: attack pulse + shield block ── */
+.citadelStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse {
+  position: absolute;
+  left: 8%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 12px #ef4444;
+  animation: pulseTravel 0.9s linear forwards;
+}
+
+@keyframes pulseTravel {
+  to { left: 88%; }
+}
+
+.shield {
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--realm-primary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--realm-primary);
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.shield.blocked {
+  background: color-mix(in srgb, var(--realm-primary) 35%, transparent);
+  transform: rotate(6deg) scale(1.08);
+}
+
+.shield.hit {
+  background: color-mix(in srgb, #ef4444 30%, transparent);
+  border-color: #ef4444;
+}
+
+.status {
+  margin-top: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  min-height: 1.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .codeLine, .rung, .pulse { animation-duration: 0.01ms; animation-iteration-count: 1; }
+}

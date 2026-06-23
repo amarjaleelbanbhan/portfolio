@@ -145,7 +145,15 @@
   transform: translateX(-50%);
   z-index: var(--z-chrome);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-md);
+  max-width: min(92vw, 480px);
+}
+
+@media (max-width: 640px) {
+  .quickLinks { gap: var(--space-xs); }
+  .qlink { padding: 3px var(--space-xs); font-size: 0.52rem; }
 }
 
 .qlink {

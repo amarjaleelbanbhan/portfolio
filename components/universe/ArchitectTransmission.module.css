@@ -1,0 +1,50 @@
+/* Persistent "VIEW CREATOR WORK" entry point — mirrors NEXUS's bottom-right
+   placement on the opposite corner. Low-key HUD chrome, not a primary CTA. */
+
+.wrap {
+  position: fixed;
+  left: var(--space-lg);
+  bottom: var(--space-lg);
+  z-index: var(--z-nexus);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-left: 2px;
+}
+
+.button {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: var(--space-xs) var(--space-md);
+  background: color-mix(in srgb, var(--void) 70%, transparent);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition:
+    color var(--duration-fast) var(--ease-universe),
+    border-color var(--duration-fast) var(--ease-universe);
+}
+
+.button:hover,
+.button:focus-visible {
+  color: var(--signal);
+  border-color: color-mix(in srgb, var(--signal) 50%, transparent);
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .wrap { left: var(--space-md); bottom: var(--space-md); }
+}

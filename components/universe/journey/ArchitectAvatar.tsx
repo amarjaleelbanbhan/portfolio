@@ -37,13 +37,22 @@ export default function ArchitectAvatar({
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
   const tl = useRef<gsap.core.Timeline | null>(null);
+  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Exit helper: fade out then hand off ────────────────────────
   const exit = useCallback(() => {
     tl.current?.kill();
     setExiting(true);
     // Wait for stageExit animation (800ms), then call parent
-    setTimeout(() => doneRef.current(), 820);
+    if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+    exitTimeoutRef.current = setTimeout(() => doneRef.current(), 820);
+  }, []);
+
+  // Cancel the pending exit handoff if the component unmounts mid-exit.
+  useEffect(() => {
+    return () => {
+      if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+    };
   }, []);
 
   // ── Reduced-motion path: all lines shown instantly ─────────────

@@ -5,6 +5,11 @@
   z-index: var(--z-nexus);
   width: 132px;
   height: 132px;
+  transition: bottom 0.3s var(--ease-universe, ease);
+}
+
+.companion.journeyActive {
+  bottom: clamp(132px, 30vh, 190px);
 }
 
 .button {

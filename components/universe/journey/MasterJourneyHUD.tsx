@@ -90,6 +90,7 @@ export default function MasterJourneyHUD() {
   const sayNexus = useUniverseStore((s) => s.sayNexus);
   const setNexusAnimState = useUniverseStore((s) => s.setNexusAnimState);
   const setNexusVisible = useUniverseStore((s) => s.setNexusVisible);
+  const setMasterJourneyCompleted = useUniverseStore((s) => s.setMasterJourneyCompleted);
 
   const [isPlaying, setIsPlaying] = useState(true);
   const [timeLeft, setTimeLeft] = useState(STAGE_DURATION_MS);
@@ -156,6 +157,7 @@ export default function MasterJourneyHUD() {
       setIsPlaying(false);
       setShowCongrats(true);
       setMasterJourneyPhase(null);
+      setMasterJourneyCompleted(true);
       // NEXUS speaks congratulations
       sayNexus("Congratulations. You have traced the full life cycle of data in modern systems. You now understand the machine from the copper traces to the intelligence of the cloud.");
       setNexusAnimState("EXCITED");

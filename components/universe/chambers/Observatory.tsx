@@ -1,9 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useUniverseStore } from "@/store/universeStore";
 import { CREATOR } from "@/lib/creator";
 import { personalInfo } from "@/data/portfolio";
+import ArchitectFinale from "./ArchitectFinale";
 import s from "./chambers.module.css";
+
+/** Same realm-visit threshold used by the "Cartographer" achievement (knowledgeData.ts). */
+const CARTOGRAPHER_THRESHOLD = 6;
 
 /**
  * The Observatory — the ending chapter (canon doc 4 §8 / doc 2 Act 6).
@@ -12,6 +17,23 @@ import s from "./chambers.module.css";
  */
 export default function Observatory({ onExit }: { onExit: () => void }) {
   const exitToMap = useUniverseStore((st) => st.exitRealm);
+  const visitedRealms = useUniverseStore((st) => st.visitedRealms);
+  const masterJourneyCompleted = useUniverseStore((st) => st.masterJourneyCompleted);
+  const architectFinaleShown = useUniverseStore((st) => st.architectFinaleShown);
+  const setArchitectFinaleShown = useUniverseStore((st) => st.setArchitectFinaleShown);
+
+  const earnedFinale =
+    masterJourneyCompleted || visitedRealms.length >= CARTOGRAPHER_THRESHOLD;
+  const [showFinale, setShowFinale] = useState(false);
+
+  // One-time: if earned and not yet shown this session/ever, play it once.
+  useEffect(() => {
+    if (earnedFinale && !architectFinaleShown) {
+      setShowFinale(true);
+      setArchitectFinaleShown(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [earnedFinale, architectFinaleShown]);
 
   const channels = [
     { label: "CONNECT", value: "LinkedIn", href: personalInfo.social.linkedin, blank: true },
@@ -31,6 +53,13 @@ export default function Observatory({ onExit }: { onExit: () => void }) {
         <h1 className={s.title}>The journey never ends.</h1>
         <p className={s.lede}>You have traversed the universe. One question remains — what comes next?</p>
       </header>
+
+      {showFinale && (
+        <section className={s.section} aria-label="A message from the Architect">
+          <h2 className={s.sectionTitle}>The Architect</h2>
+          <ArchitectFinale />
+        </section>
+      )}
 
       <section className={s.section}>
         <h2 className={s.sectionTitle}>Current Mission</h2>

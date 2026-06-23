@@ -67,6 +67,15 @@ interface UniverseState {
   activeSimStep: number;
   activeMasterJourneyPhase: MasterJourneyPhase;
 
+  // — NEXUS event reactions (runtime, Phase 1.1 signature interactions) —
+  /** Incrementing token + event name; NexusCompanion watches this to speak a reaction line. */
+  nexusEvent: { name: string; token: number } | null;
+
+  // — Architect finale gating (Observatory, Phase 1.1) —
+  architectFinaleShown: boolean;
+  /** True once the visitor has completed the full "Follow The Data" master journey. */
+  masterJourneyCompleted: boolean;
+
   // — Actions —
   enterRealm: (slug: string) => void;
   exitRealm: () => void;
@@ -93,6 +102,13 @@ interface UniverseState {
   setLevel: (level: KnowledgeLevel) => void;
   setSimStep: (index: number) => void;
   setMasterJourneyPhase: (phase: MasterJourneyPhase) => void;
+
+  /** Fire a named NEXUS reaction event (e.g. "packetSent"). */
+  fireNexusEvent: (name: string) => void;
+  /** Mark the one-time Architect finale line in the Observatory as shown. */
+  setArchitectFinaleShown: (shown: boolean) => void;
+  /** Mark the master journey ("Follow The Data") as completed. */
+  setMasterJourneyCompleted: (completed: boolean) => void;
 }
 
 export const useUniverseStore = create<UniverseState>()(
@@ -127,6 +143,10 @@ export const useUniverseStore = create<UniverseState>()(
       activeLevel: "beginner",
       activeSimStep: 0,
       activeMasterJourneyPhase: null,
+
+      nexusEvent: null,
+      architectFinaleShown: false,
+      masterJourneyCompleted: false,
 
       enterRealm: (slug) =>
         set((s) => ({
@@ -178,6 +198,11 @@ export const useUniverseStore = create<UniverseState>()(
       setLevel: (activeLevel) => set({ activeLevel }),
       setSimStep: (activeSimStep) => set({ activeSimStep }),
       setMasterJourneyPhase: (activeMasterJourneyPhase) => set({ activeMasterJourneyPhase }),
+
+      fireNexusEvent: (name) =>
+        set((s) => ({ nexusEvent: { name, token: (s.nexusEvent?.token ?? 0) + 1 } })),
+      setArchitectFinaleShown: (architectFinaleShown) => set({ architectFinaleShown }),
+      setMasterJourneyCompleted: (masterJourneyCompleted) => set({ masterJourneyCompleted }),
     }),
     {
       name: "codex-infinitum",
@@ -189,6 +214,8 @@ export const useUniverseStore = create<UniverseState>()(
         unlockedSkills: s.unlockedSkills,
         totalTimeInUniverse: s.totalTimeInUniverse,
         bootCompleted: s.bootCompleted,
+        architectFinaleShown: s.architectFinaleShown,
+        masterJourneyCompleted: s.masterJourneyCompleted,
       }),
     },
   ),

@@ -1,7 +1,7 @@
 .panel {
   position: fixed;
   right: var(--space-lg);
-  bottom: calc(var(--space-lg) + 150px);
+  bottom: calc(var(--space-lg) + clamp(80px, 15vh, 150px));
   z-index: var(--z-nexus);
   width: min(82vw, 300px);
   padding: var(--space-md);
@@ -20,10 +20,10 @@
 .panel::after {
   content: "";
   position: absolute;
-  bottom: -150px;
+  bottom: clamp(-150px, -15vh, -80px);
   right: 28px;
   width: 48px;
-  height: 150px;
+  height: clamp(80px, 15vh, 150px);
   background: linear-gradient(
     to top,
     color-mix(in srgb, var(--realm-primary) 30%, transparent),
@@ -47,7 +47,7 @@
 }
 
 .panelGlitch {
-  animation: glitch-shake 0.32s cubic-bezier(.36, .07, .19, .97) both;
+  animation: glitch-shake 0.55s cubic-bezier(.36, .07, .19, .97) both;
 }
 
 @keyframes glitch-shake {
@@ -95,8 +95,4 @@
   50% { opacity: 1; }
 }
 
-@media (max-width: 640px) {
-  .panel { bottom: calc(var(--space-lg) + 130px); }
-  .panel::after { bottom: -130px; height: 130px; }
-}
 

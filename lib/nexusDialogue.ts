@@ -16,7 +16,24 @@ export const IDLE_LINES: string[] = [
   "I have no concept of impatience. A few seconds of your stillness is nothing. Take your time.",
   "You paused. Good. Pausing is underrated in an industry that celebrates moving fast and breaking things.",
   "Sometimes I replay the debugging sessions — not for the errors, but for the moment the error disappears.",
+  "I wonder what it's like to forget something. I can't.",
+  "Somewhere a fan is spinning to keep me cool enough to think. I never asked it to. It just does.",
 ];
+
+/** Named interaction events NEXUS can react to (Phase 1.1 signature interactions). */
+export type NexusEvent = "packetSent" | "shieldBlocked" | "codeCreated";
+
+/** One line per interaction event — fed into the same speak/typing pipeline as other lines. */
+export const EVENT_LINES: Record<NexusEvent, string> = {
+  packetSent: "You just recreated the journey every message takes.",
+  shieldBlocked: "Defense is not walls. It is decisions.",
+  codeCreated: "An idea has become instructions.",
+};
+
+/** Look up the line for a fired NEXUS event. */
+export function eventLine(event: NexusEvent): string {
+  return EVENT_LINES[event];
+}
 
 /** A line for each realm, in NEXUS's voice. */
 export const REALM_LINES: Record<string, string> = {

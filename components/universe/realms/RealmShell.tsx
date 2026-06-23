@@ -14,6 +14,7 @@ import RealmSimulationStage from "../simulations/RealmSimulationStage";
 import RealmEnvironment from "../environments/RealmEnvironment";
 import FloatingHUDPanel from "../environments/FloatingHUDPanel";
 import HolographicPanel from "../environments/HolographicPanel";
+import RealmSignatureAction from "./RealmSignatureAction";
 import s from "./realm.module.css";
 
 /**
@@ -76,6 +77,8 @@ export default function RealmShell({
   const renderContent = () => (
     <div className={s.content}>
       <RealmHeader realm={realm} content={content} />
+
+      <RealmSignatureAction slug={slug} />
 
       {hasSimulation && (
         isSiliconFoundry ? (
@@ -143,7 +146,7 @@ export default function RealmShell({
       className={`${s.shell} ${s.enter}`}
       data-realm={slug}
       aria-label={`${realm.name} realm`}
-      style={isJourneyActive ? { paddingBottom: "180px" } : undefined}
+      style={isJourneyActive ? { paddingBottom: "clamp(120px, 28vh, 180px)" } : undefined}
     >
       <div className={s.flash} aria-hidden="true" />
       {hasSimulation ? (
