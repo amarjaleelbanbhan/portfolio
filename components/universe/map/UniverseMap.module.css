@@ -97,6 +97,7 @@
 /* ── Travel zoom-out transitions for overlays ── */
 .zooming .statusBar,
 .zooming .hint,
+.zooming .quickLinks,
 .zooming :global(.aside),
 .zooming :global(aside) {
   opacity: 0 !important;
@@ -137,6 +138,40 @@
   box-shadow: 0 0 15px color-mix(in srgb, var(--signal, #60A5FA) 40%, transparent);
 }
 
+.quickLinks {
+  position: fixed;
+  top: calc(var(--space-lg) + 32px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-chrome);
+  display: flex;
+  gap: var(--space-md);
+}
+
+.qlink {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface-2) 65%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 4px var(--space-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-universe);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qlink:hover {
+  color: var(--text-primary);
+  border-color: var(--hairline-strong);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
 @media (max-width: 768px) {
   .followData {
     right: var(--space-lg);
@@ -145,6 +180,15 @@
     top: auto;
     text-align: center;
   }
+  .quickLinks {
+    top: calc(var(--space-lg) + 24px);
+    gap: var(--space-xs);
+  }
+  .qlink {
+    font-size: 0.5rem;
+    padding: 2px var(--space-xs);
+  }
 }
+
 
 

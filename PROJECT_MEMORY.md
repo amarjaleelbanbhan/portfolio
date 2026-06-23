@@ -241,6 +241,7 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - ✅ **Phase 11.0 — Neural Nebula environment:** Build dataset rivers, neural layer grids, backpropagation accelerators, and neural weights adjustment simulation. ✅
 - ✅ **Phase 11.1 — Cloud Expanse environment:** Build load balancers, virtual machine scaling containers, prometheus telemetry, and autoscale request load simulation. ✅
 - ✅ **Phase 11.2 — Master Journey:** Implement "Follow The Data" journey button on the map, full sequential multi-realm simulation transitions, and completion dialog overlays. ✅
+- ✅ **Phase 12 — Experience Quality Audit:** Audit the entire user sequence, fix layout overlaps, implement direct navigation shortcuts for recruiters, and coordinate transition audio/dialogue narration sync. ✅
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---
@@ -252,12 +253,15 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - **TS: `baseUrl` deprecated (fatal in installed TS):** removed `baseUrl`, kept `paths` (resolves relative to tsconfig).
 - **React 19 + R3F compatibility:** used `@react-three/fiber@9` / `@react-three/drei@10` (React 19-compatible). Install clean.
 - **TS type compatibility on dynamic simulation ids:** widened `SimStepId` in `types.ts` to `string` to accommodate custom step names dynamically generated from `REALM_KNOWLEDGE` across all 8 realms.
+- **Narration overlap in Master Journey**: Adjusted `RealmSimulationStage` to check `activeMasterJourneyPhase` and prevent overwriting the custom overview spoken text in step 0.
+- **Visual overlap on mobile viewports**: Set up conditional padding-bottom in `RealmShell` when `isJourneyActive` is true to prevent layout collision with the fixed HUD panel.
+- **Recruiter portfolio clarity**: Added a direct floating header links bar (`[ 👤 PROFILE ] [ 📁 PROJECTS ] [ ✉️ CONTACT ]`) centered directly under the status bar, resolving the 70% experience / 30% professional proof layout balance.
 
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**CODEX INFINITUM WORLD SYSTEM COMPLETE.**
-All development on the 8 core Computer Science worlds is completed. The systems are optimized, build compiles cleanly, and typechecks with zero errors. All R3F scenes, 2D fallbacks, custom visualizers, dynamic HUD layers, and the Master Journey "Follow the Data" flow are fully operational. Ready for deployment and live release.
+**PHASE 12 COMPLETE: Experience Director Audit Passed.**
+The entire system compiles perfectly, builds clean, and passes visual/logical verification. The portfolio balances immersive digital world storytelling with clean, discoverable professional proofs for recruiters. CODEX INFINITUM is ready for merge and production launch.
 
 ---
-*Last updated: 2026-06-23 · End of Phase 11.2 (Master Journey & World System Completion; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 12 (Experience Quality Audit; build green 11 routes, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

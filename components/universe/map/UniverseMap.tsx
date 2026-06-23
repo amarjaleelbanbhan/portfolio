@@ -120,6 +120,35 @@ export default function UniverseMap({ onReplay }: { onReplay?: () => void }) {
         )}
       </header>
 
+      {!zoomingTo && (
+        <div className={styles.quickLinks}>
+          <button
+            type="button"
+            onClick={() => handleEnterRealm("architect-core")}
+            className={styles.qlink}
+            aria-label="Enter Architect Profile Chamber"
+          >
+            👤 PROFILE
+          </button>
+          <button
+            type="button"
+            onClick={() => handleEnterRealm("invention-archive")}
+            className={styles.qlink}
+            aria-label="Enter Inventions and Projects Archive"
+          >
+            📁 PROJECTS
+          </button>
+          <button
+            type="button"
+            onClick={() => handleEnterRealm("the-observatory")}
+            className={styles.qlink}
+            aria-label="Enter Contact and Observatory Chamber"
+          >
+            ✉️ CONTACT
+          </button>
+        </div>
+      )}
+
       <RealmIndex active={active} onHover={setHovered} onSelect={(slug) => selectRealm(slug)} />
 
       <RealmInfoCard slug={active} onEnter={handleEnterRealm} />

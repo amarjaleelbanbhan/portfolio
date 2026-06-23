@@ -136,11 +136,14 @@ export default function RealmShell({
     </div>
   );
 
+  const isJourneyActive = useUniverseStore((st) => st.activeMasterJourneyPhase !== null);
+
   return (
     <main
       className={`${s.shell} ${s.enter}`}
       data-realm={slug}
       aria-label={`${realm.name} realm`}
+      style={isJourneyActive ? { paddingBottom: "180px" } : undefined}
     >
       <div className={s.flash} aria-hidden="true" />
       {hasSimulation ? (

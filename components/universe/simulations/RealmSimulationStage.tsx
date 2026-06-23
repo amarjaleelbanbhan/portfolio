@@ -33,6 +33,7 @@ export default function RealmSimulationStage({ slug }: { slug: string }) {
   const sayNexus = useUniverseStore((s) => s.sayNexus);
   const setNexusAnimState = useUniverseStore((s) => s.setNexusAnimState);
   const selectLandmark = useUniverseStore((s) => s.selectLandmark);
+  const activeMasterJourneyPhase = useUniverseStore((s) => s.activeMasterJourneyPhase);
 
   const autoplayTimer = useRef<number | null>(null);
 
@@ -58,6 +59,17 @@ export default function RealmSimulationStage({ slug }: { slug: string }) {
   // NEXUS narrates the active step through the real companion (no second voice).
   useEffect(() => {
     if (!mounted || !definition) return;
+    
+    // If a master journey is active, let the journey HUD's custom entrance line remain
+    // active for the first simulation step (index 0).
+    if (activeMasterJourneyPhase !== null && activeIndex === 0) {
+      const step = definition.steps[activeIndex];
+      if (step.activeLandmarkId) {
+        selectLandmark(step.activeLandmarkId);
+      }
+      return;
+    }
+
     const step = definition.steps[activeIndex];
     sayNexus(step.nexusLine);
     setNexusAnimState("SPEAKING");
@@ -67,7 +79,7 @@ export default function RealmSimulationStage({ slug }: { slug: string }) {
       selectLandmark(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted, activeIndex, definition]);
+  }, [mounted, activeIndex, definition, activeMasterJourneyPhase]);
 
   if (!definition || !realm) return null;
   if (!mounted) return <div className={styles.stage} aria-hidden="true" />;
