@@ -76,6 +76,12 @@ interface UniverseState {
   /** True once the visitor has completed the full "Follow The Data" master journey. */
   masterJourneyCompleted: boolean;
 
+  // — Signature-action tracking (Phase 14, minimal — persisted) —
+  /** Total signature actions completed across all 6 realms (SEND PACKET, CREATE CODE, etc). */
+  signatureActionsCompleted: number;
+  /** Per-realm count of signature actions, keyed by realm slug. */
+  signatureActionsByRealm: Record<string, number>;
+
   // — Actions —
   enterRealm: (slug: string) => void;
   exitRealm: () => void;
@@ -109,6 +115,10 @@ interface UniverseState {
   setArchitectFinaleShown: (shown: boolean) => void;
   /** Mark the master journey ("Follow The Data") as completed. */
   setMasterJourneyCompleted: (completed: boolean) => void;
+  /** Record a completed signature action for a realm (increments totals). */
+  recordSignatureAction: (slug: string) => void;
+  /** The realm slug with the most recorded signature actions, if any. */
+  mostInteractedRealm: () => string | null;
 }
 
 export const useUniverseStore = create<UniverseState>()(
@@ -147,6 +157,9 @@ export const useUniverseStore = create<UniverseState>()(
       nexusEvent: null,
       architectFinaleShown: false,
       masterJourneyCompleted: false,
+
+      signatureActionsCompleted: 0,
+      signatureActionsByRealm: {},
 
       enterRealm: (slug) =>
         set((s) => ({
@@ -203,6 +216,27 @@ export const useUniverseStore = create<UniverseState>()(
         set((s) => ({ nexusEvent: { name, token: (s.nexusEvent?.token ?? 0) + 1 } })),
       setArchitectFinaleShown: (architectFinaleShown) => set({ architectFinaleShown }),
       setMasterJourneyCompleted: (masterJourneyCompleted) => set({ masterJourneyCompleted }),
+
+      recordSignatureAction: (slug) =>
+        set((s) => ({
+          signatureActionsCompleted: s.signatureActionsCompleted + 1,
+          signatureActionsByRealm: {
+            ...s.signatureActionsByRealm,
+            [slug]: (s.signatureActionsByRealm[slug] ?? 0) + 1,
+          },
+        })),
+      mostInteractedRealm: () => {
+        const byRealm = get().signatureActionsByRealm;
+        let best: string | null = null;
+        let bestCount = 0;
+        for (const [slug, count] of Object.entries(byRealm)) {
+          if (count > bestCount) {
+            best = slug;
+            bestCount = count;
+          }
+        }
+        return best;
+      },
     }),
     {
       name: "codex-infinitum",
@@ -216,6 +250,8 @@ export const useUniverseStore = create<UniverseState>()(
         bootCompleted: s.bootCompleted,
         architectFinaleShown: s.architectFinaleShown,
         masterJourneyCompleted: s.masterJourneyCompleted,
+        signatureActionsCompleted: s.signatureActionsCompleted,
+        signatureActionsByRealm: s.signatureActionsByRealm,
       }),
     },
   ),

@@ -29,6 +29,7 @@ export default function NetworkPathwaysScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 1, -2));
   const firewallPulseRef = useRef<THREE.Mesh>(null);
   const dnsPulseRef = useRef<THREE.Mesh>(null);
+  const ambientPacketRefs = useRef<(THREE.Mesh | null)[]>([]);
 
   // Overview coordinates
   const overviewPos: [number, number, number] = [12, 10, 15];
@@ -202,6 +203,23 @@ export default function NetworkPathwaysScene({
         firewallPulseRef.current.position.lerpVectors(coords.firewall, coords.server, local);
       }
     }
+
+    // Ambient background traffic: small packets continuously traveling the
+    // full client→dns→router→firewall→server path, independent of the
+    // active sim step — "alternate routes" at different speeds (Phase 14 §1).
+    if (arrivalDone && !reduced) {
+      const route = [coords.client, coords.dns, coords.router, coords.firewall, coords.server];
+      const speeds = [0.12, 0.18, 0.09];
+      ambientPacketRefs.current.forEach((mesh, i) => {
+        if (!mesh) return;
+        const speed = speeds[i % speeds.length];
+        const segLen = route.length - 1;
+        const progress = ((t * speed + i * 0.33) % 1.0) * segLen;
+        const segIndex = Math.min(Math.floor(progress), segLen - 1);
+        const local = progress - segIndex;
+        mesh.position.lerpVectors(route[segIndex], route[segIndex + 1], local);
+      });
+    }
   });
 
   return (
@@ -253,6 +271,21 @@ export default function NetworkPathwaysScene({
           <meshBasicMaterial color="#38BDF8" toneMapped={false} />
         </mesh>
       )}
+
+      {/* Ambient background traffic — independent of the active sim step */}
+      {arrivalDone &&
+        !reduced &&
+        [0, 1, 2].map((i) => (
+          <mesh
+            key={`ambient-packet-${i}`}
+            ref={(el) => {
+              ambientPacketRefs.current[i] = el;
+            }}
+          >
+            <sphereGeometry args={[0.1, 8, 8]} />
+            <meshBasicMaterial color="#0D9488" transparent opacity={0.55} toneMapped={false} />
+          </mesh>
+        ))}
 
       {/* ── Landmark 1: Client Terminal ── */}
       <group

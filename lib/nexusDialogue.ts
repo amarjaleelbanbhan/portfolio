@@ -21,13 +21,22 @@ export const IDLE_LINES: string[] = [
 ];
 
 /** Named interaction events NEXUS can react to (Phase 1.1 signature interactions). */
-export type NexusEvent = "packetSent" | "shieldBlocked" | "codeCreated";
+export type NexusEvent =
+  | "packetSent"
+  | "shieldBlocked"
+  | "codeCreated"
+  | "processStarted"
+  | "databaseQueried"
+  | "modelTrained";
 
 /** One line per interaction event — fed into the same speak/typing pipeline as other lines. */
 export const EVENT_LINES: Record<NexusEvent, string> = {
   packetSent: "You just recreated the journey every message takes.",
   shieldBlocked: "Defense is not walls. It is decisions.",
   codeCreated: "An idea has become instructions.",
+  processStarted: "You just decided whose turn it is. That's scheduling.",
+  databaseQueried: "You asked a question and the architecture answered. That's a query.",
+  modelTrained: "It didn't memorize. It adjusted. That's learning.",
 };
 
 /** Look up the line for a fired NEXUS event. */

@@ -42,6 +42,8 @@ export default function NexusCompanion() {
   const knowledgeOpen = useUniverseStore((s) => s.knowledgeOpen);
   const nexusEvent = useUniverseStore((s) => s.nexusEvent);
   const visited = useUniverseStore((s) => s.visitedRealms);
+  const signatureActionsCompleted = useUniverseStore((s) => s.signatureActionsCompleted);
+  const mostInteractedRealm = useUniverseStore((s) => s.mostInteractedRealm);
   const tier = useUniverseStore((s) => s.deviceTier);
   const isJourneyActive = useUniverseStore((s) => s.activeMasterJourneyPhase !== null);
   const setMode = useUniverseStore((s) => s.setNexusMode);
@@ -74,7 +76,19 @@ export default function NexusCompanion() {
   const armIdle = () => {
     if (idleTimer.current) window.clearTimeout(idleTimer.current);
     idleTimer.current = window.setTimeout(() => {
-      if (!useUniverseStore.getState().nexusDialogue && !useUniverseStore.getState().hoveredRealm) {
+      const st = useUniverseStore.getState();
+      if (!st.nexusDialogue && !st.hoveredRealm) {
+        // Once the visitor has earned it (3+ signature actions), occasionally
+        // reference whichever realm they've engaged with most — small, optional
+        // personalization layered onto the existing idle-line cycle.
+        if (st.signatureActionsCompleted >= 3) {
+          const topSlug = st.mostInteractedRealm();
+          const topName = topSlug && REALM_BY_SLUG[topSlug]?.name;
+          if (topName) {
+            speak(`You keep returning to ${topName}. That tells me something about what you're chasing.`);
+            return;
+          }
+        }
         speak(nextIdleLine());
       }
     }, 15000);

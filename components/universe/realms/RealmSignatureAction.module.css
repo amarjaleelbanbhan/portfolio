@@ -164,6 +164,124 @@
   min-height: 1.2em;
 }
 
+/* ── The Kernel: process lifecycle slots ── */
+.kernelStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+
+.kernelSlot {
+  position: relative;
+  width: 64px;
+  height: 40px;
+  border: 1px dashed color-mix(in srgb, var(--realm-primary) 45%, transparent);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kernelSlot::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.kernelCpu { border-style: solid; }
+
+.kernelBlock {
+  width: 28px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--realm-primary);
+  box-shadow: 0 0 10px var(--realm-primary);
+  animation: kernelPop 0.3s ease;
+}
+
+@keyframes kernelPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ── Data Archives: index → block query ── */
+.queryStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.queryNode {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.1em;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid color-mix(in srgb, var(--realm-primary) 35%, transparent);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.queryActive {
+  background: color-mix(in srgb, var(--realm-primary) 28%, transparent);
+  border-color: var(--realm-primary);
+  color: var(--text-primary);
+}
+
+.queryArrow { color: var(--text-dim); }
+
+/* ── Neural Nebula: train loop (predict / error / adjust) ── */
+.trainStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.trainBar {
+  width: 90px;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--realm-primary) 25%, transparent);
+  transition: background 400ms ease;
+}
+
+.trainBarActive {
+  background: var(--realm-primary);
+  box-shadow: 0 0 8px var(--realm-primary);
+}
+
+.errorDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+  opacity: 0;
+  transform: scale(1);
+  transition: transform 500ms ease, opacity 300ms ease;
+}
+
+.errorShrink {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.errorGone {
+  opacity: 0;
+  transform: scale(0.2);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .codeLine, .rung, .pulse { animation-duration: 0.01ms; animation-iteration-count: 1; }
+  .codeLine, .rung, .pulse, .kernelBlock { animation-duration: 0.01ms; animation-iteration-count: 1; }
+  .queryNode, .trainBar, .errorDot { transition-duration: 0.01ms; }
 }

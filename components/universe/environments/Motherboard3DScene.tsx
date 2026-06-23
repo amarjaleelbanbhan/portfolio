@@ -41,6 +41,7 @@ export default function Motherboard3DScene({
   const ramBlocksRef = useRef<THREE.Group>(null);
   const mainPulseRef = useRef<THREE.Mesh>(null);
   const secPulseRef = useRef<THREE.Mesh>(null);
+  const logicCoreRef = useRef<THREE.Mesh>(null);
 
   // Camera look-at target reference
   const cameraTarget = useRef(new THREE.Vector3(0, -2.4, -10));
@@ -261,6 +262,15 @@ export default function Motherboard3DScene({
         const yPos = -2.5 + ((t * speed + offset) % 6.5);
         mesh.position.y = yPos;
       });
+    }
+
+    // CPU heartbeat propagating outward: the logic-gate factory brightens
+    // in sync with the same clock cycle that drives the CPU core pulse — a
+    // literal "the wave reaches nearby components" beat (Phase 14 ambient §1).
+    if (logicCoreRef.current && arrivalDone && !reduced) {
+      const material = logicCoreRef.current.material as THREE.MeshBasicMaterial;
+      const cycle = Math.sin(t * 3.5);
+      material.opacity = 0.5 + Math.max(0, cycle) * 0.35;
     }
   });
 
@@ -534,7 +544,7 @@ export default function Motherboard3DScene({
           />
         </mesh>
         {/* Glowing logical cylinders */}
-        <mesh position={[0, -0.7, 0]}>
+        <mesh ref={logicCoreRef} position={[0, -0.7, 0]}>
           <cylinderGeometry args={[1.0, 1.0, 2.0, 12]} />
           <meshBasicMaterial
             color={activeLandmark === "logic-factory" ? "#FFF7E6" : "#EF4444"}

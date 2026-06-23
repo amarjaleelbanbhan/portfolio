@@ -29,6 +29,8 @@ export default function TheKernelScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 0, -4));
   const schedulerRotationRef = useRef<THREE.Group>(null);
   const securityRingsRef = useRef<THREE.Group>(null);
+  const roundRobinRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const ROUND_ROBIN_SLOTS = 6;
 
   // Overview coordinates from registry cameraOverview
   const overviewPos: [number, number, number] = [0, 8, 14];
@@ -178,6 +180,17 @@ export default function TheKernelScene({
         child.rotation.z = t * (0.2 * (i + 1));
       });
     }
+
+    // Round-robin scheduler tick: a literal "whose turn is it" cycle through
+    // process slots, one lit brighter than the rest at any time (Phase 14 §1).
+    if (arrivalDone && !reduced) {
+      const activeSlot = Math.floor(t / 1.2) % ROUND_ROBIN_SLOTS;
+      roundRobinRefs.current.forEach((mesh, i) => {
+        if (!mesh) return;
+        const material = mesh.material as THREE.MeshBasicMaterial;
+        material.opacity = i === activeSlot ? 0.95 : 0.25;
+      });
+    }
   });
 
   return (
@@ -203,6 +216,30 @@ export default function TheKernelScene({
         <meshStandardMaterial color="#030406" roughness={0.7} metalness={0.4} />
       </mesh>
       <gridHelper args={[100, 100, "#22D3EE", "#0B0E0D"]} position={[0, -2.99, 0]} />
+
+      {/* ── Ambient: round-robin process-slot ring (Phase 14 §1) ── */}
+      {arrivalDone &&
+        !reduced &&
+        Array.from({ length: ROUND_ROBIN_SLOTS }).map((_, i) => {
+          const angle = (i / ROUND_ROBIN_SLOTS) * Math.PI * 2;
+          const r = 2.6;
+          return (
+            <mesh
+              key={`round-robin-${i}`}
+              ref={(el) => {
+                roundRobinRefs.current[i] = el;
+              }}
+              position={[
+                coords["scheduler-tower"].x + Math.cos(angle) * r,
+                coords["scheduler-tower"].y - 1.6,
+                coords["scheduler-tower"].z + Math.sin(angle) * r,
+              ]}
+            >
+              <boxGeometry args={[0.35, 0.35, 0.35]} />
+              <meshBasicMaterial color="#22D3EE" transparent opacity={0.25} toneMapped={false} />
+            </mesh>
+          );
+        })}
 
       {/* ── Landmark 1: Process Scheduler Tower ── */}
       <group

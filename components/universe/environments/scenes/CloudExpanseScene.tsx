@@ -29,6 +29,7 @@ export default function CloudExpanseScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 0, -4));
   const balancerRadarRef = useRef<THREE.Group>(null);
   const serverClusterRef = useRef<THREE.Group>(null);
+  const elasticNodeRefs = useRef<(THREE.Mesh | null)[]>([]);
 
   // Overview coordinates from registry cameraOverview
   const overviewPos: [number, number, number] = [0, 8, 12];
@@ -160,6 +161,24 @@ export default function CloudExpanseScene({
         child.scale.set(1.0, scaleVal, 1.0);
       });
     }
+
+    // Elastic scaling: 1-2 duplicate node instances fade in near the cluster
+    // and fade back out a few seconds later, on independent loops (Phase 14 §1).
+    if (arrivalDone && !reduced) {
+      const period = 5.0;
+      elasticNodeRefs.current.forEach((mesh, i) => {
+        if (!mesh) return;
+        const phase = ((t + i * 2.4) % period) / period; // 0..1
+        // Fade in over first 25%, hold, fade out over last 25%.
+        let opacity = 0;
+        if (phase < 0.25) opacity = phase / 0.25;
+        else if (phase < 0.7) opacity = 1;
+        else opacity = 1 - (phase - 0.7) / 0.3;
+        const material = mesh.material as THREE.MeshStandardMaterial;
+        material.opacity = opacity * 0.6;
+        mesh.visible = opacity > 0.01;
+      });
+    }
   });
 
   return (
@@ -275,6 +294,21 @@ export default function CloudExpanseScene({
             ))
           )}
         </group>
+        {/* Ambient elastic-scaling nodes — fade in/out near the main cluster */}
+        {arrivalDone &&
+          !reduced &&
+          [0, 1].map((i) => (
+            <mesh
+              key={`elastic-node-${i}`}
+              ref={(el) => {
+                elasticNodeRefs.current[i] = el;
+              }}
+              position={[i === 0 ? 1.6 : -1.6, -1.2, i === 0 ? 1.6 : -1.6]}
+            >
+              <boxGeometry args={[0.4, 1.2, 0.4]} />
+              <meshStandardMaterial color="#ffffff" roughness={0.2} transparent opacity={0} />
+            </mesh>
+          ))}
         {arrivalDone && (
           <Html position={[0, 0.2, 0]} center distanceFactor={14}>
             <HolographicPanel className={s.floatingLabel}>

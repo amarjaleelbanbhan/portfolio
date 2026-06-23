@@ -29,6 +29,8 @@ export default function CyberCitadelScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 0, -4));
   const lockCylinderRef = useRef<THREE.Group>(null);
   const gateLaserRef = useRef<THREE.Mesh>(null);
+  const ambientShieldPulseRef = useRef<THREE.Mesh>(null);
+  const ambientShieldState = useRef({ cycleStart: 0, cycleLength: 5 });
 
   // Overview coordinates from registry cameraOverview
   const overviewPos: [number, number, number] = [0, 8, 12];
@@ -158,6 +160,23 @@ export default function CyberCitadelScene({
     if (gateLaserRef.current) {
       gateLaserRef.current.position.x = Math.sin(t * 2) * 0.8;
     }
+
+    // Ambient threat: an occasional small pulse approaches the encryption
+    // chamber ("shield") from outside and is absorbed/deflected at its
+    // boundary — ambient, not user-triggered (Phase 14 §1).
+    if (ambientShieldPulseRef.current && arrivalDone && !reduced) {
+      const qs = ambientShieldState.current;
+      const elapsed = t - qs.cycleStart;
+      if (elapsed > qs.cycleLength) {
+        qs.cycleStart = t;
+        qs.cycleLength = 4 + Math.random() * 2; // 4-6s
+      }
+      const travelDuration = 1.0;
+      const local = Math.min(elapsed / travelDuration, 1);
+      ambientShieldPulseRef.current.visible = local < 1;
+      // Approaches from outside (local z) toward the shield core at origin.
+      ambientShieldPulseRef.current.position.set(0, 0.2 + (1 - local) * 0.4, 4 - local * 4);
+    }
   });
 
   return (
@@ -272,6 +291,13 @@ export default function CyberCitadelScene({
           <sphereGeometry args={[0.3, 16, 16]} />
           <meshBasicMaterial color="#22C55E" toneMapped={false} />
         </mesh>
+        {/* Ambient incoming threat pulse, absorbed at the shield boundary */}
+        {arrivalDone && !reduced && (
+          <mesh ref={ambientShieldPulseRef}>
+            <sphereGeometry args={[0.16, 10, 10]} />
+            <meshBasicMaterial color="#EF4444" toneMapped={false} />
+          </mesh>
+        )}
         {arrivalDone && (
           <Html position={[0, 2.2, 0]} center distanceFactor={14}>
             <HolographicPanel className={s.floatingLabel}>

@@ -14,12 +14,16 @@ export default function RealmSignatureAction({ slug }: { slug: string }) {
   if (slug === "network-pathways") return <NetworkPacketAction />;
   if (slug === "code-helix") return <CodeHelixAction />;
   if (slug === "the-citadel") return <CitadelDefendAction />;
+  if (slug === "the-kernel") return <KernelProcessAction />;
+  if (slug === "data-archives") return <DatabaseQueryAction />;
+  if (slug === "neural-nebula") return <ModelTrainAction />;
   return null;
 }
 
 // ── Network Pathways: SEND PACKET ───────────────────────────────────────────
 function NetworkPacketAction() {
   const fireNexusEvent = useUniverseStore((s) => s.fireNexusEvent);
+  const recordSignatureAction = useUniverseStore((s) => s.recordSignatureAction);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
 
@@ -31,6 +35,7 @@ function NetworkPacketAction() {
       setSending(false);
       setStatus("Packet delivered.");
       fireNexusEvent("packetSent");
+      recordSignatureAction("network-pathways");
     }, 1100);
   };
 
@@ -64,6 +69,7 @@ const CODE_SAMPLES = [
 
 function CodeHelixAction() {
   const fireNexusEvent = useUniverseStore((s) => s.fireNexusEvent);
+  const recordSignatureAction = useUniverseStore((s) => s.recordSignatureAction);
   const [creating, setCreating] = useState(false);
   const [line, setLine] = useState<string | null>(null);
   const [rungKey, setRungKey] = useState(0);
@@ -79,6 +85,7 @@ function CodeHelixAction() {
     window.setTimeout(() => {
       setCreating(false);
       fireNexusEvent("codeCreated");
+      recordSignatureAction("code-helix");
     }, 1400);
   };
 
@@ -99,6 +106,7 @@ function CodeHelixAction() {
 // ── Cyber Citadel: DEFEND ───────────────────────────────────────────────────
 function CitadelDefendAction() {
   const fireNexusEvent = useUniverseStore((s) => s.fireNexusEvent);
+  const recordSignatureAction = useUniverseStore((s) => s.recordSignatureAction);
   const [phase, setPhase] = useState<"idle" | "incoming" | "blocked" | "hit">("idle");
   const windowOpenRef = useRef(false);
   const timersRef = useRef<number[]>([]);
@@ -141,6 +149,7 @@ function CitadelDefendAction() {
       clearTimers();
       setPhase("blocked");
       fireNexusEvent("shieldBlocked");
+      recordSignatureAction("the-citadel");
     }
   };
 
@@ -162,6 +171,133 @@ function CitadelDefendAction() {
         {phase === "incoming" && "Attack incoming — click Defend again to intercept."}
         {phase === "blocked" && "Intercepted. The decision held."}
         {phase === "hit" && "Too slow — the packet got through. Try again."}
+      </p>
+    </div>
+  );
+}
+
+// ── The Kernel: START PROCESS ───────────────────────────────────────────────
+function KernelProcessAction() {
+  const fireNexusEvent = useUniverseStore((s) => s.fireNexusEvent);
+  const recordSignatureAction = useUniverseStore((s) => s.recordSignatureAction);
+  const [stage, setStage] = useState<"idle" | "queued" | "scheduled" | "running" | "done">("idle");
+
+  const start = () => {
+    if (stage !== "idle" && stage !== "done") return;
+    setStage("queued");
+    window.setTimeout(() => setStage("scheduled"), 500);
+    window.setTimeout(() => setStage("running"), 1000);
+    window.setTimeout(() => {
+      setStage("done");
+      fireNexusEvent("processStarted");
+      recordSignatureAction("the-kernel");
+    }, 1700);
+  };
+
+  return (
+    <div className={styles.wrap} data-testid="kernel-process-action">
+      <p className={styles.kicker}>Signature Interaction</p>
+      <button type="button" className={styles.action} onClick={start} disabled={stage !== "idle" && stage !== "done"}>
+        {stage === "idle" || stage === "done" ? "Start Process" : "Scheduling…"}
+      </button>
+      <div className={`${styles.stage} ${styles.kernelStage}`}>
+        <span className={styles.kernelSlot} data-label="QUEUE">
+          {stage === "queued" && <span className={styles.kernelBlock} aria-hidden="true" />}
+        </span>
+        <span className={styles.kernelSlot} data-label="SCHEDULER">
+          {stage === "scheduled" && <span className={styles.kernelBlock} aria-hidden="true" />}
+        </span>
+        <span className={`${styles.kernelSlot} ${styles.kernelCpu}`} data-label="CPU">
+          {stage === "running" && <span className={styles.kernelBlock} aria-hidden="true" />}
+        </span>
+      </div>
+      <p className={styles.status} aria-live="polite">
+        {stage === "queued" && "Process enters the queue, waiting its turn."}
+        {stage === "scheduled" && "The scheduler picks it next."}
+        {stage === "running" && "It occupies the CPU — its time slice has begun."}
+        {stage === "done" && "Time slice expired. The process exits cleanly."}
+      </p>
+    </div>
+  );
+}
+
+// ── Data Archives: QUERY DATABASE ───────────────────────────────────────────
+function DatabaseQueryAction() {
+  const fireNexusEvent = useUniverseStore((s) => s.fireNexusEvent);
+  const recordSignatureAction = useUniverseStore((s) => s.recordSignatureAction);
+  const [stage, setStage] = useState<"idle" | "index" | "block" | "done">("idle");
+
+  const query = () => {
+    if (stage !== "idle" && stage !== "done") return;
+    setStage("index");
+    window.setTimeout(() => setStage("block"), 600);
+    window.setTimeout(() => {
+      setStage("done");
+      fireNexusEvent("databaseQueried");
+      recordSignatureAction("data-archives");
+    }, 1300);
+  };
+
+  return (
+    <div className={styles.wrap} data-testid="database-query-action">
+      <p className={styles.kicker}>Signature Interaction</p>
+      <button type="button" className={styles.action} onClick={query} disabled={stage !== "idle" && stage !== "done"}>
+        {stage === "idle" || stage === "done" ? "Query Database" : "Querying…"}
+      </button>
+      <div className={`${styles.stage} ${styles.queryStage}`}>
+        <span className={`${styles.queryNode}${stage === "index" || stage === "block" || stage === "done" ? ` ${styles.queryActive}` : ""}`}>
+          INDEX
+        </span>
+        <span className={styles.queryArrow} aria-hidden="true">→</span>
+        <span className={`${styles.queryNode}${stage === "block" || stage === "done" ? ` ${styles.queryActive}` : ""}`}>
+          BLOCK
+        </span>
+      </div>
+      <p className={styles.status} aria-live="polite">
+        {stage === "index" && "Scanning the index for a matching key…"}
+        {stage === "block" && "Found it — fetching the data block."}
+        {stage === "done" && "Row returned. The architecture answered."}
+      </p>
+    </div>
+  );
+}
+
+// ── Neural Nebula: TRAIN MODEL ──────────────────────────────────────────────
+function ModelTrainAction() {
+  const fireNexusEvent = useUniverseStore((s) => s.fireNexusEvent);
+  const recordSignatureAction = useUniverseStore((s) => s.recordSignatureAction);
+  const [stage, setStage] = useState<"idle" | "predict" | "error" | "adjust" | "done">("idle");
+
+  const train = () => {
+    if (stage !== "idle" && stage !== "done") return;
+    setStage("predict");
+    window.setTimeout(() => setStage("error"), 550);
+    window.setTimeout(() => setStage("adjust"), 1100);
+    window.setTimeout(() => {
+      setStage("done");
+      fireNexusEvent("modelTrained");
+      recordSignatureAction("neural-nebula");
+    }, 1700);
+  };
+
+  return (
+    <div className={styles.wrap} data-testid="model-train-action">
+      <p className={styles.kicker}>Signature Interaction</p>
+      <button type="button" className={styles.action} onClick={train} disabled={stage !== "idle" && stage !== "done"}>
+        {stage === "idle" || stage === "done" ? "Train Model" : "Training…"}
+      </button>
+      <div className={`${styles.stage} ${styles.trainStage}`}>
+        <span className={`${styles.trainBar}${stage !== "idle" ? ` ${styles.trainBarActive}` : ""}`} aria-hidden="true" />
+        <span
+          className={`${styles.errorDot}${stage === "error" ? ` ${styles.errorShrink}` : ""}${stage === "adjust" || stage === "done" ? ` ${styles.errorGone}` : ""}`}
+          aria-hidden="true"
+        />
+      </div>
+      <p className={styles.status} aria-live="polite">
+        {stage === "predict" && "Forward pass — the model makes a guess."}
+        {stage === "error" && "Wrong. The error is measured."}
+        {stage === "adjust" && "Weights adjust to shrink that error."}
+        {stage === "done" && "It didn't memorize. It adjusted."}
       </p>
     </div>
   );

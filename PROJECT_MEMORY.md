@@ -243,6 +243,8 @@ All three Phase-0 open questions confirmed by user: **TypeScript · App Router �
 - ✅ **Phase 11.2 — Master Journey:** Implement "Follow The Data" journey button on the map, full sequential multi-realm simulation transitions, and completion dialog overlays. ✅
 - ✅ **Phase 12 — Experience Quality Audit:** Audit the entire user sequence, fix layout overlaps, implement direct navigation shortcuts for recruiters, and coordinate transition audio/dialogue narration sync. ✅
 - ✅ **Phase 13 — WOW Restoration Pass:** Deep experience audit (Director/Pixar/UX/recruiter/CS-teacher lens) found the journey was a "beautiful interactive CS encyclopedia" lacking emotion, identity, and interaction. Implemented the 6 highest-impact fixes (no new worlds, no engine rebuild). ✅
+- ✅ **Phase 13.5 — Stability/Polish Pass:** Multi-angle audit (UI/responsive, 3D, animation, architecture, live experience) → 9 real fixes (boot-screen contrast + mobile dead-space layout bug in both `CinematicCamera` and `ArchitectAvatar`, journey padding, NEXUS/HUD overlap, dialogue sizing, glitch timing, quick-links overflow, unmount leak). 4 audit findings investigated and disproven rather than blindly fixed. Committed `be72307`. ✅
+- ✅ **Phase 14 — Presence & Gameplay Pass:** Added ambient always-on background life to all 8 realm scenes (CPU heartbeat propagation, traveling network packets, kernel scheduler ring, code-helix instruction flow, data-archive query pulses, cyber-citadel ambient attacks, cloud auto-scale echo nodes, neural re-weighting), 3 new signature player actions (Kernel START PROCESS, Data Archives QUERY DATABASE, Neural Nebula TRAIN MODEL — Network/Code Helix/Cyber Citadel already existed from Phase 13), NEXUS event lines + minimal action-tracking (`signatureActionsCompleted`, `mostInteractedRealm`), a lightweight compress/expand realm-entry transition, and a bridge from the Master Journey completion modal into the existing Architect finale in the Observatory. No new realms/architecture. ✅
 - [ ] **Release:** merge `codex-infinitum` → `main` + deploy (Vercel). **Awaiting approval — do not merge/deploy yet.**
 
 ---
@@ -274,8 +276,8 @@ Verified: `tsc --noEmit` clean, `npm run build` green. Not committed — awaitin
 ---
 
 ## 9. ▶️ NEXT RECOMMENDED ACTION
-**PHASE 13 COMPLETE: WOW Restoration implemented, build green, not yet committed.**
-Remaining gaps from the audit not addressed this pass (candidates for Phase 14): sound design (still fully silent), signature interactions for Kernel/Data Archives/Neural Nebula/Cloud Expanse, Cloud Expanse node identity, a midpoint narrative challenge tying realms together, and one hidden easter egg. Awaiting user review/approval before committing Phase 13 changes, then merge/deploy decision for `codex-infinitum` → `main`.
+**PHASE 14 COMPLETE: build green, tsc clean, not yet committed at time of writing (commit follows this update per explicit instruction).**
+Remaining gaps not addressed: sound design (still fully silent — biggest remaining gap across all phases), Cloud Expanse map-node visual identity (deferred since Phase 13), a midpoint narrative challenge tying realms together, one hidden easter egg, and the Neural Nebula ambient re-weighting used new (minor) geometry rather than reusing existing — flagged as a small deviation from "reuse only," worth a glance if revisited. Next decision: merge/deploy `codex-infinitum` → `main`, or continue with sound design as the next highest-leverage gap.
 
 ---
-*Last updated: 2026-06-23 · End of Phase 13 (WOW Restoration Pass; build green, tsc clean, NOT committed). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*
+*Last updated: 2026-06-23 · End of Phase 14 (Presence & Gameplay Pass; build green, tsc clean). Branch: `codex-infinitum` (NOT merged/deployed). Protocol: plan → implement one feature → test → report → commit → STOP for approval.*

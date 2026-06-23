@@ -29,6 +29,15 @@ export default function NeuralNebulaScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 0, -4));
   const datasetStreamRef = useRef<THREE.Group>(null);
   const neuralGalaxyRef = useRef<THREE.Group>(null);
+  const reweightRefs = useRef<(THREE.Mesh | null)[]>([]);
+
+  // A few input→hidden connections, defined as local-space endpoints inside
+  // the neural-galaxy landmark group (Phase 14 §1: subtle continuous
+  // re-weighting — connections slowly thicken/thin on a loop).
+  const reweightLinks = [
+    { a: new THREE.Vector3(-1.2, 0.2, 0), b: new THREE.Vector3(0, -1.3, 0) },
+    { a: new THREE.Vector3(-1.2, 1.2, 0), b: new THREE.Vector3(0, -0.3, 0) },
+  ];
 
   // Overview coordinates from registry cameraOverview
   const overviewPos: [number, number, number] = [0, 8, 12];
@@ -158,6 +167,18 @@ export default function NeuralNebulaScene({
     if (neuralGalaxyRef.current) {
       neuralGalaxyRef.current.rotation.y = t * 0.15;
     }
+
+    // Subtle continuous re-weighting: a couple of connection lines slowly
+    // thicken/thin on independent loops (Phase 14 §1).
+    if (arrivalDone && !reduced) {
+      reweightRefs.current.forEach((mesh, i) => {
+        if (!mesh) return;
+        const weight = 0.4 + 0.5 * (0.5 + 0.5 * Math.sin(t * 0.5 + i * 1.7));
+        mesh.scale.set(weight, 1, weight);
+        const material = mesh.material as THREE.MeshBasicMaterial;
+        material.opacity = 0.25 + weight * 0.4;
+      });
+    }
   });
 
   return (
@@ -278,6 +299,32 @@ export default function NeuralNebulaScene({
           <cylinderGeometry args={[2.0, 2.0, 0.4, 12]} />
           <meshStandardMaterial color="#0A0F14" roughness={0.4} />
         </mesh>
+        {/* Ambient re-weighting: a couple of input→hidden connections that
+            slowly thicken/thin, representing weights updating over time. */}
+        {arrivalDone &&
+          !reduced &&
+          reweightLinks.map((link, i) => {
+            const mid = link.a.clone().lerp(link.b, 0.5);
+            const dir = link.b.clone().sub(link.a);
+            const length = dir.length();
+            const quaternion = new THREE.Quaternion().setFromUnitVectors(
+              new THREE.Vector3(0, 1, 0),
+              dir.clone().normalize()
+            );
+            return (
+              <mesh
+                key={`reweight-${i}`}
+                ref={(el) => {
+                  reweightRefs.current[i] = el;
+                }}
+                position={mid}
+                quaternion={quaternion}
+              >
+                <cylinderGeometry args={[0.025, 0.025, length, 6]} />
+                <meshBasicMaterial color="#8B5CF6" transparent opacity={0.4} toneMapped={false} />
+              </mesh>
+            );
+          })}
         {arrivalDone && (
           <Html position={[0, 2.6, 0]} center distanceFactor={14}>
             <HolographicPanel className={s.floatingLabel}>

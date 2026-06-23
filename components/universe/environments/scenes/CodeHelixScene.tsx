@@ -29,6 +29,7 @@ export default function CodeHelixScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 1, -4));
   const compilerSpireRef = useRef<THREE.Group>(null);
   const stackEngineRef = useRef<THREE.Group>(null);
+  const helixPulseRefs = useRef<(THREE.Mesh | null)[]>([]);
 
   // Overview coordinates
   const overviewPos: [number, number, number] = [0, 8, 12];
@@ -176,6 +177,20 @@ export default function CodeHelixScene({
         child.position.y = Math.sin(t * 1.5 + i) * 0.3;
       });
     }
+
+    // Instructions flowing through execution: small light pulses traveling
+    // up the compiler's double-helix spire on a loop (Phase 14 §1). Positions
+    // are local to the compiler-engine landmark group.
+    if (arrivalDone && !reduced) {
+      helixPulseRefs.current.forEach((mesh, i) => {
+        if (!mesh) return;
+        const loopVal = (t * 0.6 + i * 0.33) % 1.0;
+        const y = -1.9 + loopVal * 4.2;
+        const angle = loopVal * Math.PI * 4 + i * 2.4;
+        const r = 0.8;
+        mesh.position.set(Math.cos(angle) * r, y, Math.sin(angle) * r);
+      });
+    }
   });
 
   return (
@@ -288,6 +303,20 @@ export default function CodeHelixScene({
           <cylinderGeometry args={[0.15, 0.3, 4.2, 8]} />
           <meshStandardMaterial color="#1e1b4b" roughness={0.3} metalness={0.9} />
         </mesh>
+        {/* Ambient instruction pulses traveling up the helix */}
+        {arrivalDone &&
+          !reduced &&
+          [0, 1, 2].map((i) => (
+            <mesh
+              key={`helix-pulse-${i}`}
+              ref={(el) => {
+                helixPulseRefs.current[i] = el;
+              }}
+            >
+              <sphereGeometry args={[0.1, 8, 8]} />
+              <meshBasicMaterial color="#22C55E" toneMapped={false} />
+            </mesh>
+          ))}
         {arrivalDone && (
           <Html position={[0, 2.8, 0]} center distanceFactor={14}>
             <HolographicPanel className={s.floatingLabel}>

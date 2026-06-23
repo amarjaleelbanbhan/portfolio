@@ -91,6 +91,7 @@ export default function MasterJourneyHUD() {
   const setNexusAnimState = useUniverseStore((s) => s.setNexusAnimState);
   const setNexusVisible = useUniverseStore((s) => s.setNexusVisible);
   const setMasterJourneyCompleted = useUniverseStore((s) => s.setMasterJourneyCompleted);
+  const enterRealmForFinale = useUniverseStore((s) => s.enterRealm);
 
   const [isPlaying, setIsPlaying] = useState(true);
   const [timeLeft, setTimeLeft] = useState(STAGE_DURATION_MS);
@@ -180,6 +181,18 @@ export default function MasterJourneyHUD() {
     setNexusAnimState("IDLE");
   };
 
+  // Completion payoff: route straight into the Observatory, where the
+  // Architect finale is already gated on `masterJourneyCompleted` — this just
+  // makes the natural next beat reachable in one click instead of rebuilding it.
+  const handleContinueToObservatory = () => {
+    if (timerRef.current) window.clearInterval(timerRef.current);
+    setMasterJourneyPhase(null);
+    setShowCongrats(false);
+    sayNexus(null);
+    setNexusAnimState("IDLE");
+    enterRealmForFinale("the-observatory");
+  };
+
   const handleReplay = () => {
     setShowCongrats(false);
     setMasterJourneyPhase(JOURNEY_STEPS[0].phase);
@@ -198,15 +211,23 @@ export default function MasterJourneyHUD() {
           <div className={styles.congratsKicker}>SYSTEM SYNCHRONIZED</div>
           <h2 className={styles.congratsTitle}>Master Journey Complete</h2>
           <p className={styles.congratsMessage}>
-            Magnificent. You have followed the complete lifecycle of data inside modern computer systems. 
-            From developer intent (Code) to kernel scheduler memory mapping, physical motherboard instruction processing, 
-            ACID transaction vaults, internet packet routing, firewall defenses, cloud scale expansions, 
+            Magnificent. You have followed the complete lifecycle of data inside modern computer systems.
+            From developer intent (Code) to kernel scheduler memory mapping, physical motherboard instruction processing,
+            ACID transaction vaults, internet packet routing, firewall defenses, cloud scale expansions,
             and deep learning neural processing.
           </p>
+          <p className={styles.congratsMessage}>There&rsquo;s one more place to go.</p>
           <div className={styles.modalButtons}>
             <button
               type="button"
               className={`${styles.btn} ${styles.btnPrimary}`}
+              onClick={handleContinueToObservatory}
+            >
+              ✦ Continue to the Observatory
+            </button>
+            <button
+              type="button"
+              className={styles.btn}
               onClick={handleReplay}
             >
               ↻ Replay Journey

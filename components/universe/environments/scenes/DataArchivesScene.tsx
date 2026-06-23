@@ -29,6 +29,8 @@ export default function DataArchivesScene({
   const cameraTarget = useRef(new THREE.Vector3(0, 0, -4));
   const crystalVaultRef = useRef<THREE.Group>(null);
   const queryEngineRef = useRef<THREE.Group>(null);
+  const ambientQueryRef = useRef<THREE.Mesh>(null);
+  const ambientQueryState = useRef({ targetIndex: 0, cycleStart: 0 });
 
   // Overview coordinates from registry cameraOverview
   const overviewPos: [number, number, number] = [0, 6, 12];
@@ -159,6 +161,23 @@ export default function DataArchivesScene({
     if (queryEngineRef.current) {
       queryEngineRef.current.rotation.y = t * 0.6;
     }
+
+    // Ambient query indicator: a small glowing point periodically travels
+    // from the query engine ("entry") to a random landmark and briefly
+    // highlights it — independent of user-triggered actions (Phase 14 §1).
+    if (ambientQueryRef.current && arrivalDone && !reduced) {
+      const targets = [coords["crystal-vault"], coords["index-towers"]];
+      const CYCLE = 3.5;
+      const qs = ambientQueryState.current;
+      if (t - qs.cycleStart > CYCLE) {
+        qs.cycleStart = t;
+        qs.targetIndex = (qs.targetIndex + 1) % targets.length;
+      }
+      const local = Math.min((t - qs.cycleStart) / (CYCLE * 0.6), 1);
+      const target = targets[qs.targetIndex];
+      ambientQueryRef.current.visible = local < 1;
+      ambientQueryRef.current.position.lerpVectors(coords["query-engine"], target, local);
+    }
   });
 
   return (
@@ -184,6 +203,14 @@ export default function DataArchivesScene({
         <meshStandardMaterial color="#030406" roughness={0.7} metalness={0.4} />
       </mesh>
       <gridHelper args={[100, 100, "#7DD3FC", "#0B0E0D"]} position={[0, -2.99, 0]} />
+
+      {/* Ambient query indicator — travels from the query engine to a random landmark */}
+      {arrivalDone && !reduced && (
+        <mesh ref={ambientQueryRef}>
+          <sphereGeometry args={[0.12, 10, 10]} />
+          <meshBasicMaterial color="#F59E0B" toneMapped={false} />
+        </mesh>
+      )}
 
       {/* ── Landmark 1: Database Crystal Vault ── */}
       <group

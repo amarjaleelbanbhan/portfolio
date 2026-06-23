@@ -12,10 +12,13 @@
   color: var(--text-primary);
 }
 
-.enter { animation: realmEnter var(--duration-slow) var(--ease-enter); }
+/* "Data arriving through a tunnel" — a brief compress-then-expand on entry,
+   under 600ms, suggesting a packet decompressing into the realm (Phase 14 §3). */
+.enter { animation: realmEnter 560ms var(--ease-enter); }
 @keyframes realmEnter {
-  from { opacity: 0; transform: translateY(10px) scale(0.995); }
-  to { opacity: 1; transform: none; }
+  0% { opacity: 0; transform: scale(0.92) translateY(10px); filter: brightness(1.6); }
+  55% { opacity: 1; transform: scale(1.015); filter: brightness(1.15); }
+  100% { opacity: 1; transform: none; filter: brightness(1); }
 }
 
 /* arrival flash — the "travel" landing (doc 6 §5, lightweight) */
