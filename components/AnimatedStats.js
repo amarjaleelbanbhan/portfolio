@@ -69,7 +69,7 @@ export default function AnimatedStats() {
                 type: 'spring',
                 stiffness: 100
               }}
-              className="glass-panel p-6 text-center hover:border-neon-cyan/50 transition-all duration-300 group"
+              className="glass-panel p-6 text-center hover:border-neon-cyan/50 transition-all duration-300 group relative overflow-hidden"
             >
               {/* Number */}
               <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-neon-green mb-2 group-hover:scale-110 transition-transform">

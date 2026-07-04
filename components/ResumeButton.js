@@ -26,7 +26,7 @@ export default function ResumeButton({ className = '', variant = 'default' }) {
         transition-all duration-500
         shadow-lg shadow-neon-cyan/25
         hover:shadow-neon-cyan/50
-        group
+        group relative
         ${className}
       `}
     >
