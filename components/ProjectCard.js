@@ -58,6 +58,69 @@ const projectVisuals = {
       </svg>
     ),
   },
+  VeriPatch: {
+    gradient: 'from-orange-500/20 via-amber-500/10 to-transparent',
+    accent: '#f97316',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <path d="M24 6L8 13v13c0 9 7 16 16 19 9-3 16-10 16-19V13L24 6z" strokeOpacity="0.4" />
+        <path d="M17 24l5 5 9-9" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  'MCTS — MCP Security Scanner': {
+    gradient: 'from-indigo-500/20 via-violet-500/10 to-transparent',
+    accent: '#6366f1',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <circle cx="24" cy="24" r="16" strokeOpacity="0.4" />
+        <circle cx="24" cy="24" r="8" strokeOpacity="0.5" />
+        <circle cx="24" cy="24" r="2" fill="currentColor" fillOpacity="0.6" />
+        <path d="M24 8v4M24 36v4M8 24h4M36 24h4" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  'CS Learning by Game': {
+    gradient: 'from-lime-500/20 via-green-500/10 to-transparent',
+    accent: '#84cc16',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <circle cx="12" cy="24" r="6" strokeOpacity="0.5" />
+        <circle cx="36" cy="24" r="6" strokeOpacity="0.5" />
+        <path d="M18 24h12" strokeLinecap="round" />
+        <path d="M36 18l6-6M36 30l6 6" strokeLinecap="round" />
+        <path d="M12 18l-6-6M12 30l-6 6" strokeLinecap="round" />
+        <circle cx="42" cy="12" r="3" fill="currentColor" fillOpacity="0.4" />
+        <circle cx="42" cy="36" r="3" fill="currentColor" fillOpacity="0.4" />
+        <circle cx="6" cy="12" r="3" fill="currentColor" fillOpacity="0.4" />
+        <circle cx="6" cy="36" r="3" fill="currentColor" fillOpacity="0.4" />
+      </svg>
+    ),
+  },
+  'TODO Tracker Pro': {
+    gradient: 'from-sky-500/20 via-blue-500/10 to-transparent',
+    accent: '#0ea5e9',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <rect x="8" y="8" width="32" height="32" rx="4" strokeOpacity="0.4" />
+        <path d="M16 18l3 3 5-5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M28 20h8" strokeLinecap="round" />
+        <path d="M16 28l3 3 5-5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M28 30h8" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  BuildSphere: {
+    gradient: 'from-cyan-500/20 via-teal-500/10 to-transparent',
+    accent: '#06b6d4',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <path d="M24 6l18 10v16L24 42 6 32V16L24 6z" strokeOpacity="0.4" />
+        <path d="M24 6v36M6 16l18 10 18-10" strokeLinecap="round" />
+        <path d="M15 11l9 5 9-5" strokeLinecap="round" strokeOpacity="0.5" />
+      </svg>
+    ),
+  },
 };
 
 const defaultVisual = {
