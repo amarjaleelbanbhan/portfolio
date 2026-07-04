@@ -12,8 +12,8 @@
 // ============================================
 export const personalInfo = {
   name: 'Amar Jaleel',
-  title: 'Full-Stack Tech Enthusiast',
-  tagline: 'AI | Cybersecurity | Data Analytics',
+  title: 'AI Product Engineer',
+  tagline: 'AI  |  Cybersecurity  |  Data Analytics',
   email: 'banbhanamarjalil@gmail.com',
   phone: '+92 344 443 2197',
   whatsapp: '923444432197',
@@ -47,47 +47,42 @@ export const stats = [
 export const projects = [
   {
     title: 'ZakatLink',
-    description: 'Full-Stack Zakat management platform with auth & payments.',
-    tags: ['Node.js', 'TypeScript', 'React'],
+    description: 'Full-stack Zakat management platform with role-based auth, secure payment processing, and real-time beneficiary tracking. Bridges donors and recipients efficiently.',
+    tags: ['Node.js', 'TypeScript', 'React', 'PostgreSQL'],
     link: 'https://github.com/amarjaleelbanbhan/ZakatLink',
     github: 'https://github.com/amarjaleelbanbhan/ZakatLink',
-    image: '/projects/zakatlink.png', // Optional: add image in /public/projects/
-    featured: true, // Shows on homepage
+    featured: true,
   },
   {
     title: 'Smart Notebook',
-    description: 'AI-powered web app with auto-diagram generation.',
-    tags: ['AI', 'Next.js', 'Mermaid.js'],
+    description: 'AI-powered note-taking app that auto-generates Mermaid.js diagrams from plain text. Converts ideas into structured visual representations instantly.',
+    tags: ['AI', 'Next.js', 'Mermaid.js', 'OpenAI'],
     link: 'https://github.com/amarjaleelbanbhan/Smart-Notebook',
     github: 'https://github.com/amarjaleelbanbhan/Smart-Notebook',
-    image: '/projects/notebook.png',
     featured: true,
   },
   {
     title: 'Bus Reservation System',
-    description: 'Robust backend for transport booking.',
-    tags: ['Node.js', 'SQL', 'API'],
+    description: 'Production-grade backend API for a transport booking platform. Handles seat availability, booking lifecycle, and passenger management with SQL-backed persistence.',
+    tags: ['Node.js', 'SQL', 'REST API', 'Express'],
     link: 'https://github.com/amarjaleelbanbhan/Bus-Reservation-System',
     github: 'https://github.com/amarjaleelbanbhan/Bus-Reservation-System',
-    image: '/projects/bus.png',
     featured: true,
   },
   {
     title: 'EduResource Hub',
-    description: 'A comprehensive web platform helping students discover 306+ free educational resources across 102+ categories with smart search and real-time filtering.',
+    description: '306+ free educational resources across 102+ categories with smart search, real-time filtering, and zero dependencies. Helps students find quality learning materials instantly.',
     tags: ['JavaScript', 'HTML5', 'CSS3', 'JSON', 'GitHub Pages'],
     link: 'https://amarjaleelbanbhan.github.io/EduResource_Hub/',
     github: 'https://github.com/amarjaleelbanbhan/EduResource_Hub',
-    image: '/projects/eduresource.png',
     featured: true,
   },
   {
     title: 'MediTalk - AI Voice Agent',
-    description: 'AI-powered voice agent for medical consultation that analyzes symptoms and provides preliminary diagnosis using ML (85% accuracy).',
+    description: 'Conversational AI voice agent for preliminary medical consultation. Analyzes symptoms using ML (85% accuracy) and delivers diagnosis-style responses via natural speech.',
     tags: ['Python', 'Machine Learning', 'Flask', 'Streamlit', 'Docker'],
     link: 'https://github.com/amarjaleelbanbhan/MediTalk_AI_Agent',
     github: 'https://github.com/amarjaleelbanbhan/MediTalk_AI_Agent',
-    image: '/projects/meditalk.png',
     featured: true,
   },
 ];

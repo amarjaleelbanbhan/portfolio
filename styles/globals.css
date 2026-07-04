@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Smooth scroll & base ─── */
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   color: #e2e8f0;
   background-color: #0f172a;
-  
-  /* Neon color variables */
   --neon-cyan: #14b8a6;
   --neon-green: #22c55e;
   --neon-magenta: #d946ef;
@@ -17,10 +20,13 @@
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at 20% 20%, rgba(20, 184, 166, 0.12), transparent 25%),
-    radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.12), transparent 20%),
+  background: radial-gradient(circle at 15% 15%, rgba(20, 184, 166, 0.1), transparent 30%),
+    radial-gradient(circle at 85% 5%, rgba(59, 130, 246, 0.1), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(217, 70, 239, 0.06), transparent 35%),
     #0f172a;
   color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -32,10 +38,18 @@ a {
   box-sizing: border-box;
 }
 
+/* ─── Focus styles ─── */
+:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Section container ─── */
 .section-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 1.25rem;
 }
 
 @media (min-width: 640px) {
@@ -46,28 +60,57 @@ a {
 
 @media (min-width: 768px) {
   .section-container {
-    padding: 4rem 1.5rem;
+    padding: 4rem 2rem;
   }
 }
 
+/* ─── Section headings ─── */
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--neon-cyan);
+  margin-bottom: 0.5rem;
+}
+
+.section-heading {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .section-heading {
+    font-size: 2.25rem;
+  }
+}
+
+/* ─── Animations ─── */
 @keyframes scanlines-scroll {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(10px);
-  }
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(10px); }
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-16px); }
 }
 
+@keyframes glow-border {
+  0%, 100% { border-color: rgba(20, 184, 166, 0.2); }
+  50%       { border-color: rgba(20, 184, 166, 0.6); }
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Scanlines overlay ─── */
 .scanlines {
   position: fixed;
   top: 0;
@@ -78,43 +121,99 @@ a {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.5) 2px,
-    rgba(0, 0, 0, 0.5) 4px
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0.4) 4px
   );
-  opacity: 0.03;
+  opacity: 0.025;
   pointer-events: none;
   z-index: 50;
   animation: scanlines-scroll 8s linear infinite;
 }
 
-.float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.clip-hexagon {
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-}
+/* ─── Utility classes ─── */
+.float           { animation: float 4s ease-in-out infinite; }
+.animate-float   { animation: float 4s ease-in-out infinite; }
+.cursor-blink    { animation: cursor-blink 1s step-end infinite; }
+.clip-hexagon    { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
 
 .text-glow {
-  text-shadow: 0 0 10px rgba(15, 240, 252, 0.8), 0 0 20px rgba(15, 240, 252, 0.4);
+  text-shadow: 0 0 12px rgba(20, 184, 166, 0.7), 0 0 30px rgba(20, 184, 166, 0.3);
+}
+
+.text-glow-green {
+  text-shadow: 0 0 12px rgba(34, 197, 94, 0.7), 0 0 30px rgba(34, 197, 94, 0.3);
 }
 
 .box-glow {
-  box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.25);
 }
 
+/* ─── Glass panel ─── */
 .glass-panel {
-  background: rgba(10, 10, 26, 0.8);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(15, 240, 252, 0.1);
-  border-radius: 8px;
+  background: rgba(8, 12, 26, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(20, 184, 166, 0.12);
+  border-radius: 12px;
   padding: 1.5rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(20, 184, 166, 0.25);
+}
+
+/* ─── Grid background utility ─── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(20, 184, 166, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 184, 166, 0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 .drop-shadow-neon {
-  filter: drop-shadow(0 0 18px rgba(0, 255, 136, 0.35));
+  filter: drop-shadow(0 0 16px rgba(0, 255, 136, 0.4));
+}
+
+/* ─── Scroll progress bar ─── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .scanlines {
+    animation: none;
+  }
+}
+
+/* ─── Custom scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 184, 166, 0.4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 184, 166, 0.7);
 }
