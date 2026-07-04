@@ -1,0 +1,66 @@
+/* ============================================================
+   CODEX INFINITUM — universe.css
+   Global base for the App Router universe tree (app/ only).
+   The Legacy Archive (pages/legacy) keeps its own Tailwind globals.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* The void is the canvas. Light = meaning. (doc 5 P1) */
+  background: var(--void);
+  color: var(--text-primary);
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Universal focus-visible ring, themed per realm (doc 5 §9.3) */
+:focus-visible {
+  outline: 2px solid var(--realm-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+/* tabular numerals so animating counters never jitter (doc 5 §3.3) */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Screen-reader-only utility (visually hidden, still announced) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

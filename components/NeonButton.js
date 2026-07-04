@@ -1,12 +1,27 @@
 'use client';
 
-export default function NeonButton({ children, onClick }) {
+import { motion } from 'framer-motion';
+
+export default function NeonButton({ children, onClick, href, className = '' }) {
+  const base =
+    'relative inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-neon-cyan/50 text-neon-cyan font-code text-xs font-semibold uppercase tracking-widest rounded-lg transition-all duration-300 hover:border-neon-cyan hover:bg-neon-cyan/10 hover:shadow-[0_0_20px_rgba(20,184,166,0.4)] active:scale-95 select-none ' +
+    className;
+
+  if (href) {
+    return (
+      <a href={href} className={base} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <button
+    <motion.button
       onClick={onClick}
-      className="relative px-4 sm:px-6 py-3 bg-transparent border border-accent text-accent font-code uppercase tracking-wide sm:tracking-widest text-xs sm:text-sm font-semibold rounded-md transition-all duration-300 hover:bg-accent/10 hover:shadow-[0_0_20px_rgba(20,184,166,0.6)] active:scale-95 w-full sm:w-auto"
+      whileTap={{ scale: 0.96 }}
+      className={base}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }
