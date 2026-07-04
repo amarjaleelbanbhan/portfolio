@@ -94,14 +94,6 @@ export const projects = [
     featured: true,
   },
   {
-    title: 'MCTS — MCP Security Scanner',
-    description: 'Local-first security scanner for MCP (Model Context Protocol) servers. Static and live tool discovery, multiple analyzers, auditable risk scores, and JSON/SARIF/HTML output. CI-ready, no cloud API required.',
-    tags: ['Python', 'CLI', 'AI Security', 'MCP', 'SARIF', 'Static Analysis'],
-    link: 'https://github.com/amarjaleelbanbhan/MCTS',
-    github: 'https://github.com/amarjaleelbanbhan/MCTS',
-    featured: true,
-  },
-  {
     title: 'CS Learning by Game',
     description: 'AI-powered computer science education engine with gamified mission progression. Interactive automata theory (DFA/NFA) visualizer, step-by-step simulation, and a companion AI that guides you through theory.',
     tags: ['Next.js', 'TypeScript', 'Monorepo', 'Automata Theory', 'AI'],

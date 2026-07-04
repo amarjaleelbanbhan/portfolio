@@ -68,19 +68,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'MCTS — MCP Security Scanner': {
-    gradient: 'from-indigo-500/20 via-violet-500/10 to-transparent',
-    accent: '#6366f1',
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
-        <circle cx="24" cy="24" r="16" strokeOpacity="0.4" />
-        <circle cx="24" cy="24" r="8" strokeOpacity="0.5" />
-        <circle cx="24" cy="24" r="2" fill="currentColor" fillOpacity="0.6" />
-        <path d="M24 8v4M24 36v4M8 24h4M36 24h4" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  'CS Learning by Game': {
+'CS Learning by Game': {
     gradient: 'from-lime-500/20 via-green-500/10 to-transparent',
     accent: '#84cc16',
     icon: (
