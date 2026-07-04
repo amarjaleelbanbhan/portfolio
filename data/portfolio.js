@@ -85,6 +85,22 @@ export const projects = [
     github: 'https://github.com/amarjaleelbanbhan/MediTalk_AI_Agent',
     featured: true,
   },
+  {
+    title: 'TODO Tracker Pro',
+    description: 'VS Code extension that surfaces every TODO, FIXME, and HACK in your codebase via a sidebar panel. Optional Gemini AI triage assigns priority and suggests a fix.',
+    tags: ['TypeScript', 'VS Code API', 'Gemini AI', 'Developer Tools'],
+    link: 'https://github.com/amarjaleelbanbhan/todo-tracker-pro',
+    github: 'https://github.com/amarjaleelbanbhan/todo-tracker-pro',
+    featured: true,
+  },
+  {
+    title: 'BuildSphere',
+    description: 'Browser-based 3D floor planner built with React Three Fiber. Draft walls, windows, doors, and furniture in real-time. Includes save/load, undo/redo, and material selection.',
+    tags: ['Next.js', 'Three.js', 'React Three Fiber', 'WebGL', 'TypeScript'],
+    link: 'https://github.com/amarjaleelbanbhan/BuildSphere',
+    github: 'https://github.com/amarjaleelbanbhan/BuildSphere',
+    featured: true,
+  },
 ];
 
 // ============================================
