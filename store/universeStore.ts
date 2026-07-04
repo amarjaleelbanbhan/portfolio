@@ -82,6 +82,10 @@ interface UniverseState {
   /** Per-realm count of signature actions, keyed by realm slug. */
   signatureActionsByRealm: Record<string, number>;
 
+  // — Sound Design —
+  /** Whether the synthesized sound engine is active. Off by default (WCAG 1.4.2). */
+  soundEnabled: boolean;
+
   // — Actions —
   enterRealm: (slug: string) => void;
   exitRealm: () => void;
@@ -119,6 +123,8 @@ interface UniverseState {
   recordSignatureAction: (slug: string) => void;
   /** The realm slug with the most recorded signature actions, if any. */
   mostInteractedRealm: () => string | null;
+  /** Toggle the synthesized sound engine on/off. */
+  toggleSound: (on?: boolean) => void;
 }
 
 export const useUniverseStore = create<UniverseState>()(
@@ -160,6 +166,8 @@ export const useUniverseStore = create<UniverseState>()(
 
       signatureActionsCompleted: 0,
       signatureActionsByRealm: {},
+
+      soundEnabled: false,
 
       enterRealm: (slug) =>
         set((s) => ({
@@ -237,6 +245,8 @@ export const useUniverseStore = create<UniverseState>()(
         }
         return best;
       },
+
+      toggleSound: (on) => set((s) => ({ soundEnabled: on ?? !s.soundEnabled })),
     }),
     {
       name: "codex-infinitum",
@@ -252,6 +262,7 @@ export const useUniverseStore = create<UniverseState>()(
         masterJourneyCompleted: s.masterJourneyCompleted,
         signatureActionsCompleted: s.signatureActionsCompleted,
         signatureActionsByRealm: s.signatureActionsByRealm,
+        soundEnabled: s.soundEnabled,
       }),
     },
   ),

@@ -15,7 +15,7 @@ export function useModalA11y(
   active = true,
 ) {
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useEffect(() => { onCloseRef.current = onClose; });
 
   useEffect(() => {
     if (!active) return;
