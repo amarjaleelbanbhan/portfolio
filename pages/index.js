@@ -26,7 +26,7 @@ const fadeUp = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-midnight">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <Navbar />
       <main className="flex-1">
         <Hero />
@@ -59,36 +59,71 @@ export default function Home() {
         {/* ─── About / Bio ─── */}
         <section className="section-container">
           <motion.div {...fadeUp}>
-            <div className="glass-panel box-glow max-w-2xl mx-auto">
-              <p className="font-code text-xs text-neon-cyan mb-4 tracking-widest uppercase">&gt; user_bio.txt</p>
-              <div className="space-y-4">
-                <p className="text-slate-200 leading-relaxed">
-                  Passionate tech enthusiast with a strong foundation in{' '}
-                  <span className="text-neon-cyan font-medium">Artificial Intelligence</span>,{' '}
-                  <span className="text-neon-cyan font-medium">Cybersecurity</span>, and{' '}
-                  <span className="text-neon-cyan font-medium">Data Analytics</span>. Currently pursuing a
-                  Computer Science degree at Sukkur IBA University.
-                </p>
-                <p className="text-slate-400 italic text-sm leading-relaxed">
-                  <span className="text-neon-cyan not-italic font-semibold">Mission:</span>{' '}
-                  To leverage technology responsibly and create meaningful impact through intelligent systems.
-                </p>
-                <div className="flex flex-wrap gap-4 pt-2 text-xs font-code text-slate-400">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-neon-cyan rounded-full" />
-                    {personalInfo.location}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-neon-green rounded-full animate-pulse" />
-                    Available for opportunities
-                  </span>
-                  <a
-                    href={`mailto:${personalInfo.email}`}
-                    className="flex items-center gap-1.5 hover:text-neon-cyan transition-colors"
-                  >
-                    <span className="w-1.5 h-1.5 bg-neon-magenta rounded-full" />
-                    {personalInfo.email}
-                  </a>
+            <div className="max-w-4xl mx-auto">
+              {/* Terminal header */}
+              <div className="flex items-center gap-2 mb-1 px-4">
+                <span className="w-3 h-3 rounded-full bg-red-500/70" />
+                <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
+                <span className="w-3 h-3 rounded-full bg-neon-green/70" />
+                <span className="ml-3 font-code text-xs text-slate-600">~/amar/bio.md</span>
+              </div>
+
+              <div className="glass-panel box-glow border-t-0 rounded-tl-none rounded-tr-none">
+                <p className="font-code text-xs text-neon-cyan mb-6 tracking-widest">&gt; cat bio.md</p>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Left — story */}
+                  <div className="space-y-4">
+                    <p className="text-slate-200 leading-relaxed text-base">
+                      I&apos;m a <span className="text-neon-cyan font-semibold">Computer Science student</span> at
+                      Sukkur IBA University (class of &apos;27) who got tired of tutorial projects and started
+                      shipping real ones.
+                    </p>
+                    <p className="text-slate-300 leading-relaxed text-sm">
+                      My work lives at the intersection of <span className="text-white font-medium">AI</span>,
+                      {' '}<span className="text-white font-medium">cybersecurity</span>, and{' '}
+                      <span className="text-white font-medium">full-stack engineering</span>. I&apos;ve published
+                      a security tool to npm, built a voice agent that understands medical symptoms,
+                      and created a 3D floor planner that runs entirely in the browser.
+                    </p>
+                    <p className="text-slate-400 leading-relaxed text-sm">
+                      I hold <span className="text-neon-green font-semibold">11 professional certifications</span>{' '}
+                      from Google across cybersecurity, data analytics, and AI — not to collect badges,
+                      but because I genuinely enjoy knowing how things work at a deep level.
+                    </p>
+                    <p className="text-slate-500 text-sm font-code italic">
+                      // When the code compiles on the first try, I assume something&apos;s wrong.
+                    </p>
+                  </div>
+
+                  {/* Right — quick facts */}
+                  <div className="space-y-3">
+                    {[
+                      { icon: '🎓', label: 'Education',    value: 'B.Sc. CS — Sukkur IBA University (2023–2027)' },
+                      { icon: '📍', label: 'Location',     value: 'Pakistan · Remote-friendly' },
+                      { icon: '🔭', label: 'Currently',    value: 'Building AI tools & open-source projects' },
+                      { icon: '⚡', label: 'Speciality',   value: 'AI × Security × Full-stack' },
+                      { icon: '🤝', label: 'Status',       value: 'Open to internships & collaborations', green: true },
+                      { icon: '📬', label: 'Contact',      value: personalInfo.email, link: `mailto:${personalInfo.email}` },
+                    ].map(({ icon, label, value, green, link }) => (
+                      <div key={label} className="flex items-start gap-3 group">
+                        <span className="text-base mt-0.5">{icon}</span>
+                        <div className="min-w-0">
+                          <span className="font-code text-xs text-slate-600 uppercase tracking-wider">{label}</span>
+                          {link ? (
+                            <a
+                              href={link}
+                              className="block text-sm text-slate-400 hover:text-neon-cyan transition-colors truncate"
+                            >
+                              {value}
+                            </a>
+                          ) : (
+                            <p className={`text-sm ${green ? 'text-neon-green' : 'text-slate-400'}`}>{value}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

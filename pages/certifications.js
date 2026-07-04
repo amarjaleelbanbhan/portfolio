@@ -111,7 +111,7 @@ export default function Certifications() {
         <title>Certifications — Amar Jaleel</title>
         <meta name="description" content="Amar Jaleel's professional certifications in cybersecurity, data analytics, AI, and Python development." />
       </Head>
-      <div className="min-h-screen flex flex-col bg-midnight">
+      <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container space-y-8">
 

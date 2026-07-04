@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 const LoadingScreen = dynamic(() => import('../components/LoadingScreen'), { ssr: false });
+const ParticleNetwork = dynamic(() => import('../components/ParticleNetwork'), { ssr: false });
 
 function ScrollProgress() {
   const [width, setWidth] = useState(0);
@@ -53,6 +54,7 @@ export default function App({ Component, pageProps }) {
       {isLoading && !hasLoaded && (
         <LoadingScreen onComplete={handleLoadingComplete} />
       )}
+      <ParticleNetwork />
       <ScrollProgress />
       <div className="scanlines" aria-hidden="true" />
       <Component {...pageProps} />

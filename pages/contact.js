@@ -119,7 +119,7 @@ export default function Contact() {
         <title>Contact — Amar Jaleel</title>
         <meta name="description" content="Get in touch with Amar Jaleel — open to collaborations, opportunities, and conversations." />
       </Head>
-      <div className="min-h-screen flex flex-col bg-midnight">
+      <div className="min-h-screen flex flex-col bg-transparent">
         <AnimatePresence>
           {toast && (
             <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />

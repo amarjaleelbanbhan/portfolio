@@ -14,6 +14,17 @@ const roles = [
   'Open Source Builder',
 ];
 
+const floatingChips = [
+  { label: 'Python',         color: '#3b82f6', delay: 0    },
+  { label: 'Next.js',        color: '#14b8a6', delay: 0.4  },
+  { label: 'TensorFlow',     color: '#f97316', delay: 0.8  },
+  { label: 'TypeScript',     color: '#6366f1', delay: 1.2  },
+  { label: 'Cybersecurity',  color: '#d946ef', delay: 1.6  },
+  { label: 'React',          color: '#22c55e', delay: 2.0  },
+  { label: 'Machine Learning', color: '#f59e0b', delay: 2.4 },
+  { label: 'Node.js',        color: '#14b8a6', delay: 2.8  },
+];
+
 function useTypingEffect(strings, typingSpeed = 90, deletingSpeed = 50, pauseMs = 2200) {
   const [displayText, setDisplayText] = useState('');
   const [roleIndex, setRoleIndex]     = useState(0);
@@ -22,7 +33,6 @@ function useTypingEffect(strings, typingSpeed = 90, deletingSpeed = 50, pauseMs 
   useEffect(() => {
     const current = strings[roleIndex];
     let timer;
-
     if (!isDeleting) {
       if (displayText.length < current.length) {
         timer = setTimeout(() => setDisplayText(current.slice(0, displayText.length + 1)), typingSpeed);
@@ -77,24 +87,48 @@ export default function Hero() {
   const typedRole = useTypingEffect(roles);
 
   return (
-    <div className="relative min-h-[88vh] flex items-center overflow-hidden">
+    <div className="relative min-h-[92vh] flex items-center overflow-hidden">
 
-      {/* Animated grid background */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-30"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(20,184,166,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.08) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-      />
+      {/* Deep gradient overlays for depth */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-neon-cyan/6 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 -right-48 w-[500px] h-[500px] bg-neon-magenta/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-neon-green/4 rounded-full blur-[100px]" />
+      </div>
 
-      {/* Gradient orbs */}
-      <div className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-neon-cyan/8 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 -right-40 w-[400px] h-[400px] bg-neon-magenta/6 rounded-full blur-[100px] pointer-events-none" />
+      {/* Floating tech chips */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {floatingChips.map((chip, i) => (
+          <motion.div
+            key={chip.label}
+            initial={{ opacity: 0, y: 60 }}
+            animate={{
+              opacity: [0, 0.7, 0.7, 0],
+              y: [60, -20],
+            }}
+            transition={{
+              duration: 8 + i * 0.6,
+              delay: chip.delay + 1.5,
+              repeat: Infinity,
+              repeatDelay: 4 + i * 0.8,
+              ease: 'easeInOut',
+            }}
+            style={{
+              left: `${8 + ((i * 37 + 13) % 84)}%`,
+              top: `${20 + ((i * 23 + 7) % 60)}%`,
+              borderColor: chip.color + '40',
+              color: chip.color,
+              boxShadow: `0 0 12px ${chip.color}20`,
+            }}
+            className="absolute text-xs font-code px-2.5 py-1 rounded-full border bg-midnight/80 backdrop-blur-sm select-none"
+          >
+            {chip.label}
+          </motion.div>
+        ))}
+      </div>
 
-      <div className="section-container relative w-full">
-        <div className="grid gap-10 lg:grid-cols-2 items-center">
+      <div className="section-container relative w-full" style={{ zIndex: 1 }}>
+        <div className="grid gap-12 lg:grid-cols-2 items-center">
 
           {/* ─── Left: Text Content ─── */}
           <motion.div
@@ -108,9 +142,11 @@ export default function Hero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              className="font-code text-xs font-semibold uppercase tracking-[0.3em] text-neon-cyan mb-4"
+              className="font-code text-xs font-semibold uppercase tracking-[0.3em] text-neon-cyan mb-4 flex items-center gap-2"
             >
-              &gt; Hello, world
+              <span className="w-6 h-px bg-neon-cyan/60" />
+              Hello, World — I&apos;m
+              <span className="w-6 h-px bg-neon-cyan/60" />
             </motion.p>
 
             {/* Name */}
@@ -139,18 +175,27 @@ export default function Hero() {
             </motion.div>
 
             {/* Bio */}
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45, duration: 0.6 }}
-              className="text-base text-slate-400 max-w-lg mb-8 leading-relaxed"
+              className="mb-8 space-y-3"
             >
-              Building intelligent systems at the intersection of{' '}
-              <span className="text-slate-200 font-medium">AI</span>,{' '}
-              <span className="text-slate-200 font-medium">cybersecurity</span>, and{' '}
-              <span className="text-slate-200 font-medium">data analytics</span>.
-              CS student at Sukkur IBA — turning complex problems into elegant solutions.
-            </motion.p>
+              <p className="text-base text-slate-300 max-w-xl leading-relaxed">
+                CS student at{' '}
+                <span className="text-neon-cyan font-medium">Sukkur IBA University</span>{' '}
+                who ships real tools — a security CLI on npm, a VS Code extension, a 3D browser app,
+                and a medical voice agent. I build at the crossroads of{' '}
+                <span className="text-slate-200 font-medium">AI</span>,{' '}
+                <span className="text-slate-200 font-medium">cybersecurity</span>, and{' '}
+                <span className="text-slate-200 font-medium">full-stack engineering</span>.
+              </p>
+              <p className="text-sm text-slate-500 max-w-lg leading-relaxed font-code">
+                <span className="text-neon-green">11</span> Google certs ·{' '}
+                <span className="text-neon-cyan">9</span> shipped projects ·{' '}
+                <span className="text-neon-magenta">500+</span> commits
+              </p>
+            </motion.div>
 
             {/* CTAs */}
             <motion.div
@@ -161,13 +206,14 @@ export default function Hero() {
             >
               <Link
                 href="/projects"
-                className="px-6 py-3 bg-neon-cyan text-midnight font-semibold rounded-lg shadow-lg shadow-neon-cyan/25 hover:bg-neon-green hover:shadow-neon-green/25 transition-all duration-300 text-sm"
+                className="group px-7 py-3.5 bg-neon-cyan text-midnight font-bold rounded-lg shadow-lg shadow-neon-cyan/30 hover:bg-neon-green hover:shadow-neon-green/30 transition-all duration-300 text-sm flex items-center gap-2"
               >
-                View My Work →
+                View My Work
+                <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
               </Link>
               <Link
                 href="/contact"
-                className="px-6 py-3 border border-neon-cyan/40 text-neon-cyan font-semibold rounded-lg hover:border-neon-cyan hover:bg-neon-cyan/8 transition-all duration-300 text-sm"
+                className="px-7 py-3.5 border border-neon-cyan/40 text-neon-cyan font-semibold rounded-lg hover:border-neon-cyan hover:bg-neon-cyan/8 hover:shadow-lg hover:shadow-neon-cyan/10 transition-all duration-300 text-sm"
               >
                 Get in Touch
               </Link>
@@ -187,36 +233,50 @@ export default function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="p-2.5 text-slate-500 hover:text-neon-cyan transition-colors duration-200 rounded-lg hover:bg-white/5"
+                  className="p-2.5 text-slate-500 hover:text-neon-cyan transition-all duration-200 rounded-lg hover:bg-white/5 hover:scale-110"
                 >
                   {icon}
                 </a>
               ))}
-              <span className="ml-2 text-xs text-slate-600 font-code">// find me online</span>
+              <span className="ml-3 text-xs text-slate-600 font-code">// find me online</span>
             </motion.div>
           </motion.div>
 
-          {/* ─── Right: Portrait ─── */}
+          {/* ─── Right: Portrait + Orbiting elements ─── */}
           <motion.div
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="order-1 lg:order-2 flex justify-center lg:justify-end"
           >
-            <div className="relative w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-cyan/30 via-transparent to-neon-magenta/20 blur-2xl animate-pulse" />
+            <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96">
 
-              {/* Rotating border ring */}
+              {/* Outer ambient glow */}
+              <div className="absolute inset-[-20px] rounded-full bg-gradient-to-br from-neon-cyan/20 via-transparent to-neon-magenta/15 blur-3xl animate-pulse" />
+
+              {/* Slow outer orbit ring */}
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[-4px] rounded-full"
+                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-[-8px] rounded-full"
                 style={{
-                  background:
-                    'conic-gradient(from 0deg, rgba(20,184,166,0.8), rgba(34,197,94,0.4), rgba(217,70,239,0.3), rgba(20,184,166,0.8))',
+                  background: 'conic-gradient(from 0deg, rgba(20,184,166,0) 0%, rgba(20,184,166,0.6) 25%, rgba(217,70,239,0.4) 50%, rgba(34,197,94,0.3) 75%, rgba(20,184,166,0) 100%)',
                   borderRadius: '50%',
-                  padding: '2px',
+                  padding: '1.5px',
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-midnight" />
+              </motion.div>
+
+              {/* Fast inner orbit ring */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-[4px] rounded-full"
+                style={{
+                  background: 'conic-gradient(from 180deg, rgba(34,197,94,0) 0%, rgba(34,197,94,0.5) 20%, rgba(34,197,94,0) 40%)',
+                  borderRadius: '50%',
+                  padding: '1px',
                 }}
               >
                 <div className="w-full h-full rounded-full bg-midnight" />
@@ -225,21 +285,71 @@ export default function Hero() {
               {/* Portrait */}
               <img
                 src="/images/hero-portrait.jpg"
-                alt="Amar Jaleel – AI Product Engineer & Developer"
-                className="absolute inset-[4px] w-[calc(100%-8px)] h-[calc(100%-8px)] object-cover object-top rounded-full"
+                alt="Amar Jaleel – AI Product Engineer"
+                className="absolute inset-[10px] w-[calc(100%-20px)] h-[calc(100%-20px)] object-cover object-top rounded-full"
+                style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.6)' }}
                 loading="eager"
               />
+
+              {/* Orbiting dot — cyan */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-0 rounded-full"
+                style={{ transformOrigin: 'center' }}
+              >
+                <div
+                  className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-3 h-3 rounded-full bg-neon-cyan shadow-lg shadow-neon-cyan/60"
+                  style={{ boxShadow: '0 0 10px rgba(20,184,166,0.8), 0 0 20px rgba(20,184,166,0.4)' }}
+                />
+              </motion.div>
+
+              {/* Orbiting dot — magenta */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-[-4px] rounded-full"
+                style={{ transformOrigin: 'center' }}
+              >
+                <div
+                  className="absolute bottom-3 right-0 w-2.5 h-2.5 rounded-full bg-neon-magenta"
+                  style={{ boxShadow: '0 0 10px rgba(217,70,239,0.8), 0 0 20px rgba(217,70,239,0.4)' }}
+                />
+              </motion.div>
 
               {/* Status badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8, type: 'spring', stiffness: 200 }}
-                className="absolute -bottom-2 -right-2 flex items-center gap-1.5 bg-midnight-light border border-neon-green/40 rounded-full px-3 py-1.5 text-xs font-code shadow-lg shadow-black/40"
+                transition={{ delay: 1, type: 'spring', stiffness: 200 }}
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-midnight-light/90 border border-neon-green/40 rounded-full px-4 py-2 text-xs font-code shadow-xl shadow-black/50 backdrop-blur-sm whitespace-nowrap"
               >
-                <span className="w-1.5 h-1.5 bg-neon-green rounded-full animate-pulse" />
-                <span className="text-neon-green">Open to work</span>
+                <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse shadow-lg shadow-neon-green/60" />
+                <span className="text-neon-green font-semibold">Open to Work</span>
               </motion.div>
+
+              {/* Floating stat pill — top left */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.2, duration: 0.6 }}
+                className="absolute -left-8 top-1/4 flex items-center gap-2 bg-midnight-light/80 border border-white/10 rounded-xl px-3 py-2 text-xs font-code backdrop-blur-sm shadow-lg"
+              >
+                <span className="text-2xl font-bold text-neon-cyan">11</span>
+                <span className="text-slate-400 leading-tight">Google<br/>Certs</span>
+              </motion.div>
+
+              {/* Floating stat pill — right */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.4, duration: 0.6 }}
+                className="absolute -right-8 top-1/3 flex items-center gap-2 bg-midnight-light/80 border border-white/10 rounded-xl px-3 py-2 text-xs font-code backdrop-blur-sm shadow-lg"
+              >
+                <span className="text-2xl font-bold text-neon-green">9</span>
+                <span className="text-slate-400 leading-tight">Shipped<br/>Projects</span>
+              </motion.div>
+
             </div>
           </motion.div>
 

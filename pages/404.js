@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 
 export default function Custom404() {
   return (
-    <div className="min-h-screen flex flex-col bg-midnight">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <Navbar />
       <main className="flex-1 section-container flex flex-col items-center justify-center text-center gap-4">
         <p className="text-accent font-semibold">404</p>

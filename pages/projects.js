@@ -22,7 +22,7 @@ export default function Projects() {
         <title>Projects — Amar Jaleel</title>
         <meta name="description" content="Amar Jaleel's portfolio of projects spanning AI, cybersecurity, full-stack development, and data analytics." />
       </Head>
-      <div className="min-h-screen flex flex-col bg-midnight">
+      <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container space-y-10">
 

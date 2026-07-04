@@ -125,7 +125,7 @@ export default function Skills() {
         <title>Skills — Amar Jaleel</title>
         <meta name="description" content="Amar Jaleel's technical skills in AI, cybersecurity, data analytics, and full-stack development." />
       </Head>
-      <div className="min-h-screen flex flex-col bg-midnight">
+      <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container">
 
