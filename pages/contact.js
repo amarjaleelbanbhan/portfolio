@@ -219,7 +219,7 @@ export default function Contact() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 + idx * 0.08 }}
                   whileHover={{ x: 4 }}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-white/8 bg-white/3 hover:bg-white/6 hover:border-white/15 transition-all duration-200 group"
+                  className="surface-card flex items-center gap-4 p-4 group"
                 >
                   <div
                     className="p-2.5 rounded-lg shrink-0"

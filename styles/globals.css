@@ -5,6 +5,7 @@
 /* ─── Smooth scroll & base ─── */
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 :root {
@@ -19,6 +20,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: clip;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background:
     radial-gradient(ellipse at 10% 0%,   rgba(20, 184, 166, 0.12), transparent 40%),
@@ -53,22 +55,22 @@ a {
   border-radius: 4px;
 }
 
-/* ─── Section container ─── */
+/* ─── Section container (canonical content frame — aligns with navbar/footer max-w-6xl) ─── */
 .section-container {
-  max-width: 1100px;
+  max-width: 1152px;
   margin: 0 auto;
-  padding: 2rem 1.25rem;
+  padding: 2.5rem 1rem;
 }
 
 @media (min-width: 640px) {
   .section-container {
-    padding: 3rem 1.5rem;
+    padding: 3.5rem 1.5rem;
   }
 }
 
 @media (min-width: 768px) {
   .section-container {
-    padding: 4rem 2rem;
+    padding: 4.5rem 1.5rem;
   }
 }
 
@@ -156,19 +158,91 @@ a {
   box-shadow: 0 0 20px rgba(20, 184, 166, 0.25);
 }
 
-/* ─── Glass panel ─── */
+/* ─── Glass panel (premium layered glassmorphism) ─── */
 .glass-panel {
-  background: rgba(8, 12, 26, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(20, 184, 166, 0.12);
-  border-radius: 12px;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 42%),
+    rgba(8, 12, 26, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(20, 184, 166, 0.14);
+  border-radius: 14px;
   padding: 1.5rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 30px -14px rgba(0, 0, 0, 0.75),
+    0 2px 6px -4px rgba(0, 0, 0, 0.6);
+  transition:
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.35s ease;
 }
 
 .glass-panel:hover {
-  border-color: rgba(20, 184, 166, 0.25);
+  border-color: rgba(20, 184, 166, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 20px 46px -16px rgba(0, 0, 0, 0.82),
+    0 0 28px -6px rgba(20, 184, 166, 0.22);
+}
+
+/* ─── Unified premium card surface (projects, certs, contact — one design system) ─── */
+.surface-card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 46%),
+    rgba(10, 15, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 24px -16px rgba(0, 0, 0, 0.75);
+  transition:
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.35s ease;
+}
+
+.surface-card:hover {
+  border-color: rgba(20, 184, 166, 0.30);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 44px -18px rgba(0, 0, 0, 0.85),
+    0 0 26px -8px rgba(20, 184, 166, 0.20);
+}
+
+/* GPU-friendly hover lift for cards not driven by Framer transforms */
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+}
+
+/* Premium gradient text for headings */
+.text-gradient-cyan {
+  background: linear-gradient(100deg, #5eead4 0%, #14b8a6 45%, #22c55e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Elegant section divider with a soft neon core */
+.premium-divider {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(20, 184, 166, 0.35),
+    rgba(217, 70, 239, 0.25),
+    transparent
+  );
 }
 
 /* ─── Grid background utility ─── */

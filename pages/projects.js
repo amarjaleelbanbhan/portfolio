@@ -41,13 +41,14 @@ export default function Projects() {
           </motion.div>
 
           {/* Project grid */}
-          <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2">
+          <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2 items-stretch">
             {projectsData.map((project, idx) => (
               <motion.div
                 key={project.title}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
+                className="h-full"
               >
                 <ProjectCard {...project} />
               </motion.div>

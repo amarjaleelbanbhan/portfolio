@@ -13,8 +13,8 @@ export default function GlitchText({ text }) {
     >
       {/* Cyan glitch layer */}
       <span
-        className={`absolute top-0 left-0 text-cyan-400 transition-all duration-75 ${
-          isHovered ? 'translate-x-[2px] translate-y-[-2px] opacity-70' : 'opacity-0'
+        className={`absolute top-0 left-0 text-neon-cyan will-change-transform transition-all duration-75 ${
+          isHovered ? 'translate-x-[2px] translate-y-[-2px] opacity-80 mix-blend-screen' : 'opacity-0'
         }`}
         aria-hidden="true"
       >
@@ -23,8 +23,8 @@ export default function GlitchText({ text }) {
 
       {/* Magenta glitch layer */}
       <span
-        className={`absolute top-0 left-0 text-magenta-500 transition-all duration-75 ${
-          isHovered ? 'translate-x-[-2px] translate-y-[2px] opacity-70' : 'opacity-0'
+        className={`absolute top-0 left-0 text-neon-magenta will-change-transform transition-all duration-75 ${
+          isHovered ? 'translate-x-[-2px] translate-y-[2px] opacity-80 mix-blend-screen' : 'opacity-0'
         }`}
         aria-hidden="true"
       >

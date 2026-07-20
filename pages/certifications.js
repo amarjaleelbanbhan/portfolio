@@ -62,12 +62,13 @@ function CertCard({ name, description, link, org, color, icon, index }) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.07 }}
-      className="group relative rounded-xl border border-white/8 bg-white/3 overflow-hidden hover:border-white/15 transition-all duration-300"
+      whileHover={{ y: -6 }}
+      className="surface-card group relative h-full flex flex-col overflow-hidden"
     >
       {/* Accent top bar */}
       <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />
 
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start gap-3 mb-3">
           <span className="text-2xl shrink-0" role="img" aria-hidden="true">{icon}</span>
           <div className="flex-1 min-w-0">
@@ -91,7 +92,7 @@ function CertCard({ name, description, link, org, color, icon, index }) {
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors duration-200"
+          className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
           style={{ color }}
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

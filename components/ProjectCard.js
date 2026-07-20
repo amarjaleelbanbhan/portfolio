@@ -131,8 +131,8 @@ export default function ProjectCard({ title, description, tags, link, github, im
   return (
     <motion.article
       whileHover={{ y: -6 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative rounded-xl border border-white/8 bg-white/3 backdrop-blur overflow-hidden hover:border-white/16 transition-colors duration-300"
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="surface-card group relative h-full flex flex-col overflow-hidden"
       style={{ '--card-accent': visual.accent }}
     >
       {/* Visual preview area */}
@@ -166,7 +166,7 @@ export default function ProjectCard({ title, description, tags, link, github, im
       </div>
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         <h3 className="text-base font-semibold text-slate-50 mb-1.5 group-hover:text-white transition-colors">
           {title}
         </h3>
@@ -197,7 +197,7 @@ export default function ProjectCard({ title, description, tags, link, github, im
         </div>
 
         {/* Links */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mt-auto pt-1">
           {github && (
             <a
               href={github}

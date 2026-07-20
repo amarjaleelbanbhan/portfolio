@@ -4,7 +4,7 @@ import { education } from '../data/portfolio';
 export default function Education() {
   return (
     <section className="py-16">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -12,7 +12,7 @@ export default function Education() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
-          <h2 className="text-2xl font-bold text-neon-cyan mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gradient-cyan mb-2">
             Education & Training
           </h2>
           <p className="text-gray-400">Academic Journey</p>
