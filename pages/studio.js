@@ -131,7 +131,7 @@ export default function Studio() {
             <a href="#services">Services</a>
             <a href="#work">Work</a>
             <a href="#process">Process</a>
-            <Link className={styles.navButton} href="/contact">Start a project</Link>
+            <Link className={styles.navButton} href="/studio/request">Start a project</Link>
           </nav>
         </header>
 
@@ -153,7 +153,7 @@ export default function Studio() {
               </p>
 
               <div className={styles.actions}>
-                <Link className={styles.primaryButton} href="/contact">Show me the problem</Link>
+                <Link className={styles.primaryButton} href="/studio/request">Show me the problem</Link>
                 <Link className={styles.secondaryButton} href="/projects">View technical work</Link>
               </div>
 
@@ -292,7 +292,7 @@ export default function Studio() {
               <p className={styles.eyebrow}>Low-friction first step</p>
               <h2>Send your website. I’ll tell you the first three things I would fix.</h2>
             </div>
-            <Link className={styles.auditButton} href="/contact">Request a quick review →</Link>
+            <Link className={styles.auditButton} href="/studio/request">Request a quick review →</Link>
           </section>
 
           <section className={styles.contactSection}>
@@ -309,7 +309,7 @@ export default function Studio() {
               <h3>Amar Jaleel</h3>
               <p>Software engineering · web systems · automation</p>
               <div className={styles.contactActions}>
-                <Link className={styles.darkButton} href="/contact">Start a conversation</Link>
+                <Link className={styles.darkButton} href="/studio/request">Start a conversation</Link>
                 <Link className={styles.textLink} href="/">Personal portfolio →</Link>
               </div>
             </div>
