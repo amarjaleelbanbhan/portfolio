@@ -7,6 +7,20 @@ const SUPABASE_KEY = 'sb_publishable_h1nOLJv7TuuOqbWkKbiMnQ_LkM8VdcX';
 const SESSION_KEY = 'ads-admin-session';
 
 const STATUS_OPTIONS = ['new', 'contacted', 'qualified', 'won', 'closed'];
+const SERVICE_LABELS = {
+  website_fix: 'Website fix',
+  new_website: 'New website',
+  web_app: 'Web app / MVP',
+  chatbot: 'AI chatbot',
+  automation: 'Automation',
+  not_sure: 'Not sure yet',
+};
+const TIMELINE_LABELS = {
+  asap: 'ASAP',
+  '1_2_weeks': '1–2 weeks',
+  this_month: 'This month',
+  flexible: 'Flexible',
+};
 
 export default function StudioAdmin() {
   const [session, setSession] = useState(null);
@@ -60,7 +74,7 @@ export default function StudioAdmin() {
       const statusMatch = filter === 'all' || lead.status === filter;
       if (!statusMatch) return false;
       if (!needle) return true;
-      return [lead.name, lead.email, lead.company, lead.website, lead.problem]
+      return [lead.name, lead.email, lead.company, lead.website, lead.problem, SERVICE_LABELS[lead.service], TIMELINE_LABELS[lead.timeline]]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(needle));
     });
@@ -112,7 +126,7 @@ export default function StudioAdmin() {
     setError('');
     try {
       const params = new URLSearchParams({
-        select: 'id,created_at,name,email,company,website,problem,source,status,notified_at',
+        select: 'id,created_at,name,email,company,website,service,timeline,problem,source,status,notified_at',
         order: 'created_at.desc',
       });
       const response = await fetch(`${SUPABASE_URL}/rest/v1/studio_leads?${params.toString()}`, {
@@ -185,6 +199,9 @@ export default function StudioAdmin() {
               <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Studio leads</h1>
             </div>
             <div className="flex items-center gap-3">
+              <Link href="/hire" className="rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300 transition hover:border-white/25 hover:text-white">
+                Hire page
+              </Link>
               <Link href="/studio" className="rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300 transition hover:border-white/25 hover:text-white">
                 Studio
               </Link>
@@ -296,6 +313,8 @@ export default function StudioAdmin() {
                         <div className="flex flex-wrap items-center gap-3">
                           <h2 className="text-xl font-bold">{lead.name}</h2>
                           <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs capitalize text-slate-300">{lead.status || 'new'}</span>
+                          <span className="rounded-full border border-teal-300/20 bg-teal-300/5 px-2.5 py-1 text-xs text-teal-200">{SERVICE_LABELS[lead.service] || 'Not specified'}</span>
+                          {lead.timeline && <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">{TIMELINE_LABELS[lead.timeline] || lead.timeline}</span>}
                         </div>
                         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
                           <a className="hover:text-teal-300" href={`mailto:${lead.email}`}>{lead.email}</a>
@@ -303,14 +322,16 @@ export default function StudioAdmin() {
                           <span>{formatDate(lead.created_at)}</span>
                         </div>
 
-                        <a
-                          href={safeWebsite(lead.website)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-4 inline-flex max-w-full items-center gap-2 break-all text-sm font-medium text-teal-300 hover:text-teal-200"
-                        >
-                          {lead.website} ↗
-                        </a>
+                        {lead.website && (
+                          <a
+                            href={safeWebsite(lead.website)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-4 inline-flex max-w-full items-center gap-2 break-all text-sm font-medium text-teal-300 hover:text-teal-200"
+                          >
+                            {lead.website} ↗
+                          </a>
+                        )}
 
                         <p className="mt-4 whitespace-pre-wrap rounded-2xl border border-white/10 bg-black/10 p-4 text-sm leading-6 text-slate-200">{lead.problem}</p>
                       </div>
