@@ -1,12 +1,22 @@
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Supabase publishable keys are designed to be public. Database access is
+// protected by Row Level Security; anonymous users can INSERT only.
+const SUPABASE_URL = 'https://yokgnzxwrbymarjdfyhk.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_h1nOLJv7TuuOqbWkKbiMnQ_LkM8VdcX';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
 
-  const { name, email, website, company = '', problem, source = 'studio_request' } = req.body || {};
+  const { name, email, website, company = '', problem, fax = '' } = req.body || {};
+
+  // Honeypot for basic bot traffic. Real visitors never see or fill this field.
+  if (String(fax).trim()) {
+    return res.status(201).json({ ok: true });
+  }
 
   if (!name?.trim() || !email?.trim() || !website?.trim() || !problem?.trim()) {
     return res.status(400).json({ error: 'Please complete the required fields.' });
@@ -24,30 +34,31 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Please enter a valid website URL.' });
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const cleanName = name.trim().slice(0, 120);
+  const cleanEmail = email.trim().toLowerCase().slice(0, 254);
+  const cleanCompany = company.trim().slice(0, 160) || null;
+  const cleanProblem = problem.trim().slice(0, 5000);
 
-  if (!supabaseUrl || !serviceRoleKey) {
-    console.error('Studio lead capture is not configured: missing Supabase server environment variables.');
-    return res.status(503).json({ error: 'The inquiry form is temporarily unavailable. Please use the main contact page.' });
+  if (cleanProblem.length < 10) {
+    return res.status(400).json({ error: 'Please add a little more detail about the problem.' });
   }
 
   const payload = {
-    name: name.trim().slice(0, 120),
-    email: email.trim().toLowerCase().slice(0, 254),
-    company: company.trim().slice(0, 160) || null,
+    name: cleanName,
+    email: cleanEmail,
+    company: cleanCompany,
     website: normalizedWebsite.toString().slice(0, 500),
-    problem: problem.trim().slice(0, 5000),
-    source: String(source).slice(0, 80),
+    problem: cleanProblem,
+    source: 'studio_request',
     status: 'new',
   };
 
   try {
-    const response = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/studio_leads`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/studio_leads`, {
       method: 'POST',
       headers: {
-        apikey: serviceRoleKey,
-        Authorization: `Bearer ${serviceRoleKey}`,
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
         'Content-Type': 'application/json',
         Prefer: 'return=minimal',
       },
