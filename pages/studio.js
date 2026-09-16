@@ -5,59 +5,74 @@ import styles from '@/styles/Studio.module.css';
 const services = [
   {
     number: '01',
-    title: 'Website design & development',
-    body: 'Fast, responsive websites and landing pages built around trust, inquiries, bookings, and a clear next step.',
+    title: 'Build or improve your website',
+    body: 'For businesses that need a clearer, faster, more trustworthy website that gives visitors an obvious next step.',
+    useWhen: 'Your site looks dated, is hard to use on mobile, or does not explain the offer clearly.',
+    result: 'A cleaner website or landing page built around calls, bookings, forms, or sales.',
     items: ['Business websites', 'Landing pages', 'Responsive rebuilds'],
   },
   {
     number: '02',
-    title: 'Website repair & performance',
-    body: 'Fix broken forms, mobile issues, layout problems, slow pages, and conversion friction without forcing a full rebuild.',
-    items: ['Bug fixes', 'Speed work', 'Maintenance'],
+    title: 'Fix what is broken or slow',
+    body: 'Repair the parts of an existing site that create friction without forcing you into a complete rebuild.',
+    useWhen: 'Forms fail, pages load poorly, layouts break, or customers keep hitting the same technical problem.',
+    result: 'A tested fix with the broken path working again and clear hand-off notes.',
+    items: ['Bug fixes', 'Performance', 'Maintenance'],
   },
   {
     number: '03',
-    title: 'Lead capture & AI assistants',
-    body: 'Answer common questions, collect useful context, and keep new inquiries moving when nobody is online.',
+    title: 'Capture and qualify more inquiries',
+    body: 'Add a simple website assistant or lead flow that answers common questions and collects the right context.',
+    useWhen: 'Visitors leave without enough information, ask the same questions repeatedly, or inquiries arrive with missing details.',
+    result: 'A clearer inquiry path that gathers useful lead information before you reply.',
     items: ['FAQ assistants', 'Lead qualification', 'Appointment capture'],
   },
   {
     number: '04',
-    title: 'Business automation',
-    body: 'Connect forms, email, CRM steps, reminders, and spreadsheets so repetitive follow-up stops eating the day.',
+    title: 'Automate repetitive follow-up',
+    body: 'Connect forms, email, CRM steps, reminders, and spreadsheets so routine admin happens automatically.',
+    useWhen: 'Your team copies data between tools, forgets follow-ups, or repeats the same admin work every day.',
+    result: 'A documented workflow that reduces manual steps and keeps the next action moving.',
     items: ['Lead follow-up', 'CRM workflows', 'Admin automation'],
   },
 ];
 
 const concepts = [
   {
-    label: 'Concept build · Local clinic',
+    label: 'Demo solution · Local clinic',
     title: 'Appointment-first website redesign',
-    body: 'A cleaner patient journey that answers urgent questions quickly and shortens the path from landing page to appointment request.',
+    body: 'A clearer patient journey that surfaces essential information quickly and shortens the path from landing page to appointment request.',
     tags: ['UX', 'Responsive', 'Lead capture'],
     visual: 'clinic',
   },
   {
-    label: 'Concept workflow · Contractor',
+    label: 'Demo solution · Contractor',
     title: 'Inquiry-to-follow-up automation',
-    body: 'A lightweight system that acknowledges new inquiries immediately, captures job details, and surfaces higher-intent leads first.',
+    body: 'A lightweight workflow that acknowledges new inquiries, captures job details, and creates the next follow-up step automatically.',
     tags: ['Automation', 'Email', 'CRM-ready'],
     visual: 'workflow',
   },
   {
-    label: 'Concept build · B2B software',
-    title: 'Website assistant for qualified inquiries',
-    body: 'An assistant flow that handles repetitive questions while collecting the context a sales or support person needs next.',
+    label: 'Demo solution · B2B software',
+    title: 'Website assistant for better-qualified leads',
+    body: 'An assistant that handles repetitive questions while collecting the context a sales or support person needs before replying.',
     tags: ['AI assistant', 'FAQ', 'Lead routing'],
     visual: 'chat',
   },
 ];
 
 const process = [
-  ['01', 'Diagnose', 'Find the bottleneck before proposing work.'],
-  ['02', 'Scope', 'Define the smallest useful deliverable and a clear finish line.'],
-  ['03', 'Build', 'Implement, test, and document the fix.'],
-  ['04', 'Hand off', 'Deliver the result with the context needed to maintain it.'],
+  ['01', 'You show the problem', 'Send the website, workflow, or repeated task and explain what is going wrong. No technical brief required.'],
+  ['02', 'I diagnose the smallest useful fix', 'I review the current setup, ask only the questions that matter, and define a clear scope and finish line.'],
+  ['03', 'You approve scope and price', 'You know what will be changed, what is included, and what the project costs before implementation starts.'],
+  ['04', 'I build, test, and hand it over', 'The fix is implemented, checked, and delivered with the notes or instructions you need to keep using it.'],
+];
+
+const faqs = [
+  ['Do I need to know which service I need?', 'No. Start with the business problem. I can map it to the smallest sensible technical fix.'],
+  ['Can you work with my existing website or tools?', 'Usually, yes. The first step is to inspect what you already have before suggesting a rebuild or new software.'],
+  ['Will I need to buy expensive software?', 'Not by default. I prefer your existing stack or practical free/low-cost tools when they can do the job reliably.'],
+  ['What happens after I submit the form?', 'I review the site or workflow, reply with the first useful observations, then ask any questions needed to scope the work.'],
 ];
 
 function WorkVisual({ type }) {
@@ -81,11 +96,11 @@ function WorkVisual({ type }) {
     return (
       <div className={`${styles.workVisual} ${styles.workflowVisual}`} aria-hidden="true">
         <div className={styles.workflowStack}>
-          <div><span>01</span><b>New website inquiry</b><small>9:41 PM</small></div>
+          <div><span>01</span><b>New website inquiry</b><small>Contact details captured</small></div>
           <em>↓</em>
-          <div><span>02</span><b>Lead qualified</b><small>Job type + location captured</small></div>
+          <div><span>02</span><b>Lead details organized</b><small>Job type + location added</small></div>
           <em>↓</em>
-          <div><span>03</span><b>Follow-up queued</b><small>Owner notified instantly</small></div>
+          <div><span>03</span><b>Follow-up task created</b><small>Owner has the next action</small></div>
         </div>
       </div>
     );
@@ -107,13 +122,13 @@ export default function Studio() {
   return (
     <>
       <Head>
-        <title>Amar Digital Systems · Websites, Automation & AI Assistants</title>
+        <title>Amar Digital Systems · Websites, Lead Capture & Automation</title>
         <meta
           name="description"
-          content="Amar Digital Systems helps service businesses improve websites, capture more leads, and automate repetitive follow-up work."
+          content="Amar Digital Systems builds and fixes websites, improves lead capture, and automates repetitive follow-up for service businesses."
         />
         <meta property="og:title" content="Amar Digital Systems" />
-        <meta property="og:description" content="Fix the site. Capture the lead. Automate the follow-up." />
+        <meta property="og:description" content="Websites, lead capture, and automations for service businesses." />
         <meta property="og:url" content="https://amarjaleel.me/studio" />
       </Head>
 
@@ -129,9 +144,9 @@ export default function Studio() {
 
           <nav className={styles.nav} aria-label="Studio navigation">
             <a href="#services">Services</a>
-            <a href="#work">Work</a>
-            <a href="#process">Process</a>
-            <Link className={styles.navButton} href="/studio/request">Start a project</Link>
+            <a href="#work">Examples</a>
+            <a href="#process">How it works</a>
+            <Link className={styles.navButton} href="/studio/request">Request a review</Link>
           </nav>
         </header>
 
@@ -142,33 +157,38 @@ export default function Studio() {
               <div className={styles.availability}>
                 <span /> Available for focused client projects
               </div>
-              <p className={styles.eyebrow}>Founder-led technical studio · remote-first</p>
+              <p className={styles.eyebrow}>Websites · lead capture · business automation</p>
               <h1>
-                Fix the site.
-                <span> Capture the lead. Automate the follow-up.</span>
+                Make it easier for customers to choose you.
+                <span>Then automate what happens next.</span>
               </h1>
               <p className={styles.lede}>
-                I help service businesses turn slow, outdated, or manual customer journeys into
-                cleaner websites and simple systems that keep inquiries moving.
+                I build and repair business websites, improve how leads are captured, add useful website assistants,
+                and automate repetitive follow-up between forms, email, CRM tools, and spreadsheets.
+              </p>
+
+              <p className={styles.audienceLine}>
+                Best fit for clinics, contractors, agencies, local service businesses, and small SaaS teams that already have a real workflow or website problem to fix.
               </p>
 
               <div className={styles.actions}>
-                <Link className={styles.primaryButton} href="/studio/request">Show me the problem</Link>
-                <Link className={styles.secondaryButton} href="/projects">View technical work</Link>
+                <Link className={styles.primaryButton} href="/studio/request">Request a quick review</Link>
+                <a className={styles.secondaryButton} href="#work">See example solutions</a>
               </div>
 
               <div className={styles.proofLine}>
-                <span>Clear scope before build</span>
-                <span>No long contract required</span>
+                <span>Start with one problem</span>
+                <span>Scope and price before build</span>
                 <span>Founder-led delivery</span>
               </div>
             </div>
 
             <div className={styles.pipelineCard} aria-label="Example automated lead pipeline">
+              <div className={styles.exampleBadge}>Example workflow</div>
               <div className={styles.pipelineHeader}>
                 <div>
-                  <small>Lead pipeline</small>
-                  <strong>After-hours inquiry</strong>
+                  <small>Website inquiry</small>
+                  <strong>What can happen after someone submits a form</strong>
                 </div>
                 <span className={styles.statusPill}>Automated</span>
               </div>
@@ -176,39 +196,39 @@ export default function Studio() {
               <div className={styles.pipelineLead}>
                 <div className={styles.leadAvatar}>JM</div>
                 <div>
-                  <strong>New website inquiry</strong>
-                  <span>9:41 PM · mobile visitor</span>
+                  <strong>New inquiry received</strong>
+                  <span>Website visitor · after business hours</span>
                 </div>
-                <b>High intent</b>
+                <b>New lead</b>
               </div>
 
               <div className={styles.pipelineSteps}>
-                <div><i className={styles.done} /> <span>Inquiry captured</span><small>0 sec</small></div>
-                <div><i className={styles.done} /> <span>Questions answered</span><small>18 sec</small></div>
-                <div><i className={styles.done} /> <span>Lead qualified</span><small>42 sec</small></div>
-                <div><i className={styles.active} /> <span>Follow-up scheduled</span><small>Next step</small></div>
+                <div><i className={styles.done} /> <span>Inquiry stored</span><small>Immediately</small></div>
+                <div><i className={styles.done} /> <span>Common questions answered</span><small>Website assistant</small></div>
+                <div><i className={styles.done} /> <span>Useful details collected</span><small>Before reply</small></div>
+                <div><i className={styles.active} /> <span>Follow-up task created</span><small>Next action</small></div>
               </div>
 
               <div className={styles.pipelineFooter}>
-                <span>No one had to be online.</span>
-                <b>Lead kept moving →</b>
+                <span>The exact workflow depends on your business.</span>
+                <b>Less manual chasing →</b>
               </div>
             </div>
           </section>
 
           <section className={styles.signalBar}>
-            <div><span>01</span><p>Website problems that quietly lose trust</p></div>
-            <div><span>02</span><p>Leads that wait too long for a reply</p></div>
-            <div><span>03</span><p>Admin work that should be automatic</p></div>
+            <div><span>01</span><p>Need a better website or landing page</p></div>
+            <div><span>02</span><p>Need more useful information from new leads</p></div>
+            <div><span>03</span><p>Need repetitive follow-up to happen automatically</p></div>
           </section>
 
           <section className={styles.section} id="services">
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>Services</p>
-              <h2>Start with the bottleneck, not a package.</h2>
+              <p className={styles.eyebrow}>What I can help with</p>
+              <h2>You bring the business problem. I handle the technical path.</h2>
               <p>
-                One visible problem is enough to begin. The goal is a useful result you can point to,
-                not a pile of software you have to manage later.
+                You do not need to choose a package or know the implementation. Start with what is broken, slow,
+                repetitive, or confusing for customers. We narrow it to one useful first project.
               </p>
             </div>
 
@@ -221,6 +241,11 @@ export default function Studio() {
                   </div>
                   <h3>{service.title}</h3>
                   <p>{service.body}</p>
+                  <p className={styles.useWhen}><strong>Choose this when:</strong> {service.useWhen}</p>
+                  <div className={styles.resultLine}>
+                    <span>Typical result</span>
+                    <b>{service.result}</b>
+                  </div>
                   <ul>
                     {service.items.map((item) => <li key={item}>{item}</li>)}
                   </ul>
@@ -231,10 +256,10 @@ export default function Studio() {
 
           <section className={`${styles.section} ${styles.workSection}`} id="work">
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>Demonstration projects</p>
-              <h2>Concrete outcomes, not vague “digital transformation.”</h2>
+              <p className={styles.eyebrow}>Example solutions</p>
+              <h2>See the kind of problem each service is meant to solve.</h2>
               <p>
-                These are concept projects created to demonstrate the delivery approach — not client claims.
+                These are demonstration concepts created to show the delivery approach. They are examples, not client claims.
               </p>
             </div>
 
@@ -257,8 +282,11 @@ export default function Studio() {
 
           <section className={styles.section} id="process">
             <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>Process</p>
-              <h2>Small scope. Fast feedback. Clear finish line.</h2>
+              <p className={styles.eyebrow}>How a project works</p>
+              <h2>No mystery between “contact us” and the finished work.</h2>
+              <p>
+                The first conversation is about understanding the problem. Implementation starts only after the scope and price are clear.
+              </p>
             </div>
 
             <div className={styles.processGrid}>
@@ -270,27 +298,40 @@ export default function Studio() {
                 </article>
               ))}
             </div>
+
+            <div className={styles.faqGrid}>
+              {faqs.map(([question, answer]) => (
+                <article key={question}>
+                  <h3>{question}</h3>
+                  <p>{answer}</p>
+                </article>
+              ))}
+            </div>
           </section>
 
           <section className={styles.problemSection}>
             <div className={styles.problemIntro}>
-              <p className={styles.eyebrow}>Good first projects</p>
-              <h2>Start where money or time is leaking.</h2>
-              <p>You do not need to know the technical solution. Describe what feels slow, broken, repetitive, or hard to manage.</p>
+              <p className={styles.eyebrow}>Not sure what to ask for?</p>
+              <h2>Describe the pain, not the technology.</h2>
+              <p>
+                A useful first message can be as simple as: “this part is broken,” “we keep doing this manually,”
+                or “customers keep getting stuck here.”
+              </p>
             </div>
             <div className={styles.problemList}>
               <p><span>01</span>“Our form gets inquiries, but follow-up is inconsistent.”</p>
               <p><span>02</span>“The site feels slow or broken on mobile.”</p>
               <p><span>03</span>“Visitors ask the same questions every day.”</p>
               <p><span>04</span>“We copy the same information between tools manually.”</p>
-              <p><span>05</span>“Our website looks old and does not build trust.”</p>
+              <p><span>05</span>“Our website does not clearly explain why customers should choose us.”</p>
             </div>
           </section>
 
           <section className={styles.auditCta}>
             <div>
-              <p className={styles.eyebrow}>Low-friction first step</p>
-              <h2>Send your website. I’ll tell you the first three things I would fix.</h2>
+              <p className={styles.eyebrow}>Simple first step</p>
+              <h2>Send the website or workflow and explain what is not working.</h2>
+              <p className={styles.auditCopy}>I’ll review it first, then reply with the clearest next step before we talk about building anything.</p>
             </div>
             <Link className={styles.auditButton} href="/studio/request">Request a quick review →</Link>
           </section>
@@ -301,7 +342,7 @@ export default function Studio() {
               <h2>One problem. One clear next step.</h2>
               <p>
                 Share the website or workflow and a short description of what is not working.
-                We can start small and only expand if the first result earns it.
+                We can start with a focused fix and only expand if there is a clear reason to.
               </p>
             </div>
             <div className={styles.contactCard}>
@@ -309,8 +350,8 @@ export default function Studio() {
               <h3>Amar Jaleel</h3>
               <p>Software engineering · web systems · automation</p>
               <div className={styles.contactActions}>
-                <Link className={styles.darkButton} href="/studio/request">Start a conversation</Link>
-                <Link className={styles.textLink} href="/">Personal portfolio →</Link>
+                <Link className={styles.darkButton} href="/studio/request">Tell me what is broken</Link>
+                <Link className={styles.textLink} href="/projects">View technical work →</Link>
               </div>
             </div>
           </section>
