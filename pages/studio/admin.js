@@ -14,6 +14,12 @@ export default function StudioAdmin() {
   const [password, setPassword] = useState('');
   const [authStatus, setAuthStatus] = useState('idle');
   const [authMessage, setAuthMessage] = useState('');
+  const [authStage, setAuthStage] = useState('signin');
+  const [mfaFactor, setMfaFactor] = useState(null);
+  const [mfaSetup, setMfaSetup] = useState(null);
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaStatus, setMfaStatus] = useState('idle');
+  const [mfaMessage, setMfaMessage] = useState('');
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -31,7 +37,7 @@ export default function StudioAdmin() {
           refresh_token: hash.get('refresh_token') || '',
           expires_at: Math.floor(Date.now() / 1000) + expiresIn,
         };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(hashSession));
+        saveSession(hashSession);
         setSession(hashSession);
         window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
         return;
@@ -51,7 +57,11 @@ export default function StudioAdmin() {
   }, []);
 
   useEffect(() => {
-    if (session?.access_token) loadLeads(session.access_token);
+    if (!session?.access_token) {
+      setAuthStage('signin');
+      return;
+    }
+    inspectAuthenticatedSession(session);
   }, [session?.access_token]);
 
   const filteredLeads = useMemo(() => {
@@ -74,10 +84,7 @@ export default function StudioAdmin() {
     try {
       const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
         method: 'POST',
-        headers: {
-          apikey: SUPABASE_KEY,
-          'Content-Type': 'application/json',
-        },
+        headers: authHeaders(),
         body: JSON.stringify({ email: email.trim(), password }),
       });
       const data = await response.json();
@@ -90,20 +97,146 @@ export default function StudioAdmin() {
         throw new Error('No login session was returned.');
       }
 
-      const nextSession = {
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-        expires_at: Math.floor(Date.now() / 1000) + (data.expires_in || 3600),
-        user: data.user,
-      };
-
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(nextSession));
+      const nextSession = normalizeSession(data);
+      saveSession(nextSession);
       setSession(nextSession);
       setPassword('');
       setAuthStatus('success');
     } catch (err) {
       setAuthStatus('error');
       setAuthMessage(err.message || 'Authentication failed.');
+    }
+  }
+
+  async function inspectAuthenticatedSession(currentSession) {
+    setAuthStage('checking');
+    setMfaMessage('');
+
+    try {
+      const currentAal = jwtAal(currentSession.access_token);
+      if (currentAal === 'aal2') {
+        setAuthStage('ready');
+        await loadLeads(currentSession.access_token);
+        return;
+      }
+
+      const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+        headers: authHeaders(currentSession.access_token),
+      });
+
+      if (userResponse.status === 401) {
+        clearSession();
+        throw new Error('Your session expired. Sign in again.');
+      }
+
+      const user = await userResponse.json();
+      if (!userResponse.ok) {
+        throw new Error(user?.msg || user?.message || 'Could not verify your security settings.');
+      }
+
+      const verifiedTotp = (user?.factors || []).find(
+        (factor) => factor.factor_type === 'totp' && factor.status === 'verified'
+      );
+
+      if (verifiedTotp) {
+        setMfaFactor(verifiedTotp);
+        setAuthStage('challenge');
+      } else {
+        setAuthStage('enroll');
+      }
+    } catch (err) {
+      setMfaStatus('error');
+      setMfaMessage(err.message || 'Could not verify MFA status.');
+      if (sessionStorage.getItem(SESSION_KEY)) setAuthStage('enroll');
+    }
+  }
+
+  async function startMfaEnrollment() {
+    if (!session?.access_token) return;
+    setMfaStatus('submitting');
+    setMfaMessage('');
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/auth/v1/factors`, {
+        method: 'POST',
+        headers: authHeaders(session.access_token),
+        body: JSON.stringify({
+          factor_type: 'totp',
+          friendly_name: 'Amar Digital Systems admin',
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.msg || data?.message || 'Could not start authenticator setup.');
+      }
+      if (!data?.id || !data?.totp?.qr_code) {
+        throw new Error('Supabase did not return an authenticator setup code.');
+      }
+
+      setMfaFactor({ id: data.id, factor_type: 'totp', status: 'unverified' });
+      setMfaSetup(data.totp);
+      setMfaCode('');
+      setMfaStatus('idle');
+      setAuthStage('enroll-verify');
+    } catch (err) {
+      setMfaStatus('error');
+      setMfaMessage(err.message || 'Could not start authenticator setup.');
+    }
+  }
+
+  async function submitMfaCode(event) {
+    event.preventDefault();
+    if (!session?.access_token || !mfaFactor?.id) return;
+
+    const code = mfaCode.replace(/\s+/g, '');
+    if (!/^\d{6}$/.test(code)) {
+      setMfaStatus('error');
+      setMfaMessage('Enter the 6-digit code from your authenticator app.');
+      return;
+    }
+
+    setMfaStatus('submitting');
+    setMfaMessage('');
+
+    try {
+      const challengeResponse = await fetch(
+        `${SUPABASE_URL}/auth/v1/factors/${encodeURIComponent(mfaFactor.id)}/challenge`,
+        {
+          method: 'POST',
+          headers: authHeaders(session.access_token),
+          body: JSON.stringify({}),
+        }
+      );
+      const challenge = await challengeResponse.json();
+      if (!challengeResponse.ok || !challenge?.id) {
+        throw new Error(challenge?.msg || challenge?.message || 'Could not create MFA challenge.');
+      }
+
+      const verifyResponse = await fetch(
+        `${SUPABASE_URL}/auth/v1/factors/${encodeURIComponent(mfaFactor.id)}/verify`,
+        {
+          method: 'POST',
+          headers: authHeaders(session.access_token),
+          body: JSON.stringify({ challenge_id: challenge.id, code }),
+        }
+      );
+      const verified = await verifyResponse.json();
+      if (!verifyResponse.ok || !verified?.access_token) {
+        throw new Error(verified?.msg || verified?.message || 'That authenticator code was not accepted.');
+      }
+
+      const nextSession = normalizeSession(verified);
+      saveSession(nextSession);
+      setSession(nextSession);
+      setMfaCode('');
+      setMfaSetup(null);
+      setMfaStatus('success');
+      setMfaMessage('Two-step verification complete.');
+      setAuthStage('checking');
+    } catch (err) {
+      setMfaStatus('error');
+      setMfaMessage(err.message || 'Could not verify the authenticator code.');
     }
   }
 
@@ -123,7 +256,7 @@ export default function StudioAdmin() {
       });
 
       if (response.status === 401) {
-        logout();
+        clearSession();
         throw new Error('Your session expired. Sign in again.');
       }
       if (!response.ok) {
@@ -139,7 +272,7 @@ export default function StudioAdmin() {
   }
 
   async function updateStatus(leadId, status) {
-    if (!session?.access_token) return;
+    if (!session?.access_token || authStage !== 'ready') return;
     const previous = leads;
     setLeads((current) => current.map((lead) => lead.id === leadId ? { ...lead, status } : lead));
 
@@ -161,12 +294,30 @@ export default function StudioAdmin() {
     }
   }
 
-  function logout() {
+  async function logout() {
+    const token = session?.access_token;
+    clearSession();
+    if (!token) return;
+    try {
+      await fetch(`${SUPABASE_URL}/auth/v1/logout?scope=local`, {
+        method: 'POST',
+        headers: authHeaders(token),
+      });
+    } catch {
+      // Local session is already cleared. Remote sign-out is best effort.
+    }
+  }
+
+  function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
     setSession(null);
     setLeads([]);
     setEmail('');
     setPassword('');
+    setMfaCode('');
+    setMfaFactor(null);
+    setMfaSetup(null);
+    setAuthStage('signin');
   }
 
   return (
@@ -185,6 +336,11 @@ export default function StudioAdmin() {
               <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Studio leads</h1>
             </div>
             <div className="flex items-center gap-3">
+              {authStage === 'ready' && (
+                <span className="hidden rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-2 text-xs font-semibold text-emerald-200 sm:inline-flex">
+                  MFA protected
+                </span>
+              )}
               <Link href="/studio" className="rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300 transition hover:border-white/25 hover:text-white">
                 Studio
               </Link>
@@ -197,51 +353,79 @@ export default function StudioAdmin() {
           </div>
 
           {!session ? (
-            <section className="mx-auto mt-14 max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/20 md:p-8">
-              <p className="text-sm text-slate-400">Authorized owner access only</p>
-              <h2 className="mt-2 text-2xl font-bold">Sign in to view leads</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">
-                Registration is not available from this page. Lead data is protected by Supabase authentication and Row Level Security, and only the authorized owner account can read or update it.
+            <SignInCard
+              email={email}
+              password={password}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              authenticate={authenticate}
+              authStatus={authStatus}
+              authMessage={authMessage}
+            />
+          ) : authStage === 'checking' ? (
+            <SecurityCard eyebrow="Security check" title="Verifying your session…">
+              <p className="text-sm leading-6 text-slate-400">Checking your second-factor status before loading any lead data.</p>
+            </SecurityCard>
+          ) : authStage === 'enroll' ? (
+            <SecurityCard eyebrow="Required security" title="Set up two-step verification">
+              <p className="text-sm leading-6 text-slate-400">
+                This admin account needs an authenticator app before the lead dashboard opens. Use Google Authenticator, Microsoft Authenticator, 1Password, Authy, or another TOTP app.
               </p>
-
-              <form onSubmit={authenticate} className="mt-6 space-y-4">
-                <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-slate-200">Email</span>
-                  <input
-                    type="email"
-                    required
-                    autoComplete="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-white outline-none transition focus:border-teal-300/60"
+              <button
+                onClick={startMfaEnrollment}
+                disabled={mfaStatus === 'submitting'}
+                className="mt-6 w-full rounded-full bg-teal-300 px-5 py-3.5 font-bold text-[#05211d] transition hover:bg-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {mfaStatus === 'submitting' ? 'Preparing…' : 'Set up authenticator'}
+              </button>
+              <MfaMessage status={mfaStatus} message={mfaMessage} />
+            </SecurityCard>
+          ) : authStage === 'enroll-verify' ? (
+            <SecurityCard eyebrow="Two-step verification" title="Scan and verify">
+              <p className="text-sm leading-6 text-slate-400">
+                Scan this QR code with your authenticator app, then enter the 6-digit code it generates.
+              </p>
+              {mfaSetup?.qr_code && (
+                <div className="mt-6 rounded-2xl bg-white p-4">
+                  <img
+                    src={qrCodeDataUrl(mfaSetup.qr_code)}
+                    alt="Authenticator QR code"
+                    className="mx-auto h-52 w-52 max-w-full"
                   />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-slate-200">Password</span>
-                  <input
-                    type="password"
-                    required
-                    minLength={8}
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-white outline-none transition focus:border-teal-300/60"
-                  />
-                </label>
-
-                <button
-                  type="submit"
-                  disabled={authStatus === 'submitting'}
-                  className="w-full rounded-full bg-teal-300 px-5 py-3.5 font-bold text-[#05211d] transition hover:bg-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {authStatus === 'submitting' ? 'Please wait…' : 'Sign in'}
-                </button>
-              </form>
-
-              {authMessage && (
-                <p className={`mt-4 text-sm ${authStatus === 'error' ? 'text-rose-300' : 'text-emerald-300'}`}>{authMessage}</p>
+                </div>
               )}
-            </section>
+              {mfaSetup?.secret && (
+                <div className="mt-4 rounded-2xl border border-white/10 bg-black/10 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Manual setup key</p>
+                  <code className="mt-2 block break-all text-sm text-slate-200">{mfaSetup.secret}</code>
+                </div>
+              )}
+              <MfaCodeForm
+                code={mfaCode}
+                setCode={setMfaCode}
+                onSubmit={submitMfaCode}
+                status={mfaStatus}
+                buttonLabel="Enable two-step verification"
+              />
+              <MfaMessage status={mfaStatus} message={mfaMessage} />
+              <p className="mt-4 text-xs leading-5 text-slate-500">
+                Keep your authenticator app available. Once enabled, every new admin sign-in will require a fresh code.
+              </p>
+            </SecurityCard>
+          ) : authStage === 'challenge' ? (
+            <SecurityCard eyebrow="Second factor" title="Enter your authenticator code">
+              <p className="text-sm leading-6 text-slate-400">
+                Your password was accepted. Enter the current 6-digit code from your authenticator app to open the dashboard.
+              </p>
+              <MfaCodeForm
+                code={mfaCode}
+                setCode={setMfaCode}
+                onSubmit={submitMfaCode}
+                status={mfaStatus}
+                buttonLabel="Verify and continue"
+              />
+              <MfaMessage status={mfaStatus} message={mfaMessage} />
+            </SecurityCard>
           ) : (
             <section className="mt-8">
               <div className="grid gap-4 md:grid-cols-4">
@@ -343,6 +527,100 @@ export default function StudioAdmin() {
   );
 }
 
+function SignInCard({ email, password, setEmail, setPassword, authenticate, authStatus, authMessage }) {
+  return (
+    <section className="mx-auto mt-14 max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/20 md:p-8">
+      <p className="text-sm text-slate-400">Authorized owner access only</p>
+      <h2 className="mt-2 text-2xl font-bold">Sign in to view leads</h2>
+      <p className="mt-3 text-sm leading-6 text-slate-400">
+        Registration is disabled. The dashboard requires your owner password and a second-factor authenticator code.
+      </p>
+
+      <form onSubmit={authenticate} className="mt-6 space-y-4">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-200">Email</span>
+          <input
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-white outline-none transition focus:border-teal-300/60"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-200">Password</span>
+          <input
+            type="password"
+            required
+            minLength={8}
+            autoComplete="current-password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-white outline-none transition focus:border-teal-300/60"
+          />
+        </label>
+
+        <button
+          type="submit"
+          disabled={authStatus === 'submitting'}
+          className="w-full rounded-full bg-teal-300 px-5 py-3.5 font-bold text-[#05211d] transition hover:bg-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {authStatus === 'submitting' ? 'Please wait…' : 'Continue securely'}
+        </button>
+      </form>
+
+      {authMessage && (
+        <p className={`mt-4 text-sm ${authStatus === 'error' ? 'text-rose-300' : 'text-emerald-300'}`}>{authMessage}</p>
+      )}
+    </section>
+  );
+}
+
+function SecurityCard({ eyebrow, title, children }) {
+  return (
+    <section className="mx-auto mt-14 max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/20 md:p-8">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-300">{eyebrow}</p>
+      <h2 className="mt-2 text-2xl font-bold">{title}</h2>
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+function MfaCodeForm({ code, setCode, onSubmit, status, buttonLabel }) {
+  return (
+    <form onSubmit={onSubmit} className="mt-6 space-y-4">
+      <label className="block">
+        <span className="mb-2 block text-sm font-medium text-slate-200">6-digit code</span>
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          pattern="[0-9]{6}"
+          maxLength={6}
+          required
+          value={code}
+          onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
+          className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-center text-xl tracking-[0.32em] text-white outline-none transition focus:border-teal-300/60"
+          placeholder="000000"
+        />
+      </label>
+      <button
+        type="submit"
+        disabled={status === 'submitting' || code.length !== 6}
+        className="w-full rounded-full bg-teal-300 px-5 py-3.5 font-bold text-[#05211d] transition hover:bg-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {status === 'submitting' ? 'Verifying…' : buttonLabel}
+      </button>
+    </form>
+  );
+}
+
+function MfaMessage({ status, message }) {
+  if (!message) return null;
+  return <p className={`mt-4 text-sm ${status === 'error' ? 'text-rose-300' : 'text-emerald-300'}`}>{message}</p>;
+}
+
 function Metric({ label, value }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
@@ -350,6 +628,44 @@ function Metric({ label, value }) {
       <p className="mt-2 text-3xl font-bold">{value}</p>
     </div>
   );
+}
+
+function authHeaders(token) {
+  return {
+    apikey: SUPABASE_KEY,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    'Content-Type': 'application/json',
+  };
+}
+
+function normalizeSession(data) {
+  return {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token || '',
+    expires_at: Math.floor(Date.now() / 1000) + Number(data.expires_in || 3600),
+    user: data.user || null,
+  };
+}
+
+function saveSession(value) {
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(value));
+}
+
+function jwtAal(token) {
+  try {
+    const payload = token.split('.')[1];
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(payload.length / 4) * 4, '=');
+    return JSON.parse(atob(base64))?.aal || 'aal1';
+  } catch {
+    return 'aal1';
+  }
+}
+
+function qrCodeDataUrl(value) {
+  if (!value) return '';
+  if (value.startsWith('data:image/')) return value;
+  if (value.trim().startsWith('<svg')) return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(value)}`;
+  return `data:image/svg+xml;utf-8,${value}`;
 }
 
 function formatDate(value) {
