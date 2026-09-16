@@ -87,6 +87,7 @@
 .heroCopy h1{font-size:clamp(54px,6.2vw,94px);line-height:.95;max-width:940px}
 .heroCopy h1 span{display:block;color:#7690a8;margin-top:8px}
 .lede{max-width:730px;margin:28px 0 0;font-size:clamp(18px,1.7vw,23px);line-height:1.62;color:#a7b5c4}
+.audienceLine{max-width:760px;margin:18px 0 0;padding-left:14px;border-left:2px solid rgba(94,234,212,.35);color:#8094a9;font-size:13px;line-height:1.7}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
 .primaryButton,.secondaryButton,.darkButton,.auditButton{
   display:inline-flex;align-items:center;justify-content:center;
@@ -108,6 +109,7 @@
   box-shadow:0 40px 100px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.05);
   transform:perspective(1200px) rotateY(-2deg) rotateX(1deg);
 }
+.exampleBadge{display:inline-flex;margin:0 0 14px;padding:6px 9px;border-radius:999px;border:1px solid rgba(94,234,212,.16);background:rgba(45,212,191,.06);color:#8debdc;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
 .pipelineHeader{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
 .pipelineHeader>div{display:flex;flex-direction:column;gap:4px}
 .pipelineHeader small{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#718398;font-weight:800}
@@ -145,7 +147,7 @@
 .sectionHeading>p:last-child{max-width:700px;margin-top:18px;color:#8fa1b4;font-size:17px;line-height:1.65}
 .serviceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .serviceCard{
-  min-height:340px;padding:30px;border:1px solid rgba(255,255,255,.08);border-radius:22px;
+  min-height:390px;padding:30px;border:1px solid rgba(255,255,255,.08);border-radius:22px;
   background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
   display:flex;flex-direction:column;transition:transform .22s ease,border-color .22s ease,background .22s ease;
 }
@@ -154,8 +156,13 @@
 .serviceTop span{font-size:10px;color:var(--accent2);font-weight:900;letter-spacing:.14em}
 .serviceTop i{font-style:normal;color:#53677d;font-size:18px;transition:transform .2s ease,color .2s ease}
 .serviceCard:hover .serviceTop i{transform:translate(2px,-2px);color:#7de6d5}
-.serviceCard h3{font-size:29px;line-height:1.12;margin:54px 0 14px;letter-spacing:-.025em}
+.serviceCard h3{font-size:29px;line-height:1.12;margin:44px 0 14px;letter-spacing:-.025em}
 .serviceCard>p{color:#8fa1b4;max-width:560px;line-height:1.65}
+.useWhen{margin:18px 0 0!important;padding:14px 15px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.025);color:#94a5b7!important;font-size:12px!important;line-height:1.6!important}
+.useWhen strong{color:#d8e3ec;font-weight:800}
+.resultLine{display:grid;gap:6px;margin:14px 0 20px;padding:14px 15px;border-left:2px solid #2dd4bf;background:rgba(45,212,191,.045)}
+.resultLine span{color:#70e7d5;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.resultLine b{color:#c9d5df;font-size:12px;font-weight:650;line-height:1.55}
 .serviceCard ul{list-style:none;padding:0;margin:auto 0 0;display:flex;gap:8px;flex-wrap:wrap}
 .serviceCard li{font-size:10px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);color:#aab7c5}
 
@@ -205,6 +212,10 @@
 .processGrid span{font-size:10px;color:var(--accent2);font-weight:900;letter-spacing:.13em}
 .processGrid h3{font-size:24px;margin:36px 0 10px;letter-spacing:-.02em}
 .processGrid p{font-size:13px;color:#8192a5;line-height:1.6}
+.faqGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:56px}
+.faqGrid article{padding:24px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(255,255,255,.025)}
+.faqGrid h3{margin:0;color:#f3f7fa;font-size:17px;line-height:1.35;letter-spacing:-.015em}
+.faqGrid p{margin:10px 0 0;color:#8192a5;font-size:13px;line-height:1.65}
 
 .problemSection{
   display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;
@@ -225,6 +236,7 @@
 }
 .auditCta .eyebrow{color:#b8fff4}
 .auditCta h2{font-size:clamp(34px,4vw,54px);line-height:1.05;max-width:900px}
+.auditCopy{max-width:760px;margin:16px 0 0;color:#c8fff6;font-size:14px;line-height:1.65}
 .auditButton{background:#e8fffb;color:#093d38;white-space:nowrap;box-shadow:0 16px 44px rgba(0,0,0,.16)}
 .auditButton:hover{transform:translateY(-2px);background:#fff}
 
@@ -265,6 +277,7 @@
   .signalBar{grid-template-columns:1fr}
   .signalBar>div{border-right:0;border-bottom:1px solid rgba(255,255,255,.07)}
   .signalBar>div:last-child{border-bottom:0}
+  .faqGrid{grid-template-columns:1fr;margin-top:38px}
 }
 
 @media(max-width:640px){
@@ -274,6 +287,7 @@
   .heroCopy h1{font-size:48px}
   .heroCopy h1 span{margin-top:7px}
   .lede{font-size:17px}
+  .audienceLine{font-size:12px}
   .actions{display:grid}
   .primaryButton,.secondaryButton,.darkButton,.auditButton{width:100%}
   .proofLine{display:grid;gap:10px}
@@ -289,6 +303,7 @@
   .browserBody strong{font-size:20px}
   .workCard h3{font-size:28px}
   .processGrid{grid-template-columns:1fr}
+  .faqGrid article{padding:20px}
   .auditCta{padding:58px 20px}
   .footer{align-items:flex-start;flex-direction:column;padding:28px 20px}
 }
