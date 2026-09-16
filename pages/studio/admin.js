@@ -12,7 +12,6 @@ export default function StudioAdmin() {
   const [session, setSession] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authMode, setAuthMode] = useState('signin');
   const [authStatus, setAuthStatus] = useState('idle');
   const [authMessage, setAuthMessage] = useState('');
   const [leads, setLeads] = useState([]);
@@ -23,6 +22,21 @@ export default function StudioAdmin() {
 
   useEffect(() => {
     try {
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const accessToken = hash.get('access_token');
+      if (accessToken) {
+        const expiresIn = Number(hash.get('expires_in') || 3600);
+        const hashSession = {
+          access_token: accessToken,
+          refresh_token: hash.get('refresh_token') || '',
+          expires_at: Math.floor(Date.now() / 1000) + expiresIn,
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(hashSession));
+        setSession(hashSession);
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        return;
+      }
+
       const raw = sessionStorage.getItem(SESSION_KEY);
       if (!raw) return;
       const stored = JSON.parse(raw);
@@ -57,12 +71,8 @@ export default function StudioAdmin() {
     setAuthStatus('submitting');
     setAuthMessage('');
 
-    const endpoint = authMode === 'signup'
-      ? `${SUPABASE_URL}/auth/v1/signup`
-      : `${SUPABASE_URL}/auth/v1/token?grant_type=password`;
-
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
         method: 'POST',
         headers: {
           apikey: SUPABASE_KEY,
@@ -76,31 +86,21 @@ export default function StudioAdmin() {
         throw new Error(data?.msg || data?.error_description || data?.message || 'Authentication failed.');
       }
 
-      const nextSession = data?.access_token
-        ? {
-            access_token: data.access_token,
-            refresh_token: data.refresh_token,
-            expires_at: Math.floor(Date.now() / 1000) + (data.expires_in || 3600),
-            user: data.user,
-          }
-        : data?.session;
-
-      if (nextSession?.access_token) {
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(nextSession));
-        setSession(nextSession);
-        setPassword('');
-        setAuthStatus('success');
-        return;
-      }
-
-      if (authMode === 'signup') {
-        setAuthStatus('success');
-        setAuthMessage('Account created. Check your email for the confirmation link, then sign in here.');
-        setAuthMode('signin');
-        setPassword('');
-      } else {
+      if (!data?.access_token) {
         throw new Error('No login session was returned.');
       }
+
+      const nextSession = {
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at: Math.floor(Date.now() / 1000) + (data.expires_in || 3600),
+        user: data.user,
+      };
+
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(nextSession));
+      setSession(nextSession);
+      setPassword('');
+      setAuthStatus('success');
     } catch (err) {
       setAuthStatus('error');
       setAuthMessage(err.message || 'Authentication failed.');
@@ -199,9 +199,9 @@ export default function StudioAdmin() {
           {!session ? (
             <section className="mx-auto mt-14 max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/20 md:p-8">
               <p className="text-sm text-slate-400">Authorized owner access only</p>
-              <h2 className="mt-2 text-2xl font-bold">{authMode === 'signup' ? 'Create your admin login' : 'Sign in to view leads'}</h2>
+              <h2 className="mt-2 text-2xl font-bold">Sign in to view leads</h2>
               <p className="mt-3 text-sm leading-6 text-slate-400">
-                Lead data is protected by Supabase authentication and Row Level Security. Creating an account does not automatically grant dashboard access unless the account matches the authorized owner email.
+                Registration is not available from this page. Lead data is protected by Supabase authentication and Row Level Security, and only the authorized owner account can read or update it.
               </p>
 
               <form onSubmit={authenticate} className="mt-6 space-y-4">
@@ -222,7 +222,7 @@ export default function StudioAdmin() {
                     type="password"
                     required
                     minLength={8}
-                    autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
+                    autoComplete="current-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-white outline-none transition focus:border-teal-300/60"
@@ -234,24 +234,13 @@ export default function StudioAdmin() {
                   disabled={authStatus === 'submitting'}
                   className="w-full rounded-full bg-teal-300 px-5 py-3.5 font-bold text-[#05211d] transition hover:bg-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {authStatus === 'submitting' ? 'Please wait…' : authMode === 'signup' ? 'Create admin login' : 'Sign in'}
+                  {authStatus === 'submitting' ? 'Please wait…' : 'Sign in'}
                 </button>
               </form>
 
               {authMessage && (
                 <p className={`mt-4 text-sm ${authStatus === 'error' ? 'text-rose-300' : 'text-emerald-300'}`}>{authMessage}</p>
               )}
-
-              <button
-                onClick={() => {
-                  setAuthMode((current) => current === 'signin' ? 'signup' : 'signin');
-                  setAuthMessage('');
-                  setAuthStatus('idle');
-                }}
-                className="mt-5 text-sm text-teal-300 hover:text-teal-200"
-              >
-                {authMode === 'signin' ? 'First time here? Create the owner login' : 'Already created it? Sign in'}
-              </button>
             </section>
           ) : (
             <section className="mt-8">
