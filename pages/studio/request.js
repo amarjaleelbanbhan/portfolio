@@ -8,7 +8,7 @@ const initialState = {
   website: '',
   company: '',
   problem: '',
-  source: 'studio_request',
+  fax: '',
 };
 
 export default function StudioRequest() {
@@ -79,6 +79,17 @@ export default function StudioRequest() {
 
             <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/20 md:p-8">
               <form onSubmit={submit} className="space-y-5">
+                <input
+                  type="text"
+                  name="fax"
+                  value={form.fax}
+                  onChange={update}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="hidden"
+                />
+
                 <div className="grid gap-5 md:grid-cols-2">
                   <Field label="Name" name="name" value={form.name} onChange={update} required />
                   <Field label="Work email" name="email" type="email" value={form.email} onChange={update} required />
@@ -96,6 +107,8 @@ export default function StudioRequest() {
                     value={form.problem}
                     onChange={update}
                     required
+                    minLength={10}
+                    maxLength={5000}
                     rows={7}
                     placeholder="Example: Our inquiry form works, but leads sit in the inbox until the next day."
                     className="w-full rounded-2xl border border-white/10 bg-[#0a1627] px-4 py-3 text-white outline-none transition focus:border-teal-300/60"
