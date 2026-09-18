@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SkillCube from '@/components/SkillCube';
+import { skills } from '@/data/portfolio';
 
 const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ssr: false,
@@ -14,84 +15,74 @@ const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ),
 });
 
-const languageSkills = [
-  { name: 'Python',      level: 90, color: '#3b82f6' },
-  { name: 'JavaScript',  level: 85, color: '#f59e0b' },
-  { name: 'HTML / CSS',  level: 88, color: '#f97316' },
-  { name: 'C++',         level: 80, color: '#8b5cf6' },
-  { name: 'SQL',         level: 80, color: '#06b6d4' },
-  { name: 'Java',        level: 78, color: '#ef4444' },
-  { name: 'R',           level: 75, color: '#10b981' },
-];
 
-const categories = [
-  {
-    title: 'AI / Machine Learning',
-    color: '#8b5cf6',
-    skills: ['TensorFlow', 'Scikit-Learn', 'Pandas', 'NumPy', 'Matplotlib'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Data & Analytics',
-    color: '#f59e0b',
-    skills: ['Tableau', 'Power BI', 'Excel', 'Google Analytics', 'BigQuery'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Cybersecurity',
-    color: '#ef4444',
-    skills: ['Linux', 'Wireshark', 'Kali Linux', 'OWASP', 'SIEM Tools', 'Nmap'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Web & Cloud',
+
+const CATEGORY_STYLE = {
+  'Product Engineering': {
     color: '#14b8a6',
-    skills: ['React', 'Next.js', 'Node.js', 'Git', 'GitHub', 'Google Cloud', 'Docker'],
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
       </svg>
     ),
   },
-];
+  'Applied AI': {
+    color: '#8b5cf6',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    ),
+  },
+  'Security & Dev Tools': {
+    color: '#ef4444',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    ),
+  },
+  Systems: {
+    color: '#f59e0b',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+  },
+};
 
-const currentlyLearning = [
-  { label: 'Advanced ML & Deep Learning',     color: '#8b5cf6' },
-  { label: 'Cloud Security (AWS / Azure)',     color: '#ef4444' },
-  { label: 'Big Data Analytics & Spark',       color: '#f59e0b' },
-  { label: 'Advanced Cybersecurity & CTFs',   color: '#14b8a6' },
-];
+const categories = Object.entries(skills.categories).map(([title, items]) => ({
+  title,
+  skills: items,
+  color: CATEGORY_STYLE[title]?.color ?? '#14b8a6',
+  icon: CATEGORY_STYLE[title]?.icon ?? null,
+}));
 
-function ProgressBar({ name, level, color }) {
+const LEARNING_COLORS = ['#8b5cf6', '#ef4444', '#f59e0b', '#14b8a6'];
+const currentlyLearning = skills.learning.map((label, i) => ({
+  label,
+  color: LEARNING_COLORS[i % LEARNING_COLORS.length],
+}));
+
+// Self-assessed percentages were removed in Phase 1 — they measured nothing.
+// A language is listed with the work it was actually used for instead.
+function LanguageEvidence({ name, color, usedIn, index }) {
   return (
-    <div className="mb-5">
-      <div className="flex justify-between mb-1.5">
-        <span className="text-sm font-medium text-slate-200">{name}</span>
-        <span className="text-xs font-code" style={{ color }}>{level}%</span>
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.45, delay: index * 0.06, ease: [0.21, 0.47, 0.32, 0.98] }}
+      className="mb-4 pl-3 border-l-2"
+      style={{ borderColor: `${color}66` }}
+    >
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="text-sm font-semibold" style={{ color }}>{name}</span>
+        <span className="text-[11px] text-slate-600 font-code uppercase tracking-wider">used in</span>
       </div>
-      <div className="w-full bg-white/6 rounded-full h-1.5 overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98], delay: 0.2 }}
-          className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${color}aa, ${color})` }}
-        />
-      </div>
-    </div>
+      <p className="text-xs text-slate-400 mt-1 leading-relaxed">{usedIn.join(' · ')}</p>
+    </motion.div>
   );
 }
 
@@ -138,8 +129,8 @@ export default function Skills() {
               <span className="text-neon-cyan font-code"> /&gt;</span>
             </h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">
-              A comprehensive overview of my technical toolkit — from languages and frameworks
-              to specialized domains in AI, security, and data.
+              The tools I actually build with, listed against the work they were used for.
+              Proficiency percentages were removed — they were self-assigned and measured nothing.
             </p>
           </motion.div>
 
@@ -154,10 +145,10 @@ export default function Skills() {
                   <svg className="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                   </svg>
-                  Programming Languages
+                  Languages &amp; Where They&apos;re Used
                 </h2>
-                {languageSkills.map((skill) => (
-                  <ProgressBar key={skill.name} {...skill} />
+                {skills.languages.map((skill, i) => (
+                  <LanguageEvidence key={skill.name} {...skill} index={i} />
                 ))}
               </motion.div>
 
