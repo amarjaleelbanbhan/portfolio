@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProjectCard from '@/components/ProjectCard';
 import { motion } from 'framer-motion';
-import { projects as projectsData } from '@/data/portfolio';
+import { projects as projectsData, openSource } from '@/data/portfolio';
 
 const SecretProject = dynamic(() => import('@/components/SecretProject'), {
   ssr: false,
@@ -14,6 +14,29 @@ const SecretProject = dynamic(() => import('@/components/SecretProject'), {
     </div>
   ),
 });
+
+const GROUPS = [
+  {
+    tier: 'primary',
+    heading: 'Primary Engineering Work',
+    blurb: 'The systems I would want to be judged on.',
+  },
+  {
+    tier: 'secondary',
+    heading: 'Secondary Work',
+    blurb: 'Smaller tools and experiments that still stand on their own.',
+  },
+  {
+    tier: 'fyp',
+    heading: 'Final Year Project',
+    blurb: 'Current university research, represented at the stage it has actually reached.',
+  },
+  {
+    tier: 'archive',
+    heading: 'Archive',
+    blurb: 'Earlier work, kept for the record rather than as current evidence.',
+  },
+];
 
 export default function Projects() {
   return (
@@ -35,53 +58,97 @@ export default function Projects() {
             <p className="section-label mb-2">{'// portfolio'}</p>
             <h1 className="section-heading mb-3">Things I&apos;ve Built</h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">
-              A snapshot of recent work spanning full-stack delivery, AI-assisted experiences,
-              and robust backend services. Each project reflects a real problem solved.
+              Product engineering, security and developer tooling, applied AI research, and systems
+              work. Each project carries the status it has actually reached — not the one it is
+              aiming for. Several are private client or research repositories and are marked as such.
             </p>
           </motion.div>
 
-          {/* Project grid */}
-          <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2 items-stretch">
-            {projectsData.map((project, idx) => (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
-                className="h-full"
-              >
-                <ProjectCard {...project} />
-              </motion.div>
-            ))}
+          {/* Project groups */}
+          {GROUPS.map(({ tier, heading, blurb }) => {
+            const group = projectsData.filter((project) => project.tier === tier);
+            if (group.length === 0) return null;
 
-            {/* Easter egg */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: projectsData.length * 0.08 }}
-            >
-              <SecretProject />
-            </motion.div>
-          </div>
+            return (
+              <section key={tier} className="space-y-5">
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h2 className="text-xl font-semibold text-slate-100">{heading}</h2>
+                  <p className="text-sm text-slate-500 mt-1">{blurb}</p>
+                </motion.div>
 
-          {/* Stats row */}
+                <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2 items-stretch">
+                  {group.map((project, idx) => (
+                    <motion.div
+                      key={project.title}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
+                      className="h-full"
+                    >
+                      <ProjectCard {...project} />
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+
+          {/* Easter egg */}
           <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="md:max-w-xl"
+          >
+            <SecretProject />
+          </motion.div>
+
+          {/* Upstream contributions — the dedicated page lands in a later phase. */}
+          <motion.section
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-wrap gap-6 py-8 border-t border-white/5"
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="pt-8 border-t border-white/5"
           >
-            {[
-              { label: 'Projects Completed', value: '10+' },
-              { label: 'GitHub Commits', value: '500+' },
-              { label: 'Open Source', value: 'Yes' },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-0.5">
-                <span className="text-2xl font-bold text-neon-cyan font-code">{value}</span>
-                <span className="text-xs text-slate-500 uppercase tracking-wider">{label}</span>
-              </div>
-            ))}
-          </motion.div>
+            <h2 className="text-xl font-semibold text-slate-100">Open Source Contributions</h2>
+            <p className="text-sm text-slate-500 mt-1 mb-5">
+              Fixes sent upstream, not only to my own repositories.
+            </p>
+
+            <ul className="space-y-2">
+              {openSource.map((pr) => (
+                <li key={pr.url}>
+                  <a
+                    href={pr.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="surface-card flex flex-wrap items-center gap-x-3 gap-y-1 p-3.5 group"
+                  >
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded font-code shrink-0"
+                      style={
+                        pr.status === 'Merged'
+                          ? { color: '#a855f7', background: '#a855f714', border: '1px solid #a855f733' }
+                          : { color: '#22c55e', background: '#22c55e14', border: '1px solid #22c55e33' }
+                      }
+                    >
+                      {pr.status}
+                    </span>
+                    <span className="font-code text-xs text-neon-cyan shrink-0">
+                      {pr.repo}#{pr.number}
+                    </span>
+                    <span className="text-sm text-slate-300 group-hover:text-white transition-colors min-w-0">
+                      {pr.title}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </motion.section>
         </main>
         <Footer />
       </div>

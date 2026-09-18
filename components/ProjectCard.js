@@ -11,6 +11,88 @@ const projectVisuals = {
       </svg>
     ),
   },
+  RODIFT: {
+    gradient: 'from-teal-500/20 via-emerald-500/10 to-transparent',
+    accent: '#14b8a6',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <path d="M24 4c-6.6 0-12 5.4-12 12 0 9 12 28 12 28s12-19 12-28c0-6.6-5.4-12-12-12z" strokeOpacity="0.4" />
+        <circle cx="24" cy="16" r="5" />
+        <path d="M8 38h8M32 38h8" strokeLinecap="round" strokeOpacity="0.5" />
+      </svg>
+    ),
+  },
+  'KnowledgeGuard / EGB': {
+    gradient: 'from-purple-500/20 via-violet-500/10 to-transparent',
+    accent: '#a855f7',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <circle cx="19" cy="19" r="11" strokeOpacity="0.5" />
+        <path d="M27 27l9 9" strokeLinecap="round" />
+        <path d="M14 19h10M19 14v10" strokeLinecap="round" strokeOpacity="0.6" />
+        <circle cx="19" cy="19" r="3" fill="currentColor" fillOpacity="0.25" />
+      </svg>
+    ),
+  },
+  CortexWard: {
+    gradient: 'from-orange-500/20 via-red-500/10 to-transparent',
+    accent: '#f97316',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <path d="M24 5L9 11v13c0 8.6 6.4 16.6 15 19 8.6-2.4 15-10.4 15-19V11L24 5z" strokeOpacity="0.4" />
+        <circle cx="24" cy="21" r="5" />
+        <path d="M24 26v7M19 24l-4 3M29 24l4 3" strokeLinecap="round" strokeOpacity="0.7" />
+      </svg>
+    ),
+  },
+  SceneForge: {
+    gradient: 'from-pink-500/20 via-rose-500/10 to-transparent',
+    accent: '#ec4899',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <rect x="5" y="12" width="26" height="24" rx="3" strokeOpacity="0.4" />
+        <path d="M31 21l12-6v18l-12-6z" strokeLinejoin="round" />
+        <path d="M5 18h26" strokeOpacity="0.5" />
+        <circle cx="10" cy="15" r="1.2" fill="currentColor" />
+      </svg>
+    ),
+  },
+  'Emergency Mesh': {
+    gradient: 'from-red-500/20 via-orange-500/10 to-transparent',
+    accent: '#ef4444',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <circle cx="24" cy="24" r="4" fill="currentColor" fillOpacity="0.3" />
+        <circle cx="10" cy="13" r="3.5" />
+        <circle cx="38" cy="13" r="3.5" />
+        <circle cx="10" cy="35" r="3.5" />
+        <circle cx="38" cy="35" r="3.5" />
+        <path d="M13 15l8 6M35 15l-8 6M13 33l8-6M35 33l-8-6" strokeOpacity="0.55" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  'VICE OS': {
+    gradient: 'from-indigo-500/20 via-blue-500/10 to-transparent',
+    accent: '#6366f1',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <rect x="14" y="7" width="12" height="20" rx="6" strokeOpacity="0.5" />
+        <path d="M9 22c0 6.6 5.4 12 12 12s12-5.4 12-12" strokeLinecap="round" />
+        <path d="M21 34v6M15 40h12" strokeLinecap="round" strokeOpacity="0.6" />
+        <path d="M34 14v8M39 12v12M44 16v4" strokeLinecap="round" strokeOpacity="0.45" />
+      </svg>
+    ),
+  },
+  MediTalk: {
+    gradient: 'from-rose-500/20 via-red-500/10 to-transparent',
+    accent: '#f43f5e',
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
+        <path d="M24 6a10 10 0 00-10 10v6a10 10 0 0020 0v-6A10 10 0 0024 6z" strokeOpacity="0.4" />
+        <path d="M10 22c0 7.732 6.268 14 14 14s14-6.268 14-14M24 36v6M18 42h12" strokeLinecap="round" />
+      </svg>
+    ),
+  },
   'Smart Notebook': {
     gradient: 'from-violet-500/20 via-purple-500/10 to-transparent',
     accent: '#8b5cf6',
@@ -20,19 +102,6 @@ const projectVisuals = {
         <path d="M15 18h18M15 24h18M15 30h12" strokeLinecap="round" />
         <circle cx="36" cy="34" r="6" fill="currentColor" fillOpacity="0.15" />
         <path d="M34 34l1.5 1.5L38 32" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  'Bus Reservation System': {
-    gradient: 'from-blue-500/20 via-sky-500/10 to-transparent',
-    accent: '#3b82f6',
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
-        <rect x="6" y="12" width="36" height="24" rx="4" strokeOpacity="0.4" />
-        <path d="M6 20h36M14 32v4M34 32v4" strokeLinecap="round" />
-        <circle cx="14" cy="32" r="3" />
-        <circle cx="34" cy="32" r="3" />
-        <path d="M6 20V14" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -47,17 +116,6 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'MediTalk - AI Voice Agent': {
-    gradient: 'from-rose-500/20 via-red-500/10 to-transparent',
-    accent: '#f43f5e',
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
-        <path d="M24 6a10 10 0 00-10 10v6a10 10 0 0020 0v-6A10 10 0 0024 6z" strokeOpacity="0.4" />
-        <path d="M10 22c0 7.732 6.268 14 14 14s14-6.268 14-14M24 36v6M18 42h12" strokeLinecap="round" />
-        <path d="M20 16h8M20 21h6" strokeLinecap="round" />
-      </svg>
-    ),
-  },
   VeriPatch: {
     gradient: 'from-orange-500/20 via-amber-500/10 to-transparent',
     accent: '#f97316',
@@ -68,7 +126,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-'CS Learning by Game': {
+  'CS Learning by Game': {
     gradient: 'from-lime-500/20 via-green-500/10 to-transparent',
     accent: '#84cc16',
     icon: (
@@ -122,11 +180,32 @@ const defaultVisual = {
   ),
 };
 
-export default function ProjectCard({ title, description, tags, link, github, image }) {
+// Status colours follow meaning, not decoration: shipped work reads green,
+// in-flight work amber, exploratory work violet, retired work grey.
+const statusStyles = {
+  'Production':         { color: '#22c55e', label: 'Production' },
+  'Released':           { color: '#22c55e', label: 'Released' },
+  'Active Development': { color: '#f59e0b', label: 'Active Development' },
+  'Research':           { color: '#8b5cf6', label: 'Research' },
+  'Prototype':          { color: '#38bdf8', label: 'Prototype' },
+  'Pre-alpha':          { color: '#f97316', label: 'Pre-alpha' },
+  'Completed':          { color: '#14b8a6', label: 'Completed' },
+  'Archived':           { color: '#64748b', label: 'Archived' },
+};
+
+export default function ProjectCard({
+  title,
+  description,
+  tags,
+  link,
+  github,
+  status,
+  note,
+  private: isPrivate = false,
+}) {
   const visual = projectVisuals[title] || defaultVisual;
-  const projectLink = link && link !== '#' ? link : github;
-  const isGitHub = projectLink?.includes('github.com');
   const demoLink = link && !link.includes('github.com') && link !== '#' ? link : null;
+  const statusStyle = status ? statusStyles[status] : null;
 
   return (
     <motion.article
@@ -167,12 +246,31 @@ export default function ProjectCard({ title, description, tags, link, github, im
 
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-base font-semibold text-slate-50 mb-1.5 group-hover:text-white transition-colors">
-          {title}
-        </h3>
-        <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">
+        <div className="flex items-start justify-between gap-3 mb-1.5">
+          <h3 className="text-base font-semibold text-slate-50 group-hover:text-white transition-colors">
+            {title}
+          </h3>
+          {statusStyle && (
+            <span
+              className="shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded font-code whitespace-nowrap"
+              style={{
+                color: statusStyle.color,
+                background: `${statusStyle.color}14`,
+                border: `1px solid ${statusStyle.color}33`,
+              }}
+            >
+              {statusStyle.label}
+            </span>
+          )}
+        </div>
+        <p className="text-slate-400 text-sm leading-relaxed mb-3">
           {description}
         </p>
+        {note && (
+          <p className="text-xs text-slate-500 leading-relaxed mb-4 italic">
+            {note}
+          </p>
+        )}
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-4">
@@ -198,6 +296,15 @@ export default function ProjectCard({ title, description, tags, link, github, im
 
         {/* Links */}
         <div className="flex items-center gap-3 mt-auto pt-1">
+          {/* Private work gets an honest marker instead of a button that 404s. */}
+          {isPrivate && !github && (
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Private repository
+            </span>
+          )}
           {github && (
             <a
               href={github}
