@@ -4,7 +4,9 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { personalInfo } from '@/data/portfolio';
+import { getProfile } from '@/lib/content';
+
+const profile = getProfile();
 
 const TerminalGame = dynamic(() => import('@/components/TerminalGame'), {
   ssr: false,
@@ -19,7 +21,7 @@ const socials = [
   {
     label: 'LinkedIn',
     handle: 'amarjaleel',
-    href: personalInfo.social.linkedin,
+    href: profile.social.linkedin,
     color: '#0077b5',
     icon: (
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -30,7 +32,7 @@ const socials = [
   {
     label: 'GitHub',
     handle: 'amarjaleelbanbhan',
-    href: personalInfo.social.github,
+    href: profile.social.github,
     color: '#e2e8f0',
     icon: (
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -39,20 +41,9 @@ const socials = [
     ),
   },
   {
-    label: 'Twitter / X',
-    handle: '@ajbanbhan',
-    href: personalInfo.social.twitter,
-    color: '#e2e8f0',
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-      </svg>
-    ),
-  },
-  {
     label: 'WhatsApp',
     handle: '+92 344 443 2197',
-    href: `https://wa.me/${personalInfo.whatsapp}?text=Hi%20Amar!%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect.`,
+    href: `https://wa.me/${profile.whatsapp}?text=Hi%20Amar!%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect.`,
     color: '#25D366',
     icon: (
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -109,7 +100,7 @@ export default function Contact() {
     const subject = encodeURIComponent(`Portfolio Contact from ${email}`);
     const body    = encodeURIComponent(`From: ${email}\n\nMessage:\n${message}`);
     setTimeout(() => {
-      window.location.href = `mailto:${personalInfo.email}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
     }, 500);
   };
 
@@ -195,8 +186,8 @@ export default function Contact() {
 
               <p className="text-slate-500 mt-4 text-xs font-code">
                 Or email directly:{' '}
-                <a href={`mailto:${personalInfo.email}`} className="text-neon-cyan hover:underline">
-                  {personalInfo.email}
+                <a href={`mailto:${profile.email}`} className="text-neon-cyan hover:underline">
+                  {profile.email}
                 </a>
               </p>
             </motion.div>

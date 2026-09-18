@@ -12,11 +12,13 @@ import Achievements from '@/components/Achievements';
 import Education from '@/components/Education';
 import SpotlightGrid from '@/components/SpotlightGrid';
 import ProjectCard from '@/components/ProjectCard';
-import { projects, personalInfo } from '@/data/portfolio';
+import { getFeaturedProjects, getProfile } from '@/lib/content';
 
 const AnimatedStats = dynamic(() => import('@/components/AnimatedStats'), { ssr: false });
 
-const featuredProjects = projects.filter((p) => p.tier === 'primary').slice(0, 3);
+// Ordered by explicit featuredRank, not by position in the array.
+const featuredProjects = getFeaturedProjects(3);
+const profile = getProfile();
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -43,10 +45,10 @@ export default function Home() {
           <motion.div {...fadeUp}>
             <p className="section-label mb-3">{'// about me'}</p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-glow tracking-tight">
-              <GlitchText text={personalInfo.name.toUpperCase()} />
+              <GlitchText text={profile.name.toUpperCase()} />
             </h1>
             <p className="text-lg sm:text-xl text-slate-300 font-light tracking-wide mb-2">
-              {personalInfo.tagline}
+              {profile.tagline}
             </p>
             <p className="text-base text-neon-cyan font-semibold mb-8 font-code">
               Building Tomorrow&apos;s Solutions Today.
@@ -112,7 +114,7 @@ export default function Home() {
                       { icon: '🔭', label: 'Currently',    value: 'Building AI tools & open-source projects' },
                       { icon: '⚡', label: 'Speciality',   value: 'AI × Security × Full-stack' },
                       { icon: '🤝', label: 'Status',       value: 'Open to internships & collaborations', green: true },
-                      { icon: '📬', label: 'Contact',      value: personalInfo.email, link: `mailto:${personalInfo.email}` },
+                      { icon: '📬', label: 'Contact',      value: profile.email, link: `mailto:${profile.email}` },
                     ].map(({ icon, label, value, green, link }) => (
                       <div key={label} className="flex items-start gap-3 group">
                         <span className="text-base mt-0.5">{icon}</span>

@@ -4,7 +4,13 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProjectCard from '@/components/ProjectCard';
 import { motion } from 'framer-motion';
-import { projects as projectsData, openSource } from '@/data/portfolio';
+import {
+  getArchivedProjects,
+  getContributionsForDisplay,
+  getCurrentFypProjects,
+  getFlagshipProjects,
+  getSecondaryProjects,
+} from '@/lib/content';
 
 const SecretProject = dynamic(() => import('@/components/SecretProject'), {
   ssr: false,
@@ -15,28 +21,36 @@ const SecretProject = dynamic(() => import('@/components/SecretProject'), {
   ),
 });
 
+// Grouping and ordering come from the content layer; this page only decides
+// how each group is introduced.
 const GROUPS = [
   {
-    tier: 'primary',
+    key: 'flagship',
     heading: 'Primary Engineering Work',
     blurb: 'The systems I would want to be judged on.',
+    projects: getFlagshipProjects(),
   },
   {
-    tier: 'secondary',
+    key: 'secondary',
     heading: 'Secondary Work',
     blurb: 'Smaller tools and experiments that still stand on their own.',
+    projects: getSecondaryProjects(),
   },
   {
-    tier: 'fyp',
+    key: 'current-fyp',
     heading: 'Final Year Project',
     blurb: 'Current university research, represented at the stage it has actually reached.',
+    projects: getCurrentFypProjects(),
   },
   {
-    tier: 'archive',
+    key: 'archive',
     heading: 'Archive',
     blurb: 'Earlier work, kept for the record rather than as current evidence.',
+    projects: getArchivedProjects(),
   },
 ];
+
+const contributions = getContributionsForDisplay();
 
 export default function Projects() {
   return (
@@ -65,12 +79,11 @@ export default function Projects() {
           </motion.div>
 
           {/* Project groups */}
-          {GROUPS.map(({ tier, heading, blurb }) => {
-            const group = projectsData.filter((project) => project.tier === tier);
+          {GROUPS.map(({ key, heading, blurb, projects: group }) => {
             if (group.length === 0) return null;
 
             return (
-              <section key={tier} className="space-y-5">
+              <section key={key} className="space-y-5">
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -83,7 +96,7 @@ export default function Projects() {
                 <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2 items-stretch">
                   {group.map((project, idx) => (
                     <motion.div
-                      key={project.title}
+                      key={project.slug}
                       initial={{ opacity: 0, y: 24 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
@@ -120,8 +133,8 @@ export default function Projects() {
             </p>
 
             <ul className="space-y-2">
-              {openSource.map((pr) => (
-                <li key={pr.url}>
+              {contributions.map((pr) => (
+                <li key={pr.id}>
                   <a
                     href={pr.url}
                     target="_blank"
@@ -131,15 +144,15 @@ export default function Projects() {
                     <span
                       className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded font-code shrink-0"
                       style={
-                        pr.status === 'Merged'
+                        pr.status === 'merged'
                           ? { color: '#a855f7', background: '#a855f714', border: '1px solid #a855f733' }
                           : { color: '#22c55e', background: '#22c55e14', border: '1px solid #22c55e33' }
                       }
                     >
-                      {pr.status}
+                      {pr.status === 'merged' ? 'Merged' : 'Open'}
                     </span>
                     <span className="font-code text-xs text-neon-cyan shrink-0">
-                      {pr.repo}#{pr.number}
+                      {pr.repository}#{pr.prNumber}
                     </span>
                     <span className="text-sm text-slate-300 group-hover:text-white transition-colors min-w-0">
                       {pr.title}

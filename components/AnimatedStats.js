@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { stats } from '../data/portfolio';
+import { getEvidenceStats } from '@/lib/content';
 
 function CountUp({ end, suffix = '', duration = 2000 }) {
   const [count, setCount] = useState(0);
@@ -36,6 +36,8 @@ function CountUp({ end, suffix = '', duration = 2000 }) {
   );
 }
 
+const stats = getEvidenceStats();
+
 export default function AnimatedStats() {
   return (
     <section className="py-16 relative overflow-hidden">
@@ -59,7 +61,7 @@ export default function AnimatedStats() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {stats.map((stat, index) => (
             <motion.div
-              key={stat.label}
+              key={stat.key}
               initial={{ opacity: 0, scale: 0.5 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -73,7 +75,7 @@ export default function AnimatedStats() {
             >
               {/* Number */}
               <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-neon-green mb-2 group-hover:scale-110 transition-transform">
-                <CountUp end={stat.value} suffix={stat.suffix ?? ''} />
+                <CountUp end={stat.value} />
               </div>
               
               {/* Label */}

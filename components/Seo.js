@@ -40,9 +40,8 @@ export default function Seo({
       <meta property="og:site_name" content="Amar Jaleel" />
       <meta property="og:locale" content="en_US" />
 
+      {/* No twitter:site/creator — the @ajbanbhan handle does not exist. */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@ajbanbhan" />
-      <meta name="twitter:creator" content="@ajbanbhan" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />

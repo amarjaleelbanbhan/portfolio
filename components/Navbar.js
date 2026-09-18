@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { personalInfo } from '../data/portfolio';
+import { getProfile } from '@/lib/content';
+
+const profile = getProfile();
 
 const links = [
   { href: '/',               label: 'Home'     },
@@ -48,7 +50,7 @@ export default function Navbar() {
           href="/"
           className="text-base font-bold tracking-tight text-neon-cyan hover:text-white transition-colors duration-200 font-code"
         >
-          {personalInfo.name.split(' ')[0]}
+          {profile.name.split(' ')[0]}
           <span className="text-slate-500">.dev</span>
         </Link>
 
@@ -80,7 +82,7 @@ export default function Navbar() {
 
           {/* GitHub icon */}
           <a
-            href={personalInfo.social.github}
+            href={profile.social.github}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub profile"
@@ -93,7 +95,7 @@ export default function Navbar() {
 
           {/* Resume CTA */}
           <a
-            href={personalInfo.resumeFile}
+            href={profile.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="ml-2 px-4 py-1.5 bg-neon-cyan text-midnight font-semibold rounded-md text-sm hover:bg-neon-green transition-colors duration-200 flex items-center gap-1.5"
@@ -148,7 +150,7 @@ export default function Navbar() {
               ))}
               <div className="pt-2 flex gap-3">
                 <a
-                  href={personalInfo.social.github}
+                  href={profile.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-neon-cyan text-sm transition-colors"
@@ -159,7 +161,7 @@ export default function Navbar() {
                   GitHub
                 </a>
                 <a
-                  href={personalInfo.resumeFile}
+                  href={profile.resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-neon-cyan text-midnight font-semibold rounded-lg text-sm"

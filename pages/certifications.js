@@ -1,14 +1,16 @@
 'use client';
 
 import Seo from '@/components/Seo';
-import { achievements } from '@/data/portfolio';
+import { getAllCredentials } from '@/lib/content';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 
-function CertCard({ title, description, verifyLink, organization, date, color, icon, index }) {
+const credentials = getAllCredentials();
+
+function CertCard({ title, description, credentialUrl, issuer, issuedAt, color, icon, index }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -29,20 +31,20 @@ function CertCard({ title, description, verifyLink, organization, date, color, i
                 className="text-xs font-semibold px-2 py-0.5 rounded font-code"
                 style={{ color, background: `${color}15`, border: `1px solid ${color}25` }}
               >
-                {organization}
+                {issuer}
               </span>
             </div>
             <h3 className="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors leading-snug">
               {title}
             </h3>
-            <p className="text-[11px] text-slate-500 font-code mt-1">{date}</p>
+            <p className="text-[11px] text-slate-500 font-code mt-1">{issuedAt}</p>
           </div>
         </div>
 
         <p className="text-xs text-slate-400 leading-relaxed mb-4">{description}</p>
 
         <a
-          href={verifyLink}
+          href={credentialUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
@@ -88,8 +90,8 @@ export default function Certifications() {
 
           {/* Grid */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {achievements.map((cert, idx) => (
-              <CertCard key={cert.title} {...cert} index={idx} />
+            {credentials.map((cert, idx) => (
+              <CertCard key={cert.id} {...cert} index={idx} />
             ))}
           </div>
         </main>

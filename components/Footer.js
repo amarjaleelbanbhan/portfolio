@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { personalInfo } from '../data/portfolio';
+import { getProfile, getSocialLinks } from '@/lib/content';
+
+const profile = getProfile();
 
 const navLinks = [
   { href: '/',               label: 'Home'     },
@@ -10,10 +12,8 @@ const navLinks = [
 ];
 
 const socialLinks = [
-  { label: 'GitHub',    href: personalInfo.social.github },
-  { label: 'LinkedIn',  href: personalInfo.social.linkedin },
-  { label: 'Twitter',   href: personalInfo.social.twitter },
-  { label: 'Email',     href: `mailto:${personalInfo.email}` },
+  ...getSocialLinks().map(({ label, url }) => ({ label, href: url })),
+  { label: 'Email', href: `mailto:${profile.email}` },
 ];
 
 export default function Footer() {
@@ -25,7 +25,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <p className="text-base font-bold text-neon-cyan font-code mb-2">
-              {personalInfo.name.split(' ')[0]}
+              {profile.name.split(' ')[0]}
               <span className="text-slate-600">.dev</span>
             </p>
             <p className="text-xs text-slate-500 leading-relaxed max-w-xs">
@@ -71,7 +71,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/5">
           <p className="text-xs text-slate-600 font-code">
-            © {new Date().getFullYear()} {personalInfo.name}. Crafted with Next.js & Framer Motion.
+            © {new Date().getFullYear()} {profile.name}. Crafted with Next.js & Framer Motion.
           </p>
           <div className="flex items-center gap-1.5 text-xs text-slate-600 font-code">
             <span className="w-1.5 h-1.5 bg-neon-green rounded-full animate-pulse" />

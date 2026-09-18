@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
-import { personalInfo } from '../data/portfolio';
+import { getProfile } from '@/lib/content';
+
+const profile = getProfile();
 
 export default function ResumeButton({ className = '', variant = 'default' }) {
   const isLarge = variant === 'large';
   
   return (
     <motion.a
-      href={personalInfo.resumeFile}
+      href={profile.resumeUrl}
       download
       target="_blank"
       rel="noopener noreferrer"

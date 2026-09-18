@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-import { education } from '../data/portfolio';
+import { getEducation } from '@/lib/content';
+
+const education = getEducation();
 
 export default function Education() {
   return (
@@ -24,7 +26,7 @@ export default function Education() {
 
           {education.map((item, index) => (
             <motion.div
-              key={item.school}
+              key={item.id}
               initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}

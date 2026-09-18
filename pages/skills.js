@@ -4,7 +4,11 @@ import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SkillCube from '@/components/SkillCube';
-import { skills } from '@/data/portfolio';
+import {
+  getFeaturedSkills,
+  getFeaturedSkillsGrouped,
+  getSkillEvidenceLabels,
+} from '@/lib/content';
 
 const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ssr: false,
@@ -18,7 +22,7 @@ const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
 
 
 const CATEGORY_STYLE = {
-  'Product Engineering': {
+  Frontend: {
     color: '#14b8a6',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +30,7 @@ const CATEGORY_STYLE = {
       </svg>
     ),
   },
-  'Applied AI': {
+  AI: {
     color: '#8b5cf6',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,7 +38,7 @@ const CATEGORY_STYLE = {
       </svg>
     ),
   },
-  'Security & Dev Tools': {
+  Security: {
     color: '#ef4444',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,8 +46,8 @@ const CATEGORY_STYLE = {
       </svg>
     ),
   },
-  Systems: {
-    color: '#f59e0b',
+  Backend: {
+    color: '#22c55e',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -52,18 +56,41 @@ const CATEGORY_STYLE = {
   },
 };
 
-const categories = Object.entries(skills.categories).map(([title, items]) => ({
-  title,
-  skills: items,
-  color: CATEGORY_STYLE[title]?.color ?? '#14b8a6',
-  icon: CATEGORY_STYLE[title]?.icon ?? null,
+// Categories, membership and ordering all come from the content layer.
+const categories = getFeaturedSkillsGrouped([
+  'Frontend',
+  'Backend',
+  'AI',
+  'Security',
+  'Mobile',
+  'Systems',
+  'Infrastructure',
+  'Developer Tools',
+]).map(({ category, skills: items }) => ({
+  title: category,
+  skills: items.map((skill) => skill.name),
+  color: CATEGORY_STYLE[category]?.color ?? '#14b8a6',
+  icon: CATEGORY_STYLE[category]?.icon ?? null,
 }));
 
+const languageSkills = getFeaturedSkills()
+  .filter((skill) => skill.category === 'Languages')
+  .map((skill) => ({
+    name: skill.name,
+    color: skill.color,
+    usedIn: getSkillEvidenceLabels(skill.slug),
+  }));
+
 const LEARNING_COLORS = ['#8b5cf6', '#ef4444', '#f59e0b', '#14b8a6'];
-const currentlyLearning = skills.learning.map((label, i) => ({
-  label,
-  color: LEARNING_COLORS[i % LEARNING_COLORS.length],
-}));
+
+// Areas of current focus. Not modelled as skills because there is no evidence
+// to attach yet — a skill in the canonical model must point at real work.
+const currentlyLearning = [
+  'Program analysis and verification',
+  'RAG evaluation methodology',
+  'Distributed and offline-first systems',
+  'Operating systems and voice interaction (FYP)',
+].map((label, i) => ({ label, color: LEARNING_COLORS[i % LEARNING_COLORS.length] }));
 
 // Self-assessed percentages were removed in Phase 1 — they measured nothing.
 // A language is listed with the work it was actually used for instead.
@@ -147,13 +174,13 @@ export default function Skills() {
                   </svg>
                   Languages &amp; Where They&apos;re Used
                 </h2>
-                {skills.languages.map((skill, i) => (
+                {languageSkills.map((skill, i) => (
                   <LanguageEvidence key={skill.name} {...skill} index={i} />
                 ))}
               </motion.div>
 
               {/* Category chips */}
-              {categories.slice(0, 2).map((cat, idx) => (
+              {categories.slice(0, Math.ceil(categories.length / 2)).map((cat, idx) => (
                 <motion.div
                   key={cat.title}
                   initial={{ opacity: 0, y: 20 }}
@@ -182,7 +209,7 @@ export default function Skills() {
               </motion.div>
 
               {/* Category chips cont. */}
-              {categories.slice(2).map((cat, idx) => (
+              {categories.slice(Math.ceil(categories.length / 2)).map((cat, idx) => (
                 <motion.div
                   key={cat.title}
                   initial={{ opacity: 0, y: 20 }}

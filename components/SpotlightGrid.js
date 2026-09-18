@@ -1,6 +1,10 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { skills } from '../data/portfolio';
+import { getFeaturedSkillsGrouped } from '@/lib/content';
+
+// Same four columns as before, now sourced from canonical content.
+const SPOTLIGHT_CATEGORIES = ['Languages', 'AI', 'Security', 'Systems'];
+const spotlightGroups = getFeaturedSkillsGrouped(SPOTLIGHT_CATEGORIES);
 
 export default function SpotlightGrid() {
   const containerRef = useRef(null);
@@ -45,22 +49,22 @@ export default function SpotlightGrid() {
       >
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {Object.entries(skills.categories).map((category, idx) => (
+          {spotlightGroups.map(({ category, skills: groupSkills }, idx) => (
             <motion.div
-              key={category[0]}
+              key={category}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
               className="space-y-3"
             >
               <p className="text-cyan-400 font-code text-sm mb-4 tracking-widest">
-                &gt; {category[0].toUpperCase()}
+                &gt; {category.toUpperCase()}
               </p>
               <div className="space-y-3 flex flex-col">
-                {category[1].map((skill) => (
+                {groupSkills.map((skill) => (
                   <SpotlightCard
-                    key={skill}
-                    skill={skill}
+                    key={skill.slug}
+                    skill={skill.name}
                     mousePosition={mousePosition}
                     containerRef={containerRef}
                     isHovering={isHovering}

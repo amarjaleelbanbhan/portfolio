@@ -1,5 +1,6 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import { SITE_URL } from '@/lib/site';
+import { getSocialLinks } from '@/lib/content';
 
 /**
  * Site-wide invariants only. Anything that varies per page — title,
@@ -40,11 +41,7 @@ export default function Document() {
               jobTitle: 'Software Engineer',
               description: 'Software engineer building product, AI, security, and systems software.',
               alumniOf: { '@type': 'CollegeOrUniversity', name: 'Sukkur IBA University' },
-              sameAs: [
-                'https://www.linkedin.com/in/amarjaleel/',
-                'https://github.com/amarjaleelbanbhan',
-                'https://twitter.com/ajbanbhan',
-              ],
+              sameAs: getSocialLinks().map((link) => link.url),
             }),
           }}
         />
