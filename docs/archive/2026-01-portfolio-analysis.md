@@ -1,3 +1,13 @@
+> **Historical artifact — not current documentation.**
+>
+> An external review of the site from January 2026. Its findings drove earlier work and several were superseded by Phases 0.5 and 1; its suggested "fixes" include inventing metrics, which this project deliberately does not do.
+>
+> Archived during Phase 2 (2026-09-18). It is kept for the record only; nothing here should be taken
+> as describing the portfolio as it stands. For the current state see
+> `docs/portfolio-2026/current-state.md` and `README.md`.
+
+---
+
 ## 🎯 COMPREHENSIVE PORTFOLIO ANALYSIS: amarjaleel.me
 
 ***

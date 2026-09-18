@@ -1,3 +1,13 @@
+> **Historical artifact — not current documentation.**
+>
+> A draft of the GitHub *profile* README (the `amarjaleelbanbhan` repo), not documentation for this portfolio. It carries the old "AI | Cybersecurity | Data Analytics" positioning that Phase 1 removed.
+>
+> Archived during Phase 2 (2026-09-18). It is kept for the record only; nothing here should be taken
+> as describing the portfolio as it stands. For the current state see
+> `docs/portfolio-2026/current-state.md` and `README.md`.
+
+---
+
 <p align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=32&duration=2000&pause=1500&color=00D9FF&center=true&vCenter=true&width=900&lines=Hi+There+👋+I'm+Amar+Jaleel;Full-Stack+Tech+Enthusiast;AI+%7C+Cybersecurity+%7C+Data+Analytics;Building+Tomorrow's+Solutions+Today" alt="Typing SVG" />
 </p>

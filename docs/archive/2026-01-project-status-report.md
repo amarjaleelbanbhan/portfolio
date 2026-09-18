@@ -1,3 +1,13 @@
+> **Historical artifact — not current documentation.**
+>
+> A point-in-time audit dated January 2026. It describes three projects, a radar chart and a Formspree contact integration — none of which match the current site.
+>
+> Archived during Phase 2 (2026-09-18). It is kept for the record only; nothing here should be taken
+> as describing the portfolio as it stands. For the current state see
+> `docs/portfolio-2026/current-state.md` and `README.md`.
+
+---
+
 # 🎯 MASTER PROJECT STATUS REPORT
 **Portfolio Website — Amar Jaleel**  
 **Audit Date:** January 1, 2026

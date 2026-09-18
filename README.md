@@ -1,262 +1,110 @@
 # amarjaleel.me
 
-Personal portfolio site. Built with Next.js because it's fast and I didn't want to mess with routing.
+Personal portfolio and client-enquiry site for Amar Jaleel.
 
-**Live site:** [amarjaleel.me](https://amarjaleel.me)
+**Live:** [amarjaleel.me](https://amarjaleel.me)
 
-## Setup
+## Stack
 
-```bash
-git clone https://github.com/amarjaleelbanbhan/portfolio.git
-cd portfolio
-npm install
-npm run dev
-```
+- **Next.js 16** (Pages Router, Turbopack) + **React 19**
+- **Tailwind CSS** for the portfolio surfaces; CSS Modules for the Studio pages
+- **TypeScript** for the content layer; the UI is still JavaScript
+- **Supabase** behind one API route, for client lead capture
+- Deployed on **Vercel**
 
-Opens on `localhost:3000`. Standard Next.js stuff.
-
-## Tech
-
-- Next.js 13+ (React 18)
-- Tailwind for styling
-- No backend, just static + SSG
-- Hosted on Vercel
-
-## Customizing it
-
-All content lives in `data/portfolio.js`. Change that file and you're done.
-
-```javascript
-// Add your info
-export const personalInfo = {
-  name: 'Your Name',
-  title: 'Software Engineer',
-  email: 'you@example.com',
-};
-
-// Add projects
-export const projects = [
-  {
-    title: 'Something you built',
-    description: 'What it does',
-    tags: ['Python', 'Flask'],
-    github: 'https://github.com/...',
-    featured: true, // shows on homepage
-  },
-];
-```
-
-# amarjaleel.me
-
-Personal portfolio site. Built with Next.js because it's fast and I didn't want to mess with routing.
-
-**Live site:** [amarjaleel.me](https://amarjaleel.me)
+It is not a purely static site: `/api/studio-lead` validates and persists client
+enquiries, and `/studio/admin` reads them back behind Supabase auth.
 
 ## Setup
 
 ```bash
-git clone https://github.com/amarjaleelbanbhan/portfolio.git
-cd portfolio
 npm install
-npm run dev
+npm run dev          # http://localhost:3000
 ```
 
-Opens on `localhost:3000`. Standard Next.js stuff.
+## Scripts
 
-## Tech
+| Script | What it does |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint, zero warnings tolerated |
+| `npm run validate:content` | Content integrity checks (see below) |
+| `npm run assets` | Regenerate derived images from `assets/` |
 
-- Next.js 13+ (React 18)
-- Tailwind for styling
-- No backend, just static + SSG
-- Hosted on Vercel
+CI runs `validate:content`, `lint` and `build` on every pull request.
 
-## Customizing it
+## Content
 
-All content lives in `data/portfolio.js`. Change that file and you're done.
-
-```javascript
-// Add your info
-export const personalInfo = {
-  name: 'Your Name',
-  title: 'Software Engineer',
-  email: 'you@example.com',
-};
-
-// Add projects
-export const projects = [
-  {
-    title: 'Something you built',
-    description: 'What it does',
-    tags: ['Python', 'Flask'],
-    github: 'https://github.com/...',
-    featured: true, // shows on homepage
-  },
-];
-```
-
-Replace these files:
-
-- `/public/images/hero-portrait.jpg` - your photo
-- `/public/resume.pdf` - your resume
-- `/public/projects/*` - project screenshots if you want them
-
-## Deployment
-
-Push to GitHub, then connect to Vercel. Takes 5 minutes and it's free:
-
-1. Sign in to [vercel.com](https://vercel.com) with GitHub
-2. New Project → Import your repo
-3. Deploy (leave defaults)
-
-Auto-deploys on every push to main. Add a custom domain in settings if you have one.
-
-## Project structure
+All site content lives in `content/` as typed TypeScript, and is read through a
+selector layer:
 
 ```
-├── components/          # UI components
-│   ├── LoadingScreen.js
-│   ├── SecretProject.js # wave puzzle thing
-│   └── TerminalGame.js
-├── data/
-│   └── portfolio.js     # all your content here
-├── pages/               # next.js pages/routes
-├── public/              # static assets
-└── styles/
+content/*.ts  →  lib/content  →  UI
 ```
 
-## Notes
+**Components never import `content/` directly.** They import `@/lib/content`,
+which is the only content entry point. That boundary exists so the static files
+can later be swapped for a CMS without rewriting the UI.
 
-There's a wave-matching puzzle on the projects page and a terminal game on contact. Built them while procrastinating on actual features.
+| File | Holds |
+|---|---|
+| `content/profile.ts` | Name, title, positioning, contact, social links |
+| `content/projects.ts` | Project registry (slug, tier, status, links, proof) |
+| `content/research.ts` | Research entries, modelled separately from products |
+| `content/open-source.ts` | Verified upstream contributions |
+| `content/skills.ts` | Technologies and the work that evidences them |
+| `content/credentials.ts` | Certifications with verification URLs |
+| `content/education.ts` | Education history |
+| `content/types.ts` | The model contract for all of the above |
 
-Colors are configurable in `tailwind.config.js` if you want different neon shades.
+Full architecture: [`docs/portfolio-2026/content-architecture.md`](docs/portfolio-2026/content-architecture.md).
 
-## Commands
+### Editing content
+
+Edit the relevant file in `content/`, then:
 
 ```bash
-npm run dev      # dev server
-npm run build    # production build
-npm run start    # serve production build
-npm run lint     # check for issues
+npm run validate:content
 ```
+
+Validation fails the build on integrity problems — duplicate slugs, invalid
+statuses, a skill pointing at a project that does not exist, a private
+repository carrying a URL that would render a broken link, unverified proof, and
+similar. It exists because the site previously carried claims that had quietly
+drifted from reality.
+
+Two rules the model enforces rather than trusts:
+
+- **Slugs are identity.** Display titles can change freely; slugs must not.
+  Project card visuals are keyed by slug for this reason.
+- **Nothing published is unverified.** Every `proof` entry records the primary
+  source it was checked against and the date it was checked.
+
+## Routes
+
+| Route | Purpose |
+|---|---|
+| `/` | Homepage |
+| `/projects` | Project registry grouped by tier, plus upstream contributions |
+| `/skills` | Technologies with the work that evidences them |
+| `/certifications` | Credentials with verification links |
+| `/contact` | Contact |
+| `/hire`, `/studio`, `/studio/request` | Client enquiry funnel (Amar Digital Systems) |
+| `/studio/admin` | Private lead dashboard |
+| `/api/studio-lead` | Lead capture endpoint |
+
+Portfolio routes carry the full visual system (boot sequence, particle canvas,
+scanlines); the Studio routes deliberately do not — see `lib/routeChrome.js`.
+
+## Documentation
+
+- [`docs/portfolio-2026/`](docs/portfolio-2026/) — current-state audit, content
+  audit, content architecture, Codex salvage audit, Supabase security review
+- [`docs/archive/`](docs/archive/) — superseded documents, kept for the record
+- `PORTFOLIO_2026_IMPLEMENTATION.md` — the phased upgrade plan and its status
 
 ## License
 
-MIT
-
-## Contact
-
-Amar Jaleel
-banbhanamarjalil@gmail.com
-[LinkedIn](https://www.linkedin.com/in/amar-jaleel/) · [GitHub](https://github.com/amarjaleelbanbhan)
-
----
-
-Star it if you use it.
-
-### Prerequisites
-
-- Node.js 18+ installed
-- npm or yarn
-
-### Installation
-
-
-
-```bash
-git clone https://github.com/amarjaleelbanbhan/portfolio.git
-cd portfolio
-npm install
-npm run dev
-```
-
-Opens on `localhost:3000`. Standard Next.js stuff.
-
-## Tech
-
-- Next.js 13+ (React 18)
-- Tailwind for styling
-- No backend, just static + SSG
-- Hosted on Vercel
-
-## Customizing it
-
-All content lives in `data/portfolio.js`. Change that file and you're done.
-
-```javascript
-// Add your info
-export const personalInfo = {
-  name: 'Your Name',
-  title: 'Software Engineer',
-  email: 'you@example.com',
-};
-
-// Add projects
-export const projects = [
-  {
-    title: 'Something you built',
-    description: 'What it does',
-    tags: ['Python', 'Flask'],
-    github: 'https://github.com/...',
-    featured: true, // shows on homepage
-  },
-];
-```
-
-Replace these files:
-
-- `/public/images/hero-portrait.jpg` - your photo
-- `/public/resume.pdf` - your resume
-- `/public/projects/*` - project screenshots if you want them
-
-## Deployment
-
-Push to GitHub, then connect to Vercel. Takes 5 minutes and it's free:
-
-1. Sign in to [vercel.com](https://vercel.com) with GitHub
-2. New Project → Import your repo
-3. Deploy (leave defaults)
-
-Auto-deploys on every push to main. Add a custom domain in settings if you have one.
-
-## Project structure
-
-```
-├── components/          # UI components
-│   ├── LoadingScreen.js
-│   ├── SecretProject.js # wave puzzle thing
-│   └── TerminalGame.js
-├── data/
-│   └── portfolio.js     # all your content here
-├── pages/               # next.js pages/routes
-├── public/              # static assets
-└── styles/
-```
-
-## Notes
-
-There's a wave-matching puzzle on the projects page and a terminal game on contact. Built them while procrastinating on actual features.
-
-Colors are configurable in `tailwind.config.js` if you want different neon shades.
-
-## Commands
-
-```bash
-npm run dev      # dev server
-npm run build    # production build
-npm run start    # serve production build
-npm run lint     # check for issues
-```
-
-## License
-
-MIT
-
-## Contact
-
-Amar Jaleel
-banbhanamarjalil@gmail.com
-[LinkedIn](https://www.linkedin.com/in/amarjaleel/) · [GitHub](https://github.com/amarjaleelbanbhan)
-
----
-
-Star it if you use it.
+MIT — see [LICENSE](LICENSE).
