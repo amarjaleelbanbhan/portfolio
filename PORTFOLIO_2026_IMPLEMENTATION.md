@@ -602,88 +602,162 @@ First create a stable canonical data model that the existing site can consume.
 
 Create structured models for:
 
-- [ ] Project
-- [ ] ResearchProject
-- [ ] OpenSourceContribution
-- [ ] Technology
-- [ ] SkillEvidence
-- [ ] ProofItem
-- [ ] Credential
-- [ ] Experience
-- [ ] SiteContent
+- [x] Project
+- [x] ResearchProject
+- [x] OpenSourceContribution
+- [x] Technology
+- [x] SkillEvidence
+- [x] ProofItem
+- [x] Credential
+- [x] Experience
+- [x] SiteContent
 
 ## Project Model Should Support
 
-- [ ] id
-- [ ] slug
-- [ ] title
-- [ ] short description
-- [ ] long description
-- [ ] category/domain
-- [ ] status
-- [ ] visibility
-- [ ] featured
-- [ ] priority
-- [ ] repository URL
-- [ ] demo URL
-- [ ] package URL
-- [ ] problem
-- [ ] solution
-- [ ] role
-- [ ] architecture
-- [ ] technical depth
-- [ ] verification
-- [ ] limitations
-- [ ] stack
-- [ ] proof
-- [ ] media
-- [ ] SEO fields
-- [ ] published date
-- [ ] updated date
+- [x] id
+- [x] slug
+- [x] title
+- [x] short description
+- [x] long description
+- [x] category/domain
+- [x] status
+- [x] visibility
+- [x] featured
+- [x] priority
+- [x] repository URL
+- [x] demo URL
+- [x] package URL
+- [x] problem
+- [x] solution
+- [x] role
+- [x] architecture
+- [x] technical depth
+- [x] verification
+- [x] limitations
+- [x] stack
+- [x] proof
+- [x] media
+- [x] SEO fields
+- [x] published date
+- [x] updated date
 
 ## Proof Types
 
 Support:
 
-- [ ] Test Suite
-- [ ] Production Release
-- [ ] Benchmark
-- [ ] Merged PR
-- [ ] Package Release
-- [ ] Deployment
-- [ ] Research Result
-- [ ] CI
-- [ ] Demo
-- [ ] User Evidence
+- [x] Test Suite
+- [x] Production Release
+- [x] Benchmark
+- [x] Merged PR
+- [x] Package Release
+- [x] Deployment
+- [x] Research Result
+- [x] CI
+- [x] Demo
+- [x] User Evidence
 
 ## Initial Canonical Projects
 
+Registry entries created with verified summary, status, tier, links,
+source visibility and proof. Deep case-study fields (architecture, technical
+depth, verification write-ups) remain intentionally empty until the case-study
+phases supply real material.
+
 Populate verified content for:
 
-- [ ] RODIFT
-- [ ] VeriPatch
-- [ ] KnowledgeGuard / EGB
-- [ ] CortexWard
-- [ ] SceneForge
-- [ ] Emergency Mesh
-- [ ] CS Learning by Game
-- [ ] BuildSphere
-- [ ] TODO Tracker Pro
-- [ ] VICE OS
+- [x] RODIFT
+- [x] VeriPatch
+- [x] KnowledgeGuard / EGB
+- [x] CortexWard
+- [x] SceneForge
+- [x] Emergency Mesh
+- [x] CS Learning by Game
+- [x] BuildSphere
+- [x] TODO Tracker Pro
+- [x] VICE OS
 
 ## Validation
 
-- [ ] Existing pages can read from canonical data.
-- [ ] No major visual redesign yet.
-- [ ] Build succeeds.
+- [x] Existing pages can read from canonical data.
+- [x] No major visual redesign yet.
+- [x] Build succeeds.
 
 ## Phase Completion
 
-- [ ] Phase 2 complete
+- [x] Phase 2 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-18. Deliverable: `docs/portfolio-2026/content-architecture.md`.
+
+**Architecture.** `content/*.ts` holds typed canonical content; `lib/content/`
+exposes selectors and validation; UI imports only from `@/lib/content`. That
+boundary is the point — swapping the static files for Supabase changes selector
+bodies, not pages or components. `data/portfolio.js` is deleted; there is no
+second source.
+
+Content is TypeScript while the UI stays JavaScript, so the models are genuinely
+type-checked during the Next build, and `npm run validate:content` can load the
+same modules outside Next through Node's type-stripping loader. `enum` is avoided
+throughout for that reason.
+
+**Identity.** Every entity has a stable slug. `ProjectCard` visuals are keyed by
+`project.slug` rather than display title, so renaming a project can no longer
+silently drop it to the generic fallback. Verified: 14 projects, 14 visual keys,
+0 fallbacks rendered, 0 stale keys.
+
+**Status vs tier separated.** `status` records where work actually is;
+`tier` records portfolio importance. Featured ordering is explicit via
+`featuredRank`, replacing `filter(...).slice(0, 3)`, which had made array
+position the definition of importance.
+
+**Private work is first-class.** `source.visibility` is modelled, and validation
+fails if a private project carries any repository URL — the case that would
+render a broken Code button. Five of the ten strongest projects are private and
+render an honest marker instead. RODIFT's evidence (a tagged release, a
+published privacy policy) needs no source URL, which is exactly what the optional
+`sourceUrl` on proof is for.
+
+**Links are explicit.** `repository`/`demo`/`package`/`documentation`/`report`/
+`release`/`privacyPolicy` replace the ambiguous `link`+`github` pair. VeriPatch's
+npm URL now renders as "Package" rather than being mislabelled "Live Demo", and
+RODIFT surfaces its privacy policy — both fell out of the model for free.
+
+**Counts derive.** The hardcoded `6` and `5` in Hero, and the hardcoded stats
+array, now come from `getMergedContributionCount()`, `getFlagshipCount()`,
+`getPublishedPackageCount()`, `getProductionSystemCount()` and
+`getEvidenceStats()`. Adding a merged PR updates every surface at once.
+
+**Validation.** 20+ rules in `lib/content/validation.ts`, wired into CI ahead of
+lint and build. Confirmed working by injecting six deliberate defects (private
+repo leaking a URL, duplicate featuredRank, VICE OS marked released, archived
+project featured, technology pointing at a nonexistent skill, skill pointing at a
+nonexistent project) and checking each was reported. No validation framework was
+added.
+
+**Two real defects found and fixed during the phase.** The skills page rendered
+"loop-engineering · loop-engineering" because two contributions share a
+repository — evidence labels are now de-duplicated. And the Twitter/X link was
+dead: `twitter.com/ajbanbhan` and `x.com/ajbanbhan` both 404 while a control
+handle returns 200. Phase 1 saw a 301 and did not follow the redirect. The handle
+is removed from `profile.ts` with an explanatory comment, social links are now
+derived via `getSocialLinks()` so they render only what exists, and JSON-LD
+`sameAs` derives from the same source.
+
+**Repository docs.** README rewritten to describe the real stack (Next.js 16,
+React 19, a Supabase-backed API route — not "static only") and the content
+workflow. `PROJECT_STATUS_REPORT.md`, `suggestion.md` and `Data.md` moved to
+`docs/archive/` with headers marking them historical. `LINKEDIN_POST.md` removed:
+an unfinished template containing a placeholder URL and the dead `.dev` domain,
+with no historical value.
+
+**Naming to confirm:** the brief says "SCAR-OS" in one section and "VICE OS" in
+two others. The repository is `VICE-OS`, so VICE OS was used. A rename is now a
+slug change in two content files.
+
+**Not done, by design:** no Supabase tables, no CRUD, no admin editors, no
+Skill Galaxy, no case studies, no homepage redesign, and the resume was left as
+Phase 1 corrected it — its remaining duplication is documented for Phase 18.
 
 ---
 
