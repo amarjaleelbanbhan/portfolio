@@ -234,14 +234,17 @@ export default function SecretProject() {
             </svg>
           </div>
           <h4 className="text-xl font-bold text-[var(--neon-cyan)] mb-2">
-            Autonomous Drone Swarm
+            ACCESS GRANTED
           </h4>
-          <p className="text-gray-300 text-sm mb-4">
-            AI-powered multi-agent coordination system for autonomous drone fleets.
-            Built with Python, TensorFlow, and ROS2.
+          <p className="text-gray-300 text-sm mb-2">
+            You found one of the hidden experiments in this portfolio.
+          </p>
+          <p className="text-gray-400 text-sm mb-4 max-w-md mx-auto leading-relaxed">
+            There is no secret startup here — just the two sine waves you matched, drawn on a
+            canvas at 60fps. If you enjoy taking things apart, the real work is a few clicks away.
           </p>
           <div className="flex flex-wrap justify-center gap-2 mb-4">
-            {['Python', 'TensorFlow', 'ROS2', 'Computer Vision', 'SLAM'].map((tag) => (
+            {['Canvas 2D', 'requestAnimationFrame', 'Derived State', 'No Libraries'].map((tag) => (
               <span
                 key={tag}
                 className="px-2 py-1 text-xs bg-[var(--neon-magenta)]/20 text-[var(--neon-magenta)] border border-[var(--neon-magenta)]/50 rounded"
@@ -250,10 +253,24 @@ export default function SecretProject() {
               </span>
             ))}
           </div>
-          <p className="text-[var(--neon-green)] text-xs flex items-center justify-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            You cracked the code! This project is currently in stealth mode.
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-1">
+            <a
+              href="https://github.com/amarjaleelbanbhan/portfolio"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs font-medium text-[var(--neon-cyan)] hover:underline"
+            >
+              Read this portfolio&apos;s source →
+            </a>
+            <a
+              href="https://github.com/amarjaleelbanbhan/CortexWard"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs font-medium text-[var(--neon-cyan)] hover:underline"
+            >
+              See current systems work →
+            </a>
+          </div>
           <button
             onClick={() => {
               setIsUnlocked(false);
