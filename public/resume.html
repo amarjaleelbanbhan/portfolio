@@ -185,177 +185,213 @@
 <body>
   <header>
     <h1>AMAR JALEEL</h1>
-    <p class="tagline">Full-Stack Tech Enthusiast | AI • Cybersecurity • Data Analytics</p>
+    <p class="tagline">Software Engineer — Product, AI, Security &amp; Systems</p>
     <div class="contact-info">
       <span>📧 <a href="mailto:banbhanamarjalil@gmail.com">banbhanamarjalil@gmail.com</a></span>
       <span>📱 +92 344 443 2197</span>
+      <span>🌐 <a href="https://amarjaleel.me">amarjaleel.me</a></span>
+      <span>💻 <a href="https://github.com/amarjaleelbanbhan">github.com/amarjaleelbanbhan</a></span>
       <span>🔗 <a href="https://www.linkedin.com/in/amarjaleel/">LinkedIn</a></span>
-      <span>💻 <a href="https://github.com/amarjaleelbanbhan">GitHub</a></span>
       <span>📍 Pakistan</span>
     </div>
   </header>
 
   <section>
-    <h2>Professional Summary</h2>
-    <p>Passionate tech enthusiast with a strong foundation in Artificial Intelligence, Cybersecurity, and Data Analytics. Currently pursuing a Computer Science degree with hands-on experience in full-stack development, machine learning, and security practices. Committed to leveraging technology responsibly to create meaningful impact.</p>
+    <h2>Summary</h2>
+    <p>Software engineer working across product engineering, security and developer tooling, applied
+    AI, and systems. Computer Science student at Sukkur IBA University (2023&ndash;2027). Shipped a
+    field issue-reporting platform now in production use, published a security CLI to npm, and ran a
+    controlled study on evidence deficiency in retrieval-augmented generation. Contributes fixes
+    upstream to open-source projects, not only to personal repositories.</p>
+  </section>
+
+  <section>
+    <h2>Selected Projects</h2>
+
+    <div class="project">
+      <h3>RODIFT &mdash; Field Issue Reporting System <span class="project-meta">· Production</span></h3>
+      <p>Enterprise field issue-reporting platform for a field-sales organization. Staff report outlet
+      problems from a mobile app; each issue is geo-matched to the nearest outlet, routed through the
+      organization's role hierarchy, and driven to resolution with push notifications and an auditable
+      trail. A web dashboard provides management oversight and reporting.</p>
+      <div class="tech-stack">
+        <span class="tech">Flutter</span><span class="tech">Next.js</span><span class="tech">Supabase</span>
+        <span class="tech">PostgreSQL</span><span class="tech">PostGIS</span><span class="tech">FCM</span>
+      </div>
+      <p class="project-meta">Client project &mdash; repository private.</p>
+    </div>
+
+    <div class="project">
+      <h3>VeriPatch <span class="project-meta">· Released &mdash; published on npm</span></h3>
+      <p>Verified remediation for npm vulnerabilities. Scans a project, applies candidate fixes inside
+      a sandbox, proves the vulnerability is eliminated and the fix is safe, then emits an audit-grade
+      evidence report. Published as <code>veripatch</code> (v0.3.1).</p>
+      <div class="tech-stack">
+        <span class="tech">TypeScript</span><span class="tech">Node.js</span><span class="tech">CLI</span>
+        <span class="tech">Docker</span><span class="tech">Security</span>
+      </div>
+      <p class="project-meta"><a href="https://www.npmjs.com/package/veripatch">npmjs.com/package/veripatch</a>
+      · <a href="https://github.com/amarjaleelbanbhan/VeriPatch">github.com/amarjaleelbanbhan/VeriPatch</a></p>
+    </div>
+
+    <div class="project">
+      <h3>KnowledgeGuard / EGB <span class="project-meta">· Research</span></h3>
+      <p>A controlled study asking whether a RAG system can identify <em>how</em> its retrieved evidence
+      is deficient &mdash; missing, insufficient, conflicting, outdated, or absent from the corpus &mdash;
+      and whether that diagnosis carries actionable information for selecting a repair action. Benchmark
+      built on real data, factorial experiment executed, analysis complete.</p>
+      <div class="tech-stack">
+        <span class="tech">Python</span><span class="tech">RAG</span><span class="tech">Evaluation</span>
+        <span class="tech">Experiment Design</span>
+      </div>
+      <p class="project-meta">Repository private.</p>
+    </div>
+
+    <div class="project">
+      <h3>CortexWard <span class="project-meta">· Pre-alpha</span></h3>
+      <p>An AI software-security engineer that understands, verifies, fixes, and secures code. Runs a
+      multi-scanner and agent pipeline with a closed verification loop, so findings are confirmed rather
+      than merely reported.</p>
+      <div class="tech-stack">
+        <span class="tech">Python</span><span class="tech">Static Analysis</span>
+        <span class="tech">Sandboxing</span><span class="tech">LLM Agents</span>
+      </div>
+      <p class="project-meta"><a href="https://github.com/amarjaleelbanbhan/CortexWard">github.com/amarjaleelbanbhan/CortexWard</a></p>
+    </div>
+
+    <div class="project">
+      <h3>SceneForge <span class="project-meta">· Active Development</span></h3>
+      <p>Turns a JSON manifest of HTML/CSS/JS scenes into a single MP4, scene by scene. Headless Chrome
+      renders frames, FFmpeg composes them, and a React/Monaco editor drives the pipeline. Runs entirely
+      locally &mdash; no cloud APIs, no uploads.</p>
+      <div class="tech-stack">
+        <span class="tech">JavaScript</span><span class="tech">Express</span>
+        <span class="tech">Headless Chrome</span><span class="tech">FFmpeg</span><span class="tech">React</span>
+      </div>
+      <p class="project-meta">Repository private.</p>
+    </div>
+
+    <div class="project">
+      <h3>Emergency Mesh <span class="project-meta">· Active Development</span></h3>
+      <p>Offline emergency communication. Phones exchange messages directly over Bluetooth Low Energy,
+      relaying for each other, with no internet, no cell service and no server in the path. Protocol,
+      routing, cryptography, persistence and the native BLE transport are built and tested; the user
+      interface is at an early stage and the app is not yet a finished product.</p>
+      <div class="tech-stack">
+        <span class="tech">Flutter</span><span class="tech">Dart</span><span class="tech">Kotlin</span>
+        <span class="tech">BLE</span><span class="tech">Cryptography</span>
+      </div>
+      <p class="project-meta">Repository private.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Open Source Contributions</h2>
+    <div class="project">
+      <p><strong><a href="https://github.com/pydantic/pydantic-ai/pull/5969">pydantic/pydantic-ai #5969</a></strong>
+      &mdash; Merged. Fixed <code>AGUIAdapter.dump_messages</code> reordering <code>ToolReturnPart</code>
+      after <code>UserPromptPart</code>.</p>
+
+      <p><strong><a href="https://github.com/promptfoo/promptfoo/pull/9781">promptfoo/promptfoo #9781</a></strong>
+      &mdash; Merged. Added a per-test repeat option.</p>
+
+      <p><strong><a href="https://github.com/AcademySoftwareFoundation/dna/pull/195">AcademySoftwareFoundation/dna #195</a></strong>
+      &mdash; Merged. Fixed the SPI v2 Uvicorn app target.</p>
+
+      <p><strong><a href="https://github.com/cobusgreyling/loop-engineering/pull/395">cobusgreyling/loop-engineering #395</a></strong>
+      &mdash; Merged. Hardened loop-action command execution against unquoted shell expansion.</p>
+
+      <p><strong><a href="https://github.com/cobusgreyling/loop-engineering/pull/437">cobusgreyling/loop-engineering #437</a></strong>
+      &mdash; Merged. Made <code>loop_estimate_cost</code> honor <code>early_exit_required</code>.</p>
+
+      <p><strong><a href="https://github.com/MCP-Audit/MCTS/pull/233">MCP-Audit/MCTS #233</a></strong>
+      &mdash; Merged. Added optional toolchain checks to the doctor command.</p>
+
+      <p><strong><a href="https://github.com/shaal/eye-tracker/pull/61">shaal/eye-tracker #61</a></strong>
+      &mdash; Open. Distinguishes a collapsed axis from a uniform offset in
+      <code>describeBiasPattern</code>.</p>
+    </div>
   </section>
 
   <section>
     <h2>Technical Skills</h2>
     <div class="skills-grid">
       <div class="skill-category">
-        <h4>Programming Languages</h4>
-        <div class="skill-tags">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">JavaScript</span>
-          <span class="skill-tag">C++</span>
-          <span class="skill-tag">Java</span>
-          <span class="skill-tag">SQL</span>
-          <span class="skill-tag">R</span>
-          <span class="skill-tag">HTML/CSS</span>
+        <h4>Languages</h4>
+        <div class="tech-stack">
+          <span class="tech">Python</span><span class="tech">TypeScript</span><span class="tech">JavaScript</span>
+          <span class="tech">Dart</span><span class="tech">SQL</span><span class="tech">Kotlin</span>
         </div>
       </div>
       <div class="skill-category">
-        <h4>AI / Machine Learning</h4>
-        <div class="skill-tags">
-          <span class="skill-tag">TensorFlow</span>
-          <span class="skill-tag">Scikit-Learn</span>
-          <span class="skill-tag">Pandas</span>
-          <span class="skill-tag">NumPy</span>
+        <h4>Product Engineering</h4>
+        <div class="tech-stack">
+          <span class="tech">Flutter</span><span class="tech">Next.js</span><span class="tech">React</span>
+          <span class="tech">Supabase</span><span class="tech">PostgreSQL</span><span class="tech">PostGIS</span>
         </div>
       </div>
       <div class="skill-category">
-        <h4>Data & Analytics</h4>
-        <div class="skill-tags">
-          <span class="skill-tag">Tableau</span>
-          <span class="skill-tag">Power BI</span>
-          <span class="skill-tag">Excel</span>
-          <span class="skill-tag">Google Analytics</span>
+        <h4>Applied AI</h4>
+        <div class="tech-stack">
+          <span class="tech">RAG</span><span class="tech">LLM Agents</span>
+          <span class="tech">Evaluation</span><span class="tech">Prompt Engineering</span>
         </div>
       </div>
       <div class="skill-category">
-        <h4>Cybersecurity</h4>
-        <div class="skill-tags">
-          <span class="skill-tag">Linux</span>
-          <span class="skill-tag">Wireshark</span>
-          <span class="skill-tag">Kali Linux</span>
-          <span class="skill-tag">OWASP</span>
+        <h4>Security &amp; Dev Tools</h4>
+        <div class="tech-stack">
+          <span class="tech">Static Analysis</span><span class="tech">Sandboxing</span>
+          <span class="tech">Docker</span><span class="tech">CLI Design</span><span class="tech">OSV</span>
         </div>
       </div>
       <div class="skill-category">
-        <h4>Web & Cloud</h4>
-        <div class="skill-tags">
-          <span class="skill-tag">React</span>
-          <span class="skill-tag">Next.js</span>
-          <span class="skill-tag">Node.js</span>
-          <span class="skill-tag">Git</span>
-          <span class="skill-tag">Google Cloud</span>
+        <h4>Systems</h4>
+        <div class="tech-stack">
+          <span class="tech">BLE</span><span class="tech">Cryptography</span>
+          <span class="tech">FFmpeg</span><span class="tech">Headless Chrome</span><span class="tech">Linux</span>
         </div>
       </div>
       <div class="skill-category">
-        <h4>Tools & Platforms</h4>
-        <div class="skill-tags">
-          <span class="skill-tag">VS Code</span>
-          <span class="skill-tag">Docker</span>
-          <span class="skill-tag">GitHub</span>
-          <span class="skill-tag">Streamlit</span>
+        <h4>Practices</h4>
+        <div class="tech-stack">
+          <span class="tech">Git</span><span class="tech">CI/CD</span>
+          <span class="tech">Testing</span><span class="tech">Code Review</span>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Projects</h2>
-    
-    <div class="project-item">
-      <h3>MediTalk - AI Voice Agent</h3>
-      <p class="project-description">AI-powered voice agent for medical consultation that analyzes symptoms and provides preliminary diagnosis using ML with 85% accuracy. Features multi-symptom analysis, voice interface, and REST API.</p>
-      <div class="tech-stack">
-        <span class="tech">Python</span>
-        <span class="tech">Machine Learning</span>
-        <span class="tech">Flask</span>
-        <span class="tech">Streamlit</span>
-        <span class="tech">Docker</span>
-      </div>
-    </div>
-    
-    <div class="project-item">
-      <h3>EduResource Hub</h3>
-      <p class="project-description">Comprehensive web platform helping students discover 306+ free educational resources across 102+ categories with smart search and real-time filtering.</p>
-      <div class="tech-stack">
-        <span class="tech">JavaScript</span>
-        <span class="tech">HTML5</span>
-        <span class="tech">CSS3</span>
-        <span class="tech">JSON</span>
-      </div>
-    </div>
-    
-    <div class="project-item">
-      <h3>ZakatLink</h3>
-      <p class="project-description">Full-stack Zakat management platform with authentication and payment processing.</p>
-      <div class="tech-stack">
-        <span class="tech">Node.js</span>
-        <span class="tech">TypeScript</span>
-        <span class="tech">React</span>
-      </div>
-    </div>
-    
-    <div class="project-item">
-      <h3>Smart Notebook</h3>
-      <p class="project-description">AI-powered web application with automatic diagram generation capabilities.</p>
-      <div class="tech-stack">
-        <span class="tech">AI</span>
-        <span class="tech">Next.js</span>
-        <span class="tech">Mermaid.js</span>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Certifications</h2>
-    <div class="two-col">
-      <div class="cert-item">
-        <h3>Google Cybersecurity Professional</h3>
-        <p><span class="organization">Google</span> • <span class="date">Nov 2025</span></p>
-      </div>
-      <div class="cert-item">
-        <h3>Google AI Essentials</h3>
-        <p><span class="organization">Google</span> • <span class="date">Aug 2025</span></p>
-      </div>
-      <div class="cert-item">
-        <h3>Google Data Analytics Professional</h3>
-        <p><span class="organization">Google</span> • <span class="date">2025</span></p>
-      </div>
-      <div class="cert-item">
-        <h3>Python Bootcamp</h3>
-        <p><span class="organization">Udemy</span> • <span class="date">Jun 2025</span></p>
-      </div>
-      <div class="cert-item">
-        <h3>Introduction to AI</h3>
-        <p><span class="organization">Google</span> • <span class="date">Aug 2025</span></p>
-      </div>
-      <div class="cert-item">
-        <h3>Foundations of Cybersecurity</h3>
-        <p><span class="organization">Google</span> • <span class="date">Aug 2025</span></p>
       </div>
     </div>
   </section>
 
   <section>
     <h2>Education</h2>
-    <div class="edu-item">
-      <h3>Bachelor of Science in Computer Science</h3>
-      <p><span class="organization">Currently Pursuing</span></p>
-      <p class="project-description">Focus areas: Artificial Intelligence, Cybersecurity, Data Analytics</p>
+    <div class="project">
+      <h3>BSc Computer Science <span class="project-meta">· Sukkur IBA University · Aug 2023 &ndash; Jun 2027</span></h3>
+      <p>Focus on software engineering, security and applied AI. Final-year project: VICE OS &mdash;
+      integrating voice and intent-driven interaction into a developer-oriented operating environment
+      (research and architecture stage).</p>
+    </div>
+    <div class="project">
+      <h3>Intermediate, Pre-Engineering <span class="project-meta">· Government Degree College Thari Mir Wah · 2020 &ndash; 2022</span></h3>
+      <p>Grade A.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selected Credentials</h2>
+    <div class="project">
+      <p>Google Cybersecurity Professional Certificate ·
+      Google Data Analytics Professional Certificate ·
+      Google AI Essentials ·
+      Python Bootcamp (Udemy)</p>
+      <p class="project-meta">Full set of 11 credentials with verification links at
+      <a href="https://amarjaleel.me/certifications">amarjaleel.me/certifications</a>.</p>
     </div>
   </section>
 
   <section>
     <h2>Languages</h2>
-    <ul>
-      <li>English (Professional)</li>
-      <li>Urdu (Native)</li>
-    </ul>
+    <div class="project">
+      <p>English (Professional) · Urdu (Native) · Sindhi (Native)</p>
+    </div>
   </section>
 </body>
 </html>
