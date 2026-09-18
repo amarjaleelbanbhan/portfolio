@@ -29,8 +29,8 @@ export default function Footer() {
               <span className="text-slate-600">.dev</span>
             </p>
             <p className="text-xs text-slate-500 leading-relaxed max-w-xs">
-              AI Product Engineer & Full-Stack Developer based in Pakistan.
-              Building intelligent, meaningful software.
+              Software engineer building product, AI, security, and systems
+              software. Based in Pakistan.
             </p>
           </div>
 

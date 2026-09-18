@@ -37,8 +37,8 @@ export default function Document() {
               '@type': 'Person',
               name: 'Amar Jaleel',
               url: SITE_URL,
-              jobTitle: 'AI Product Engineer',
-              description: 'Full-Stack Developer specializing in AI, Cybersecurity, and Data Analytics.',
+              jobTitle: 'Software Engineer',
+              description: 'Software engineer building product, AI, security, and systems software.',
               alumniOf: { '@type': 'CollegeOrUniversity', name: 'Sukkur IBA University' },
               sameAs: [
                 'https://www.linkedin.com/in/amarjaleel/',

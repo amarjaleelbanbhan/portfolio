@@ -8,22 +8,22 @@ import GlitchText from './GlitchText';
 import { personalInfo } from '../data/portfolio';
 
 const roles = [
-  'AI Product Engineer',
-  'Cybersecurity Enthusiast',
-  'Full-Stack Developer',
-  'Data Analytics Engineer',
-  'Open Source Builder',
+  'Software Engineer',
+  'Product Engineering',
+  'Security & Developer Tools',
+  'Applied AI / RAG',
+  'Systems Engineering',
 ];
 
 const floatingChips = [
-  { label: 'Python',         color: '#3b82f6', delay: 0    },
-  { label: 'Next.js',        color: '#14b8a6', delay: 0.4  },
-  { label: 'TensorFlow',     color: '#f97316', delay: 0.8  },
-  { label: 'TypeScript',     color: '#6366f1', delay: 1.2  },
-  { label: 'Cybersecurity',  color: '#d946ef', delay: 1.6  },
-  { label: 'React',          color: '#22c55e', delay: 2.0  },
-  { label: 'Machine Learning', color: '#f59e0b', delay: 2.4 },
-  { label: 'Node.js',        color: '#14b8a6', delay: 2.8  },
+  { label: 'Python',      color: '#3b82f6', delay: 0    },
+  { label: 'Next.js',     color: '#14b8a6', delay: 0.4  },
+  { label: 'Flutter',     color: '#f97316', delay: 0.8  },
+  { label: 'TypeScript',  color: '#6366f1', delay: 1.2  },
+  { label: 'RAG',         color: '#d946ef', delay: 1.6  },
+  { label: 'Supabase',    color: '#22c55e', delay: 2.0  },
+  { label: 'Static Analysis', color: '#f59e0b', delay: 2.4 },
+  { label: 'BLE',         color: '#14b8a6', delay: 2.8  },
 ];
 
 function useTypingEffect(strings, typingSpeed = 90, deletingSpeed = 50, pauseMs = 2200) {
@@ -187,18 +187,17 @@ export default function Hero() {
               className="mb-8 space-y-3"
             >
               <p className="text-base text-slate-300 max-w-xl leading-relaxed">
+                Software engineer building product, AI, security, and systems software.
                 CS student at{' '}
-                <span className="text-neon-cyan font-medium">Sukkur IBA University</span>{' '}
-                who ships real tools — a security CLI on npm, a VS Code extension, a 3D browser app,
-                and a medical voice agent. I build at the crossroads of{' '}
-                <span className="text-slate-200 font-medium">AI</span>,{' '}
-                <span className="text-slate-200 font-medium">cybersecurity</span>, and{' '}
-                <span className="text-slate-200 font-medium">full-stack engineering</span>.
+                <span className="text-neon-cyan font-medium">Sukkur IBA University</span>, currently
+                working on a field-reporting platform in production, a published npm security tool,
+                and a controlled study on evidence deficiency in{' '}
+                <span className="text-slate-200 font-medium">RAG</span> systems.
               </p>
               <p className="text-sm text-slate-500 max-w-lg leading-relaxed font-code">
-                <span className="text-neon-green">11</span> Google certs ·{' '}
-                <span className="text-neon-cyan">9</span> shipped projects ·{' '}
-                <span className="text-neon-magenta">500+</span> commits
+                <span className="text-neon-green">6</span> merged upstream PRs ·{' '}
+                <span className="text-neon-cyan">1</span> published npm package ·{' '}
+                <span className="text-neon-magenta">1</span> system in production
               </p>
             </motion.div>
 
@@ -291,7 +290,7 @@ export default function Hero() {
               <div className="absolute inset-[10px] rounded-full overflow-hidden">
                 <Image
                   src="/images/hero-portrait.jpg"
-                  alt="Amar Jaleel – AI Product Engineer"
+                  alt="Amar Jaleel"
                   fill
                   // Rendered in a 256/320/384px circle, so never ask for more.
                   sizes="(min-width: 768px) 384px, (min-width: 640px) 320px, 256px"
@@ -345,8 +344,8 @@ export default function Hero() {
                 transition={{ delay: 1.2, duration: 0.6 }}
                 className="absolute -left-8 top-1/4 flex items-center gap-2 bg-midnight-light/80 border border-white/10 rounded-xl px-3 py-2 text-xs font-code backdrop-blur-sm shadow-lg"
               >
-                <span className="text-2xl font-bold text-neon-cyan">11</span>
-                <span className="text-slate-400 leading-tight">Google<br/>Certs</span>
+                <span className="text-2xl font-bold text-neon-cyan">6</span>
+                <span className="text-slate-400 leading-tight">Merged<br/>Upstream PRs</span>
               </motion.div>
 
               {/* Floating stat pill — right */}
@@ -356,8 +355,8 @@ export default function Hero() {
                 transition={{ delay: 1.4, duration: 0.6 }}
                 className="absolute -right-8 top-1/3 flex items-center gap-2 bg-midnight-light/80 border border-white/10 rounded-xl px-3 py-2 text-xs font-code backdrop-blur-sm shadow-lg"
               >
-                <span className="text-2xl font-bold text-neon-green">9</span>
-                <span className="text-slate-400 leading-tight">Shipped<br/>Projects</span>
+                <span className="text-2xl font-bold text-neon-green">5</span>
+                <span className="text-slate-400 leading-tight">Flagship<br/>Systems</span>
               </motion.div>
 
             </div>

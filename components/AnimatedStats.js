@@ -51,12 +51,12 @@ export default function AnimatedStats() {
           className="text-center mb-10"
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-gradient-cyan mb-2">
-            My Journey in Numbers
+            Verified Evidence
           </h2>
-          <p className="text-gray-400">Milestones & Metrics</p>
+          <p className="text-gray-400">Numbers that can be checked</p>
         </motion.div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -73,7 +73,7 @@ export default function AnimatedStats() {
             >
               {/* Number */}
               <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-neon-green mb-2 group-hover:scale-110 transition-transform">
-                <CountUp end={stat.value} suffix={stat.suffix} />
+                <CountUp end={stat.value} suffix={stat.suffix ?? ''} />
               </div>
               
               {/* Label */}

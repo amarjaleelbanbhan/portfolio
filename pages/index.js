@@ -16,7 +16,7 @@ import { projects, personalInfo } from '@/data/portfolio';
 
 const AnimatedStats = dynamic(() => import('@/components/AnimatedStats'), { ssr: false });
 
-const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
+const featuredProjects = projects.filter((p) => p.tier === 'primary').slice(0, 3);
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -29,8 +29,8 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
       <Seo
-        title="Amar Jaleel | AI Product Engineer & Full-Stack Developer"
-        description="Amar Jaleel — AI Product Engineer & Full-Stack Developer specializing in AI, cybersecurity, and data analytics. Based in Pakistan, open to opportunities."
+        title="Amar Jaleel | Software Engineer"
+        description="Amar Jaleel — software engineer building product, AI, security, and systems software. Based in Pakistan, open to opportunities."
         path="/"
         type="profile"
       />
@@ -87,16 +87,17 @@ export default function Home() {
                       shipping real ones.
                     </p>
                     <p className="text-slate-300 leading-relaxed text-sm">
-                      My work lives at the intersection of <span className="text-white font-medium">AI</span>,
-                      {' '}<span className="text-white font-medium">cybersecurity</span>, and{' '}
-                      <span className="text-white font-medium">full-stack engineering</span>. I&apos;ve published
-                      a security tool to npm, built a voice agent that understands medical symptoms,
-                      and created a 3D floor planner that runs entirely in the browser.
+                      My work spans <span className="text-white font-medium">product engineering</span>,{' '}
+                      <span className="text-white font-medium">security and developer tools</span>,{' '}
+                      <span className="text-white font-medium">applied AI</span>, and{' '}
+                      <span className="text-white font-medium">systems</span>. I&apos;ve shipped a field
+                      reporting platform that is in production, published a security CLI to npm, and run a
+                      controlled study on how RAG systems fail to retrieve good evidence.
                     </p>
                     <p className="text-slate-400 leading-relaxed text-sm">
-                      I hold <span className="text-neon-green font-semibold">11 professional certifications</span>{' '}
-                      from Google across cybersecurity, data analytics, and AI — not to collect badges,
-                      but because I genuinely enjoy knowing how things work at a deep level.
+                      I also contribute upstream rather than only to my own repositories —{' '}
+                      <span className="text-neon-green font-semibold">six merged pull requests</span>{' '}
+                      into projects including Pydantic AI, Promptfoo and the Academy Software Foundation.
                     </p>
                     <p className="text-slate-500 text-sm font-code italic">
                       {'// When the code compiles on the first try, I assume something’s wrong.'}
