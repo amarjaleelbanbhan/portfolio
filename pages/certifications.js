@@ -1,6 +1,6 @@
 'use client';
 
-import Head from 'next/head';
+import Seo from '@/components/Seo';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -108,10 +108,10 @@ function CertCard({ name, description, link, org, color, icon, index }) {
 export default function Certifications() {
   return (
     <>
-      <Head>
-        <title>Certifications — Amar Jaleel</title>
-        <meta name="description" content="Amar Jaleel's professional certifications in cybersecurity, data analytics, AI, and Python development." />
-      </Head>
+      <Seo
+        title="Certifications — Amar Jaleel"
+        description="Amar Jaleel's professional certifications in cybersecurity, data analytics, AI, and Python development."
+      />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container space-y-8">
@@ -122,7 +122,7 @@ export default function Certifications() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="section-label mb-2">// credentials</p>
+            <p className="section-label mb-2">{'// credentials'}</p>
             <h1 className="section-heading mb-3">Validated Learning</h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">
               Professional certifications that reflect a focused commitment to security, analytics,

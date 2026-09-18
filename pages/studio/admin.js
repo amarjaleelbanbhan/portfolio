@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import Head from 'next/head';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 
 const SUPABASE_URL = 'https://yokgnzxwrbymarjdfyhk.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_h1nOLJv7TuuOqbWkKbiMnQ_LkM8VdcX';
@@ -64,9 +64,40 @@ export default function StudioAdmin() {
     }
   }, []);
 
+  const loadLeads = useCallback(async (token) => {
+    setLoading(true);
+    setError('');
+    try {
+      const params = new URLSearchParams({
+        select: 'id,created_at,name,email,company,website,service,timeline,problem,source,status,notified_at',
+        order: 'created_at.desc',
+      });
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/studio_leads?${params.toString()}`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        logout();
+        throw new Error('Your session expired. Sign in again.');
+      }
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(detail || 'Could not load leads.');
+      }
+      setLeads(await response.json());
+    } catch (err) {
+      setError(err.message || 'Could not load leads.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (session?.access_token) loadLeads(session.access_token);
-  }, [session?.access_token]);
+  }, [session?.access_token, loadLeads]);
 
   const filteredLeads = useMemo(() => {
     const needle = search.trim().toLowerCase();
@@ -121,37 +152,6 @@ export default function StudioAdmin() {
     }
   }
 
-  async function loadLeads(token) {
-    setLoading(true);
-    setError('');
-    try {
-      const params = new URLSearchParams({
-        select: 'id,created_at,name,email,company,website,service,timeline,problem,source,status,notified_at',
-        order: 'created_at.desc',
-      });
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/studio_leads?${params.toString()}`, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 401) {
-        logout();
-        throw new Error('Your session expired. Sign in again.');
-      }
-      if (!response.ok) {
-        const detail = await response.text();
-        throw new Error(detail || 'Could not load leads.');
-      }
-      setLeads(await response.json());
-    } catch (err) {
-      setError(err.message || 'Could not load leads.');
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function updateStatus(leadId, status) {
     if (!session?.access_token) return;
     const previous = leads;
@@ -185,11 +185,11 @@ export default function StudioAdmin() {
 
   return (
     <>
-      <Head>
-        <title>Studio Admin · Amar Digital Systems</title>
-        <meta name="robots" content="noindex,nofollow,noarchive" />
-        <meta name="description" content="Private lead dashboard for Amar Digital Systems." />
-      </Head>
+      <Seo
+        title="Studio Admin · Amar Digital Systems"
+        description="Private lead dashboard for Amar Digital Systems."
+        noindex
+      />
 
       <main className="min-h-screen bg-[#07111f] text-white px-5 py-8 md:py-12">
         <div className="mx-auto max-w-7xl">

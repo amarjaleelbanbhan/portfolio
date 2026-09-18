@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /studio/admin
 
 Sitemap: https://amarjaleel.me/sitemap.xml

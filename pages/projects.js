@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
+import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProjectCard from '@/components/ProjectCard';
@@ -18,10 +18,10 @@ const SecretProject = dynamic(() => import('@/components/SecretProject'), {
 export default function Projects() {
   return (
     <>
-      <Head>
-        <title>Projects — Amar Jaleel</title>
-        <meta name="description" content="Amar Jaleel's portfolio of projects spanning AI, cybersecurity, full-stack development, and data analytics." />
-      </Head>
+      <Seo
+        title="Projects — Amar Jaleel"
+        description="Amar Jaleel's portfolio of projects spanning AI, cybersecurity, full-stack development, and data analytics."
+      />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container space-y-10">
@@ -32,8 +32,8 @@ export default function Projects() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
-            <p className="section-label mb-2">// portfolio</p>
-            <h1 className="section-heading mb-3">Things I've Built</h1>
+            <p className="section-label mb-2">{'// portfolio'}</p>
+            <h1 className="section-heading mb-3">Things I&apos;ve Built</h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">
               A snapshot of recent work spanning full-stack delivery, AI-assisted experiences,
               and robust backend services. Each project reflects a real problem solved.

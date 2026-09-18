@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
@@ -27,6 +28,12 @@ const fadeUp = {
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
+      <Seo
+        title="Amar Jaleel | AI Product Engineer & Full-Stack Developer"
+        description="Amar Jaleel — AI Product Engineer & Full-Stack Developer specializing in AI, cybersecurity, and data analytics. Based in Pakistan, open to opportunities."
+        path="/"
+        type="profile"
+      />
       <Navbar />
       <main className="flex-1">
         <Hero />
@@ -34,7 +41,7 @@ export default function Home() {
         {/* ─── Header / Name Section ─── */}
         <section className="section-container text-center">
           <motion.div {...fadeUp}>
-            <p className="section-label mb-3">// about me</p>
+            <p className="section-label mb-3">{'// about me'}</p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-glow tracking-tight">
               <GlitchText text={personalInfo.name.toUpperCase()} />
             </h1>
@@ -42,7 +49,7 @@ export default function Home() {
               {personalInfo.tagline}
             </p>
             <p className="text-base text-neon-cyan font-semibold mb-8 font-code">
-              Building Tomorrow's Solutions Today.
+              Building Tomorrow&apos;s Solutions Today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
@@ -92,7 +99,7 @@ export default function Home() {
                       but because I genuinely enjoy knowing how things work at a deep level.
                     </p>
                     <p className="text-slate-500 text-sm font-code italic">
-                      // When the code compiles on the first try, I assume something&apos;s wrong.
+                      {'// When the code compiles on the first try, I assume something’s wrong.'}
                     </p>
                   </div>
 
@@ -145,7 +152,7 @@ export default function Home() {
         {/* ─── Featured Projects ─── */}
         <section id="projects" className="section-container">
           <motion.div {...fadeUp} className="mb-10">
-            <p className="section-label mb-2">// selected work</p>
+            <p className="section-label mb-2">{'// selected work'}</p>
             <div className="flex items-end justify-between flex-wrap gap-4">
               <h2 className="section-heading">
                 FEATURED_PROJECTS

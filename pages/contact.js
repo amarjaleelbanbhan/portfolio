@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Head from 'next/head';
+import Seo from '@/components/Seo';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
@@ -115,10 +115,10 @@ export default function Contact() {
 
   return (
     <>
-      <Head>
-        <title>Contact — Amar Jaleel</title>
-        <meta name="description" content="Get in touch with Amar Jaleel — open to collaborations, opportunities, and conversations." />
-      </Head>
+      <Seo
+        title="Contact — Amar Jaleel"
+        description="Get in touch with Amar Jaleel — open to collaborations, opportunities, and conversations."
+      />
       <div className="min-h-screen flex flex-col bg-transparent">
         <AnimatePresence>
           {toast && (
@@ -136,8 +136,8 @@ export default function Contact() {
             transition={{ duration: 0.6 }}
             className="mb-10"
           >
-            <p className="section-label mb-2">// reach out</p>
-            <h1 className="section-heading mb-3">Let's Build Something</h1>
+            <p className="section-label mb-2">{'// reach out'}</p>
+            <h1 className="section-heading mb-3">Let&apos;s Build Something</h1>
             <p className="text-slate-400 max-w-xl leading-relaxed">
               Open to collaborations, internships, and interesting conversations. I reply within 24 hours.
             </p>

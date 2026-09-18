@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import styles from '@/styles/Hire.module.css';
 
 const services = [
@@ -54,17 +54,10 @@ const examples = [
 export default function Hire() {
   return (
     <>
-      <Head>
-        <title>Hire Amar · Websites, Apps, Chatbots & Automation</title>
-        <meta
-          name="description"
-          content="Hire Amar Digital Systems to build or repair websites, create web apps, add AI chatbots, and automate repetitive business workflows."
-        />
-        <meta property="og:title" content="Need something built or fixed?" />
-        <meta property="og:description" content="Websites, web apps, AI chatbots, bug fixes, and business automation — one clear place to start." />
-        <meta property="og:url" content="https://amarjaleel.me/hire" />
-        <link rel="canonical" href="https://amarjaleel.me/hire" />
-      </Head>
+      <Seo
+        title="Hire Amar · Websites, Apps, Chatbots & Automation"
+        description="Hire Amar Digital Systems to build or repair websites, create web apps, add AI chatbots, and automate repetitive business workflows."
+      />
 
       <div className={styles.page}>
         <header className={styles.header}>

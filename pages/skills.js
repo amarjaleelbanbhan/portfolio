@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
+import Seo from '@/components/Seo';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -121,17 +121,17 @@ const fadeUp = {
 export default function Skills() {
   return (
     <>
-      <Head>
-        <title>Skills — Amar Jaleel</title>
-        <meta name="description" content="Amar Jaleel's technical skills in AI, cybersecurity, data analytics, and full-stack development." />
-      </Head>
+      <Seo
+        title="Skills — Amar Jaleel"
+        description="Amar Jaleel's technical skills in AI, cybersecurity, data analytics, and full-stack development."
+      />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container">
 
           {/* Header */}
           <motion.div {...fadeUp} className="mb-12">
-            <p className="section-label mb-2">// capabilities</p>
+            <p className="section-label mb-2">{'// capabilities'}</p>
             <h1 className="section-heading mb-3">
               <span className="text-neon-cyan font-code">&lt;</span>
               Skills

@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import styles from '@/styles/Studio.module.css';
 
 const services = [
@@ -121,16 +121,10 @@ function WorkVisual({ type }) {
 export default function Studio() {
   return (
     <>
-      <Head>
-        <title>Amar Digital Systems · Websites, Lead Capture & Automation</title>
-        <meta
-          name="description"
-          content="Amar Digital Systems builds and fixes websites, improves lead capture, and automates repetitive follow-up for service businesses."
-        />
-        <meta property="og:title" content="Amar Digital Systems" />
-        <meta property="og:description" content="Websites, lead capture, and automations for service businesses." />
-        <meta property="og:url" content="https://amarjaleel.me/studio" />
-      </Head>
+      <Seo
+        title="Amar Digital Systems · Websites, Lead Capture & Automation"
+        description="Amar Digital Systems builds and fixes websites, improves lead capture, and automates repetitive follow-up for service businesses."
+      />
 
       <div className={styles.page}>
         <header className={styles.header}>
