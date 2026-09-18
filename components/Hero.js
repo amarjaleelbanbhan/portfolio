@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import GlitchText from './GlitchText';
 import { personalInfo } from '../data/portfolio';
@@ -43,8 +44,12 @@ function useTypingEffect(strings, typingSpeed = 90, deletingSpeed = 50, pauseMs 
       if (displayText.length > 0) {
         timer = setTimeout(() => setDisplayText(current.slice(0, displayText.length - 1)), deletingSpeed);
       } else {
-        setIsDeleting(false);
-        setRoleIndex((i) => (i + 1) % strings.length);
+        // Advance on the same timer the rest of the cycle uses, so the effect
+        // body stays free of synchronous state updates.
+        timer = setTimeout(() => {
+          setIsDeleting(false);
+          setRoleIndex((i) => (i + 1) % strings.length);
+        }, deletingSpeed);
       }
     }
     return () => clearTimeout(timer);
@@ -238,7 +243,7 @@ export default function Hero() {
                   {icon}
                 </a>
               ))}
-              <span className="ml-3 text-xs text-slate-600 font-code">// find me online</span>
+              <span className="ml-3 text-xs text-slate-600 font-code">{'// find me online'}</span>
             </motion.div>
           </motion.div>
 
@@ -283,13 +288,18 @@ export default function Hero() {
               </motion.div>
 
               {/* Portrait */}
-              <img
-                src="/images/hero-portrait.jpg"
-                alt="Amar Jaleel – AI Product Engineer"
-                className="absolute inset-[10px] w-[calc(100%-20px)] h-[calc(100%-20px)] object-cover object-top rounded-full"
-                style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.6)' }}
-                loading="eager"
-              />
+              <div className="absolute inset-[10px] rounded-full overflow-hidden">
+                <Image
+                  src="/images/hero-portrait.jpg"
+                  alt="Amar Jaleel – AI Product Engineer"
+                  fill
+                  // Rendered in a 256/320/384px circle, so never ask for more.
+                  sizes="(min-width: 768px) 384px, (min-width: 640px) 320px, 256px"
+                  className="object-cover object-top"
+                  style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.6)' }}
+                  priority
+                />
+              </div>
 
               {/* Orbiting dot — cyan */}
               <motion.div
