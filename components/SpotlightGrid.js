@@ -82,41 +82,50 @@ export default function SpotlightGrid() {
 }
 
 function SpotlightCard({ skill, mousePosition, containerRef, isHovering }) {
+  // Card centre relative to the container. Measured once on mount via a ref
+  // callback (and again on resize) instead of re-measuring every card on every
+  // mousemove, which previously drove a full setState cascade per pointer event.
+  const [center, setCenter] = useState(null);
   const cardRef = useRef(null);
-  const [proximity, setProximity] = useState({ isNear: false, distance: 1000, intensity: 0 });
 
-  // Calculate proximity using useEffect to avoid render loop
-  useEffect(() => {
-    if (!isHovering || !cardRef.current || !containerRef.current) {
-      setProximity({ isNear: false, distance: 1000, intensity: 0 });
-      return;
-    }
-    
+  const measure = useCallback(() => {
+    if (!cardRef.current || !containerRef.current) return;
     const cardRect = cardRef.current.getBoundingClientRect();
     const containerRect = containerRef.current.getBoundingClientRect();
-    
-    // Card center relative to container
-    const cardCenterX = cardRect.left - containerRect.left + cardRect.width / 2;
-    const cardCenterY = cardRect.top - containerRect.top + cardRect.height / 2;
-    
-    // Distance from mouse to card center
-    const dx = mousePosition.x - cardCenterX;
-    const dy = mousePosition.y - cardCenterY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    
-    const isNear = dist < 200;
-    const intensity = Math.max(0, 1 - dist / 250);
-    
-    setProximity({ isNear, distance: dist, intensity });
-  }, [mousePosition.x, mousePosition.y, isHovering, containerRef]);
+    setCenter({
+      x: cardRect.left - containerRect.left + cardRect.width / 2,
+      y: cardRect.top - containerRect.top + cardRect.height / 2,
+    });
+  }, [containerRef]);
 
-  const { isNear, intensity } = proximity;
+  const attachCard = useCallback(
+    (node) => {
+      cardRef.current = node;
+      if (node) measure();
+    },
+    [measure]
+  );
+
+  useEffect(() => {
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [measure]);
+
+  // Derived during render — no state, no effect.
+  let intensity = 0;
+  if (isHovering && center) {
+    const dx = mousePosition.x - center.x;
+    const dy = mousePosition.y - center.y;
+    intensity = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 250);
+  }
+
+  const isNear = intensity > 0.2;
   const borderOpacity = Math.min(intensity * 1.5, 1);
   const glowIntensity = intensity * 0.6;
 
   return (
     <div
-      ref={cardRef}
+      ref={attachCard}
       className="relative px-3 py-2 rounded text-sm font-code transition-all duration-150 cursor-default"
       style={{
         border: `1px solid rgba(20, 184, 166, ${borderOpacity * 0.8})`,

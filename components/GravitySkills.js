@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
 
 const SKILLS = [
@@ -10,14 +10,11 @@ export default function GravitySkills() {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const engineRef = useRef(null);
-  const [isClient, setIsClient] = useState(false);
 
+  // No client-detection state needed: skills.js loads this with `ssr: false`,
+  // so it only ever mounts in the browser and renders its loading fallback.
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient || !containerRef.current || !canvasRef.current) return;
+    if (!containerRef.current || !canvasRef.current) return;
 
     const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Events } = Matter;
 
@@ -142,7 +139,7 @@ export default function GravitySkills() {
       render.canvas.remove();
       render.textures = {};
     };
-  }, [isClient]);
+  }, []);
 
   // Shake function to re-drop skills
   const handleShake = () => {
@@ -163,14 +160,6 @@ export default function GravitySkills() {
       }
     });
   };
-
-  if (!isClient) {
-    return (
-      <div className="glass-panel p-6 h-[560px] flex items-center justify-center">
-        <p className="text-gray-400">Loading Physics Engine...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="glass-panel p-4">

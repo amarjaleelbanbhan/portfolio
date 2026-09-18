@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Confetti from 'react-confetti';
 
 const TARGET_FREQUENCY = 0.02;
@@ -6,37 +6,40 @@ const TARGET_AMPLITUDE = 40;
 const TOLERANCE = 0.003; // Frequency tolerance
 const AMP_TOLERANCE = 8; // Amplitude tolerance
 
+const isMatch = (frequency, amplitude) =>
+  Math.abs(frequency - TARGET_FREQUENCY) <= TOLERANCE &&
+  Math.abs(amplitude - TARGET_AMPLITUDE) <= AMP_TOLERANCE;
+
+const matchPercent = (frequency, amplitude) => {
+  const freqDiff = 1 - Math.min(Math.abs(frequency - TARGET_FREQUENCY) / 0.03, 1);
+  const ampDiff = 1 - Math.min(Math.abs(amplitude - TARGET_AMPLITUDE) / 50, 1);
+  return Math.round(freqDiff * 50 + ampDiff * 50);
+};
+
 export default function SecretProject() {
   const canvasRef = useRef(null);
   const [frequency, setFrequency] = useState(0.01);
   const [amplitude, setAmplitude] = useState(20);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [matchPercentage, setMatchPercentage] = useState(0);
   const animationRef = useRef(null);
   const offsetRef = useRef(0);
 
-  // Check if waves match
-  const checkMatch = useCallback(() => {
-    const freqMatch = Math.abs(frequency - TARGET_FREQUENCY) <= TOLERANCE;
-    const ampMatch = Math.abs(amplitude - TARGET_AMPLITUDE) <= AMP_TOLERANCE;
-    
-    // Calculate match percentage
-    const freqDiff = 1 - Math.min(Math.abs(frequency - TARGET_FREQUENCY) / 0.03, 1);
-    const ampDiff = 1 - Math.min(Math.abs(amplitude - TARGET_AMPLITUDE) / 50, 1);
-    const percentage = Math.round((freqDiff * 50 + ampDiff * 50));
-    setMatchPercentage(percentage);
+  // Pure function of the two sliders — derived on render, not stored in state.
+  const matchPercentage = matchPercent(frequency, amplitude);
 
-    if (freqMatch && ampMatch && !isUnlocked) {
+  // The unlock latches (it survives moving the sliders away again), so it stays
+  // stateful — but it is decided in the slider handlers, not in an effect.
+  const applyTuning = (nextFrequency, nextAmplitude) => {
+    setFrequency(nextFrequency);
+    setAmplitude(nextAmplitude);
+
+    if (!isUnlocked && isMatch(nextFrequency, nextAmplitude)) {
       setIsUnlocked(true);
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000);
     }
-  }, [frequency, amplitude, isUnlocked]);
-
-  useEffect(() => {
-    checkMatch();
-  }, [checkMatch]);
+  };
 
   // Draw waves
   useEffect(() => {
@@ -195,7 +198,7 @@ export default function SecretProject() {
                 max="0.04"
                 step="0.001"
                 value={frequency}
-                onChange={(e) => setFrequency(parseFloat(e.target.value))}
+                onChange={(e) => applyTuning(parseFloat(e.target.value), amplitude)}
                 className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--neon-cyan)]"
               />
             </div>
@@ -211,7 +214,7 @@ export default function SecretProject() {
                 max="60"
                 step="1"
                 value={amplitude}
-                onChange={(e) => setAmplitude(parseInt(e.target.value))}
+                onChange={(e) => applyTuning(frequency, parseInt(e.target.value))}
                 className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--neon-cyan)]"
               />
             </div>

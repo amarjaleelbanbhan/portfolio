@@ -7,7 +7,10 @@ export default function SkillCube() {
   const frameRef = useRef(null);
 
   useEffect(() => {
-    const width = containerRef.current?.clientWidth || 280;
+    // Capture the node now so cleanup detaches from the same element even if
+    // the ref has already been cleared by the time it runs.
+    const container = containerRef.current;
+    const width = container?.clientWidth || 280;
     const height = 220;
 
     const scene = new THREE.Scene();
@@ -38,7 +41,7 @@ export default function SkillCube() {
     const ambient = new THREE.AmbientLight('#ffffff', 0.35);
     scene.add(ambient);
 
-    containerRef.current?.appendChild(renderer.domElement);
+    container?.appendChild(renderer.domElement);
 
     const animate = () => {
       cube.rotation.x += 0.0035;
@@ -54,7 +57,7 @@ export default function SkillCube() {
       renderer.dispose();
       geometry.dispose();
       materials.forEach((mat) => mat.dispose());
-      containerRef.current?.removeChild(renderer.domElement);
+      container?.removeChild(renderer.domElement);
     };
   }, []);
 
