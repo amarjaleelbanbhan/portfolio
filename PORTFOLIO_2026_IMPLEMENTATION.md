@@ -435,33 +435,71 @@ Completed during Phase 0.5 — see that phase's notes.
 
 ## Incorrect / Weak Claims
 
-- [ ] Remove or correct `11 Google certs`.
-- [ ] Remove arbitrary vanity counters unless verified and useful.
-- [ ] Remove dead Bus Reservation System portfolio reference.
-- [ ] Review MediTalk positioning.
-- [ ] Reframe MediTalk as historical ML prototype if retained.
-- [ ] Remove any medical-diagnosis credibility overclaim.
-- [ ] Check all project repository/demo links.
+- [x] Remove or correct `11 Google certs`. (9 Google + 2 Udemy; count no longer claimed as Google.)
+- [x] Remove arbitrary vanity counters unless verified and useful.
+- [x] Remove dead Bus Reservation System portfolio reference.
+- [x] Review MediTalk positioning.
+- [x] Reframe MediTalk as historical ML prototype if retained.
+- [x] Remove any medical-diagnosis credibility overclaim.
+- [x] Check all project repository/demo links.
+
+## Secret Project
+
+- [x] Remove the fabricated stealth-project reveal.
+- [x] Preserve the puzzle, sliders, canvas, unlock animation and confetti.
+- [x] Replace with a truthful reveal plus links to real work.
+
+## Positioning
+
+- [x] Move away from `AI Product Engineer | Cybersecurity | Data Analytics`.
+- [x] Drop `Data Analytics Engineer` as an identity.
+- [x] Centre on Software Engineer across the five real domains.
+- [x] Update title, tagline, typing roles, JSON-LD, page metadata and footer.
+
+## Skills
+
+- [x] Remove unsupported proficiency percentages.
+- [x] Retain skill visuals and interactions (SkillCube, GravitySkills, SpotlightGrid).
+- [x] Replace percentages with the projects each language was used in.
+- [ ] Skill Galaxy — deliberately not built (Phase 16).
+
+## Certifications
+
+- [x] Reconcile the duplicated certification sources into one temporary source of truth.
+- [x] Verify title, issuer, date and credential URL for all 11.
+- [x] Correct the Google Cybersecurity card, which linked to a Data Analytics credential.
+- [x] Stop displaying `11 Google Certifications`.
+- [x] Reframe credentials as supporting evidence.
 
 ## Resume
 
-- [ ] Replace stale resume content.
-- [ ] Add current serious engineering work.
-- [ ] Add selected open-source evidence.
-- [ ] Ensure resume claims match portfolio claims.
+- [x] Replace stale resume content.
+- [x] Add current serious engineering work.
+- [x] Add selected open-source evidence.
+- [x] Ensure resume claims match portfolio claims.
+- [x] Add portfolio URL and GitHub.
+
+## Open Source Evidence
+
+- [x] Verify all seven contributions against the GitHub API.
+- [x] Surface them on the portfolio (interim placement on `/projects`).
+- [ ] `/open-source` page — deliberately not built (Phase 14).
 
 ## Project Status
 
 Assign honest statuses:
 
-- [ ] RODIFT
-- [ ] VeriPatch
-- [ ] KnowledgeGuard
-- [ ] CortexWard
-- [ ] SceneForge
-- [ ] Emergency Mesh
-- [ ] CS Learning by Game
-- [ ] VICE OS
+- [x] RODIFT — Production
+- [x] VeriPatch — Released
+- [x] KnowledgeGuard — Research
+- [x] CortexWard — Pre-alpha
+- [x] SceneForge — Active Development
+- [x] Emergency Mesh — Active Development
+- [x] CS Learning by Game — Active Development
+- [x] VICE OS — Research (Current FYP — Research & Architecture Stage)
+- [x] BuildSphere — Prototype
+- [x] TODO Tracker Pro — Completed (not published to the Marketplace)
+- [x] ZakatLink / Smart Notebook / EduResource Hub / MediTalk — Archived
 
 Recommended status vocabulary:
 
@@ -474,20 +512,81 @@ Recommended status vocabulary:
 - Completed
 - Archived
 
+## Content Duplication
+
+- [x] Reconcile obviously conflicting values.
+- [x] Eliminate direct factual contradictions.
+- [x] Document remaining duplication in `docs/portfolio-2026/content-audit.md`.
+- [ ] Full canonical migration — deliberately deferred (Phase 2).
+
 ## Validation
 
-- [ ] Build succeeds.
-- [ ] No broken internal project links.
-- [ ] No known false headline stats remain.
-- [ ] Metadata uses `.me`.
+- [x] Build succeeds.
+- [x] Lint passes.
+- [x] No broken internal project links.
+- [x] No known false headline stats remain.
+- [x] Metadata uses `.me`.
+- [x] All 38 rendered outbound links checked.
+- [x] Advanced visuals preserved (ParticleNetwork, Hero orbit system, typing
+      animation, GravitySkills, SkillCube, SpotlightGrid, GlitchText,
+      TerminalGame, SecretProject).
 
 ## Phase Completion
 
-- [ ] Phase 1 complete
+- [x] Phase 1 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-18. Deliverable: `docs/portfolio-2026/content-audit.md`.
+
+**Evidence first.** Nothing was written from the brief alone. Every project,
+status, contribution and credential was verified on 2026-09-18 against the
+authenticated GitHub API, the npm registry, and live HTTP checks. Where evidence
+was weaker than the brief's suggested status, the weaker status was used.
+
+**Claims removed.** "11 Google certs" (the set is 9 Google + 2 Udemy),
+"9 shipped projects", "500+ commits", "Projects Completed 10+" (only 9 were
+listed), "Courses Completed 15+", "Certifications 11+", "2026 Latest Issued"
+(the newest credential is Nov 2025), MediTalk's "85% accuracy", and the
+self-assigned skill percentages.
+
+**Real defect found.** `/certifications` linked the Google Cybersecurity card to
+credential `U2DN4IX0N6H7`, which resolves to a **Google Data Analytics**
+certificate. Fetching both pages and comparing their contents exposed it. The
+page now reads from the single reconciled source with the correct
+`MDMFD7XJJXL4`.
+
+**Dead link.** `Bus-Reservation-System` returns 404; the project was removed
+rather than left with a broken repository button.
+
+**Fabricated project.** `SecretProject.js` revealed an "Autonomous Drone Swarm …
+currently in stealth mode" that does not exist. The reveal is now an honest
+"ACCESS GRANTED / you found one of the hidden experiments" message that explains
+what the puzzle actually is and links to the portfolio source and CortexWard. The
+puzzle, sliders, wave canvas, unlock latch and confetti are all untouched.
+
+**Private repositories.** Five of the ten strongest projects are private
+(RODIFT, KnowledgeGuard, SceneForge, Emergency Mesh, VICE OS). They are listed
+with a "Private repository" marker instead of a repo button, so no visitor hits a
+404. RODIFT is client work and is described without naming the organization.
+
+**Regression caught during validation.** Grouping `/projects` by tier, I had
+switched the cards from `animate` to `whileInView`. A jump-scroll that skips past
+elements can leave them at `opacity: 0`, which a screenshot confirmed. Reverted to
+the page's original `animate` semantics so content is never gated behind scroll.
+
+**Visual system extended, not reduced.** The new flagship projects would have
+fallen back to the generic placeholder icon, so bespoke card visuals were added
+for RODIFT, KnowledgeGuard, CortexWard, SceneForge, Emergency Mesh, VICE OS and
+MediTalk, and the two stale entries removed. All 14 projects now have a real
+visual.
+
+**Correction to the brief.** "loop-engineering #395 / #437" are in
+`cobusgreyling/loop-engineering`, not `block/goose` — `goose#395` and `goose#437`
+are unrelated PRs by a different author.
+
+**Not done, by design:** `/open-source`, `/research`, the Skill Galaxy, case
+studies, the homepage redesign, and the Phase 2 canonical migration.
 
 ---
 
