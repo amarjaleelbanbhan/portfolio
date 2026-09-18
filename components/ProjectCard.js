@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 
+// Keyed by project slug, never by display title: renaming a project must not
+// silently drop it back to the generic fallback visual.
 const projectVisuals = {
-  ZakatLink: {
+  'zakatlink': {
     gradient: 'from-emerald-500/20 via-teal-500/10 to-transparent',
     accent: '#10b981',
     icon: (
@@ -11,7 +13,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  RODIFT: {
+  'rodift': {
     gradient: 'from-teal-500/20 via-emerald-500/10 to-transparent',
     accent: '#14b8a6',
     icon: (
@@ -22,7 +24,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'KnowledgeGuard / EGB': {
+  'knowledgeguard': {
     gradient: 'from-purple-500/20 via-violet-500/10 to-transparent',
     accent: '#a855f7',
     icon: (
@@ -34,7 +36,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  CortexWard: {
+  'cortexward': {
     gradient: 'from-orange-500/20 via-red-500/10 to-transparent',
     accent: '#f97316',
     icon: (
@@ -45,7 +47,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  SceneForge: {
+  'sceneforge': {
     gradient: 'from-pink-500/20 via-rose-500/10 to-transparent',
     accent: '#ec4899',
     icon: (
@@ -57,7 +59,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'Emergency Mesh': {
+  'emergency-mesh': {
     gradient: 'from-red-500/20 via-orange-500/10 to-transparent',
     accent: '#ef4444',
     icon: (
@@ -71,7 +73,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'VICE OS': {
+  'vice-os': {
     gradient: 'from-indigo-500/20 via-blue-500/10 to-transparent',
     accent: '#6366f1',
     icon: (
@@ -83,7 +85,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  MediTalk: {
+  'meditalk': {
     gradient: 'from-rose-500/20 via-red-500/10 to-transparent',
     accent: '#f43f5e',
     icon: (
@@ -93,7 +95,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'Smart Notebook': {
+  'smart-notebook': {
     gradient: 'from-violet-500/20 via-purple-500/10 to-transparent',
     accent: '#8b5cf6',
     icon: (
@@ -105,7 +107,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'EduResource Hub': {
+  'eduresource-hub': {
     gradient: 'from-amber-500/20 via-yellow-500/10 to-transparent',
     accent: '#f59e0b',
     icon: (
@@ -116,7 +118,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  VeriPatch: {
+  'veripatch': {
     gradient: 'from-orange-500/20 via-amber-500/10 to-transparent',
     accent: '#f97316',
     icon: (
@@ -126,7 +128,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'CS Learning by Game': {
+  'cs-learning-game': {
     gradient: 'from-lime-500/20 via-green-500/10 to-transparent',
     accent: '#84cc16',
     icon: (
@@ -143,7 +145,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'TODO Tracker Pro': {
+  'todo-tracker-pro': {
     gradient: 'from-sky-500/20 via-blue-500/10 to-transparent',
     accent: '#0ea5e9',
     icon: (
@@ -156,7 +158,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  BuildSphere: {
+  'buildsphere': {
     gradient: 'from-cyan-500/20 via-teal-500/10 to-transparent',
     accent: '#06b6d4',
     icon: (
@@ -182,30 +184,31 @@ const defaultVisual = {
 
 // Status colours follow meaning, not decoration: shipped work reads green,
 // in-flight work amber, exploratory work violet, retired work grey.
+// Keyed by the canonical ProjectStatus value. Public labels are formatted here,
+// so display wording never leaks back into the data model.
 const statusStyles = {
-  'Production':         { color: '#22c55e', label: 'Production' },
-  'Released':           { color: '#22c55e', label: 'Released' },
-  'Active Development': { color: '#f59e0b', label: 'Active Development' },
-  'Research':           { color: '#8b5cf6', label: 'Research' },
-  'Prototype':          { color: '#38bdf8', label: 'Prototype' },
-  'Pre-alpha':          { color: '#f97316', label: 'Pre-alpha' },
-  'Completed':          { color: '#14b8a6', label: 'Completed' },
-  'Archived':           { color: '#64748b', label: 'Archived' },
+  production:           { color: '#22c55e', label: 'Production' },
+  released:             { color: '#22c55e', label: 'Released' },
+  'active-development': { color: '#f59e0b', label: 'Active Development' },
+  research:             { color: '#8b5cf6', label: 'Research' },
+  prototype:            { color: '#38bdf8', label: 'Prototype' },
+  'pre-alpha':          { color: '#f97316', label: 'Pre-alpha' },
+  completed:            { color: '#14b8a6', label: 'Completed' },
+  archived:             { color: '#64748b', label: 'Archived' },
 };
 
-export default function ProjectCard({
-  title,
-  description,
-  tags,
-  link,
-  github,
-  status,
-  note,
-  private: isPrivate = false,
-}) {
-  const visual = projectVisuals[title] || defaultVisual;
-  const demoLink = link && !link.includes('github.com') && link !== '#' ? link : null;
+/**
+ * Renders a canonical Project. Only links that actually exist are rendered, and
+ * a non-public source shows an honest marker instead of a button that 404s.
+ */
+export default function ProjectCard({ slug, title, summary, tags, status, note, links = {}, source }) {
+  const visual = projectVisuals[slug] || defaultVisual;
   const statusStyle = status ? statusStyles[status] : null;
+  const repositoryUrl = links.repository;
+  const demoLink = links.demo || links.package;
+  const demoLabel = links.demo ? 'Live Demo' : links.package ? 'Package' : null;
+  const isPrivateSource = source ? source.visibility !== 'public' : false;
+  const sourceLabel = source?.label || 'Private repository';
 
   return (
     <motion.article
@@ -264,7 +267,7 @@ export default function ProjectCard({
           )}
         </div>
         <p className="text-slate-400 text-sm leading-relaxed mb-3">
-          {description}
+          {summary}
         </p>
         {note && (
           <p className="text-xs text-slate-500 leading-relaxed mb-4 italic">
@@ -297,17 +300,18 @@ export default function ProjectCard({
         {/* Links */}
         <div className="flex items-center gap-3 mt-auto pt-1">
           {/* Private work gets an honest marker instead of a button that 404s. */}
-          {isPrivate && !github && (
+          {isPrivateSource && (
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Private repository
+              {sourceLabel}
             </span>
           )}
-          {github && (
+
+          {repositoryUrl && (
             <a
-              href={github}
+              href={repositoryUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white transition-colors"
@@ -318,6 +322,7 @@ export default function ProjectCard({
               Code
             </a>
           )}
+
           {demoLink && (
             <a
               href={demoLink}
@@ -329,18 +334,18 @@ export default function ProjectCard({
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
-              Live Demo
+              {demoLabel}
             </a>
           )}
-          {!demoLink && github && (
+
+          {links.privacyPolicy && (
             <a
-              href={github}
+              href={links.privacyPolicy}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors ml-auto"
-              style={{ color: visual.accent }}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white transition-colors ml-auto"
             >
-              View Project →
+              Privacy policy →
             </a>
           )}
         </div>
