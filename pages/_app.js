@@ -1,6 +1,9 @@
 import '@/styles/globals.css';
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { chromeFor, useBootAlreadyPlayed, markBootPlayed } from '@/lib/routeChrome';
 
 const LoadingScreen = dynamic(() => import('../components/LoadingScreen'), { ssr: false });
 const ParticleNetwork = dynamic(() => import('../components/ParticleNetwork'), { ssr: false });
@@ -32,31 +35,35 @@ function ScrollProgress() {
 }
 
 export default function App({ Component, pageProps }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const { pathname } = useRouter();
+  const chrome = chromeFor(pathname);
+  const isPortfolio = chrome === 'portfolio';
 
-  useEffect(() => {
-    const loaded = sessionStorage.getItem('portfolio-loaded');
-    if (loaded) {
-      setIsLoading(false);
-      setHasLoaded(true);
-    }
-  }, []);
+  const bootAlreadyPlayed = useBootAlreadyPlayed();
+  const [bootFinished, setBootFinished] = useState(false);
+  const showBoot = isPortfolio && !bootAlreadyPlayed && !bootFinished;
 
   const handleLoadingComplete = () => {
-    sessionStorage.setItem('portfolio-loaded', 'true');
-    setIsLoading(false);
-    setHasLoaded(true);
+    markBootPlayed();
+    setBootFinished(true);
   };
 
   return (
     <>
-      {isLoading && !hasLoaded && (
-        <LoadingScreen onComplete={handleLoadingComplete} />
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+
+      {showBoot && <LoadingScreen onComplete={handleLoadingComplete} />}
+
+      {isPortfolio && (
+        <>
+          <ParticleNetwork />
+          <ScrollProgress />
+          <div className="scanlines" aria-hidden="true" />
+        </>
       )}
-      <ParticleNetwork />
-      <ScrollProgress />
-      <div className="scanlines" aria-hidden="true" />
+
       <Component {...pageProps} />
     </>
   );
