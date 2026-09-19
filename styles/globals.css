@@ -1,3 +1,5 @@
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,38 +7,57 @@
 /* ─── Smooth scroll & base ─── */
 html {
   scroll-behavior: smooth;
+  /* Kept as a backstop only. Phase 3 removed the layout/animation causes of
+     horizontal overflow rather than relying on this to hide them; see
+     docs/portfolio-2026/design-motion-system.md. */
   overflow-x: clip;
 }
 
 :root {
-  color: #e2e8f0;
-  background-color: #0f172a;
-  --neon-cyan: #14b8a6;
-  --neon-green: #22c55e;
-  --neon-magenta: #d946ef;
-  --midnight: #0f172a;
-  --midnight-light: #1e293b;
+  color: var(--text-secondary);
+  background-color: var(--bg-raised);
+  /* Legacy aliases. The tokens are canonical; these keep older rules and
+     inline styles working without a site-wide rename. */
+  --neon-cyan: var(--accent);
+  --neon-green: var(--accent-secondary);
+  --neon-magenta: var(--accent-tertiary);
+  --midnight: var(--bg-raised);
+  --midnight-light: var(--bg-elevated);
 }
 
 body {
   margin: 0;
   overflow-x: clip;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
   background:
     radial-gradient(ellipse at 10% 0%,   rgba(20, 184, 166, 0.12), transparent 40%),
     radial-gradient(ellipse at 90% 0%,   rgba(99,  102, 241, 0.08), transparent 35%),
     radial-gradient(ellipse at 50% 100%, rgba(217, 70,  239, 0.07), transparent 40%),
     radial-gradient(ellipse at 80% 60%,  rgba(34,  197,  94, 0.04), transparent 30%),
-    #07111f;
-  color: #e2e8f0;
+    var(--bg-base);
+  color: var(--text-secondary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure page content sits above the fixed particle canvas */
+/* Page content sits above the fixed particle canvas. #__next establishes the
+   stacking context; the canvas opts into --z-behind inside it. */
 #__next {
   position: relative;
   z-index: 1;
+}
+
+/* The ambient particle canvas. Positioned children with z-index 0 paint above
+   *unpositioned* block and inline content, which is why the canvas used to
+   cover body text on pages whose sections were not explicitly positioned
+   (/skills had none). A negative index puts it behind all content in the
+   stacking context while staying above the body gradient, so no page needs a
+   positioned wrapper to stay readable. */
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-behind);
+  pointer-events: none;
 }
 
 a {
@@ -50,14 +71,14 @@ a {
 
 /* ─── Focus styles ─── */
 :focus-visible {
-  outline: 2px solid var(--neon-cyan);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
 }
 
 /* ─── Section container (canonical content frame — aligns with navbar/footer max-w-6xl) ─── */
 .section-container {
-  max-width: 1152px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 2.5rem 1rem;
 }
@@ -76,21 +97,21 @@ a {
 
 /* ─── Section headings ─── */
 .section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--neon-cyan);
-  margin-bottom: 0.5rem;
+  color: var(--accent);
+  margin-bottom: var(--space-xs);
 }
 
 .section-heading {
-  font-size: 1.875rem;
+  font-size: var(--fs-h2);
   font-weight: 700;
-  color: #f8fafc;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-display);
 }
 
 @media (min-width: 768px) {
@@ -136,7 +157,7 @@ a {
   );
   opacity: 0.025;
   pointer-events: none;
-  z-index: 50;
+  z-index: var(--z-overlay);
   animation: scanlines-scroll 8s linear infinite;
 }
 
@@ -163,20 +184,20 @@ a {
   position: relative;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 42%),
-    rgba(8, 12, 26, 0.72);
+    var(--surface-2);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(20, 184, 166, 0.14);
-  border-radius: 14px;
-  padding: 1.5rem;
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 10px 30px -14px rgba(0, 0, 0, 0.75),
     0 2px 6px -4px rgba(0, 0, 0, 0.6);
   transition:
-    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.35s ease;
+    border-color var(--duration-normal) var(--ease-out-expo),
+    box-shadow var(--duration-normal) var(--ease-out-expo),
+    background var(--duration-normal) ease;
 }
 
 .glass-panel:hover {
@@ -191,19 +212,19 @@ a {
 .surface-card {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 46%),
-    rgba(10, 15, 28, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+    var(--surface-sheen),
+    var(--surface-1);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
   backdrop-filter: blur(10px) saturate(130%);
   -webkit-backdrop-filter: blur(10px) saturate(130%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 8px 24px -16px rgba(0, 0, 0, 0.75);
   transition:
-    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.35s ease;
+    border-color var(--duration-normal) var(--ease-out-expo),
+    box-shadow var(--duration-normal) var(--ease-out-expo),
+    background var(--duration-normal) ease;
 }
 
 .surface-card:hover {
@@ -216,16 +237,16 @@ a {
 
 /* GPU-friendly hover lift for cards not driven by Framer transforms */
 .hover-lift {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--duration-normal) var(--ease-out-expo);
   will-change: transform;
 }
 .hover-lift:hover {
-  transform: translateY(-6px);
+  transform: translateY(var(--state-hover-lift));
 }
 
 /* Premium gradient text for headings */
 .text-gradient-cyan {
-  background: linear-gradient(100deg, #5eead4 0%, #14b8a6 45%, #22c55e 100%);
+  background: linear-gradient(100deg, var(--accent-bright) 0%, var(--accent) 45%, var(--accent-secondary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -263,8 +284,8 @@ a {
   top: 0;
   left: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
-  z-index: 9999;
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+  z-index: var(--z-progress);
   transition: width 0.1s linear;
 }
 

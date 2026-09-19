@@ -1,61 +1,121 @@
 /* ============================================================
-   CODEX INFINITUM — tokens.css  (single source of design truth)
-   Canon: universe-design/5_ui_ux_system.md + doc 4 §14.4 + doc 10
-   Powers the universe (app/). Supersedes the v1 neon tokens,
-   which now live only inside the Legacy Archive (pages/legacy).
+   DESIGN TOKENS — single source of visual truth
+   Phase 3. Imported by globals.css, which layers Tailwind on top.
+
+   Values here describe the live portfolio identity (midnight/teal),
+   not a new palette. Anything that already existed as a literal in
+   globals.css or tailwind.config.js is expressed once, here, and
+   referenced from both.
+
+   Structure adapted from the Codex Infinitum token layer (see
+   docs/portfolio-2026/codex-salvage-audit.md — classified ADAPT):
+   the @property registration, scale shape, z-index ladder and
+   reduced-motion contract are its architecture. The realm palette
+   it carried is gone; domains replace it.
    ============================================================ */
 
-/* Registered realm color properties so the browser can interpolate
-   hex values natively for NEXUS's 1.2s color "bleed" (doc 6 §7.3). */
-@property --realm-primary   { syntax: "<color>"; inherits: true; initial-value: #FBBF24; }
-@property --realm-secondary { syntax: "<color>"; inherits: true; initial-value: #F59E0B; }
-@property --realm-accent    { syntax: "<color>"; inherits: true; initial-value: #FBBF24; }
+/* Registered so the browser interpolates domain colour changes natively
+   instead of snapping between hex values. */
+@property --domain-accent { syntax: "<color>"; inherits: true; initial-value: #14b8a6; }
+@property --domain-soft   { syntax: "<color>"; inherits: true; initial-value: #14b8a6; }
 
 :root {
-  /* — VOID / SURFACES — */
-  --void: #050508;
-  --void-deep: #000008;
-  --surface-1: #0B0B12;
-  --surface-2: #13131D;
-  --surface-3: #1C1C28;
-  --hairline: rgba(255, 255, 255, 0.08);
-  --hairline-strong: rgba(255, 255, 255, 0.16);
+  /* ── BACKGROUNDS ──
+     --bg-base is the colour behind the body gradient; the gradient itself
+     stays in globals.css because it is a composition, not a token. */
+  --bg-base: #07111f;
+  --bg-raised: #0f172a;
+  --bg-elevated: #1e293b;
 
-  /* — TEXT — */
-  --text-primary: #E8EAF0;
-  --text-secondary: #A6ACBE;
-  --text-dim: #768499; /* ~5.3:1 on --void — meets WCAG AA for small text */
-  --text-glow: #FFFFFF;
+  /* ── SURFACES ──
+     Card/panel fills. Deliberately translucent: the particle field and
+     body gradient are meant to read through them. */
+  --surface-1: rgba(10, 15, 28, 0.55);
+  --surface-2: rgba(8, 12, 26, 0.72);
+  --surface-3: rgba(30, 41, 59, 0.75);
+  --surface-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 46%);
 
-  /* — SEMANTIC — */
-  --ok: #22C55E;
-  --warn: #F59E0B;
-  --danger: #EF4444;
-  --info: #38BDF8;
-  --signal: #00F5FF;
+  /* ── BORDERS ── */
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-accent: rgba(20, 184, 166, 0.14);
+  --border-accent-hover: rgba(20, 184, 166, 0.32);
 
-  /* — REALM (defaults to Architect's Core; overridden by [data-realm]) — */
-  --realm-primary: #FBBF24;
-  --realm-secondary: #F59E0B;
-  --realm-accent: #FBBF24;
-  --realm-glow: color-mix(in srgb, var(--realm-primary) 60%, transparent);
-  --realm-glow-soft: color-mix(in srgb, var(--realm-primary) 24%, transparent);
-  --realm-wash: color-mix(in srgb, var(--realm-primary) 8%, var(--void));
+  /* ── TEXT ──
+     Contrast on --bg-base: primary 15.8:1, secondary 9.7:1, muted 6.1:1,
+     dim 4.6:1. All meet WCAG AA for their size; --text-dim is reserved for
+     large or non-essential text. */
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
 
-  /* — TYPE (font families injected by next/font as --font-* on <html>) — */
-  --font-display: var(--font-orbitron), "Orbitron", "Space Grotesk", sans-serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
-  --font-body: var(--font-inter), "Inter", system-ui, sans-serif;
-  --fs-display: clamp(2.99rem, 6vw, 4.77rem);
-  --fs-h1: clamp(2.44rem, 4vw, 3.05rem);
-  --fs-h2: 1.95rem;
-  --fs-h3: 1.56rem;
-  --fs-lg: 1.25rem;
+  /* ── ACCENTS ──
+     The portfolio's own identity colours. Named by role, not by hue, so a
+     future retheme does not have to rename every usage. */
+  --accent: #14b8a6;
+  --accent-bright: #5eead4;
+  --accent-secondary: #22c55e;
+  --accent-tertiary: #d946ef;
+
+  /* ── DOMAIN ACCENTS ──
+     One colour per canonical Domain in content/types.ts. These are
+     identifiers, not decoration: a colour means "this is security work",
+     so it must not be reused for unrelated emphasis. */
+  --domain-product: #14b8a6;     /* teal   — product engineering */
+  --domain-ai: #8b5cf6;          /* violet — applied AI */
+  --domain-security: #f59e0b;    /* amber  — security */
+  --domain-systems: #38bdf8;     /* blue   — systems */
+  --domain-research: #a855f7;    /* purple — research */
+  --domain-open-source: #22c55e; /* green  — open source */
+
+  /* Default domain accent; [data-domain] below overrides per subtree. */
+  --domain-accent: var(--domain-product);
+  --domain-soft: rgba(20, 184, 166, 0.14);
+
+  /* ── STATUS ──
+     Keyed to canonical ProjectStatus. Shipped reads green, in-flight amber,
+     exploratory violet, retired grey. */
+  --status-production: #22c55e;
+  --status-released: #22c55e;
+  --status-active-development: #f59e0b;
+  --status-research: #8b5cf6;
+  --status-prototype: #38bdf8;
+  --status-pre-alpha: #f97316;
+  --status-completed: #14b8a6;
+  --status-archived: #64748b;
+
+  /* ── SEMANTIC ── */
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --info: #38bdf8;
+
+  /* ── TYPOGRAPHY ──
+     Inter for anything read as prose; JetBrains Mono reserved for technical
+     information (labels, metrics, statuses, code, evidence). */
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  --fs-display: clamp(2.5rem, 6vw, 4rem);
+  --fs-h1: clamp(2rem, 4vw, 3rem);
+  --fs-h2: clamp(1.875rem, 3vw, 2.25rem);
+  --fs-h3: 1.5rem;
+  --fs-lg: 1.125rem;
   --fs-base: 1rem;
-  --fs-sm: 0.8rem;
-  --fs-xs: 0.64rem;
+  --fs-sm: 0.875rem;
+  --fs-xs: 0.75rem;
+  --fs-2xs: 0.625rem;
 
-  /* — SPACE — */
+  --lh-tight: 1.15;
+  --lh-heading: 1.2;
+  --lh-body: 1.65;
+
+  --tracking-display: -0.02em;
+  --tracking-label: 0.25em;
+
+  /* ── SPACING ── */
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
@@ -63,94 +123,103 @@
   --space-lg: 1.5rem;
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
-  --space-3xl: 6.5rem;
-  --space-4xl: 10rem;
-  --container: 1200px;
+  --space-3xl: 6rem;
+  --container: 1152px;
 
-  /* — RADIUS — */
+  /* ── RADII ── */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-lg: 14px;
   --radius-xl: 24px;
   --radius-full: 999px;
 
-  /* — ELEVATION / GLOW — */
-  --elev-1: 0 2px 8px rgba(0, 0, 0, 0.6);
-  --elev-2: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--hairline);
-  --elev-3: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--hairline-strong);
-  --glow-rest: 0 0 24px var(--realm-glow-soft);
-  --glow-hover: 0 0 40px var(--realm-glow), 0 0 0 1px var(--realm-primary);
+  /* ── SHADOWS / GLOW ── */
+  --elev-1: 0 8px 24px -16px rgba(0, 0, 0, 0.75);
+  --elev-2: 0 10px 30px -14px rgba(0, 0, 0, 0.75), 0 2px 6px -4px rgba(0, 0, 0, 0.6);
+  --elev-3: 0 20px 46px -16px rgba(0, 0, 0, 0.82);
+  --inset-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --glow-rest: 0 0 20px rgba(20, 184, 166, 0.25);
+  --glow-hover: 0 0 28px -6px rgba(20, 184, 166, 0.22);
+  --glow-domain: 0 0 28px -6px var(--domain-soft);
 
-  /* — Z-INDEX — */
-  --z-abyss: -20;
-  --z-world: 0;
+  /* ── INTERACTIVE STATES ── */
+  --state-hover-lift: -6px;
+  --state-press-scale: 0.98;
+  --focus-ring-color: var(--accent);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* ── Z-INDEX LADDER ──
+     One ordered scale. The particle canvas sits *below* content on purpose:
+     before Phase 3 it was z-index 0 while page content was unpositioned, so
+     it painted over body text on any page without a positioned wrapper. */
+  --z-behind: -1;
+  --z-base: 0;
   --z-content: 10;
-  --z-chrome: 100;
-  --z-nexus: 9999;
-  --z-overlay: 10000;
-  --z-boot: 10001;
+  --z-sticky: 30;
+  --z-nav: 40;
+  --z-overlay: 50;
+  --z-modal: 100;
+  --z-toast: 9998;
+  --z-progress: 9999;
+  --z-boot: 10000;
 
-  /* — MOTION (full spec in doc 6) — */
-  --ease-universe: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-boot: cubic-bezier(0.4, 0, 0.2, 1);
+  /* ── MOTION ──
+     Shared timing/easing. Components reference these instead of inlining
+     magic numbers; lib/motion.js mirrors the same values for Framer Motion,
+     which cannot read CSS variables. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+
+  --duration-instant: 100ms;
   --duration-fast: 150ms;
-  --duration-mid: 350ms;
+  --duration-normal: 350ms;
   --duration-slow: 700ms;
   --duration-cinematic: 1200ms;
 
-  /* — BREAKPOINTS (reference) — */
-  --bp-sm: 390px;
+  /* ── BREAKPOINTS (reference only; Tailwind owns the real ones) ── */
+  --bp-sm: 640px;
   --bp-md: 768px;
   --bp-lg: 1024px;
-  --bp-xl: 1440px;
+  --bp-xl: 1280px;
 }
 
 /* ============================================================
-   REALM THEMES — one attribute on <html>/<body> re-themes all
-   chrome. Canonical palette: doc 4 §14.4 + doc 10.
+   DOMAIN THEMING
+   One attribute re-themes a subtree. Set data-domain on a card,
+   section or page wrapper; children read var(--domain-accent).
    ============================================================ */
-[data-realm="architect-core"]         { --realm-primary: #FBBF24; --realm-secondary: #F59E0B; --realm-accent: #FBBF24; }
-[data-realm="silicon-foundry"]         { --realm-primary: #F59E0B; --realm-secondary: #B45309; --realm-accent: #FFF7E6; }
-[data-realm="the-foundations"]         { --realm-primary: #EAB308; --realm-secondary: #F1F5F9; --realm-accent: #DC2626; }
-[data-realm="code-helix"]              { --realm-primary: #7C3AED; --realm-secondary: #8B5CF6; --realm-accent: #22C55E; }
-[data-realm="neural-nebula"]           { --realm-primary: #3B82F6; --realm-secondary: #06B6D4; --realm-accent: #8B5CF6; }
-[data-realm="the-citadel"]             { --realm-primary: #EF4444; --realm-secondary: #1F2937; --realm-accent: #22C55E; }
-[data-realm="data-archives"]           { --realm-primary: #7DD3FC; --realm-secondary: #F8FAFC; --realm-accent: #F59E0B; }
-[data-realm="soul-quarter"]            { --realm-primary: var(--prismatic, #C084FC); --realm-secondary: #F0ABFC; }
-[data-realm="founders-constellation"]  { --realm-primary: #B08D57; --realm-secondary: #F8FAFC; --realm-accent: #67E8F9; }
-[data-realm="the-observatory"]         { --realm-primary: #312E81; --realm-secondary: #F8FAFC; }
-[data-realm="legacy-archive"]          { --realm-primary: #78350F; --realm-secondary: #6B7280; --realm-accent: #92400E; }
-[data-realm="the-kernel"]              { --realm-primary: #94A3B8; --realm-secondary: #22D3EE; }
-[data-realm="network-pathways"]        { --realm-primary: #0D9488; --realm-secondary: #EA580C; }
-[data-realm="cloud-expanse"]           { --realm-primary: #38BDF8; --realm-secondary: #FFFFFF; }
-[data-realm="invention-archive"]       { --realm-primary: #00F5FF; --realm-secondary: #1E3A5F; }
+[data-domain="product"]     { --domain-accent: var(--domain-product);     --domain-soft: rgba(20, 184, 166, 0.14); }
+[data-domain="ai"]          { --domain-accent: var(--domain-ai);          --domain-soft: rgba(139, 92, 246, 0.14); }
+[data-domain="security"]    { --domain-accent: var(--domain-security);    --domain-soft: rgba(245, 158, 11, 0.14); }
+[data-domain="systems"]     { --domain-accent: var(--domain-systems);     --domain-soft: rgba(56, 189, 248, 0.14); }
+[data-domain="research"]    { --domain-accent: var(--domain-research);    --domain-soft: rgba(168, 85, 247, 0.14); }
+[data-domain="open-source"] { --domain-accent: var(--domain-open-source); --domain-soft: rgba(34, 197, 94, 0.14); }
 
-/* Soul Quarter — the one realm with no fixed hue (doc 5 §2.6) */
-@property --prismatic-hue { syntax: "<angle>"; inherits: true; initial-value: 280deg; }
-[data-realm="soul-quarter"] {
-  --prismatic: hsl(var(--prismatic-hue) 90% 68%);
-  animation: prismatic-drift 18s linear infinite;
-}
-@keyframes prismatic-drift { to { --prismatic-hue: 640deg; } }
-
-/* Smooth realm + NEXUS color bleed (doc 6 §7.3) */
-html {
+/* Domain changes ease rather than snap. */
+[data-domain] {
   transition:
-    --realm-primary var(--duration-cinematic) var(--ease-universe),
-    --realm-secondary var(--duration-cinematic) var(--ease-universe),
-    --realm-accent var(--duration-cinematic) var(--ease-universe);
+    --domain-accent var(--duration-normal) var(--ease-out-expo),
+    --domain-soft var(--duration-normal) var(--ease-out-expo);
 }
 
-/* Reduced-motion contract (doc 5 §9.2 / doc 6 §14): collapse durations,
-   freeze ambient hue. Content is never gated behind motion. */
+/* ============================================================
+   REDUCED MOTION
+   Collapsing the duration tokens turns off every token-driven
+   transition at once. globals.css additionally neutralises
+   animations that predate the token layer, and lib/motion.js
+   handles Framer Motion, which never reads CSS.
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   :root {
+    --duration-instant: 0ms;
     --duration-fast: 0ms;
-    --duration-mid: 0ms;
+    --duration-normal: 0ms;
     --duration-slow: 0ms;
     --duration-cinematic: 0ms;
+    --state-hover-lift: 0px;
   }
-  [data-realm="soul-quarter"] { animation: none; }
+  [data-domain] { transition: none; }
 }
