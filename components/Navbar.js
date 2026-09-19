@@ -15,16 +15,21 @@ const profile = getProfile();
  * well served by the same menu a phone gets. Each phase that adds a destination
  * should re-check that the row still fits rather than letting it collapse
  * silently.
+ *
+ * Certifications left the primary row in Phase 17 rather than making it nine
+ * wide. The route is unchanged and is reached from /about, the footer and the
+ * sitemap — giving a certificate list top-level billing alongside the work was
+ * the wrong emphasis anyway.
  */
 const links = [
-  { href: '/',               label: 'Home'        },
-  { href: '/work',           label: 'Work'        },
-  { href: '/research',       label: 'Research'    },
-  { href: '/open-source',    label: 'Open Source' },
-  { href: '/skills',         label: 'Skills'      },
-  { href: '/certifications', label: 'Certs'       },
-  { href: '/studio',         label: 'Studio'      },
-  { href: '/contact',        label: 'Contact'     },
+  { href: '/',            label: 'Home'        },
+  { href: '/work',        label: 'Work'        },
+  { href: '/research',    label: 'Research'    },
+  { href: '/open-source', label: 'Open Source' },
+  { href: '/skills',      label: 'Skills'      },
+  { href: '/about',       label: 'About'       },
+  { href: '/studio',      label: 'Studio'      },
+  { href: '/contact',     label: 'Contact'     },
 ];
 
 export default function Navbar() {

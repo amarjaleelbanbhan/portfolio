@@ -2150,12 +2150,12 @@ Create/rebuild:
 
 Include:
 
-- [ ] identity
-- [ ] engineering philosophy
-- [ ] education
-- [ ] technical interests
-- [ ] current status
-- [ ] selected credentials
+- [x] identity
+- [x] engineering philosophy
+- [x] education
+- [x] technical interests
+- [x] current status
+- [x] selected credentials
 
 Do not prioritize certifications over engineering work.
 
@@ -2163,11 +2163,71 @@ Credentials should be supporting evidence.
 
 ## Phase Completion
 
-- [ ] Phase 17 complete
+- [x] Phase 17 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/about`.
+Documented in `docs/portfolio-2026/about-page.md`.
+
+**The philosophy section does not assert character.** Careful, detail-oriented,
+passionate about clean code — anyone can type that, and a reader with any
+experience discounts all of it. The page's centrepiece is instead **four real
+engineering decisions, read from the case studies, each shown with what it
+cost**: a model is never allowed to be the evidence (CortexWard), freeze the
+analysis before the first result existed (KnowledgeGuard), label the mesh demo
+as a simulation (Emergency Mesh), refuse yarn and pnpm rather than guess
+(VeriPatch). The text is read from each project's own record, so this page and
+the case study cannot disagree, and validation **rejects a featured decision
+that records no trade-off** — the section is titled "with what they cost".
+
+**Principles have to point at work.** Each of the five carries project slugs,
+validation requires at least one and requires every one to resolve, so a
+statement about how Amar works cannot be added without evidence existing
+somewhere else first.
+
+**Everything checkable is derived**: education and dates from the canonical
+record, "6 merged pull requests across 6 repositories" from the contributions,
+current focus from project and research status (so nothing stays current because
+a paragraph went stale), and the credential split from the credential list.
+A browser check asserts **zero matches against twelve invented-experience
+patterns** — years of experience, clients include, worked at, award-winning,
+N users, testimonial, passionate.
+
+**Credentials are counted, not claimed.** Eleven in total, nine Google and two
+Udemy, derived by `getCredentialsByIssuer()` precisely because the claim it
+replaces said "11 Google certifications". Four selected credentials appear with
+verify links and a path to the full list; `/certifications` is unchanged and
+still renders all eleven. The section sits after the decisions, principles,
+focus and education, and a browser check asserts that ordering.
+
+**Reused rather than rebuilt:** `PortraitOrbit` at full portrait size and the
+homepage `Education` timeline. **No second Engineering Core** — a check asserts
+zero canvases in `<main>`.
+
+**Certifications left the primary navigation** rather than making the row nine
+wide. The route is unchanged and reached from /about, the footer and the
+sitemap; giving a certificate list top-level billing beside the work was the
+wrong emphasis anyway.
+
+**Browser-verified**, 65 checks on a production build at 1280/1024/768/430/390/
+360 px and under reduced motion: structure and metadata, the positioning and its
+four linked supporting areas, the verified education facts, SCAR-OS as "a
+proposal, not an implementation" with no trace of the old name, the four
+decisions with their costs and case-study links, the credential counts and
+ordering, **every internal link fetched for a 200 and every anchored link
+visited to confirm a visible target**, no target under 24px, no overflow,
+reduced motion clean, no console errors, eleven routes unaffected,
+`/studio/admin` still free of portfolio chrome, and the homepage story and
+canvases intact.
+
+**Two defects found and fixed.** Seven pixels of horizontal overflow at 360px
+came from the orbit rings: they are square elements animating `rotate: 360`, and
+a rotated square's bounding box is √2 times its width even though the visible
+content is a circle that fits — fixed with `overflow-x: clip` on the portrait
+column, which is the one overflow value that leaves the vertical axis visible so
+the badge is not cut off. Fourteen controls were under 24px on a pointer from an
+`sm:min-h-0` that belongs on chips rather than controls.
 
 ---
 

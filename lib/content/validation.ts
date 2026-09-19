@@ -7,12 +7,16 @@
  * safety.
  */
 import {
+  aboutIntro,
   coreDomains,
   credentials,
   storyStages,
   education,
   openSourceContributions,
   profile,
+  engineeringPrinciples,
+  featuredDecisions,
+  opportunities,
   projects,
   researchProjects,
   skills,
@@ -50,6 +54,7 @@ const EXISTING_ROUTES = new Set([
   '/work',
   '/open-source',
   '/research',
+  '/about',
   '/skills',
   '/certifications',
   '/contact',
@@ -767,6 +772,57 @@ export function validateContent(): ContentIssue[] {
     if (!credential.issuedAt?.trim()) add('credential', ref, 'missing issuedAt');
     if (!isValidUrl(credential.credentialUrl)) {
       add('credential', ref, `malformed credentialUrl: ${credential.credentialUrl}`);
+    }
+  }
+
+  // ─────────────────────────────── About ───────────────────────────────
+  //
+  // The /about page's whole premise is that a statement about how Amar works
+  // points at work that demonstrates it. These rules are what stop a principle
+  // becoming an adjective, and what stop a featured decision surviving the
+  // deletion of the decision it quotes.
+  const principleIds = new Set<string>();
+  for (const principle of engineeringPrinciples) {
+    const ref = principle.id || principle.title;
+    if (!principle.id) add('about', ref, 'principle missing id');
+    if (principleIds.has(principle.id)) add('about', ref, `duplicate principle id "${principle.id}"`);
+    principleIds.add(principle.id);
+
+    if (!principle.title?.trim()) add('about', ref, 'principle has no title');
+    if (!principle.body?.trim()) add('about', ref, 'principle has no body');
+    if (principle.projectSlugs.length === 0) {
+      add('about', ref, 'principle references no project — it would be an unsupported claim');
+    }
+    for (const slug of principle.projectSlugs) {
+      if (!projectSlugs.has(slug)) {
+        add('about', ref, `principle references nonexistent project "${slug}"`);
+      }
+    }
+  }
+
+  for (const featured of featuredDecisions) {
+    const ref = `${featured.projectSlug}/${featured.decisionId}`;
+    const project = projects.find((p) => p.slug === featured.projectSlug);
+    if (!project) {
+      add('about', ref, `featured decision references nonexistent project "${featured.projectSlug}"`);
+      continue;
+    }
+    const decision = project.caseStudy?.decisions?.find((d) => d.id === featured.decisionId);
+    if (!decision) {
+      add('about', ref, `no case-study decision "${featured.decisionId}" on "${featured.projectSlug}"`);
+    } else if (!decision.tradeoff?.trim()) {
+      // The section is titled "with what they cost". A decision with no cost
+      // recorded would render as an achievement, which is the opposite point.
+      add('about', ref, 'featured decision records no trade-off');
+    }
+  }
+
+  for (const intro of aboutIntro) {
+    if (!intro.body?.trim()) add('about', intro.id || '(intro)', 'intro paragraph is empty');
+  }
+  for (const opportunity of opportunities) {
+    if (!opportunity.label?.trim() || !opportunity.detail?.trim()) {
+      add('about', opportunity.id || '(opportunity)', 'opportunity needs a label and a detail');
     }
   }
 

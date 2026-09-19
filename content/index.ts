@@ -9,6 +9,13 @@
 export * from './types';
 
 export { profile } from './profile';
+export { aboutIntro, engineeringPrinciples, featuredDecisions, opportunities } from './about';
+export type {
+  AboutIntro,
+  EngineeringPrinciple,
+  FeaturedDecision,
+  Opportunity,
+} from './about';
 export { coreDomains } from './domains';
 export type { DomainMeta } from './domains';
 export { storyStages } from './story';

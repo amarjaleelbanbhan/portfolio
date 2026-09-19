@@ -6,12 +6,16 @@
  * these function signatures stay and only their bodies change.
  */
 import {
+  aboutIntro,
   coreDomains,
   credentials,
   storyStages,
   education,
   openSourceContributions,
   profile,
+  engineeringPrinciples,
+  featuredDecisions,
+  opportunities,
   projects,
   researchCategories,
   researchProjects,
@@ -32,8 +36,10 @@ import type {
   ResearchProject,
   Skill,
   SkillCategory,
+  TechnicalDecision,
   VerificationItem,
 } from '@/content/types';
+import type { AboutIntro, EngineeringPrinciple, Opportunity } from '@/content/about';
 import type { DomainMeta } from '@/content/domains';
 import type { ResearchCategoryMeta } from '@/content/research';
 import type { StoryStage } from '@/content/story';
@@ -773,6 +779,24 @@ export function getCredentialCount(): number {
   return credentials.length;
 }
 
+/**
+ * Credentials grouped by who issued them, largest group first.
+ *
+ * Derived precisely because the claim this replaces was wrong: the set was once
+ * described as "11 Google certifications" when it is nine Google and two Udemy.
+ * Any surface that wants to say how many there are reads this, so the sentence
+ * cannot drift away from the list again.
+ */
+export function getCredentialsByIssuer(): { issuer: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const credential of credentials) {
+    counts.set(credential.issuer, (counts.get(credential.issuer) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([issuer, count]) => ({ issuer, count }))
+    .sort((a, b) => b.count - a.count || a.issuer.localeCompare(b.issuer));
+}
+
 // ─────────────────────── Derived evidence numbers ───────────────────────
 
 /**
@@ -1088,4 +1112,117 @@ export function getRelatedProjects(slug: string, limit = 4): Project[] {
         (a.sortOrder ?? 99) - (b.sortOrder ?? 99)
     )
     .slice(0, limit);
+}
+
+
+// ───────────────────────────────── About ─────────────────────────────────
+
+export interface ResolvedPrinciple extends Omit<EngineeringPrinciple, 'projectSlugs'> {
+  /** The projects that demonstrate it, resolved to a label and a destination. */
+  projects: { slug: string; label: string; href: string }[];
+}
+
+/**
+ * Engineering principles with their evidence resolved.
+ *
+ * A principle whose projects have all been removed would render as an
+ * unsupported assertion, so the projects are looked up rather than described,
+ * and validation independently rejects a principle with no real references.
+ */
+export function getEngineeringPrinciples(): ResolvedPrinciple[] {
+  return engineeringPrinciples.map(({ projectSlugs, ...principle }) => ({
+    ...principle,
+    projects: projectSlugs
+      .map((slug) => getProjectBySlug(slug))
+      .filter((project): project is Project => Boolean(project))
+      .map((project) => ({
+        slug: project.slug,
+        label: project.shortTitle ?? project.title,
+        href: project.caseStudy ? `/work/${project.slug}` : `/work#${project.slug}`,
+      })),
+  }));
+}
+
+export interface ResolvedDecision extends TechnicalDecision {
+  projectSlug: string;
+  projectLabel: string;
+  href: string;
+}
+
+/**
+ * The featured decisions, read from the projects' own case studies.
+ *
+ * Only the *selection* is curated; the text comes from the project record, so
+ * /about and a case study can never disagree about what was decided or what it
+ * cost. A selection pointing at a decision that no longer exists is dropped
+ * here and reported by validation.
+ */
+export function getFeaturedDecisions(): ResolvedDecision[] {
+  return featuredDecisions
+    .map(({ projectSlug, decisionId }) => {
+      const project = getProjectBySlug(projectSlug);
+      const decision = project?.caseStudy?.decisions?.find((d) => d.id === decisionId);
+      if (!project || !decision) return undefined;
+      return {
+        ...decision,
+        projectSlug: project.slug,
+        projectLabel: project.shortTitle ?? project.title,
+        href: `/work/${project.slug}`,
+      };
+    })
+    .filter((decision): decision is ResolvedDecision => Boolean(decision));
+}
+
+export interface CurrentFocusItem {
+  key: string;
+  label: string;
+  /** The stage or status, in the wording the record already uses. */
+  stage: string;
+  detail: string;
+  href: string;
+}
+
+/**
+ * What Amar is working on now, derived rather than written.
+ *
+ * "Current" has a definition here: the final-year project, research that is not
+ * complete, and projects whose status is active development. Nothing is listed
+ * as current because someone forgot to update a paragraph.
+ */
+export function getCurrentFocus(): CurrentFocusItem[] {
+  const items: CurrentFocusItem[] = [];
+
+  for (const entry of researchProjects) {
+    if (entry.status === 'complete' || entry.status === 'paused') continue;
+    items.push({
+      key: `research-${entry.slug}`,
+      label: entry.title.split(' — ')[0],
+      stage: entry.publicStage,
+      detail: entry.researchQuestion,
+      href: `/research#research-${entry.slug}`,
+    });
+  }
+
+  for (const project of projects) {
+    if (project.status !== 'active-development') continue;
+    // Skip anything already listed through its research record.
+    if (items.some((item) => item.key === `research-${project.researchSlug}`)) continue;
+    items.push({
+      key: `project-${project.slug}`,
+      label: project.shortTitle ?? project.title,
+      stage: 'Active development',
+      detail: project.summary,
+      href: project.caseStudy ? `/work/${project.slug}` : `/work#${project.slug}`,
+    });
+  }
+
+  return items;
+}
+
+export function getAboutIntro(): AboutIntro[] {
+  return aboutIntro;
+}
+
+export function getOpportunities(): Opportunity[] {
+  return opportunities;
 }

@@ -9,7 +9,8 @@ const navLinks = [
   { href: '/research',       label: 'Research'    },
   { href: '/open-source',    label: 'Open Source' },
   { href: '/skills',         label: 'Skills'      },
-  { href: '/certifications', label: 'Certs'       },
+  { href: '/about',          label: 'About'       },
+  { href: '/certifications', label: 'Certifications' },
   { href: '/contact',        label: 'Contact'     },
 ];
 
