@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { hoverLift } from '@/lib/motion';
 import { getProjectVisual } from '@/components/project-visuals';
@@ -9,7 +10,7 @@ import TechTag from '@/components/ui/TechTag';
  * Renders a canonical Project. Only links that actually exist are rendered, and
  * a non-public source shows an honest marker instead of a button that 404s.
  */
-export default function ProjectCard({ slug, title, summary, tags, status, note, links = {}, source }) {
+export default function ProjectCard({ slug, title, summary, tags, status, note, links = {}, source, hasCaseStudy = false }) {
   const visual = getProjectVisual(slug);
   const repositoryUrl = links.repository;
   const demoLink = links.demo || links.package;
@@ -83,6 +84,19 @@ export default function ProjectCard({ slug, title, summary, tags, status, note, 
             </span>
           )}
         </div>
+
+        {/* Case study — only rendered once the route actually exists, so a
+            public link never points at an unbuilt page. */}
+        {hasCaseStudy && (
+          <Link
+            href={`/work/${slug}`}
+            className="inline-flex items-center gap-1.5 text-xs font-code font-semibold mb-3 hover:brightness-125 transition-[filter]"
+            style={{ color: visual.accent }}
+          >
+            Read the case study
+            <span aria-hidden="true">→</span>
+          </Link>
+        )}
 
         {/* Links */}
         <div className="flex items-center gap-3 mt-auto pt-1">

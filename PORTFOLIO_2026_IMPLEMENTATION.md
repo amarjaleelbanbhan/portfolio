@@ -1738,45 +1738,58 @@ other case studies unaffected.
 
 # PHASE 13 — EMERGENCY MESH CASE STUDY
 
-Create an animated network visualization.
-
-Show:
-
-- [ ] BLE discovery
-- [ ] identities
-- [ ] encryption
-- [ ] sending
-- [ ] store-and-forward
-- [ ] ACK
-- [ ] routing concepts
-
-Stack:
-
-- [ ] Flutter/Dart
-- [ ] Kotlin BLE
-- [ ] Ed25519
-- [ ] X25519
-- [ ] XChaCha20-Poly1305
-- [ ] SQLCipher
-
-Testing/evidence:
-
-- [ ] Dart tests
-- [ ] Kotlin tests
-- [ ] fuzz testing
-- [ ] protocol documentation
-
-Mandatory limitation:
-
-- [ ] Clearly state real live multi-hop relay is not yet fully validated/complete on hardware.
-
 ## Phase Completion
 
-- [ ] Phase 13 complete
+- [x] Phase 13 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/work/emergency-mesh`.
+
+**The distinction this phase exists for is taken verbatim from the project's own
+status record**, not inferred. Three states are separated on the page and in the
+walkthrough:
+
+- **Runs on real hardware** — discovery, local identity, compose/seal/sign,
+  fragmentation and reassembly, single-hop transfer between two phones in range,
+  acknowledgement for direct messages, and store-and-forward with retry and
+  expiry.
+- **Simulated only** — mesh behaviour beyond one hop. The simulator drives the
+  same routing code as the real path, and the page says explicitly that a
+  passing simulation is not evidence of hardware behaviour.
+- **Not implemented** — **multi-hop relay**, the defining behaviour of a mesh.
+  The transport is single-hop only.
+
+**Two gaps stated rather than glossed:** the native Bluetooth layer is covered by
+62 Kotlin unit tests and verified by compilation and packaging **but not on a
+device** — the final transport task needs two physical phones — and an SOS
+broadcast has no acknowledgement mechanism, so the interface deliberately does
+not tell the user it reached anyone.
+
+**The honesty is built into the diagram, not bolted on.** The third device is
+drawn permanently out of range with an unestablished link, so no sequence of
+steps can be read as a completed multi-hop delivery. The drawing carries an
+"illustrative protocol simulation" label, and because the step list holds the
+information, the SVG is `aria-hidden` rather than duplicating it badly.
+
+**A real navigation gap this surfaced.** Emergency Mesh is a secondary project,
+and only the featured card carried a case-study link — so its page was
+unreachable from `/work`. `ProjectCard` now takes the same `hasCaseStudy` flag,
+and both `/work` and the legacy `/projects` pass it, so no case study dead-ends.
+
+**New reusable piece:** a `ProtocolWalkthrough` model and component. Every step
+carries a status, which is what stops a walkthrough animating a capability into
+existence.
+
+**Browser-verified**, 37 checks: 200 with a single `<h1>`, active-development
+preserved, no empty headings, eight protocol steps with the multi-hop step marked
+not implemented, the simulation label present, the device-verification gap
+stated, simulation explicitly not equated with hardware evidence, SOS delivery
+not falsely claimed, no emergency-ready phrasing and the unsuitability for real
+use stated, no repository link or key material on a private project, step
+activation working, no overflow at 360/390/430/768 px, reduced motion clean, six
+case studies linked from `/work`, a project without one still 404ing, and the
+homepage Core, story and every other route unaffected.
 
 ---
 

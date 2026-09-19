@@ -1193,6 +1193,241 @@ limitations: [
     source: { visibility: 'private', label: 'Private repository' },
     note: 'Protocol, routing, crypto and BLE transport built and tested; UI just starting. Not yet installable as a finished product, and not suitable for real emergencies. Repository private.',
     researchSlug: 'emergency-mesh-protocol',
+    problem:
+      'When there is no internet, no cell service and no server, delivery stops being a request and becomes a scheduling problem: the peer you need may simply not be in range at the moment you press send.',
+    role:
+      'Sole engineer. Wire format, cryptographic suite, encrypted local store, routing and custody logic, the native Bluetooth transport, and the Flutter application on top.',
+    // Derived from the private repository, reviewed 2026-09-20: STATUS.md and
+    // the milestone record. The key distinction below — single-hop frame
+    // exchange verified between two real phones, multi-hop relay not
+    // implemented at all — is taken verbatim from that status document.
+    caseStudy: {
+      context:
+        'An offline messaging app for situations where infrastructure is gone. Phones talk directly to each other over Bluetooth Low Energy, carry messages for one another, and hold what they cannot yet deliver. There is no server anywhere in the design, which is a product rule rather than a deployment choice.',
+      constraints: [
+        'Bluetooth Low Energy has a small MTU, so anything larger than a few dozen bytes has to be fragmented and reassembled below the protocol layer.',
+        'A peer may be out of range at the moment of sending, so the transport cannot assume a destination exists when a message is created.',
+        'Mobile operating systems suspend background work aggressively, so keeping a radio available means a foreground service rather than a background task.',
+        'There is no server to hold identity, so keys and identities are generated and stored locally on each device.',
+        'Anything persisted on a device that might be lost has to be encrypted at rest.',
+      ],
+      built:
+        'A wire format, a cryptographic suite and an encrypted local store, all implemented and tested without hardware. On top of them, mesh routing and custody logic, and a native Kotlin Bluetooth transport covering advertising and scanning, a GATT server and client with MTU negotiation, connection ranking and retry, fragmentation and reassembly, and a foreground service that keeps the radio alive while the app is backgrounded. The Flutter application composes, signs and verifies real frames over that transport.',
+      architecture: {
+        summary:
+          'A Flutter application over a native Bluetooth transport, with the protocol, cryptography and persistence layers deliberately independent of the radio so they can be tested without a device.',
+        nodes: [
+          { id: 'ui', label: 'Flutter app', kind: 'client', detail: 'Chat, people, SOS' },
+          { id: 'frames', label: 'Frame layer', kind: 'process', detail: 'Compose, sign, verify' },
+          { id: 'crypto', label: 'Crypto suite', kind: 'service', detail: 'Local identity keys' },
+          { id: 'mesh', label: 'Mesh service', kind: 'service', detail: 'Routing and custody' },
+          { id: 'outbox', label: 'Outbox scheduler', kind: 'process', detail: 'Retry and expiry' },
+          { id: 'store', label: 'Encrypted store', kind: 'data', detail: 'At rest on device' },
+          { id: 'channel', label: 'Platform channel', kind: 'process', detail: 'Dart to Kotlin' },
+          { id: 'ble', label: 'Kotlin BLE', kind: 'external', detail: 'GATT, fragmentation' },
+        ],
+        flows: [
+          { from: 'ui', to: 'frames', label: 'compose' },
+          { from: 'frames', to: 'crypto', label: 'sign' },
+          { from: 'frames', to: 'mesh', label: 'dispatch' },
+          { from: 'mesh', to: 'outbox', label: 'queue' },
+          { from: 'outbox', to: 'store', label: 'persist' },
+          { from: 'mesh', to: 'channel', label: 'send' },
+          { from: 'channel', to: 'ble', label: 'transmit' },
+        ],
+        caveat:
+          'Sanitized architecture from the project documentation. No identity, key material or test artifact is reproduced.',
+      },
+      network: {
+        title: 'What actually happens on the radio',
+        intro:
+          'A walkthrough of the documented behaviour across three devices. Every step states whether it runs on real hardware, exists only in the simulator, or is not built — because the difference between those three is the whole point of this section.',
+        nodes: [
+          { id: 'a', label: 'SENDER', inRange: true },
+          { id: 'b', label: 'PEER IN RANGE', inRange: true },
+          { id: 'c', label: 'OUT OF RANGE', inRange: false },
+        ],
+        links: [
+          { id: 'ab', from: 'a', to: 'b', established: true },
+          { id: 'bc', from: 'b', to: 'c', established: false },
+        ],
+        steps: [
+          {
+            id: 'discover',
+            label: 'Discovery',
+            detail:
+              'Devices advertise and scan over Bluetooth Low Energy, rank the connections they find and retry the ones that drop. Verified between two phones in range.',
+            nodes: ['a', 'b'],
+            links: ['ab'],
+            status: 'live',
+          },
+          {
+            id: 'identity',
+            label: 'Local identity',
+            detail:
+              'Each device generates and holds its own keys. There is no server to register with, so identity is created on first run and never leaves the device.',
+            nodes: ['a'],
+            links: [],
+            status: 'live',
+          },
+          {
+            id: 'compose',
+            label: 'Compose, seal and sign',
+            detail:
+              'Announcements, SOS broadcasts and direct messages are composed, sealed and signed before they reach the radio, and verified on arrival.',
+            nodes: ['a'],
+            links: [],
+            status: 'live',
+          },
+          {
+            id: 'fragment',
+            label: 'Fragment and reassemble',
+            detail:
+              'The Bluetooth MTU is far smaller than a message, so frames are fragmented and reassembled natively beneath the protocol layer.',
+            nodes: ['a', 'b'],
+            links: ['ab'],
+            status: 'live',
+          },
+          {
+            id: 'transfer',
+            label: 'Single-hop transfer',
+            detail:
+              'Two phones directly in range exchange real signed frames: contacts populate from genuine announcements and a one-to-one conversation sends and receives over live Bluetooth.',
+            nodes: ['a', 'b'],
+            links: ['ab'],
+            status: 'live',
+          },
+          {
+            id: 'ack',
+            label: 'Acknowledgement',
+            detail:
+              'A received message is stored and acknowledged on first arrival, and the sender marks it delivered. This exists for direct messages only — an SOS broadcast still cannot claim it reached anyone.',
+            nodes: ['a', 'b'],
+            links: ['ab'],
+            status: 'live',
+          },
+          {
+            id: 'custody',
+            label: 'Store and forward',
+            detail:
+              'A message queued while its destination is unreachable is persisted, retried as soon as a peer connects and otherwise on a bounded poll, and expired once it passes its lifetime.',
+            nodes: ['a'],
+            links: [],
+            status: 'live',
+          },
+          {
+            id: 'relay',
+            label: 'Multi-hop relay',
+            detail:
+              'Carrying a message for a third device that the sender cannot reach directly. This is the defining promise of a mesh and it is not implemented — the transport is single-hop only, which is why the far device above never receives anything.',
+            nodes: ['c'],
+            links: ['bc'],
+            status: 'not-implemented',
+          },
+        ],
+        caveat:
+          'Illustrative protocol simulation, not a recording of deployed hardware. The unreachable device is drawn that way permanently and on purpose: no sequence of steps here completes a multi-hop delivery, because the implementation cannot.',
+      },
+      decisions: [
+        {
+          id: 'em-radio-independent',
+          title: 'Keep the protocol independent of the radio',
+          decision:
+            'The wire format, cryptographic suite, encrypted store and mesh logic were built and tested with no device involved, behind a platform channel that the native transport implements.',
+          rationale:
+            'Bluetooth work needs two physical phones, which makes it slow and hard to test. Everything above the transport could be developed and verified without that cost.',
+          tradeoff:
+            'A layer verified only against its own contract can still be wrong about the radio underneath it, which is exactly the gap the outstanding device-verification task exists to close.',
+        },
+        {
+          id: 'em-foreground-service',
+          title: 'Use a foreground service to keep the radio alive',
+          decision:
+            'Scanning, advertising and connection handling run inside a foreground service rather than a background task.',
+          rationale:
+            'Mobile operating systems suspend background work aggressively, and a mesh node that stops listening when the screen locks is not a mesh node.',
+          tradeoff:
+            'A persistent notification and a real battery cost, which for a general-purpose app would be unacceptable and for an emergency tool is the point.',
+        },
+        {
+          id: 'em-no-server',
+          title: 'No server anywhere, including for errors',
+          decision:
+            'There is no backend for identity, delivery or even crash reporting; error handling is local by default.',
+          rationale:
+            'A tool whose premise is that infrastructure has failed cannot have a mandatory server, and that rule was applied consistently rather than only to the message path.',
+          tradeoff:
+            'No remote diagnostics, so a failure in the field cannot be investigated after the fact unless the device is in hand.',
+        },
+        {
+          id: 'em-label-simulation',
+          title: 'Label the in-app mesh demo as a simulation',
+          decision:
+            'The application includes a demo screen that replays a simulator run as an animated topology, explicitly labelled as simulation, and it drives the same routing code the real path uses.',
+          rationale:
+            'A demo that looks like live mesh traffic when it is not would misrepresent the project to exactly the people most likely to be impressed by it.',
+          tradeoff:
+            'The most visually convincing screen in the app is the one that carries a disclaimer.',
+        },
+      ],
+      concerns: [
+        {
+          id: 'em-at-rest',
+          title: 'Encrypted at rest',
+          detail:
+            'Messages, contacts and identity material are held in an encrypted local store, on the assumption that a device in an emergency is a device that might be lost.',
+        },
+        {
+          id: 'em-verify-inbound',
+          title: 'Inbound frames are verified before they are trusted',
+          detail:
+            'Frames are signed on composition and verified on arrival, so anything that reaches the contact or message stores has been checked rather than merely received.',
+        },
+        {
+          id: 'em-no-false-delivery',
+          title: 'Delivery is never claimed without an acknowledgement',
+          detail:
+            'Direct messages are marked delivered only on a real acknowledgement. An SOS broadcast has no acknowledgement mechanism, so the interface deliberately does not tell the user it reached anyone.',
+        },
+      ],
+      verification: [
+        {
+          id: 'em-native-tests',
+          label: '62 native unit tests on the Bluetooth layer',
+          detail:
+            'The Kotlin transport is covered by 62 unit tests and verified by compilation and packaging.',
+          verified: true,
+        },
+        {
+          id: 'em-no-device-verification',
+          label: 'The native stack has not been verified on a device',
+          detail:
+            'The final transport task requires two physical phones and has not been completed. Everything below the application layer is therefore verified against its own tests and contracts, not against hardware.',
+          verified: false,
+        },
+        {
+          id: 'em-live-single-hop',
+          label: 'Single-hop exchange confirmed between two phones',
+          detail:
+            'Two devices directly in range exchange real signed frames: contacts populate from genuine announcements, and a one-to-one conversation sends, receives and acknowledges over live Bluetooth.',
+          verified: true,
+        },
+        {
+          id: 'em-simulation-only',
+          label: 'Mesh behaviour beyond one hop exists only in simulation',
+          detail:
+            'The simulator drives the same routing code as the real path, but a passing simulation is not evidence of hardware behaviour and is not presented as such.',
+          verified: false,
+        },
+      ],
+      results: [
+        'The protocol, cryptography, persistence and routing layers are implemented and tested without hardware, and the native Bluetooth transport is implemented in Kotlin with unit tests.',
+        'Two phones directly in range exchange real signed frames today, including a working one-to-one conversation with acknowledgement and store-and-forward retry.',
+        'Multi-hop relay — the defining behaviour of a mesh — is not implemented, and the final device-verification task for the native transport remains open.',
+      ],
+      disclosure:
+        'The repository is private. No identity, key material, test artifact or captured traffic is reproduced here. The distinction between what runs on hardware, what exists only in simulation and what is not built is taken directly from the project\'s own status record rather than inferred.',
+    },
     proof: [],
   },
   {

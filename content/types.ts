@@ -301,6 +301,35 @@ export interface CapabilityLadder {
   caveat: string;
 }
 
+/**
+ * A protocol walkthrough over a small network.
+ *
+ * Each step highlights part of the diagram and explains one documented
+ * behaviour. `reached` says whether that step is something the implementation
+ * actually does on real hardware, so a walkthrough cannot quietly animate a
+ * capability that has never run outside a simulator.
+ */
+export interface ProtocolStep {
+  id: string;
+  label: string;
+  detail: string;
+  /** Node ids lit for this step. */
+  nodes: string[];
+  /** Link ids lit for this step. */
+  links: string[];
+  status: 'live' | 'simulated' | 'not-implemented';
+}
+
+export interface ProtocolWalkthrough {
+  title: string;
+  intro: string;
+  /** Nodes, in display order. `inRange` false draws them unreachable. */
+  nodes: { id: string; label: string; inRange: boolean }[];
+  links: { id: string; from: string; to: string; established: boolean }[];
+  steps: ProtocolStep[];
+  caveat: string;
+}
+
 export interface CaseStudy {
   /** The situation the work happened in. */
   context?: string;
@@ -327,6 +356,8 @@ export interface CaseStudy {
   correction?: { date: string; title: string; detail: string; status: string };
   /** Graded capability levels, each stating whether it is built. */
   ladder?: CapabilityLadder;
+  /** A protocol walkthrough over a small illustrative network. */
+  network?: ProtocolWalkthrough;
 }
 
 export interface Project {

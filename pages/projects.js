@@ -9,6 +9,7 @@ import {
   getArchivedProjects,
   getContributionsForDisplay,
   getCurrentFypProjects,
+  getCaseStudyProjects,
   getFlagshipProjects,
   getSecondaryProjects,
 } from '@/lib/content';
@@ -52,6 +53,7 @@ const GROUPS = [
 ];
 
 const contributions = getContributionsForDisplay();
+const caseStudySlugs = new Set(getCaseStudyProjects().map((p) => p.slug));
 
 export default function Projects() {
   return (
@@ -136,7 +138,7 @@ export default function Projects() {
                       transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
                       className="h-full scroll-mt-24"
                     >
-                      <ProjectCard {...project} />
+                      <ProjectCard {...project} hasCaseStudy={caseStudySlugs.has(project.slug)} />
                     </motion.div>
                   ))}
                 </div>

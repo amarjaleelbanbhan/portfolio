@@ -239,7 +239,7 @@ export default function Work() {
               <div className="grid gap-5 md:grid-cols-2">
                 {filtered.secondary.map((project) => (
                   <div key={project.slug} id={project.slug} className="h-full scroll-mt-24">
-                    <ProjectCard {...project} />
+                    <ProjectCard {...project} hasCaseStudy={caseStudySlugs.has(project.slug)} />
                   </div>
                 ))}
               </div>
@@ -258,7 +258,7 @@ export default function Work() {
               <div className="grid gap-5 md:grid-cols-2">
                 {filtered.currentFyp.map((project) => (
                   <div key={project.slug} id={project.slug} className="h-full scroll-mt-24">
-                    <ProjectCard {...project} />
+                    <ProjectCard {...project} hasCaseStudy={caseStudySlugs.has(project.slug)} />
                   </div>
                 ))}
               </div>
@@ -290,7 +290,7 @@ export default function Work() {
                 <div className="grid gap-5 md:grid-cols-2 opacity-90">
                   {filtered.archived.map((project) => (
                     <div key={project.slug} id={project.slug} className="h-full scroll-mt-24">
-                      <ProjectCard {...project} />
+                      <ProjectCard {...project} hasCaseStudy={caseStudySlugs.has(project.slug)} />
                     </div>
                   ))}
                 </div>
