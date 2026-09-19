@@ -9,6 +9,7 @@
 import {
   coreDomains,
   credentials,
+  storyStages,
   education,
   openSourceContributions,
   profile,
@@ -284,6 +285,84 @@ export function validateContent(): ContentIssue[] {
   if (coreDomains.length !== 5) {
     add('domain', 'core', `expected 5 core domains, found ${coreDomains.length}`);
   }
+
+  // ──────────────────── Homepage engineering story ────────────────────
+  // The narrative authors its own copy, so these rules exist to stop that copy
+  // drifting away from the projects it describes.
+  const storyIds = new Set<string>();
+  const storyOrder = ['Built', 'Verified', 'Researched', 'Systems', 'Contributed'];
+
+  for (const stage of storyStages) {
+    const ref = stage.id || '(missing id)';
+
+    if (!stage.id) add('story', ref, 'missing id');
+    if (storyIds.has(stage.id)) add('story', ref, `duplicate stage id "${stage.id}"`);
+    storyIds.add(stage.id);
+
+    if (!stage.title?.trim()) add('story', ref, 'missing title');
+    if (!stage.lede?.trim()) add('story', ref, 'missing lede');
+
+    if (!DOMAINS.includes(stage.domain)) {
+      add('story', ref, `invalid domain "${stage.domain}"`);
+    }
+    // Every stage must map onto a domain the Engineering Core actually shows,
+    // otherwise the story and the hero would be telling different stories.
+    if (!coreDomains.some((d) => d.domain === stage.domain)) {
+      add('story', ref, `domain "${stage.domain}" is not one of the core domains`);
+    }
+
+    // A stage is about a real project or about upstream contributions.
+    if (!stage.projectSlug && !stage.contributions) {
+      add('story', ref, 'stage references neither a project nor contributions');
+    }
+    if (stage.projectSlug) {
+      const project = projects.find((p) => p.slug === stage.projectSlug);
+      if (!project) {
+        add('story', ref, `projectSlug "${stage.projectSlug}" does not exist`);
+      } else if (!project.domains?.includes(stage.domain)) {
+        // The clearest way the story could lie: telling a security story about a
+        // project that is not security work.
+        add(
+          'story',
+          ref,
+          `stage domain "${stage.domain}" is not one of ${stage.projectSlug}'s domains`
+        );
+      }
+    }
+
+    // Each diagram is an authored drawing, so each must say so.
+    if (!stage.caveat?.trim()) {
+      add('story', ref, 'missing caveat — every stage diagram must be labelled illustrative');
+    }
+    if (stage.steps.length < 3) {
+      add('story', ref, `only ${stage.steps.length} steps; a pipeline needs at least 3`);
+    }
+    const stepIds = new Set<string>();
+    for (const step of stage.steps) {
+      if (stepIds.has(step.id)) add('story', ref, `duplicate step id "${step.id}"`);
+      stepIds.add(step.id);
+      if (!step.label?.trim()) add('story', ref, `step "${step.id}" has no label`);
+    }
+
+    const [path, hash] = stage.href.split('#');
+    if (!EXISTING_ROUTES.has(path)) {
+      add('story', ref, `href "${stage.href}" points at a route that does not exist yet`);
+    }
+    if (hash && hash !== 'open-source' && !projectSlugs.has(hash)) {
+      add('story', ref, `href anchor "#${hash}" matches no project slug`);
+    }
+  }
+
+  if (storyStages.length !== 5) {
+    add('story', 'story', `expected 5 narrative stages, found ${storyStages.length}`);
+  }
+  // BUILT → VERIFIED → RESEARCHED → SYSTEMS → CONTRIBUTED is the narrative; the
+  // order is the argument, so it is checked rather than assumed.
+  storyStages.forEach((stage, index) => {
+    if (stage.kicker !== storyOrder[index]) {
+      add('story', stage.id, `expected stage ${index + 1} to be "${storyOrder[index]}", found "${stage.kicker}"`);
+    }
+  });
 
   // ───────────────────────────── Research ─────────────────────────────
   const researchSlugs = new Set<string>();

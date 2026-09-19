@@ -11,6 +11,8 @@ export * from './types';
 export { profile } from './profile';
 export { coreDomains } from './domains';
 export type { DomainMeta } from './domains';
+export { storyStages } from './story';
+export type { StoryStage, StoryStep } from './story';
 export { projects } from './projects';
 export { researchProjects } from './research';
 export { openSourceContributions } from './open-source';

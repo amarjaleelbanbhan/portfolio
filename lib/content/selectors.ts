@@ -8,6 +8,7 @@
 import {
   coreDomains,
   credentials,
+  storyStages,
   education,
   openSourceContributions,
   profile,
@@ -24,12 +25,14 @@ import type {
   Profile,
   Project,
   ProjectStatus,
+  Proof,
   ProjectTier,
   ResearchProject,
   Skill,
   SkillCategory,
 } from '@/content/types';
 import type { DomainMeta } from '@/content/domains';
+import type { StoryStage } from '@/content/story';
 
 // ─────────────────────────────── Profile ───────────────────────────────
 
@@ -430,4 +433,85 @@ export function getCoreDomains(): DomainSummary[] {
   return coreDomains
     .map((meta) => getDomainSummary(meta.domain))
     .filter((d): d is DomainSummary => Boolean(d));
+}
+
+
+// ──────────────────────── Homepage engineering story ────────────────────────
+
+export interface ResolvedStoryStage extends StoryStage {
+  /** Domain accent, shared with the Engineering Core. */
+  color: string;
+  /** The canonical project, when the stage is about one. */
+  project?: Project;
+  /** Verified proof for that project. Unverified evidence is never returned. */
+  proof: Proof[];
+  /** Documented limitations, straight from the canonical record. */
+  limitations: string[];
+  /** Technology labels, resolved through the skill registry. */
+  technologies: DomainTechnology[];
+  /** Upstream contributions, for the CONTRIBUTED stage only. */
+  contributionList: OpenSourceContribution[];
+  /** Research record, when the project has one. */
+  research?: ResearchProject;
+}
+
+/**
+ * The five story stages with their canonical facts attached.
+ *
+ * The narrative owns its copy; everything checkable is looked up here. A stage
+ * therefore cannot claim a status, technology, proof item or limitation that the
+ * project record does not also carry.
+ *
+ * Proof is filtered to verified entries only, matching the rule the rest of the
+ * site follows: unverified evidence is never displayed publicly.
+ */
+export function getStoryStages(): ResolvedStoryStage[] {
+  return storyStages.map((stage) => {
+    const project = stage.projectSlug ? getProjectBySlug(stage.projectSlug) : undefined;
+    const research = project?.researchSlug ? getResearchBySlug(project.researchSlug) : undefined;
+
+    // Research records carry their own limitations; a stage surfaces both so
+    // nothing documented is quietly dropped on the way to the homepage.
+    //
+    // De-duplicated on a normalised prefix rather than on exact text. A project
+    // and its research record routinely state the same limitation in slightly
+    // different words — Emergency Mesh has "built and tested, but the user
+    // interface..." on the project and "built and tested; the user interface..."
+    // on the research record — and printing both reads as a stutter. Comparing
+    // the opening of each sentence catches that without the fragility of fuzzy
+    // matching. The first wording wins.
+    const seenLimitations = new Set<string>();
+    const limitations: string[] = [];
+    for (const limitation of [...(project?.limitations ?? []), ...(research?.limitations ?? [])]) {
+      const key = limitation.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 60);
+      if (seenLimitations.has(key)) continue;
+      seenLimitations.add(key);
+      limitations.push(limitation);
+    }
+
+    const technologies = (project?.technologies ?? [])
+      .map((slug) => ({ slug, skill: getSkillBySlug(slug) }))
+      .filter((entry) => Boolean(entry.skill))
+      .map((entry) => ({
+        key: entry.slug,
+        label: entry.skill!.shortName ?? entry.skill!.name,
+        color: entry.skill!.color ?? getDomainColor(stage.domain),
+      }));
+
+    return {
+      ...stage,
+      color: getDomainColor(stage.domain),
+      project,
+      research,
+      proof: (project?.proof ?? []).filter((item) => item.verified),
+      limitations,
+      technologies,
+      contributionList: stage.contributions ? getContributionsForDisplay() : [],
+    };
+  });
+}
+
+/** One stage by id, for anchor and skip-link targets. */
+export function getStoryStageById(id: string): ResolvedStoryStage | undefined {
+  return getStoryStages().find((stage) => stage.id === id);
 }
