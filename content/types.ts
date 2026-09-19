@@ -136,6 +136,103 @@ export interface SeoFields {
 // Project
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────── Case-study depth ───────────────────────────
+//
+// Everything below is optional and exists only for projects that have a full
+// case study. Phase 2 deliberately left the depth fields empty rather than
+// inventing prose; these types give the later phases somewhere structured to
+// put real evidence when it has actually been reviewed.
+//
+// The rule every consumer follows: a section renders only when its field is
+// present. An absent field means "not written yet", never "nothing to say", and
+// it must never surface as an empty heading.
+
+/** A node in a sanitized architecture diagram. */
+export interface ArchitectureNode {
+  id: string;
+  label: string;
+  /** Rough role, used to pick the node's shape. */
+  kind: 'client' | 'service' | 'data' | 'external' | 'process';
+  /** One line explaining what it does. */
+  detail?: string;
+}
+
+/** A directed relationship between two architecture nodes. */
+export interface ArchitectureFlow {
+  from: string;
+  to: string;
+  label?: string;
+}
+
+/**
+ * A sanitized architecture description.
+ *
+ * `caveat` is required: these diagrams describe implemented components, but they
+ * are drawings, and private client systems must be labelled as sanitized.
+ */
+export interface ArchitectureSpec {
+  summary: string;
+  nodes: ArchitectureNode[];
+  flows: ArchitectureFlow[];
+  caveat: string;
+}
+
+/** An engineering decision worth explaining, with what it cost. */
+export interface TechnicalDecision {
+  id: string;
+  title: string;
+  /** What was decided. */
+  decision: string;
+  /** Why. */
+  rationale: string;
+  /** What it gave up. Optional, but a decision without one is usually unexamined. */
+  tradeoff?: string;
+}
+
+/** A named concern and how it was handled. */
+export interface ConcernNote {
+  id: string;
+  title: string;
+  detail: string;
+}
+
+/** One verification activity and whether it is evidenced. */
+export interface VerificationItem {
+  id: string;
+  label: string;
+  detail: string;
+  /** False means "implemented but not independently evidenced here". */
+  verified: boolean;
+}
+
+/** A dated or ordered milestone. */
+export interface TimelineEntry {
+  id: string;
+  label: string;
+  detail: string;
+  /** ISO date, when one is known. */
+  date?: string;
+}
+
+export interface CaseStudy {
+  /** The situation the work happened in. */
+  context?: string;
+  /** Real constraints that shaped the design. */
+  constraints?: string[];
+  /** What was actually built, in prose. */
+  built?: string;
+  architecture?: ArchitectureSpec;
+  decisions?: TechnicalDecision[];
+  /** Security and reliability concerns and their handling. */
+  concerns?: ConcernNote[];
+  verification?: VerificationItem[];
+  /** Outcomes that can be stated honestly. Never invented metrics. */
+  results?: string[];
+  timeline?: TimelineEntry[];
+  /** What a reader should know is deliberately not shown. */
+  disclosure?: string;
+}
+
 export interface Project {
   id: string;
   /** Stable identity. Never derive identity from `title`. */
@@ -188,6 +285,14 @@ export interface Project {
 
   /** Related research entry, by slug. Avoids duplicating research prose here. */
   researchSlug?: string;
+
+  /**
+   * Full case-study material. Present only for projects whose evidence has
+   * actually been reviewed; its absence is why /work/[slug] renders nothing for
+   * most projects rather than rendering empty sections.
+   */
+  caseStudy?: CaseStudy;
+
 
   seo?: SeoFields;
 }

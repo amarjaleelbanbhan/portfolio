@@ -515,3 +515,57 @@ export function getStoryStages(): ResolvedStoryStage[] {
 export function getStoryStageById(id: string): ResolvedStoryStage | undefined {
   return getStoryStages().find((stage) => stage.id === id);
 }
+
+
+// ─────────────────────────────── Case studies ───────────────────────────────
+
+/**
+ * Projects that have reviewed case-study material.
+ *
+ * This is the single definition of "has a detail page". `/work/[slug]` generates
+ * routes from it, `/work` decides whether to show a case-study action from it,
+ * and RelatedWork uses it to avoid linking at a page that does not exist.
+ */
+export function getCaseStudyProjects(): Project[] {
+  return projects
+    .filter((p) => Boolean(p.caseStudy))
+    .sort((a, b) => (a.featuredRank ?? 99) - (b.featuredRank ?? 99));
+}
+
+export function hasCaseStudy(slug: string): boolean {
+  return Boolean(getProjectBySlug(slug)?.caseStudy);
+}
+
+/**
+ * Other projects sharing an engineering domain, strongest first.
+ *
+ * Derived rather than hand-listed, so a new project in the same domain appears
+ * without anyone maintaining a "see also" list. Archived work is excluded: it is
+ * kept for the record, not offered as a next thing to read.
+ */
+export function getRelatedProjects(slug: string, limit = 4): Project[] {
+  const project = getProjectBySlug(slug);
+  if (!project) return [];
+
+  const rank: Record<string, number> = {
+    flagship: 0,
+    'current-fyp': 1,
+    secondary: 2,
+    archive: 3,
+  };
+
+  return projects
+    .filter(
+      (p) =>
+        p.slug !== slug &&
+        p.tier !== 'archive' &&
+        p.domains?.some((d) => project.domains?.includes(d))
+    )
+    .sort(
+      (a, b) =>
+        (rank[a.tier] ?? 9) - (rank[b.tier] ?? 9) ||
+        (a.featuredRank ?? 99) - (b.featuredRank ?? 99) ||
+        (a.sortOrder ?? 99) - (b.sortOrder ?? 99)
+    )
+    .slice(0, limit);
+}

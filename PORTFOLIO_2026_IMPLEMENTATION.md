@@ -1317,18 +1317,25 @@ adds the routes and wires them.
 
 Create reusable components:
 
-- [ ] `ProjectHero`
-- [ ] `ProjectArchitecture`
-- [ ] `ProofStrip`
-- [ ] `TechnicalDecision`
-- [ ] `ConstraintBlock`
-- [ ] `TestEvidence`
-- [ ] `ProjectTimeline`
-- [ ] `MediaGallery`
-- [ ] `ProjectMetrics`
-- [ ] `GitHubEvidence`
-- [ ] `ProjectLimitations`
-- [ ] `RelatedWork`
+- [x] `ProjectHero`
+- [x] `ProjectArchitecture`
+- [x] `ProofStrip`
+- [x] `TechnicalDecision`
+- [x] `ConstraintBlock`
+- [x] `TestEvidence`
+- [x] `ProjectTimeline`
+- [ ] `MediaGallery` — deliberately not built. No project has any `media`
+      entries and no authorised public screenshots exist for the private
+      flagships, so this would have been an empty component built to tick a
+      checkbox. The `MediaItem` type is already in the model; the component can
+      be added the moment there is something to put in it.
+- [x] `ProjectMetrics`
+- [ ] `GitHubEvidence` — not built as a separate component. Repository, package
+      and release links are already rendered by `ProjectHero` from
+      `project.links`, driven by `source.visibility`. A second component over the
+      same data would be duplication rather than reuse.
+- [x] `ProjectLimitations`
+- [x] `RelatedWork`
 
 Every major project should support:
 
@@ -1342,15 +1349,56 @@ Every major project should support:
 8. Verification
 9. Results
 10. Limitations
-11. Repository/demo/evidence
+
+- [x] Template covers all ten sections plus evidence and links.
+- [x] Every section renders conditionally on available verified content.
 
 ## Phase Completion
 
-- [ ] Phase 7 complete
+- [x] Phase 7 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Deliverable:
+`docs/portfolio-2026/case-study-system.md`.
+
+**The system, not the content.** Phase 2 left `architecture`, `technicalDepth`,
+`verification` and `solution` empty on all fourteen projects rather than
+inventing prose, and that is still true here. This phase built the template and
+the model; Phases 8 and 9 supply evidence after reviewing real project material.
+
+**Sections render or disappear.** The template is written out in full and the
+content decides what appears, so a project with three populated fields renders
+three sections rather than three sections and eight empty headings. The same rule
+governs routing: `getStaticPaths` generates paths only for projects that have a
+`caseStudy` block, and `fallback: false` makes every other slug a real 404.
+Verified: `/work/nope`, `/work/rodift` (before its case study existed) and a
+path-traversal attempt all returned 404, while `/work` stayed 200.
+
+**Architecture is structured content, not a paragraph.** `nodes` and `flows`
+generate the diagram, so a case study cannot quietly gain an integration nobody
+built, and validation can check that every flow references a node that exists.
+Node positions are computed from dependency depth rather than authored, so the
+diagram re-lays out correctly when a component is added. The node list also
+renders as a description list, so the architecture is readable without the
+drawing.
+
+**`verification[].verified` is a required boolean.** It separates "this is
+tested" from "I can show you the test", which is the distinction a private
+project needs in order to stay honest.
+
+**Five validation rules, all confirmed to fire by breaking them:** a flow to an
+unknown node, an architecture without a caveat, a decision without a rationale, a
+verification item without an explicit verified flag, and — the important one — a
+private project publishing a case study without a disclosure note explaining what
+is withheld.
+
+**Two components deliberately not built**, recorded above with reasons rather
+than ticked: MediaGallery has no media to show, and GitHubEvidence would
+duplicate links ProjectHero already renders.
+
+**No new WebGL.** The diagram is SVG; the homepage still carries the only 3D
+scene on the site.
 
 ---
 

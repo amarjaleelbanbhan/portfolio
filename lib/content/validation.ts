@@ -365,6 +365,76 @@ export function validateContent(): ContentIssue[] {
     }
   });
 
+  // ──────────────────────────── Case studies ────────────────────────────
+  // A case study is the most detailed thing the site publishes about a project,
+  // so its internal references are checked rather than trusted.
+  for (const project of projects) {
+    const study = project.caseStudy;
+    if (!study) continue;
+    const ref = project.slug;
+
+    const arch = study.architecture;
+    if (arch) {
+      if (!arch.summary?.trim()) add('case-study', ref, 'architecture has no summary');
+      // Sanitized diagrams describe private systems; saying so is required.
+      if (!arch.caveat?.trim()) {
+        add('case-study', ref, 'architecture has no caveat — diagrams must be labelled');
+      }
+      const nodeIds = new Set<string>();
+      for (const node of arch.nodes ?? []) {
+        if (!node.id) add('case-study', ref, 'architecture node has no id');
+        if (nodeIds.has(node.id)) add('case-study', ref, `duplicate architecture node "${node.id}"`);
+        nodeIds.add(node.id);
+        if (!node.label?.trim()) add('case-study', ref, `architecture node "${node.id}" has no label`);
+      }
+      if ((arch.nodes ?? []).length === 0) {
+        add('case-study', ref, 'architecture has no nodes');
+      }
+      // A flow to a component that does not exist would draw an integration
+      // that was never built.
+      for (const flow of arch.flows ?? []) {
+        if (!nodeIds.has(flow.from)) {
+          add('case-study', ref, `architecture flow from unknown node "${flow.from}"`);
+        }
+        if (!nodeIds.has(flow.to)) {
+          add('case-study', ref, `architecture flow to unknown node "${flow.to}"`);
+        }
+      }
+    }
+
+    const decisionIds = new Set<string>();
+    for (const decision of study.decisions ?? []) {
+      if (decisionIds.has(decision.id)) {
+        add('case-study', ref, `duplicate decision id "${decision.id}"`);
+      }
+      decisionIds.add(decision.id);
+      if (!decision.decision?.trim() || !decision.rationale?.trim()) {
+        add('case-study', ref, `decision "${decision.id}" needs both a decision and a rationale`);
+      }
+    }
+
+    const verificationIds = new Set<string>();
+    for (const item of study.verification ?? []) {
+      if (verificationIds.has(item.id)) {
+        add('case-study', ref, `duplicate verification id "${item.id}"`);
+      }
+      verificationIds.add(item.id);
+      if (typeof item.verified !== 'boolean') {
+        add('case-study', ref, `verification "${item.id}" must state whether it is evidenced`);
+      }
+    }
+
+    // A private project publishing a case study must say what is withheld,
+    // otherwise a reader cannot tell absence from omission.
+    if (project.source.visibility !== 'public' && !study.disclosure?.trim()) {
+      add(
+        'case-study',
+        ref,
+        'private project has a case study but no disclosure note explaining what is withheld'
+      );
+    }
+  }
+
   // ───────────────────────────── Research ─────────────────────────────
   const researchSlugs = new Set<string>();
   for (const entry of researchProjects) {
