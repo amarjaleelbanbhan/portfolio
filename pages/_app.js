@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { MotionConfig } from 'framer-motion';
 import { chromeFor, useBootAlreadyPlayed, markBootPlayed } from '@/lib/routeChrome';
 
 const LoadingScreen = dynamic(() => import('../components/LoadingScreen'), { ssr: false });
@@ -49,7 +50,12 @@ export default function App({ Component, pageProps }) {
   };
 
   return (
-    <>
+    // CSS handles reduced motion for token-driven transitions, but Framer
+    // Motion never reads CSS — without this, every motion component kept
+    // animating for visitors who asked it not to. "user" disables transform and
+    // layout animation while keeping opacity, so content still resolves to
+    // visible rather than being stranded at its initial state.
+    <MotionConfig reducedMotion="user">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -65,6 +71,6 @@ export default function App({ Component, pageProps }) {
       )}
 
       <Component {...pageProps} />
-    </>
+    </MotionConfig>
   );
 }
