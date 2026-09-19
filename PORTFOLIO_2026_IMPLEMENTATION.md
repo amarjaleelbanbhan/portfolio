@@ -951,85 +951,136 @@ Amar is a Computer Science student and software engineer building production sof
 
 ## CTA
 
-- [ ] Explore Engineering Work
-- [ ] View Open Source
-- [ ] Work With Me
+- [x] Explore Engineering Work
+- [x] View Open Source
+- [x] Work With Me
 
 ## 3D Engineering Core
 
 Create a central engineering system with domains:
 
-- [ ] PRODUCT
-- [ ] AI
-- [ ] SECURITY
-- [ ] SYSTEMS
-- [ ] OPEN SOURCE
+- [x] PRODUCT
+- [x] AI
+- [x] SECURITY
+- [x] SYSTEMS
+- [x] OPEN SOURCE
 
 ## Technology Nodes
 
-Examples:
+Derived through `getDomainSummary()`; curated ordering is validated against the
+skill registry and the domain's own projects, so no node can advertise work that
+was not done.
 
-Product:
-- Flutter
-- Next.js
-- PostgreSQL
-- Supabase
-
-AI:
-- RAG
-- LLMs
-- Evaluation
-- Agents
-
-Security:
-- Docker
-- OSV
-- Static Analysis
-- Sandboxing
-
-Systems:
-- BLE
-- Cryptography
-- FFmpeg
-- Routing
-
-Open Source:
-- Pydantic AI
-- Promptfoo
-- MCTS
+- [x] Product: Flutter, Next.js, PostgreSQL, Supabase
+- [x] AI: RAG, Agents, Evaluation, Python
+- [x] Security: Static Analysis, Docker, CLI, Node.js
+- [x] Systems: BLE, Cryptography, FFmpeg, Kotlin
+- [x] Open Source: pydantic-ai, promptfoo, loop-engineering, MCTS (derived from merged PRs)
 
 ## Interaction
 
-- [ ] Hover highlights domain.
-- [ ] Related technologies become visible.
-- [ ] Unrelated nodes dim.
-- [ ] Clicking domain navigates/scrolls appropriately.
-- [ ] Mouse movement adds restrained parallax.
-- [ ] No forced uncontrolled camera spinning.
+- [x] Hover highlights domain.
+- [x] Related technologies become visible.
+- [x] Unrelated nodes dim.
+- [x] Clicking domain navigates/scrolls appropriately.
+- [x] Mouse movement adds restrained parallax.
+- [x] No forced uncontrolled camera spinning.
 
 ## Performance Tiers
 
 ### Tier A
-- [ ] Full desktop 3D.
-- [ ] particles/connections.
-- [ ] scroll camera effects where useful.
+- [x] Full desktop 3D.
+- [x] particles/connections.
+- [ ] scroll camera effects where useful — deferred to Phase 5, which introduces
+      the scroll narrative the camera would respond to. `CameraRig` already
+      accepts a target, so this is a prop, not a rewrite.
 
 ### Tier B
-- [ ] Reduced mobile particle count.
-- [ ] reduced postprocessing.
-- [ ] lower DPR.
+- [x] Reduced mobile particle count.
+- [x] reduced postprocessing.
+- [x] lower DPR.
 
 ### Tier C
-- [ ] Static/SVG/2D fallback.
-- [ ] no loss of information.
+- [x] Static/SVG/2D fallback.
+- [x] no loss of information.
 
 ## Phase Completion
 
-- [ ] Phase 4 complete
+- [x] Phase 4 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Deliverable: `docs/portfolio-2026/engineering-core.md`.
+
+**The core is a schematic, not a planet.** A decorative sphere would have been
+easier and said nothing. Instead each link's brightness is derived from real
+evidence — non-archive project count per domain, merged PRs for Open Source — so
+the picture is weighted by what actually exists and reweights itself when content
+changes. Node satellites are the domain's real technologies, one mote each.
+
+**The headline is the legend.** "AI", "security" and "product engineering" are set
+in the same domain accents the core uses, so the colour language is taught by the
+sentence before the diagram uses it. It cost nothing and it is the one deliberate
+flourish; everything around it stayed disciplined.
+
+**Nothing was deleted to make room.** The portrait, both orbit rings, both
+orbiting dots and the availability badge became `PortraitOrbit.js` with a `size`
+prop, and now sit beside the headline as a compact identity anchor rather than a
+second main visual. Typing cycler, GlitchText, floating chips, depth washes,
+particles and scanlines all remain; the chips were dimmed from 0.55 to 0.32 peak
+so they read as ambience instead of competing with the domain labels.
+
+**No second source of facts.** `content/domains.ts` holds only label, description,
+destination and ring angle. Projects, technologies, counts and colours are all
+derived by `getDomainSummary()`. Seven new validation rules make the curated
+ordering safe: a technology must exist in the skill registry *and* be used by a
+non-archive project in that domain, destinations must be routes that exist today,
+anchors must match real project slugs, ring angles must be unique. Each was
+confirmed to fire by deliberately breaking it.
+
+Deriving the technology lists was tried and abandoned for a good reason worth
+recording: ranking by exclusivity opened Product with "WebGL, FFmpeg, Headless",
+and ranking by frequency surfaced Node.js everywhere. Curated ordering with
+enforced facts is the honest version.
+
+**No GSAP.** The salvaged `cinematicCamera.ts` animates CSS 2D transforms and is
+the repo's only GSAP consumer; what carried over is its act structure and
+reduced-motion contract, not its code. The camera is critically-damped
+interpolation inside the frame loop `SceneCanvas` already owns, with delta
+clamped so a backgrounded tab cannot cause a jump.
+
+**Two real defects found by browser testing, both fixed at the cause.**
+`SceneCanvas` sets `relative` on its own root and was being handed `absolute
+inset-0`; Tailwind emits `.relative` after `.absolute`, so the class was
+overridden and the canvas collapsed to 515x147 instead of square. And
+`GlitchText` renders a `<div>`, which is invalid inside the new `<p>` — the
+browser closed the paragraph, server and client markup disagreed, and React threw
+hydration error #418. `GlitchText` gained an `as` prop rather than losing the
+effect.
+
+**A third issue browser testing surfaced:** on touch, tapping a domain navigates
+immediately, so the description was unreachable on a phone — hover-gated
+information with no hover. The narrow layout now renders every description and
+technology inline as a card list, so nothing is behind an interaction that cannot
+happen.
+
+**Measured.** `/hire` loads 598 KB of static JS+CSS against 1748 KB on `/`, so the
+3D stack is genuinely route-scoped and never reaches the client funnel or admin.
+`domInteractive` 148 ms — the headline never waits on WebGL. Scrolled off-screen,
+the canvas stops producing frames. Three mount/unmount cycles leak no canvases.
+No horizontal overflow at 360, 390 or 430 px. Zero console errors.
+
+**Browser-verified** against a production build: five domains render; hover, focus
+and tap each highlight and dim correctly; all five destinations resolve to real
+anchors; all five are keyboard reachable with descriptions exposed via
+`aria-describedby`; WebGL-disabled falls back to the 2D SVG core with every
+domain and link intact; reduced motion renders the static core with nothing left
+invisible; `/hire`, `/studio/request` and `/studio/admin` contain zero core
+elements and zero canvases.
+
+**Not done, by design:** no scroll story, no case studies, no Research or Open
+Source page, no Skill Galaxy, no CMS. Scroll-linked camera is left unchecked
+above — it belongs with the Phase 5 narrative it would respond to.
 
 ---
 
