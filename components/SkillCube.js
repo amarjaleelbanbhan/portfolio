@@ -64,6 +64,7 @@ export default function SkillCube() {
     const ambient = new THREE.AmbientLight('#ffffff', 0.35);
     scene.add(ambient);
 
+    renderer.domElement.style.maxWidth = '100%';
     container?.appendChild(renderer.domElement);
 
     const animate = () => {
@@ -86,8 +87,27 @@ export default function SkillCube() {
       renderer.render(scene, camera);
     }
 
+    // The canvas was sized once at mount, so rotating a phone or opening a
+    // desktop pane left it at its old width — wider than its container, which
+    // pushed the page into horizontal overflow. Resize the renderer and fix the
+    // camera aspect instead of letting CSS squash the projection.
+    const onResize = () => {
+      const nextWidth = container?.clientWidth;
+      if (!nextWidth) return;
+      camera.aspect = nextWidth / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nextWidth, height);
+      if (!stateRef.current.shouldAnimate) renderer.render(scene, camera);
+    };
+    const observer =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onResize) : null;
+    if (container && observer) observer.observe(container);
+    window.addEventListener('resize', onResize);
+
     return () => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
+      observer?.disconnect();
+      window.removeEventListener('resize', onResize);
       renderer.dispose();
       geometry.dispose();
       materials.forEach((mat) => mat.dispose());
@@ -98,9 +118,16 @@ export default function SkillCube() {
   return (
     <div
       ref={viewportRef}
-      className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 shadow-inner shadow-black/30"
+      // `overflow-hidden` is load-bearing. A grid or flex item's automatic
+      // minimum size is its content, so the canvas — sized in pixels at mount —
+      // stopped this box from ever shrinking, which meant the container never
+      // got narrower, the resize observer never fired, and the page overflowed
+      // sideways after a rotation. Anything other than `overflow: visible`
+      // sets that automatic minimum to zero, so the box can shrink, which is
+      // what lets the observer below do its job at all.
+      className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 shadow-inner shadow-black/30 overflow-hidden"
     >
-      <div ref={containerRef} className="w-full" aria-label="3D rotating skill cube" />
+      <div ref={containerRef} className="w-full min-w-0" aria-label="3D rotating skill cube" />
       <p className="text-center text-sm text-slate-300 mt-3">Creative tech stack in motion</p>
     </div>
   );

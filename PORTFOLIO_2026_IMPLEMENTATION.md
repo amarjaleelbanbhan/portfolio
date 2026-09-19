@@ -2049,33 +2049,96 @@ Supabase:
 
 ## Interactive Skill Galaxy
 
-Clusters:
+Clusters (rendered only where skills exist — an empty cluster is not drawn):
 
-- [ ] Languages
-- [ ] Frontend
-- [ ] Backend
-- [ ] AI
-- [ ] Security
-- [ ] Mobile
-- [ ] Systems
-- [ ] Research
-- [ ] Infrastructure
-- [ ] Developer Tools
+- [x] Languages — 7
+- [x] Frontend — 3
+- [x] Backend — 4
+- [x] AI — 3
+- [x] Security — 2
+- [x] Mobile — 2
+- [x] Systems — 2
+- [ ] Research — no skill currently carries this category, so no cluster renders
+- [x] Infrastructure — 2
+- [x] Developer Tools — 1
 
 Clicking a skill should reveal:
 
-- [ ] projects
-- [ ] role/use
-- [ ] evidence
-- [ ] related work
+- [x] projects
+- [x] role/use
+- [x] evidence
+- [x] related work
 
 ## Phase Completion
 
-- [ ] Phase 16 complete
+- [x] Phase 16 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/skills`, plus the homepage `TECH_STACK` section.
+Documented in `docs/portfolio-2026/skill-galaxy.md`.
+
+**One skill list, not three.** `/skills` carried a languages column, eight
+category chip panels and the physics pills, all reading canonical content and
+presenting it three different ways. The Galaxy is now the single surface. The
+cube, the physics playground and the homepage spotlight were all preserved —
+they were never reference lists, and the spotlight now carries evidence and
+links into the Galaxy rather than glowing at bare nouns.
+
+**Nodes are skills; edges are shared work, not resemblance.** Two technologies
+are joined because they were used on the same project, study or pull request,
+which is a fact in the records — so the clusters that appear can be opened and
+checked. 26 technologies, 9 clusters, 73 evidence links, 83 shared-work
+connections, all counted rather than written down.
+
+**Not WebGL, on purpose.** The information is labels and relationships; in three
+dimensions labels face away from the camera, nodes occlude, and hit-testing gets
+worse on a phone. The Galaxy is DOM and SVG, so every skill is a real `<button>`
+in document order — there is no separate 2D fallback to keep in sync, because
+tab order, focus, 44px targets and screen reader output are properties of the
+only implementation. Nothing depends on hover or dragging. Edge endpoints are
+measured from the live DOM and re-measured on resize and after fonts load, which
+is what keeps them attached when three columns reflow to one.
+
+**Four unsupported claims removed or corrected.** `linux` had no project,
+contribution or research reference at all and was removed. `python` no longer
+cites the ASF docs PR (one line of Markdown). `javascript` no longer cites
+loop-engineering #395 (`action.yml` and a README) — that work is real, so a
+`github-actions` skill now carries it honestly. `typescript` gained #437, whose
+diff is TypeScript.
+
+**The portfolio became a canonical project**, because the brief's evidence
+examples name it and citing something that is not in the record is exactly what
+this phase forbids. Verified first: the repository is public and the site
+returned 200. Recorded as active-development rather than production — it is live
+but the admin and CMS work is unfinished — with two verified proofs (the
+deployment and the CI gate) and two recorded limitations.
+
+**Two validation rules make it permanent:** a skill with no evidence of any kind
+fails, and a Languages-category skill citing a pull request must be cited back by
+that request's own language list. The second rule is what caught both evidence
+errors above.
+
+**Deleted `components/SkillBar.js`** — unused, and literally the "Python 90%"
+bar this phase exists to prevent.
+
+**Browser-verified**, 58 checks on a production build at 1280/768/430/390/360 px
+and under reduced motion: zero percentage strings and zero progress bars, all 26
+skills reporting at least one piece of evidence, every relationship the brief
+names checked individually, **every internal evidence link fetched for a 200 and
+every anchored link visited to confirm it lands on a visible element**, category
+dimming, focusable nodes, a touch tap opening evidence with no hover, 44px nodes
+on mobile, the cube and playground still rendering, no overflow, nothing stranded
+after a jump scroll, and ten routes unaffected.
+
+**Three defects found and fixed.** The skill cube could not shrink — a Three.js
+canvas sized in pixels at mount sets a grid item's automatic minimum size, so the
+container never got narrower, the resize observer never fired, and the page ran
+196px past a 360px viewport after a rotation; fixed with `overflow-hidden` (which
+sets that minimum to zero) plus a real resize handler for the renderer and camera
+aspect. Cluster headings were 23px on a pointer. And `/work#meditalk` scrolled
+nowhere, because archived projects live behind a collapsed panel — `/work` now
+expands the archive when the hash matches an archived slug.
 
 ---
 

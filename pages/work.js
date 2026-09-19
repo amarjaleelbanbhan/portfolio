@@ -15,7 +15,7 @@
  * which is the default on load. Deep links therefore always resolve, because
  * the page always loads unfiltered.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Seo from '@/components/Seo';
@@ -119,10 +119,33 @@ function GroupHeading({ id, title, blurb, count }) {
   );
 }
 
+/** Slugs that live inside the collapsed archive panel. */
+const archivedSlugs = new Set(archived.map((p) => p.slug));
+
 export default function Work() {
   const [domain, setDomain] = useState('all');
   const [query, setQuery] = useState('');
   const [showArchive, setShowArchive] = useState(false);
+
+  // Deep links into archived work have to resolve. The archive is collapsed by
+  // default, so `/work#meditalk` — which the Skill Galaxy's evidence panel
+  // generates for any project without a case study — used to scroll nowhere.
+  // Expanding on a matching hash keeps the anchor honest without putting the
+  // earlier work back in front of the reader by default.
+  useEffect(() => {
+    const openArchiveForHash = () => {
+      const slug = window.location.hash.slice(1);
+      if (!slug || !archivedSlugs.has(slug)) return;
+      setShowArchive(true);
+      // The element does not exist until the panel has rendered.
+      requestAnimationFrame(() => {
+        document.getElementById(slug)?.scrollIntoView({ block: 'start' });
+      });
+    };
+    openArchiveForHash();
+    window.addEventListener('hashchange', openArchiveForHash);
+    return () => window.removeEventListener('hashchange', openArchiveForHash);
+  }, []);
 
   const filtered = useMemo(() => {
     const keep = (list) => list.filter((p) => matches(p, domain, query));

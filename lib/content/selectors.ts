@@ -561,6 +561,204 @@ export function getSkillEvidenceLabels(slug: string): string[] {
   return [...new Set([...evidence.projects, ...evidence.contributions])];
 }
 
+/**
+ * Where a piece of evidence can be opened.
+ *
+ * A project with a reviewed case study goes to its own page; one without goes
+ * to its card on /work, which is a real anchor rather than a dead end. Research
+ * goes to its entry on /research, and a contribution goes to the pull request
+ * itself. Nothing here ever returns a link to a page that does not exist —
+ * that decision lives in this one function rather than in each component.
+ */
+export interface SkillEvidenceLink {
+  key: string;
+  label: string;
+  /** Short qualifier: a project status, a research stage, a PR state. */
+  meta: string;
+  href: string;
+  /** True when the destination leaves the site. */
+  external: boolean;
+}
+
+export interface SkillEvidenceDetail {
+  skill: Skill;
+  projects: SkillEvidenceLink[];
+  research: SkillEvidenceLink[];
+  contributions: SkillEvidenceLink[];
+  /** Total across all three, for compact counts. */
+  total: number;
+  /**
+   * Other skills used in at least one of the same pieces of work. Derived, not
+   * curated — this is what the galaxy's edges are drawn from.
+   */
+  relatedSkills: { slug: string; label: string }[];
+}
+
+/** Everything the Skill Galaxy needs about one skill, resolved to real links. */
+export function getSkillEvidenceDetail(slug: string): SkillEvidenceDetail | undefined {
+  const skill = getSkillBySlug(slug);
+  if (!skill) return undefined;
+
+  const projects: SkillEvidenceLink[] = skill.projectSlugs
+    .map((projectSlug) => getProjectBySlug(projectSlug))
+    .filter((project): project is Project => Boolean(project))
+    .map((project) => ({
+      key: project.slug,
+      label: project.shortTitle ?? project.title,
+      meta: project.status,
+      href: project.caseStudy ? `/work/${project.slug}` : `/work#${project.slug}`,
+      external: false,
+    }));
+
+  const research: SkillEvidenceLink[] = skill.researchSlugs
+    .map((researchSlug) => getResearchBySlug(researchSlug))
+    .filter((entry): entry is ResearchProject => Boolean(entry))
+    .map((entry) => ({
+      key: entry.slug,
+      label: entry.title.split(' — ')[0],
+      meta: entry.publicStage,
+      href: `/research#research-${entry.slug}`,
+      external: false,
+    }));
+
+  const contributions: SkillEvidenceLink[] = skill.contributionIds
+    .map((id) => getContributionById(id))
+    .filter((contribution): contribution is OpenSourceContribution => Boolean(contribution))
+    .map((contribution) => ({
+      key: contribution.id,
+      label: `${contribution.repository.split('/')[1]}#${contribution.prNumber}`,
+      meta: contribution.status,
+      href: contribution.url,
+      external: true,
+    }));
+
+  return {
+    skill,
+    projects,
+    research,
+    contributions,
+    total: projects.length + research.length + contributions.length,
+    relatedSkills: getRelatedSkills(slug).map((relatedSlug) => {
+      const related = getSkillBySlug(relatedSlug);
+      return { slug: relatedSlug, label: related?.shortName ?? related?.name ?? relatedSlug };
+    }),
+  };
+}
+
+/**
+ * Skills that share a piece of work with this one.
+ *
+ * Co-occurrence, not similarity. Two skills are related here because they were
+ * genuinely used on the same project, research entry or pull request — which is
+ * a fact in the records — rather than because they feel like they belong to the
+ * same family, which would be an opinion.
+ */
+export function getRelatedSkills(slug: string): string[] {
+  const skill = getSkillBySlug(slug);
+  if (!skill) return [];
+
+  const mine = {
+    projects: new Set(skill.projectSlugs),
+    research: new Set(skill.researchSlugs),
+    contributions: new Set(skill.contributionIds),
+  };
+
+  return skills
+    .filter(
+      (other) =>
+        other.slug !== slug &&
+        (other.projectSlugs.some((s) => mine.projects.has(s)) ||
+          other.researchSlugs.some((s) => mine.research.has(s)) ||
+          other.contributionIds.some((s) => mine.contributions.has(s)))
+    )
+    .map((other) => other.slug);
+}
+
+export interface SkillGraphNode {
+  slug: string;
+  label: string;
+  category: SkillCategory;
+  color: string;
+  /** How many pieces of evidence back it. Drives node size. */
+  evidenceCount: number;
+}
+
+export interface SkillGraphEdge {
+  id: string;
+  from: string;
+  to: string;
+  /** How many pieces of work the two skills share. */
+  weight: number;
+  /** The shared work, for the "used together in" line. */
+  shared: string[];
+}
+
+export interface SkillGraph {
+  categories: { category: SkillCategory; skills: SkillGraphNode[] }[];
+  nodes: SkillGraphNode[];
+  edges: SkillGraphEdge[];
+}
+
+/**
+ * The skill ecosystem as a graph, grouped by category.
+ *
+ * Nodes are skills; **edges are shared work, not resemblance**. That is the
+ * whole point of the visualisation: the clusters that appear — Flutter beside
+ * Dart, BLE and cryptography; Python beside RAG and evaluation — appear because
+ * those technologies were used on the same thing, and a reader can open the
+ * thing and check.
+ *
+ * Categories with no skills are omitted rather than rendered as an empty
+ * cluster. Ordering is the canonical `SKILL_CATEGORIES` order, then each
+ * category's own `sortOrder`, so the layout is deterministic and identical on
+ * the server and the client.
+ */
+export function getSkillGraph(): SkillGraph {
+  const nodes: SkillGraphNode[] = skills.map((skill) => ({
+    slug: skill.slug,
+    label: skill.shortName ?? skill.name,
+    category: skill.category,
+    color: skill.color ?? '#14b8a6',
+    evidenceCount:
+      skill.projectSlugs.length + skill.researchSlugs.length + skill.contributionIds.length,
+  }));
+
+  const categories = SKILL_CATEGORIES.map((category) => ({
+    category,
+    skills: nodes
+      .filter((node) => node.category === category)
+      .sort((a, b) => {
+        const orderA = getSkillBySlug(a.slug)?.sortOrder ?? Number.MAX_SAFE_INTEGER;
+        const orderB = getSkillBySlug(b.slug)?.sortOrder ?? Number.MAX_SAFE_INTEGER;
+        return orderA - orderB || a.label.localeCompare(b.label);
+      }),
+  })).filter((group) => group.skills.length > 0);
+
+  // Undirected, so each pair is visited once.
+  const edges: SkillGraphEdge[] = [];
+  for (let i = 0; i < skills.length; i++) {
+    for (let j = i + 1; j < skills.length; j++) {
+      const a = skills[i];
+      const b = skills[j];
+      const shared = [
+        ...a.projectSlugs.filter((slug) => b.projectSlugs.includes(slug)),
+        ...a.researchSlugs.filter((slug) => b.researchSlugs.includes(slug)),
+        ...a.contributionIds.filter((id) => b.contributionIds.includes(id)),
+      ];
+      if (shared.length === 0) continue;
+      edges.push({
+        id: `${a.slug}--${b.slug}`,
+        from: a.slug,
+        to: b.slug,
+        weight: shared.length,
+        shared,
+      });
+    }
+  }
+
+  return { categories, nodes, edges };
+}
+
 // ───────────────────────────── Credentials ─────────────────────────────
 
 export function getAllCredentials(): Credential[] {

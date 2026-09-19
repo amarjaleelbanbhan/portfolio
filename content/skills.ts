@@ -18,7 +18,9 @@ export const skills: Skill[] = [
     category: 'Languages',
     color: '#3b82f6',
     projectSlugs: ['cortexward', 'knowledgeguard', 'meditalk'],
-    contributionIds: ['oss-pydantic-ai-5969', 'oss-mcts-233', 'oss-asf-dna-195'],
+    // Deliberately not oss-asf-dna-195: that change is one line of Markdown in
+    // a Python project, which is evidence of reading a README, not of Python.
+    contributionIds: ['oss-pydantic-ai-5969', 'oss-mcts-233'],
     researchSlugs: ['knowledgeguard', 'cortexward-verification'],
     featured: true,
     sortOrder: 1,
@@ -28,8 +30,8 @@ export const skills: Skill[] = [
     name: 'TypeScript',
     category: 'Languages',
     color: '#6366f1',
-    projectSlugs: ['veripatch', 'cs-learning-game', 'todo-tracker-pro', 'zakatlink'],
-    contributionIds: ['oss-promptfoo-9781', 'oss-eye-tracker-61'],
+    projectSlugs: ['veripatch', 'cs-learning-game', 'todo-tracker-pro', 'zakatlink', 'portfolio'],
+    contributionIds: ['oss-promptfoo-9781', 'oss-eye-tracker-61', 'oss-loop-engineering-437'],
     researchSlugs: [],
     featured: true,
     sortOrder: 2,
@@ -39,8 +41,9 @@ export const skills: Skill[] = [
     name: 'JavaScript',
     category: 'Languages',
     color: '#f59e0b',
-    projectSlugs: ['sceneforge', 'buildsphere', 'smart-notebook', 'eduresource-hub'],
-    contributionIds: ['oss-loop-engineering-395', 'oss-loop-engineering-437'],
+    projectSlugs: ['sceneforge', 'buildsphere', 'smart-notebook', 'eduresource-hub', 'portfolio'],
+    // Not oss-loop-engineering-395: that diff is action.yml and a README.
+    contributionIds: ['oss-loop-engineering-437'],
     researchSlugs: [],
     featured: true,
     sortOrder: 3,
@@ -98,7 +101,7 @@ export const skills: Skill[] = [
     name: 'Next.js',
     category: 'Frontend',
     color: '#14b8a6',
-    projectSlugs: ['rodift', 'cs-learning-game', 'buildsphere', 'smart-notebook'],
+    projectSlugs: ['rodift', 'cs-learning-game', 'buildsphere', 'smart-notebook', 'portfolio'],
     contributionIds: [],
     researchSlugs: [],
     featured: true,
@@ -109,7 +112,7 @@ export const skills: Skill[] = [
     name: 'React',
     category: 'Frontend',
     color: '#38bdf8',
-    projectSlugs: ['sceneforge', 'zakatlink'],
+    projectSlugs: ['sceneforge', 'zakatlink', 'portfolio'],
     contributionIds: [],
     researchSlugs: [],
     featured: true,
@@ -120,7 +123,7 @@ export const skills: Skill[] = [
     name: 'WebGL',
     category: 'Frontend',
     color: '#8b5cf6',
-    projectSlugs: ['buildsphere'],
+    projectSlugs: ['buildsphere', 'portfolio'],
     contributionIds: [],
     researchSlugs: [],
     featured: false,
@@ -143,7 +146,7 @@ export const skills: Skill[] = [
     name: 'Supabase',
     category: 'Backend',
     color: '#22c55e',
-    projectSlugs: ['rodift'],
+    projectSlugs: ['rodift', 'portfolio'],
     contributionIds: [],
     researchSlugs: [],
     featured: true,
@@ -282,16 +285,10 @@ export const skills: Skill[] = [
     featured: true,
     sortOrder: 2,
   },
-  {
-    slug: 'linux',
-    name: 'Linux',
-    category: 'Systems',
-    color: '#94a3b8',
-    projectSlugs: [],
-    contributionIds: [],
-    researchSlugs: [],
-    featured: false,
-  },
+  // Linux was listed here with no project, contribution or research behind it.
+  // A skill's claim to exist in this model is the work it points at, so it was
+  // removed in Phase 16 rather than left as an unevidenced label. Restore it
+  // the moment there is something to attach.
 
   // ─────────────────────── Infrastructure / Tools ───────────────────────
   {
@@ -304,6 +301,20 @@ export const skills: Skill[] = [
     researchSlugs: ['cortexward-verification'],
     featured: true,
     sortOrder: 1,
+  },
+  {
+    slug: 'github-actions',
+    name: 'GitHub Actions',
+    category: 'Infrastructure',
+    color: '#94a3b8',
+    shortName: 'Actions',
+    projectSlugs: ['portfolio'],
+    // The loop-action hardening: the diff is action.yml and its README, which
+    // is Actions work rather than work in any of the languages above.
+    contributionIds: ['oss-loop-engineering-395'],
+    researchSlugs: [],
+    featured: false,
+    sortOrder: 2,
   },
   {
     slug: 'cli',

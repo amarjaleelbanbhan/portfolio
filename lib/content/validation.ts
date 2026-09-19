@@ -719,6 +719,39 @@ export function validateContent(): ContentIssue[] {
     for (const slug of skill.researchSlugs) {
       if (!researchSlugs.has(slug)) add('skill', ref, `references nonexistent research "${slug}"`);
     }
+
+    // Phase 16's central rule. A skill's claim to exist in this model is the
+    // work it points at; a label with nothing behind it is exactly the
+    // self-assessed "Python 90%" that Phase 1 removed, just without the number.
+    // `linux` was carrying no evidence at all and was removed rather than
+    // grandfathered.
+    if (
+      skill.projectSlugs.length === 0 &&
+      skill.contributionIds.length === 0 &&
+      skill.researchSlugs.length === 0
+    ) {
+      add('skill', ref, 'has no project, contribution or research evidence');
+    }
+
+    // A language skill citing a pull request has to be cited back. This caught
+    // two real errors: `python` claimed a one-line Markdown README fix, and
+    // `javascript` claimed a diff consisting of action.yml and a README.
+    if (skill.category === 'Languages') {
+      for (const id of skill.contributionIds) {
+        const contribution = openSourceContributions.find((c) => c.id === id);
+        if (!contribution) continue;
+        const named = contribution.languages.some(
+          (language) => language.toLowerCase() === skill.name.toLowerCase()
+        );
+        if (!named) {
+          add(
+            'skill',
+            ref,
+            `cites ${contribution.repository}#${contribution.prNumber} as evidence, but that change is in ${contribution.languages.join(', ')}`
+          );
+        }
+      }
+    }
   }
 
   // ───────────────────────────── Credentials ─────────────────────────────

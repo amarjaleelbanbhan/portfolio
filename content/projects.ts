@@ -1495,6 +1495,62 @@ limitations: [
     note: 'Not published to the VS Code Marketplace.',
     proof: [],
   },
+  {
+    id: 'prj-portfolio',
+    slug: 'portfolio',
+    title: 'amarjaleel.me',
+    shortTitle: 'Portfolio',
+    summary:
+      'This site. A content layer with an integrity gate that fails the build on a bad reference, a WebGL engineering core that degrades to a real 2D fallback, and a Supabase-backed client enquiry flow.',
+    tier: 'secondary',
+    // Live and in use, but under active rebuild — the admin and CMS work is not
+    // done. "Production" is reserved for systems an organisation depends on.
+    status: 'active-development',
+    domains: ['product'],
+    featured: false,
+    sortOrder: 5,
+    updatedAt: '2026-09-20',
+    limitations: [
+      'Content lives in typed TypeScript modules, not a database. The admin CMS that would replace them is not built.',
+      'The client enquiry flow writes to Supabase; nothing else on the public site reads from it.',
+    ],
+    technologies: ['typescript', 'javascript', 'nextjs', 'react', 'webgl', 'supabase'],
+    tags: ['Next.js', 'React', 'TypeScript', 'Three.js', 'Supabase', 'Tailwind'],
+    links: {
+      repository: 'https://github.com/amarjaleelbanbhan/portfolio',
+      demo: 'https://amarjaleel.me',
+    },
+    source: {
+      visibility: 'public',
+      repositoryUrl: 'https://github.com/amarjaleelbanbhan/portfolio',
+    },
+    problem:
+      'A portfolio that claims engineering ability has to survive being read as evidence. The hard part is not the visuals — it is keeping every number, status and technology on the site tied to something that can be checked, so nothing drifts into a claim nobody verified.',
+    role:
+      'Sole engineer. Content model, selector layer, validation gate, design and motion system, the 3D core, and the client funnel.',
+    proof: [
+      {
+        id: 'portfolio-deployment',
+        type: 'deployment',
+        label: 'Live',
+        value: 'amarjaleel.me',
+        description: 'Deployed and serving; checked against the live origin.',
+        sourceUrl: 'https://amarjaleel.me',
+        verified: true,
+        asOf: '2026-09-20',
+      },
+      {
+        id: 'portfolio-ci',
+        type: 'ci',
+        label: 'CI gate on every push',
+        description:
+          'Content validation, lint and a production build run on every push and pull request. A dangling content reference fails the build rather than shipping.',
+        sourceUrl: 'https://github.com/amarjaleelbanbhan/portfolio',
+        verified: true,
+        asOf: '2026-09-20',
+      },
+    ],
+  },
 
   // ─────────────────────────── Current FYP ───────────────────────────
   {
