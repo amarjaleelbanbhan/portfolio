@@ -1474,35 +1474,69 @@ console or hydration errors, no overflow at 360/390/430 px, reduced motion clean
 
 # PHASE 9 — VERIPATCH CASE STUDY
 
-Interactive pipeline:
-
-- [ ] Scan
-- [ ] Detect vulnerability
-- [ ] Choose remediation
-- [ ] Copy project
-- [ ] Docker sandbox
-- [ ] Safe install
-- [ ] Rescan
-- [ ] Build/test
-- [ ] Evidence report
-
-Also show:
-
-- [ ] OSV
-- [ ] lockfile handling
-- [ ] threat model
-- [ ] npm package
-- [ ] property-based tests
-- [ ] real pnpm parsing defect/fix
-- [ ] remaining limitations
-
 ## Phase Completion
 
-- [ ] Phase 9 complete
+- [x] Phase 9 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Route: `/work/veripatch`.
+
+**Evidence source.** The repository is public and Apache-2.0 licensed, so every
+claim on the page can be checked against it. Reviewed 2026-09-19: the README,
+`docs/SECURITY.md`, `package.json`, the test layout, the GitHub releases and the
+npm registry. Verified facts: five published versions (0.1.0 through 0.3.1),
+current release v0.3.1, nine GitHub releases, Node 20+, and dependencies
+including dockerode, better-sqlite3, semver and zod.
+
+**The narrative is the project's own thesis** — a dependency bump is not a
+verified remediation — and the pipeline is described stage by stage: scan a
+lockfile against OSV.dev, rank by severity against fix feasibility, apply a
+candidate fix to a staged copy inside a hardened Docker sandbox, independently
+re-scan the resolved tree, run build and tests, emit Markdown and JSON evidence.
+
+**Decisions with their costs**, all from the documentation: verdicts computed
+from exit codes and an independent re-scan with no log-text heuristics (slower);
+install with lifecycle scripts disabled (packages needing a postinstall are not
+exercised realistically); a structural invariant that a fix can only be a version
+bump of the same package, covered by property-based tests (a vulnerability whose
+only remedy is switching packages cannot be automated); yarn and pnpm verification
+explicitly refused rather than risking lockfile corruption (a large share of real
+projects can be scanned but not verified); and verification against a staged copy
+excluding `.git` and `.env` files so the sandbox never sees the working tree or
+secrets.
+
+**Residual risks reproduced, not softened.** The project documents three and all
+three are on the page: network isolation is bridge-level rather than
+domain-level, so the real defence against a malicious postinstall is that
+lifecycle scripts are disabled; a confidence verdict reflects the project's own
+build and test commands exiting successfully, not whether those checks are
+honest, though the re-scan independently confirms the vulnerability is gone; and
+Docker containers share the host kernel, so a runtime container escape is out of
+scope. These were added to the canonical `limitations`, so they appear on the
+work card as well as the case study.
+
+**Verification evidence:** six separated test categories (unit, integration,
+contract, e2e, bench, fixtures) under Vitest, property-based testing with
+fast-check on the fix-resolver invariant, and architectural boundaries enforced
+mechanically by `eslint-plugin-boundaries` rather than by review.
+
+**No invented numbers.** No download counts, customers, users or revenue are
+claimed — a browser assertion checks for them. No illustrative CLI output was
+fabricated; the page describes the pipeline rather than showing a simulated
+terminal session, because a convincing fake run would be the one thing on the
+page that could not be checked against the repository.
+
+**Browser-verified**, 30 checks: 200 with a single `<h1>`, no empty section
+headings, repository and npm links present, no private marker on a public
+project, every pipeline stage described, all three residual risks present, the
+yarn/pnpm refusal documented, no "completely secure" style claim, v0.3.1 stated,
+no invented figures, correct canonical, zero console or hydration errors, no
+overflow at 360/390/430/768 px, reduced motion clean, both case studies linked
+from `/work` and **only** the two that exist, a project without a case study
+404ing, the homepage Core and five-stage story still intact with exactly two
+canvases, and `/hire`, `/studio/request`, `/studio/admin`, `/projects`,
+`/skills`, `/certifications` and `/contact` all still 200.
 
 ---
 

@@ -254,6 +254,12 @@ export const projects: Project[] = [
     role: 'Author and maintainer.',
     problem:
       'Dependency auto-fixes are applied on trust: nothing proves the vulnerability is gone or that the fix did not break the project.',
+    limitations: [
+      'Network isolation is bridge-level, not domain-level: during the install phase the container has general egress, so the real defence against a malicious postinstall is that lifecycle scripts are disabled, not the network boundary.',
+      'A confidence verdict reflects the project\'s own build and test commands exiting successfully, not whether those checks are honest. The re-scan independently confirms the vulnerability is gone; it does not re-verify the project\'s test assertions.',
+      'Docker containers share the host kernel, so a container-escape vulnerability in the runtime itself is outside what this can mitigate.',
+      'Verification and update replay fixes with npm; yarn and pnpm projects are refused rather than risking lockfile corruption.',
+    ],
     technologies: ['typescript', 'nodejs', 'docker', 'cli'],
     tags: ['TypeScript', 'Node.js', 'CLI', 'Docker', 'Security'],
     links: {
@@ -265,6 +271,180 @@ export const projects: Project[] = [
       repositoryUrl: 'https://github.com/amarjaleelbanbhan/VeriPatch',
     },
     note: 'Published on npm (v0.3.1).',
+    // Derived from the public repository, its README, docs/SECURITY.md and the
+    // npm registry, reviewed 2026-09-19. Every claim below appears in that
+    // source material, including the residual risks, which the project documents
+    // itself and this page reproduces rather than softening.
+    caseStudy: {
+      context:
+        'Dependency scanners produce a queue of advisories and an automated fix command. What neither produces is evidence: after the bump, nothing has checked that the vulnerable package is actually gone from the resolved tree, or that the project still builds. The fix is applied on trust.',
+      constraints: [
+        'The code being verified is attacker-controlled input. A package.json, a lockfile or an installed package can be crafted to attack the parser or to run code during install.',
+        'Verification has to execute the project\'s own install, build and test commands, which means running untrusted code on a developer machine or a CI runner.',
+        'Advisory data arrives over the network from a third party and cannot be trusted blindly.',
+        'The original working tree must never be modified by a verification run.',
+        'It has to be usable in CI, which means deterministic exit codes and machine-readable output rather than log text.',
+      ],
+      built:
+        'A TypeScript CLI, published on npm under Apache-2.0, that scans a lockfile against OSV.dev, ranks findings by severity against fix feasibility, applies a candidate remediation to a staged copy of the project inside a hardened Docker sandbox, independently re-scans the resolved dependency tree, runs the build and tests, and emits a Markdown and JSON evidence report describing what was actually observed.',
+      architecture: {
+        summary:
+          'Two paths from one CLI: a read-only scan that produces a ranked queue, and a verification run that executes inside a container and ends in an evidence report. The verdict comes from exit codes and an independent re-scan, never from parsing log text.',
+        nodes: [
+          { id: 'cli', label: 'VeriPatch CLI', kind: 'client', detail: 'Node 20+, commander' },
+          { id: 'lockfile', label: 'Lockfile parser', kind: 'process', detail: 'npm, yarn, pnpm' },
+          { id: 'osv', label: 'OSV.dev', kind: 'external', detail: 'Advisory intelligence' },
+          { id: 'rules', label: 'Rule engine', kind: 'service', detail: 'Ranking and fix resolver' },
+          { id: 'stage', label: 'Staged copy', kind: 'process', detail: 'Excludes .git and .env' },
+          { id: 'sandbox', label: 'Docker sandbox', kind: 'service', detail: 'Non-root, caps dropped' },
+          { id: 'rescan', label: 'Independent re-scan', kind: 'process', detail: 'Resolved tree' },
+          { id: 'report', label: 'Evidence report', kind: 'data', detail: 'Markdown and JSON' },
+        ],
+        flows: [
+          { from: 'cli', to: 'lockfile', label: 'parse' },
+          { from: 'lockfile', to: 'osv', label: 'query' },
+          { from: 'osv', to: 'rules', label: 'advisories' },
+          { from: 'rules', to: 'stage', label: 'candidate fix' },
+          { from: 'stage', to: 'sandbox', label: 'mount copy' },
+          { from: 'sandbox', to: 'rescan', label: 'resolved tree' },
+          { from: 'rescan', to: 'report', label: 'verdict' },
+        ],
+        caveat:
+          'Architecture as described in the project\'s own documentation. The repository is public, so this can be checked directly against the source rather than taken on trust.',
+      },
+      decisions: [
+        {
+          id: 'veripatch-rescan-not-logs',
+          title: 'Decide from an independent re-scan, never from log text',
+          decision:
+            'A verification verdict is computed from process exit codes, an independent re-scan of the resolved dependency tree, the build result and the test result. No decision is made by matching strings in output.',
+          rationale:
+            'Log-text heuristics are what make a tool confidently wrong. Re-scanning the tree checks the thing that actually matters — whether the vulnerable package is still resolved — instead of whether the fixer said it succeeded.',
+          tradeoff:
+            'A re-scan and a full install cost far more time than reading a fixer\'s output, so verification is measured in minutes rather than seconds.',
+        },
+        {
+          id: 'veripatch-ignore-scripts',
+          title: 'Install with lifecycle scripts disabled',
+          decision:
+            'The sandboxed install runs with lifecycle scripts disabled, so a malicious postinstall in a scanned or bumped dependency never executes at all.',
+          rationale:
+            'Install-time script execution is the actual attack path for a hostile package. Disabling it removes the vector rather than trying to contain it after it runs.',
+          tradeoff:
+            'Packages that genuinely need a postinstall step — native builds, for example — will not be exercised the way they would be in a real install.',
+        },
+        {
+          id: 'veripatch-same-package',
+          title: 'A fix can only ever be a version bump of the same package',
+          decision:
+            'The fix resolver enforces structurally that a remediation is a version change to the same package, never a substitution with a different one, and the invariant is covered by property-based tests.',
+          rationale:
+            'Advisory data comes from the network. If poisoned data could name a replacement package, the tool would become a delivery mechanism for dependency confusion.',
+          tradeoff:
+            'A vulnerability whose only real remedy is switching to a different package cannot be remediated automatically; it has to be reported and handled by a person.',
+        },
+        {
+          id: 'veripatch-refuse-yarn-pnpm',
+          title: 'Refuse to verify yarn and pnpm projects rather than guess',
+          decision:
+            'Scanning supports npm, yarn classic, yarn berry and pnpm lockfiles, but verify and update replay fixes with npm only. Yarn and pnpm projects are explicitly refused instead of being attempted.',
+          rationale:
+            'Replaying an npm fix into a yarn or pnpm lockfile risks corrupting it. Refusing is honest about the tool\'s reach; attempting it would trade a clear limitation for a silent one.',
+          tradeoff:
+            'A large share of real projects can be scanned but not verified, which is tracked as open work rather than presented as solved.',
+        },
+        {
+          id: 'veripatch-staged-copy',
+          title: 'Verify a staged copy, never the working tree',
+          decision:
+            'The container bind-mounts a staged copy of the project that excludes node_modules, .git and any .env file, so the original tree and any secrets in it are never exposed to the sandbox.',
+          rationale:
+            'Verification deliberately runs untrusted code. Giving it the developer\'s real working tree — including credentials and git history — would make the tool the risk it exists to reduce.',
+          tradeoff:
+            'Staging a copy costs disk and time on every run, and a project that depends on git metadata at build time will not behave identically inside the sandbox.',
+        },
+      ],
+      concerns: [
+        {
+          id: 'veripatch-container',
+          title: 'Hardened container',
+          detail:
+            'The sandbox runs as a non-root user with all capabilities dropped, no-new-privileges set, pid, memory and CPU limits applied, and the container removed on teardown.',
+        },
+        {
+          id: 'veripatch-network-phases',
+          title: 'Two-phase network',
+          detail:
+            'The container gets a dedicated per-run bridge network during install, then is fully disconnected before the build and test phases run.',
+        },
+        {
+          id: 'veripatch-parsers',
+          title: 'Hostile lockfiles are parsed defensively',
+          detail:
+            'Inputs are size-capped before parsing, handled only by real parsers rather than evaluation, stripped recursively of prototype-pollution keys, and validated against the real npm package-name grammar. Yarn classic uses a deliberately rigid grammar where anything unexpected is a hard error rather than a guess.',
+        },
+        {
+          id: 'veripatch-advisory-validation',
+          title: 'Advisory data is validated at the boundary',
+          detail:
+            'Advisories arrive over HTTPS with certificate validation and are schema-validated at the OSV adapter; malformed entries are dropped and counted rather than trusted.',
+        },
+        {
+          id: 'veripatch-injection',
+          title: 'Report and terminal injection',
+          detail:
+            'Every externally sourced string — advisory text, package names, sandboxed process output — is ANSI-stripped and metacharacter-escaped before it reaches a terminal or a Markdown report.',
+        },
+        {
+          id: 'veripatch-own-supply-chain',
+          title: 'Its own supply chain',
+          detail:
+            'Minimal dependencies, a committed lockfile, GitHub Actions pinned by commit SHA, and publishing with provenance. The tool writes only inside its own project-local and home cache directories, handles no secrets and sends no telemetry.',
+        },
+      ],
+      verification: [
+        {
+          id: 'veripatch-test-layers',
+          label: 'Six categories of test',
+          detail:
+            'The repository separates unit, integration, contract, end-to-end, benchmark and fixture suites, run with Vitest under a single check script alongside type-checking, linting and format verification.',
+          verified: true,
+        },
+        {
+          id: 'veripatch-property-tests',
+          label: 'Property-based tests on the fix resolver',
+          detail:
+            'fast-check is used to cover the invariant that a resolved fix is always a version bump of the same package, which is the property that keeps poisoned advisory data from becoming a package substitution.',
+          verified: true,
+        },
+        {
+          id: 'veripatch-boundaries',
+          label: 'Architectural boundaries enforced by lint',
+          detail:
+            'eslint-plugin-boundaries enforces the separation between cli, core, services, adapters and shared, so the layering is checked mechanically rather than by review.',
+          verified: true,
+        },
+        {
+          id: 'veripatch-published',
+          label: 'Published and released',
+          detail:
+            'Five versions published to npm under Apache-2.0, current release v0.3.1, with nine GitHub releases.',
+          verified: true,
+        },
+      ],
+      results: [
+        'The CLI contract and the report.json schema are treated as stable, while the project itself is deliberately still pre-1.0.',
+        'Scanning covers npm v2 and v3 lockfiles, yarn classic, yarn berry and pnpm v6 and v9; verification and update are npm-only by design.',
+        'Ranking orders findings by severity against fix feasibility, so the output is a remediation queue rather than an undifferentiated alert list.',
+      ],
+      timeline: [
+        { id: 'veripatch-v01', label: 'v0.1.0 published', detail: 'First npm release.', date: '2026-07-03' },
+        { id: 'veripatch-v02', label: 'v0.2.0', detail: 'Second published version.', date: '2026-07-04' },
+        { id: 'veripatch-v031', label: 'v0.3.1 current', detail: 'Current published release.', date: '2026-07-04' },
+      ],
+      disclosure:
+        'The repository is public and Apache-2.0 licensed, so everything described here can be checked against the source. The residual risks below are the project\'s own documented limitations, reproduced rather than softened: a successful verification is not a claim that a package or an application is secure.',
+    },
     proof: [
       {
         id: 'veripatch-npm',
