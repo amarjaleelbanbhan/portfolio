@@ -200,7 +200,7 @@ export default function Hire() {
             <Link href="/studio/request" className={styles.primaryButton}>Tell me what you need →</Link>
             <div className={styles.finalLinks}>
               <Link href="/studio">View agency page</Link>
-              <Link href="/projects">View technical work</Link>
+              <Link href="/work">View technical work</Link>
               <Link href="/">About Amar</Link>
             </div>
           </section>

@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -55,9 +56,20 @@ const contributions = getContributionsForDisplay();
 export default function Projects() {
   return (
     <>
+      {/*
+        Legacy route. /work is the canonical engineering-work destination as of
+        Phase 6, but this page stays fully functional because existing links use
+        its hash anchors (/projects#rodift and friends), and a redirect would
+        stake those links on fragment preservation surviving a 3xx.
+
+        `path` points the canonical at /work, which consolidates ranking signals
+        onto the new page. It is still exactly one canonical tag — Seo emits a
+        single link element — so there is no conflicting canonical here.
+      */}
       <Seo
         title="Projects — Amar Jaleel"
-        description="Amar Jaleel's portfolio of projects spanning AI, cybersecurity, full-stack development, and data analytics."
+        description="Amar Jaleel's engineering projects. The current and canonical listing lives at amarjaleel.me/work."
+        path="/work"
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
@@ -69,6 +81,24 @@ export default function Projects() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
+            {/* Every anchor on this page still resolves; the banner simply
+                points visitors at the maintained version. */}
+            <div className="surface-card p-4 mb-6 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span className="font-code text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                Moved
+              </span>
+              <p className="text-sm text-slate-300 m-0">
+                The current engineering portfolio now lives at{' '}
+                <Link
+                  href="/work"
+                  className="text-neon-cyan hover:text-white underline decoration-dotted underline-offset-4"
+                >
+                  /work
+                </Link>
+                . This page is kept so existing links keep working.
+              </p>
+            </div>
+
             <p className="section-label mb-2">{'// portfolio'}</p>
             <h1 className="section-heading mb-3">Things I&apos;ve Built</h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">

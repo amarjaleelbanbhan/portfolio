@@ -81,7 +81,7 @@ export default function Certifications() {
             <h1 className="section-heading mb-3">Credentials</h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">
               Supporting evidence, not the main story — the engineering work on the{' '}
-              <Link href="/projects" className="text-neon-cyan hover:underline">projects page</Link>{' '}
+              <Link href="/work" className="text-neon-cyan hover:underline">work page</Link>{' '}
               is what I would rather be judged on. Every credential below links to its issuer for
               verification.
             </p>

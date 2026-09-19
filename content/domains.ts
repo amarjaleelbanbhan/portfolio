@@ -43,7 +43,7 @@ export const coreDomains: DomainMeta[] = [
     label: 'Product',
     description:
       'End-to-end applications people actually use — a field-reporting platform running in production, plus web and mobile products built to ship rather than to demo.',
-    href: '/projects#rodift',
+    href: '/work#rodift',
     angle: 0,
     technologies: ['flutter', 'nextjs', 'postgresql', 'supabase'],
   },
@@ -52,7 +52,7 @@ export const coreDomains: DomainMeta[] = [
     label: 'AI',
     description:
       'Applied AI and retrieval research: a controlled study on evidence deficiency in RAG, agent tooling, and evaluation harnesses that measure whether a system is actually right.',
-    href: '/projects#knowledgeguard',
+    href: '/work#knowledgeguard',
     angle: 72,
     technologies: ['rag', 'llm-agents', 'evaluation', 'python'],
   },
@@ -61,7 +61,7 @@ export const coreDomains: DomainMeta[] = [
     label: 'Security',
     description:
       'Developer and security tooling — a published npm CLI that verifies vulnerability fixes inside a sandbox before trusting them, and static analysis for agent codebases.',
-    href: '/projects#veripatch',
+    href: '/work#veripatch',
     angle: 144,
     technologies: ['static-analysis', 'docker', 'cli', 'nodejs'],
   },
@@ -70,7 +70,7 @@ export const coreDomains: DomainMeta[] = [
     label: 'Systems',
     description:
       'Lower-level engineering: offline mesh networking over BLE with end-to-end encryption, media pipelines, and an operating-environment research project.',
-    href: '/projects#emergency-mesh',
+    href: '/work#emergency-mesh',
     angle: 216,
     technologies: ['ble', 'cryptography', 'ffmpeg', 'kotlin'],
   },
@@ -79,7 +79,7 @@ export const coreDomains: DomainMeta[] = [
     label: 'Open Source',
     description:
       'Upstream contributions merged into projects maintained by other people, including Pydantic AI, Promptfoo and the Academy Software Foundation.',
-    href: '/projects#open-source',
+    href: '/work#open-source',
     angle: 288,
   },
 ];

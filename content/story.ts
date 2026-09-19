@@ -76,7 +76,7 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Illustrative architecture, not a recording of the client system. This is a client-owned platform: no operational data, screenshots or business outcomes are shown.',
-    href: '/projects#rodift',
+    href: '/work#rodift',
   },
   {
     id: 'story-verified',
@@ -100,7 +100,7 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Illustrative pipeline. Verifying a specific advisory is eliminated is not the same as eliminating all vulnerabilities or supply-chain risk, and this does not claim to.',
-    href: '/projects#veripatch',
+    href: '/work#veripatch',
   },
   {
     id: 'story-researched',
@@ -122,7 +122,7 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Illustrative design, not a results chart. The study asks whether typed diagnosis carries actionable information; it does not establish a universal or final repair policy. The repository is private, so the benchmark and analysis are not currently publishable.',
-    href: '/projects#knowledgeguard',
+    href: '/work#knowledgeguard',
   },
   {
     id: 'story-systems',
@@ -144,7 +144,7 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Illustrative protocol simulation, not a recording of deployed hardware. The protocol, routing, cryptography, persistence and native BLE transport are built and tested, but real multi-hop relay across physical devices is not yet fully validated, and this is not suitable for real emergencies.',
-    href: '/projects#emergency-mesh',
+    href: '/work#emergency-mesh',
   },
   {
     id: 'story-contributed',
@@ -165,6 +165,6 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Statuses are read from the canonical contribution records. Open pull requests are shown as open; nothing here is a contribution score or a simulated activity graph.',
-    href: '/projects#open-source',
+    href: '/work#open-source',
   },
 ];

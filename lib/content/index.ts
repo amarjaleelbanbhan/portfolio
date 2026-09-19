@@ -39,6 +39,7 @@ export type {
 } from '@/content/types';
 
 export {
+  DOMAINS,
   PROJECT_STATUSES,
   PROJECT_TIERS,
   PROOF_TYPES,

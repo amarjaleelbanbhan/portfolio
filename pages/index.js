@@ -147,7 +147,7 @@ export default function Home() {
                 FEATURED_PROJECTS
               </h2>
               <Link
-                href="/projects"
+                href="/work"
                 className="text-sm font-medium text-neon-cyan hover:text-white transition-colors font-code"
               >
                 View all projects →
@@ -175,7 +175,7 @@ export default function Home() {
             className="text-center mt-10"
           >
             <Link
-              href="/projects"
+              href="/work"
               className="inline-flex items-center gap-2 px-6 py-3 border border-neon-cyan/30 text-neon-cyan font-semibold rounded-lg hover:border-neon-cyan hover:bg-neon-cyan/8 transition-all duration-300 text-sm font-code"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

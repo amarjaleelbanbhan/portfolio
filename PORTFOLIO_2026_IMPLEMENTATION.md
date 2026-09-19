@@ -1222,40 +1222,94 @@ Create:
 
 ## Categories
 
-- [ ] Production / Product Engineering
-- [ ] Security & Developer Tools
-- [ ] Applied AI / Research Systems
-- [ ] Systems Engineering
-- [ ] Secondary / Experimental Work
+Groups come from the canonical tier selectors rather than from category arrays
+in the page, so tier is the single definition of where a project belongs.
+
+- [x] Production / Product Engineering
+- [x] Security & Developer Tools
+- [x] Applied AI / Research Systems
+- [x] Systems Engineering
+- [x] Secondary / Experimental Work
 
 ## Featured Priority
 
-- [ ] RODIFT
-- [ ] VeriPatch
-- [ ] KnowledgeGuard
-- [ ] CortexWard
-- [ ] SceneForge
+- [x] RODIFT
+- [x] VeriPatch
+- [x] KnowledgeGuard
+- [x] CortexWard
+- [x] SceneForge
 
 Secondary:
 
-- [ ] Emergency Mesh
-- [ ] CS Learning by Game
-- [ ] BuildSphere
-- [ ] TODO Tracker Pro
+- [x] Emergency Mesh
+- [x] CS Learning by Game
+- [x] BuildSphere
+- [x] TODO Tracker Pro
 
 Archive/past:
 
-- [ ] ZakatLink if retained
-- [ ] older educational work
-- [ ] MediTalk historical prototype if retained
+- [x] ZakatLink if retained
+- [x] older educational work
+- [x] MediTalk historical prototype if retained
 
 ## Phase Completion
 
-- [ ] Phase 6 complete
+- [x] Phase 6 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Deliverable: `docs/portfolio-2026/work-page.md`.
+
+**One source for grouping.** Featured, secondary, current FYP and archive come
+straight from the tier selectors; the page contains no project list. Filter
+options are derived from the domains projects actually carry, so a domain with
+nothing behind it cannot render as a dead button.
+
+**Conditional fields, not placeholder text.** Only RODIFT and VeriPatch have
+populated `problem` and `role`. `FeaturedProjectCard` renders each block —
+heading included — only when the field exists, so KnowledgeGuard, CortexWard and
+SceneForge simply do not show those sections rather than showing an empty heading
+or invented prose. Phases 7-9 populate them from real evidence.
+
+**Visuals extracted, not duplicated.** The slug-keyed visual map moved out of
+ProjectCard into `components/project-visuals.js` so the compact card and the
+featured card read from one source. Two copies would let a flagship show its
+bespoke treatment in one place and the generic fallback in the other. Verified in
+the browser: all five flagship accents present, distinct, and none equal to the
+fallback.
+
+**A real collision this surfaced:** VeriPatch and CortexWard both used `#f97316`.
+Invisible until they sat adjacent as flagships on this page; VeriPatch moved to
+`#fbbf24`.
+
+**Legacy compatibility without a redirect.** `/projects` stays a fully working
+page. A redirect would have staked every existing `/projects#rodift` link on
+fragment preservation surviving a 3xx, which is an unnecessary dependency when
+keeping the page costs nothing — and it also preserves the SecretProject easter
+egg. Consolidation is a cross-canonical: `/projects` passes `path="/work"` to the
+existing Seo component, emitting exactly one canonical pointing at `/work`, with
+one robots tag and no conflict. `/projects` left the sitemap, `/work` took its
+place, and a banner points visitors to the maintained page.
+
+**Navigation.** Navbar, Footer, Hero CTAs, homepage CTAs, hire, studio,
+certifications, the five Engineering Core destinations and the five homepage
+story destinations all now point at `/work`, with `EXISTING_ROUTES` updated in
+the same change so route validation never went red.
+
+**Browser-verified** on a production build, 40 checks: all 14 projects in the
+right groups with working anchors, one `<h1>`, SCAR-OS named correctly with
+Research status and no trace of the old name, no Bus Reservation System, zero
+private repository URLs with five private markers, domain filtering and search
+working with `aria-checked` and arrow-key navigation, an empty-state message that
+clears back to 14, nothing left transparent after filtering, all legacy
+`/projects#` anchors resolving, one canonical on each page, no overflow at
+360/390/430/768 px, reduced motion clean, the Engineering Core still interactive
+with exactly two canvases, and `/hire`, `/studio/request` and `/studio/admin`
+unaffected.
+
+**Not done, by design:** cards do not link to case studies, because `/work/[slug]`
+does not exist yet and public buttons must not point at unbuilt routes. Phase 7
+adds the routes and wires them.
 
 ---
 

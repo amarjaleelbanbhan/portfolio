@@ -345,7 +345,7 @@ export default function Studio() {
               <p>Software engineering · web systems · automation</p>
               <div className={styles.contactActions}>
                 <Link className={styles.darkButton} href="/studio/request">Tell me what is broken</Link>
-                <Link className={styles.textLink} href="/projects">View technical work →</Link>
+                <Link className={styles.textLink} href="/work">View technical work →</Link>
               </div>
             </div>
           </section>

@@ -189,14 +189,14 @@ export default function Hero() {
               className="flex flex-wrap gap-3"
             >
               <Link
-                href="/projects"
+                href="/work"
                 className="group px-6 py-3.5 bg-neon-cyan text-midnight font-bold rounded-lg shadow-lg shadow-neon-cyan/30 hover:bg-neon-green hover:shadow-neon-green/30 transition-all duration-300 text-sm flex items-center gap-2"
               >
                 Explore Engineering Work
                 <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
               </Link>
               <Link
-                href="/projects#open-source"
+                href="/work#open-source"
                 className="px-6 py-3.5 border border-neon-green/40 text-neon-green font-semibold rounded-lg hover:border-neon-green hover:bg-neon-green/8 transition-all duration-300 text-sm"
               >
                 View Open Source
