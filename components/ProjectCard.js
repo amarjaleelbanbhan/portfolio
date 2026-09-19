@@ -1,4 +1,7 @@
 import { motion } from 'framer-motion';
+import { hoverLift } from '@/lib/motion';
+import StatusBadge from '@/components/ui/StatusBadge';
+import TechTag from '@/components/ui/TechTag';
 
 // Keyed by project slug, never by display title: renaming a project must not
 // silently drop it back to the generic fallback visual.
@@ -182,28 +185,12 @@ const defaultVisual = {
   ),
 };
 
-// Status colours follow meaning, not decoration: shipped work reads green,
-// in-flight work amber, exploratory work violet, retired work grey.
-// Keyed by the canonical ProjectStatus value. Public labels are formatted here,
-// so display wording never leaks back into the data model.
-const statusStyles = {
-  production:           { color: '#22c55e', label: 'Production' },
-  released:             { color: '#22c55e', label: 'Released' },
-  'active-development': { color: '#f59e0b', label: 'Active Development' },
-  research:             { color: '#8b5cf6', label: 'Research' },
-  prototype:            { color: '#38bdf8', label: 'Prototype' },
-  'pre-alpha':          { color: '#f97316', label: 'Pre-alpha' },
-  completed:            { color: '#14b8a6', label: 'Completed' },
-  archived:             { color: '#64748b', label: 'Archived' },
-};
-
 /**
  * Renders a canonical Project. Only links that actually exist are rendered, and
  * a non-public source shows an honest marker instead of a button that 404s.
  */
 export default function ProjectCard({ slug, title, summary, tags, status, note, links = {}, source }) {
   const visual = projectVisuals[slug] || defaultVisual;
-  const statusStyle = status ? statusStyles[status] : null;
   const repositoryUrl = links.repository;
   const demoLink = links.demo || links.package;
   const demoLabel = links.demo ? 'Live Demo' : links.package ? 'Package' : null;
@@ -212,8 +199,7 @@ export default function ProjectCard({ slug, title, summary, tags, status, note, 
 
   return (
     <motion.article
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      {...hoverLift}
       className="surface-card group relative h-full flex flex-col overflow-hidden"
       style={{ '--card-accent': visual.accent }}
     >
@@ -253,18 +239,7 @@ export default function ProjectCard({ slug, title, summary, tags, status, note, 
           <h3 className="text-base font-semibold text-slate-50 group-hover:text-white transition-colors">
             {title}
           </h3>
-          {statusStyle && (
-            <span
-              className="shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded font-code whitespace-nowrap"
-              style={{
-                color: statusStyle.color,
-                background: `${statusStyle.color}14`,
-                border: `1px solid ${statusStyle.color}33`,
-              }}
-            >
-              {statusStyle.label}
-            </span>
-          )}
+          <StatusBadge status={status} />
         </div>
         <p className="text-slate-400 text-sm leading-relaxed mb-3">
           {summary}
@@ -278,17 +253,9 @@ export default function ProjectCard({ slug, title, summary, tags, status, note, 
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tags?.slice(0, 4).map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-0.5 rounded-md font-code"
-              style={{
-                background: `${visual.accent}14`,
-                color: visual.accent,
-                border: `1px solid ${visual.accent}25`,
-              }}
-            >
+            <TechTag key={tag} accent={visual.accent}>
               {tag}
-            </span>
+            </TechTag>
           ))}
           {tags?.length > 4 && (
             <span className="text-xs px-2 py-0.5 rounded-md text-slate-500 bg-white/5">
