@@ -34,6 +34,10 @@ export default function ProofBadge({ proof, className = '' }) {
   if (!style) return null;
 
   const label = proof.label || style.label;
+  // Several proof records put the version in the label ("Tagged release v2.0.0")
+  // and again in `value`. Showing both reads as a stutter, so the value is only
+  // rendered when it adds something the label does not already say.
+  const value = proof.value && !label.includes(proof.value) ? proof.value : null;
   const body = (
     <>
       <span
@@ -42,7 +46,7 @@ export default function ProofBadge({ proof, className = '' }) {
         style={{ background: style.color }}
       />
       <span className="font-medium">{label}</span>
-      {proof.value && <span className="text-slate-400">{proof.value}</span>}
+      {value && <span className="text-slate-400">{value}</span>}
     </>
   );
 
