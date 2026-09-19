@@ -202,8 +202,8 @@ Every arrow is validated. A dangling reference fails the build.
 `getOpenContributions`, `getContributionById`, `getContributionsForDisplay`
 
 **Skills** — `getAllSkills`, `getFeaturedSkills`, `getSkillsByCategory`,
-`getSkillBySlug`, `getFeaturedSkillsGrouped`, `getSkillEvidence`,
-`getSkillEvidenceLabels`
+`getSkillBySlug`, `getFeaturedSkillsGrouped`, `getRepresentativeSkills`,
+`getSkillEvidence`, `getSkillEvidenceLabels`
 
 **Credentials** — `getAllCredentials`, `getFeaturedCredentials`,
 `getCredentialCount`
@@ -276,7 +276,7 @@ Practical notes for that phase:
 | `pages/certifications.js` had its own 6-item credential list | reads `getAllCredentials()` (all 11) |
 | `pages/skills.js` had its own language + category lists | reads `getFeaturedSkills` / `getFeaturedSkillsGrouped` |
 | `components/SpotlightGrid.js` used `skills.categories` | reads `getFeaturedSkillsGrouped` |
-| `components/GravitySkills.js` had a hardcoded 9-skill array | reads `getFeaturedSkills()` |
+| `components/GravitySkills.js` had a hardcoded 9-skill array | reads `getRepresentativeSkills()` |
 | `components/Hero.js` hardcoded `6` and `5` | derived selectors |
 | `components/AnimatedStats.js` read a hardcoded `stats` array | `getEvidenceStats()` |
 | `ProjectCard` visuals keyed by display title | keyed by `slug` |

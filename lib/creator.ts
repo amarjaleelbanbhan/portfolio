@@ -1,7 +1,11 @@
 /**
  * CODEX INFINITUM — the Architect's identity content (Architect's Core +
  * Observatory). A Journey Archive, not a résumé. Professional links are read
- * from data/portfolio.js (single source of truth) inside the Observatory.
+ * from the content API (`@/lib/content`) inside the Observatory.
+ *
+ * Not yet rendered by any route — staged salvage for the Codex Infinitum phase.
+ * `identity` below is this narrative's framing, not the canonical professional
+ * title; that lives in `content/profile.ts` and reads "Software Engineer".
  */
 
 export interface JourneyStep {

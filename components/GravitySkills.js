@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
+import { getRepresentativeSkills } from '@/lib/content';
 
-const SKILLS = [
-  'Python', 'React', 'Next.js', 'Cybersecurity', 'AI', 
-  'Node.js', 'Linux', 'SQL', 'TensorFlow'
-];
+// Labels come from canonical skill data, not a second hand-maintained list —
+// the previous hardcoded array had drifted and advertised skills with no
+// evidence behind them. One skill per category keeps the body count (and so the
+// physics) the same as before.
+const SKILLS = getRepresentativeSkills().map((s) => s.shortName ?? s.name);
 
 export default function GravitySkills() {
   const containerRef = useRef(null);

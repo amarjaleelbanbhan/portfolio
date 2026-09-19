@@ -14,6 +14,7 @@ import {
   researchProjects,
   skills,
 } from '@/content';
+import { SKILL_CATEGORIES } from '@/content/types';
 import type {
   Credential,
   EducationEntry,
@@ -180,6 +181,21 @@ export function getFeaturedSkillsGrouped(
       skills: getSkillsByCategory(category).filter((s) => s.featured),
     }))
     .filter((group) => group.skills.length > 0);
+}
+
+/**
+ * One representative featured skill per category, for surfaces that can only
+ * carry a handful of labels (the Matter.js physics canvas).
+ *
+ * The rule is explicit — highest-ranked featured skill in each category — so the
+ * set is never "whatever the first N entries of the array happen to be". Adding
+ * a skill to an existing category cannot silently change what renders; only
+ * promoting it above its siblings can.
+ */
+export function getRepresentativeSkills(): Skill[] {
+  return getFeaturedSkillsGrouped([...SKILL_CATEGORIES]).map(
+    (group) => group.skills[0]
+  );
 }
 
 /** What a skill was actually used in, resolved to display names. */
