@@ -138,7 +138,10 @@ export default function GravitySkills() {
       Render.stop(render);
       Runner.stop(runner);
       Engine.clear(engine);
-      render.canvas.remove();
+      // Deliberately NOT render.canvas.remove(): the canvas belongs to React,
+      // not to Matter. Detaching it here left the physics rendering into an
+      // orphaned element whenever the effect re-ran — which StrictMode does on
+      // every mount, so the canvas was missing entirely in development.
       render.textures = {};
     };
   }, []);
