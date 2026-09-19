@@ -3,8 +3,7 @@ import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
-import GlitchText from '@/components/GlitchText';
-import NeonButton from '@/components/NeonButton';
+import EngineeringStory from '@/components/story/EngineeringStory';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import ResumeButton from '@/components/ResumeButton';
@@ -40,30 +39,14 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
 
-        {/* ─── Header / Name Section ─── */}
-        <section className="section-container text-center">
-          <motion.div {...fadeUp}>
-            <p className="section-label mb-3">{'// about me'}</p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-glow tracking-tight">
-              <GlitchText text={profile.name.toUpperCase()} />
-            </h1>
-            <p className="text-lg sm:text-xl text-slate-300 font-light tracking-wide mb-2">
-              {profile.tagline}
-            </p>
-            <p className="text-base text-neon-cyan font-semibold mb-8 font-code">
-              Building Tomorrow&apos;s Solutions Today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/projects"
-                className="px-6 py-3 bg-neon-cyan text-midnight font-semibold rounded-lg shadow-lg shadow-neon-cyan/25 hover:bg-neon-green transition-all duration-300 text-sm w-full sm:w-auto text-center"
-              >
-                VIEW MY WORK
-              </Link>
-              <ResumeButton variant="large" />
-            </div>
-          </motion.div>
-        </section>
+        {/* ─── The engineering story ─── */}
+        <EngineeringStory />
+
+        {/* The old name/tagline block that sat here was removed in Phase 5. It
+            repeated what the Phase 4 hero already says — name, positioning and a
+            "view my work" call to action — and it carried a second <h1>, which
+            left the page with two top-level headings. Its ResumeButton moved
+            into the bio section below, which is the only part it added. */}
 
         {/* ─── About / Bio ─── */}
         <section className="section-container">
@@ -104,6 +87,9 @@ export default function Home() {
                     <p className="text-slate-500 text-sm font-code italic">
                       {'// When the code compiles on the first try, I assume something’s wrong.'}
                     </p>
+                    <div className="pt-1">
+                      <ResumeButton variant="large" />
+                    </div>
                   </div>
 
                   {/* Right — quick facts */}
