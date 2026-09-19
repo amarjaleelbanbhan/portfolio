@@ -1404,24 +1404,71 @@ scene on the site.
 
 # PHASE 8 — RODIFT CASE STUDY
 
-- [ ] Create sanitized architecture diagram.
-- [ ] Show mobile field workflow.
-- [ ] Show management workflow.
-- [ ] Show Supabase/Postgres/PostGIS architecture.
-- [ ] Show RBAC.
-- [ ] Show Edge Functions.
-- [ ] Show FCM/realtime.
-- [ ] Show verified release evidence.
-- [ ] Mark private repository appropriately.
-- [ ] Do not expose internal company information.
-
 ## Phase Completion
 
-- [ ] Phase 8 complete
+- [x] Phase 8 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Route: `/work/rodift`.
+
+**Evidence source.** The project source is not in a public repository and is not
+named on the site. It was located in the owner's private account and reviewed
+under authentication on 2026-09-19: a 593-line source-derived engineering README,
+a v2.0.0 tag, 52 commits, and a Python test suite (`pytest.ini`,
+`run_all_tests.py`, `tests/`). Every claim on the case-study page appears in that
+documentation. Nothing was inferred and nothing was invented.
+
+**Verified implementation** (all from the project's own documentation): Flutter
+with flutter_bloc on mobile; Next.js 15 App Router, React 18, TypeScript and
+Tailwind on the web; Supabase with PostgreSQL 17 + PostGIS, Deno edge functions,
+Auth, Realtime, Storage and pg_cron; Firebase Cloud Messaging HTTP v1 for push.
+Seven operational roles, a four-level geography, and a chain of command that the
+data model encodes so issue assignment needs no manual triage.
+
+**The engineering decisions that made the page worth writing** are the ones with
+a cost attached: the hierarchy modelled as data (rigid — a restructure becomes a
+migration); server-side re-validation of the client-chosen outlet, where the
+device-reported accuracy cannot widen the acceptance radius (a genuine report
+from a poor GPS fix can be rejected); three layers of authorization rather than
+one (a permission change has to be made in more than one place); human-approved
+in-app recovery because no email or SMS channel existed; and an anti-enumeration
+response shape that is byte-identical for unknown, ineligible, cooling-down and
+already-pending accounts (a mistyped login looks successful and never arrives).
+
+**Limitations are the project's own**, not softened: no email/SMS recovery
+channel, password-reset notifications in-app only, client-side report
+aggregation, an inert legacy layer in the mobile app, and two pre-existing edge
+functions that still fail strict type checking.
+
+**Client confidentiality.** The client is not named. The repository name, the
+internal product name it was renamed from, the synthetic auth email domain, the
+bundle identifier, the Supabase project reference, the Firebase project id and a
+data-quality note naming real distributor locations were all reviewed and
+deliberately excluded. A browser test asserts that none of those strings appears
+in the served HTML, that no repository link is rendered, and that the private
+marker and disclosure note are present.
+
+**No production-scale claims.** The page states a tagged release and a published
+privacy policy as what they are. It claims no users, revenue, business outcomes
+or operational scale, because none are available to publish — and the phase brief
+is explicit that a version tag and a privacy policy are not by themselves proof
+of live production usage.
+
+**A real layout bug this surfaced.** The architecture SVG carried an inline
+`min-width`, which raised the min-content size of every ancestor and pushed the
+page 188px past a 360px viewport. `overflow-x` on the surrounding card could not
+clamp it, because overflow does not reduce a block's min-content contribution.
+Removing the inline minimum fixed it; the component list beneath the diagram is
+the readable form on small screens. `.section-container` also gained
+`min-width: 0`, which is the correct guard for flex children generally.
+
+**Browser-verified**, 18 checks: 200 with a single `<h1>`, all twelve populated
+sections present, **no empty section headings**, no forbidden identifier in the
+HTML, no repository link, private marker and disclosure present, no invented
+users/revenue/scale figures, a descriptive diagram label, correct canonical, zero
+console or hydration errors, no overflow at 360/390/430 px, reduced motion clean,
+`/work/veripatch` still 404 at that point, and `/work` still 200.
 
 ---
 

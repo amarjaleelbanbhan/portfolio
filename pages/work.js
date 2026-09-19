@@ -31,6 +31,7 @@ import {
   getContributionsForDisplay,
   getCurrentFypProjects,
   getDomainColor,
+  getCaseStudyProjects,
   getFlagshipProjects,
   getSecondaryProjects,
   getSkillBySlug,
@@ -42,6 +43,7 @@ const secondary = getSecondaryProjects();
 const currentFyp = getCurrentFypProjects();
 const archived = getArchivedProjects();
 const allProjects = getAllProjects();
+const caseStudySlugs = new Set(getCaseStudyProjects().map((p) => p.slug));
 const contributions = getContributionsForDisplay();
 
 const DOMAIN_LABELS = {
@@ -218,6 +220,7 @@ export default function Work() {
                     project={project}
                     index={i}
                     technologies={technologiesFor(project)}
+                    hasCaseStudy={caseStudySlugs.has(project.slug)}
                   />
                 ))}
               </div>

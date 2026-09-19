@@ -52,7 +52,12 @@ function LinkAction({ field, href, accent }) {
   );
 }
 
-export default function FeaturedProjectCard({ project, index = 0, technologies = [] }) {
+export default function FeaturedProjectCard({
+  project,
+  index = 0,
+  technologies = [],
+  hasCaseStudy = false,
+}) {
   const visual = getProjectVisual(project.slug);
   const accent = visual.accent;
   const isPrivate = project.source.visibility !== 'public';
@@ -197,6 +202,18 @@ export default function FeaturedProjectCard({ project, index = 0, technologies =
             {linkEntries.map(([field, href]) => (
               <LinkAction key={field} field={field} href={href} accent={accent} />
             ))}
+            {/* Only rendered once the case-study route actually exists, so a
+                public button never points at an unbuilt page. */}
+            {hasCaseStudy && (
+              <Link
+                href={`/work/${project.slug}`}
+                className="inline-flex items-center gap-1.5 text-xs font-code font-semibold px-3 py-2 min-h-[44px] sm:min-h-0 sm:py-1.5 rounded-md transition-colors"
+                style={{ background: accent, color: '#07111f' }}
+              >
+                Read the case study
+                <span aria-hidden="true">→</span>
+              </Link>
+            )}
             <Link
               href="/#engineering-story"
               className="ml-auto text-xs font-code text-slate-500 hover:text-slate-300 transition-colors"

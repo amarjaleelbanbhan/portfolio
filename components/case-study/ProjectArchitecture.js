@@ -108,8 +108,13 @@ export default function ProjectArchitecture({ architecture, accent, reduced = fa
         <div className="surface-card p-4 sm:p-5 overflow-x-auto">
           <svg
             viewBox={`0 0 ${width} ${height}`}
+            // Scales with its container rather than carrying a pixel minimum.
+            // An inline min-width here raised the min-content size of every
+            // ancestor, which pushed the page past the viewport on phones —
+            // overflow-x on the card cannot clamp that, because overflow does
+            // not reduce a block's min-content contribution. The component list
+            // below the drawing is the readable form on small screens.
             className="w-full h-auto"
-            style={{ minWidth: Math.min(width, 520) }}
             role="img"
             aria-label={`${summary || 'System architecture'}. Components: ${nodes
               .map((n) => n.label)
