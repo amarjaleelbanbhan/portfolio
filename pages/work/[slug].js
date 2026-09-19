@@ -18,6 +18,8 @@ import Footer from '@/components/Footer';
 import ProjectHero from '@/components/case-study/ProjectHero';
 import ProjectArchitecture from '@/components/case-study/ProjectArchitecture';
 import RelatedWork from '@/components/case-study/RelatedWork';
+import ExperimentMatrix from '@/components/case-study/ExperimentMatrix';
+import { ResearchCorrection, ResearchFindings } from '@/components/case-study/ResearchFindings';
 import {
   ConcernSection,
   ConstraintBlock,
@@ -116,6 +118,12 @@ export default function CaseStudy({ project, related }) {
             />
 
             <ProseSection id="contribution" title="My contribution" body={project.role} />
+
+            <ExperimentMatrix experiment={study.experiment} accent={accent} reduced={reduced} />
+
+            <ResearchFindings findings={study.findings} accent={accent} />
+
+            <ResearchCorrection correction={study.correction} accent={accent} />
 
             <TechnicalDecisions decisions={study.decisions} accent={accent} />
 

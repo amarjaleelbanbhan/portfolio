@@ -83,10 +83,14 @@ a {
   padding: 2.5rem 1rem;
   /* Flex and grid items default to min-width:auto, so they refuse to shrink
      below their content. A wide child with a min-width — the case-study
-     architecture diagram, which scrolls inside its own card — would otherwise
-     stretch this container past the viewport and overflow the page instead of
-     scrolling internally. */
+     architecture diagram or the experiment matrix, both of which scroll inside
+     their own card — would otherwise stretch this container past the viewport
+     and overflow the page instead of scrolling internally.
+     min-width:0 allows the shrink; width:100% makes the used width definite, so
+     a wide descendant can no longer expand it at all and the inner
+     overflow-x container is what scrolls. */
   min-width: 0;
+  width: 100%;
 }
 
 @media (min-width: 640px) {

@@ -214,6 +214,62 @@ export interface TimelineEntry {
   date?: string;
 }
 
+/**
+ * A factorial experiment grid.
+ *
+ * Exists because a research case study's central artifact is its design, and a
+ * design is a structure rather than prose. Rows and columns are the experiment's
+ * own factor levels; `cells` carries measured values keyed `row|col`.
+ *
+ * `cells` is optional on purpose. A design is worth showing even when results
+ * are not publishable, and a grid with no numbers still communicates what was
+ * crossed with what. Filling empty cells with estimates is the failure this
+ * shape is built to make unnecessary.
+ */
+export interface ExperimentAxis {
+  id: string;
+  label: string;
+  /** What this level means, shown on inspection. */
+  detail: string;
+}
+
+export interface ExperimentCell {
+  /** `${rowId}|${colId}`. Validated to reference real axis levels. */
+  key: string;
+  value: number;
+  /** Set when this cell is the row's best, for emphasis. */
+  best?: boolean;
+  /** A short note attached to the cell, e.g. a correction pointer. */
+  note?: string;
+}
+
+export interface ExperimentGrid {
+  title: string;
+  /** What the numbers are, e.g. "token F1 against the gold answer". */
+  measure: string;
+  rowsLabel: string;
+  colsLabel: string;
+  rows: ExperimentAxis[];
+  cols: ExperimentAxis[];
+  /** Absent when results are not cleared for publication. */
+  cells?: ExperimentCell[];
+  /** Run provenance: n, date, counts. Never invented. */
+  provenance?: string;
+  caveat: string;
+}
+
+/** A finding with the claim it supports kept separate from the number. */
+export interface ResearchFinding {
+  id: string;
+  label: string;
+  /** The measured value, as written in the source. */
+  value?: string;
+  /** What the number does and does not license. */
+  interpretation: string;
+  /** Set when a later correction changes how this should be read. */
+  corrected?: boolean;
+}
+
 export interface CaseStudy {
   /** The situation the work happened in. */
   context?: string;
@@ -231,6 +287,13 @@ export interface CaseStudy {
   timeline?: TimelineEntry[];
   /** What a reader should know is deliberately not shown. */
   disclosure?: string;
+
+  /** Factorial design and, where cleared for publication, its measured cells. */
+  experiment?: ExperimentGrid;
+  /** Findings, each pairing a number with what it licenses. */
+  findings?: ResearchFinding[];
+  /** A published correction to an earlier interpretation. */
+  correction?: { date: string; title: string; detail: string; status: string };
 }
 
 export interface Project {

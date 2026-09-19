@@ -424,6 +424,58 @@ export function validateContent(): ContentIssue[] {
       }
     }
 
+    // A factorial grid is the central artifact of a research case study, so its
+    // internal references are checked rather than trusted.
+    const grid = study.experiment;
+    if (grid) {
+      const rowIds = new Set((grid.rows ?? []).map((r) => r.id));
+      const colIds = new Set((grid.cols ?? []).map((c) => c.id));
+      if (rowIds.size === 0 || colIds.size === 0) {
+        add('case-study', ref, 'experiment grid has no rows or no columns');
+      }
+      if (!grid.caveat?.trim()) {
+        add('case-study', ref, 'experiment grid has no caveat');
+      }
+      for (const axis of [...(grid.rows ?? []), ...(grid.cols ?? [])]) {
+        if (!axis.detail?.trim()) {
+          add('case-study', ref, `experiment axis "${axis.id}" has no detail — the grid must stay useful without values`);
+        }
+      }
+      const seenCells = new Set<string>();
+      for (const cell of grid.cells ?? []) {
+        const [rowId, colId] = cell.key.split('|');
+        if (!rowIds.has(rowId) || !colIds.has(colId)) {
+          add('case-study', ref, `experiment cell "${cell.key}" references a level that does not exist`);
+        }
+        if (seenCells.has(cell.key)) {
+          add('case-study', ref, `duplicate experiment cell "${cell.key}"`);
+        }
+        seenCells.add(cell.key);
+        if (typeof cell.value !== 'number' || Number.isNaN(cell.value)) {
+          add('case-study', ref, `experiment cell "${cell.key}" has no numeric value`);
+        }
+      }
+      // A partially filled grid invites reading absence as zero. Either the
+      // results are publishable or they are not.
+      const expected = rowIds.size * colIds.size;
+      if (seenCells.size > 0 && seenCells.size !== expected) {
+        add(
+          'case-study',
+          ref,
+          `experiment grid is partially filled (${seenCells.size} of ${expected} cells) — publish all measured cells or none`
+        );
+      }
+    }
+
+    for (const finding of study.findings ?? []) {
+      if (!finding.interpretation?.trim()) {
+        add('case-study', ref, `finding "${finding.id}" has a value with no interpretation`);
+      }
+    }
+    if (study.correction && !study.correction.status?.trim()) {
+      add('case-study', ref, 'correction has no status saying what it does and does not settle');
+    }
+
     // A private project publishing a case study must say what is withheld,
     // otherwise a reader cannot tell absence from omission.
     if (project.source.visibility !== 'public' && !study.disclosure?.trim()) {

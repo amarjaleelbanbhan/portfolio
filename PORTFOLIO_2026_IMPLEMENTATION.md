@@ -1542,43 +1542,80 @@ canvases, and `/hire`, `/studio/request`, `/studio/admin`, `/projects`,
 
 # PHASE 10 — KNOWLEDGEGUARD RESEARCH CASE STUDY
 
-Present as research, not SaaS.
-
-Sections:
-
-- [ ] Research question
-- [ ] Hypothesis
-- [ ] Experiment design
-- [ ] Dataset/benchmark
-- [ ] Factorial design
-- [ ] Results
-- [ ] Statistical analysis
-- [ ] Artifact discovery/correction
-- [ ] Limitations
-- [ ] Follow-up experiment
-
-Interactive matrix:
-
-- [ ] 5 evidence deficiency types
-- [ ] 6 repair actions
-- [ ] hover/click cell explanation
-
-Verified evidence to represent carefully:
-
-- [ ] 1,410 balanced experiment cells
-- [ ] 270 automated tests
-- [ ] statistical interaction result
-- [ ] routing headroom
-- [ ] confound discovery
-- [ ] E6 follow-up status
-
 ## Phase Completion
 
-- [ ] Phase 10 complete
+- [x] Phase 10 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/work/knowledgeguard`.
+
+**The canonical omission was not evidence of absence.** Public content said only
+"factorial executed, analysis complete". The private repository holds a complete
+515-line `RESULTS.md` with the full cell matrix, pre-registered hypotheses,
+permutation and mixed-model tests, confidence intervals, a detection study, a
+routing study and a published self-correction.
+
+**Disclosure was determined, not assumed.** The project carries its own frozen
+release policy (`docs/ARTIFACT_LICENSING.md`, Tier P / Tier R, authority
+AID-0033), which explicitly clears "per-cell result rows with passage text and
+rendered prompts removed — scores, costs, counts" for public release. So the
+measured cells and statistics are published; no benchmark passage, rendered
+prompt, question or gold answer is reproduced, and questions were kept out by the
+project's own more-conservative decision.
+
+**The design is the artifact.** A real 5 x 6 within-record factorial: five
+deficiency types (SUFFICIENT, MISSING, ABSENT, CONFLICTING, OUTDATED) crossed
+with six repair actions (NONE, ESCALATE, DECOMPOSE, ARBITRATE, TIME_FILTER,
+ABSTAIN). 47 records, 1,410 balanced cells, n = 47 each, 2,946 generator calls,
+no API spend. Rendered as an accessible `<table>` with real row and column
+headers, so a screen reader announces "CONFLICTING, ARBITRATE, 0.807" — and every
+axis level carries its own definition, which is what keeps the grid useful even
+where results cannot be shown.
+
+**Verified results published:** the interaction is real and large (partial
+eta-squared 0.32, permutation p = 1e-4); oracle routing beats the best
+type-agnostic policy by 6.6 F1 points [2.6, 10.5], rejecting the pre-registered
+null but with a lower bound sitting exactly at the frozen practical threshold;
+and — the result that matters — **with a real detector the benefit reverses**,
+predicted routing scoring 0.064 F1 *below* type-agnostic. The +0.415 figure
+against fixed escalation is included specifically as the number that must not be
+quoted as the routing benefit, because that is the easiest available way to
+overstate the study.
+
+**Research integrity carried through, not summarised away.** The page publishes
+the 2026-09-17 correction at the same visual weight as the results: the only cell
+surviving multiple-comparison correction is deficiency-invariant, the injected
+counter-passages are the only off-index passages (47/47 against 0 of 1,315), the
+counter-passage is the strict maximum-overlap passage in 47/47, and two trivial
+rules reproduce the identification with no generation at all. The number stands;
+the causal reading does not. The pre-registered replication that would settle it
+is labelled as not run, and the HotpotQA replication factorial is recorded as
+incomplete with no numbers shown.
+
+**New system pieces**, each justified by real content: an `ExperimentGrid` model
+with optional cells, a `ResearchFinding` shape that keeps a value and what it
+licenses in separate fields, a `correction` block, plus `ExperimentMatrix` and
+`ResearchFindings` components. Six validation rules cover them, including one
+rejecting a partially filled grid — a half-populated matrix invites reading
+absence as zero.
+
+**A third instance of the same layout bug.** The matrix table, like the
+architecture diagram before it, has a min-content wider than a phone. Fixed
+properly this time at `.section-container`, which now sets `width: 100%` as well
+as `min-width: 0`: a definite used width means no descendant can expand the
+container, so the inner scroller is what scrolls.
+
+**Browser-verified**, 37 checks on a production build: 200 with a single `<h1>`,
+no empty headings, the matrix as a table with 5 row and 7 column headers and 30
+inspectable cells, four measured values present, run provenance stated, the
+correction present and dated with its "causal reading does not" wording, the
+replication marked not run, the routing reversal stated, the natural-versus-
+constructed detection gap stated, no overclaiming language, no restricted
+artifact names or repository URLs, the private marker and disclosure basis shown,
+row and cell selection working with descriptive `aria-label`s and keyboard focus,
+no overflow at 360/390/430/768 px, reduced motion clean, and the homepage Core,
+story and every other route unaffected.
 
 ---
 

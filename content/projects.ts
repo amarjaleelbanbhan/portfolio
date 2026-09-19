@@ -487,6 +487,243 @@ export const projects: Project[] = [
     source: { visibility: 'private', label: 'Private repository' },
     note: 'Benchmark built, factorial executed, analysis complete. Repository private.',
     researchSlug: 'knowledgeguard',
+    problem:
+      'Every published method for handling deficient retrieval evidence is developed and evaluated on a corpus containing exactly one deficiency mode by construction. But the correct repairs diverge, and some are opposites: escalating retrieval helps when evidence is missing and actively harms when it is contradictory. No detector has ever been required to tell those cases apart, because no benchmark presented them together with labels — so neither their detectability nor their usefulness had been measured.',
+    role:
+      'Sole researcher. Benchmark design and construction, experimental design and pre-registration, analysis, and the forensic re-analysis that produced the published correction.',
+    // Derived from the private research repository, reviewed 2026-09-20: README,
+    // docs/research/RESULTS.md, docs/ARTIFACT_LICENSING.md and the decision log.
+    // Disclosure basis: the project's own frozen release policy (Tier P) clears
+    // per-cell result rows — scores, counts, costs — for public release with
+    // passage text and rendered prompts removed. Only scores and counts appear
+    // here; no passage text, prompt, question or gold answer is reproduced.
+    caseStudy: {
+      context:
+        'The project did not start here. The original proposal was a RAG system that checks evidence sufficiency, detects gaps, re-retrieves and abstains. A literature search found that already published, clause by clause — sufficiency analysis and gap-driven re-retrieval as S2G-RAG at ACL 2026, sufficiency-guided abstention at ICLR 2025, retrieval evaluation with corrective action as CRAG, and diagnosis-conditioned repair as Doctor-RAG and D2R-RAG. Building it would have been re-implementation presented as research, so the direction changed to the question the literature had left open.',
+      constraints: [
+        'The claim under test needs ground-truth deficiency labels, so it cannot be computed on any existing benchmark — the benchmark had to be built first.',
+        'OUTDATED cannot be synthesised honestly, which forced the choice of the one corpus carrying real superseded values.',
+        'No API budget: the reader is a 250M-parameter local model on CPU, so absolute scores are not comparable with published systems and every comparison had to be within-instance.',
+        'Mixing corpora across rows would confound deficiency type with source corpus, so the second corpus is held as a separate replication and never pooled.',
+        'The null hypothesis had to be pre-registered as a real possibility: if type-agnostic repair matched oracle routing, that is the finding.',
+      ],
+      built:
+        'EGB, a benchmark where evidence-deficiency type is a manipulated, labelled variable with co-occurrence cells, and a fully within-record 5 x 6 factorial over it. Four of six construction operators are purely subtractive — evidence is withheld or removed rather than fabricated. Every source record is instantiated under every deficiency type and run under every repair action, including the cells no router would ever pick, which is what makes it a factorial rather than a system comparison and makes every contrast paired.',
+      architecture: {
+        summary:
+          'The system exists as the apparatus for the measurement, not as a product. A record is instantiated into a typed deficiency, retrieved against, repaired under one action, generated from, and scored — with admission gates and label verification standing between construction and the factorial.',
+        nodes: [
+          { id: 'corpus', label: 'HoH corpus', kind: 'data', detail: '18,807 indexed passages' },
+          { id: 'construct', label: 'Deficiency operators', kind: 'process', detail: 'Four are subtractive' },
+          { id: 'gates', label: 'Admission gates', kind: 'process', detail: 'Contamination, leakage' },
+          { id: 'verify', label: 'Label verification', kind: 'service', detail: 'Independent NLI' },
+          { id: 'retrieve', label: 'Retrieval', kind: 'service', detail: 'BM25 index' },
+          { id: 'action', label: 'Repair action', kind: 'process', detail: 'Six, three families' },
+          { id: 'reader', label: 'Local reader', kind: 'service', detail: '250M parameters, CPU' },
+          { id: 'score', label: 'Scoring', kind: 'data', detail: 'Four pre-registered DVs' },
+        ],
+        flows: [
+          { from: 'corpus', to: 'construct', label: 'records' },
+          { from: 'construct', to: 'gates', label: 'instances' },
+          { from: 'gates', to: 'verify', label: 'admitted' },
+          { from: 'verify', to: 'retrieve', label: 'accepted' },
+          { from: 'retrieve', to: 'action', label: 'context' },
+          { from: 'action', to: 'reader', label: 'repaired context' },
+          { from: 'reader', to: 'score', label: 'answers' },
+        ],
+        caveat:
+          'The experimental apparatus as described in the project documentation. The repository is private; this shows the measurement pipeline, not source code.',
+      },
+      experiment: {
+        title: 'The 5 x 6 factorial',
+        measure: 'token F1 against the gold answer',
+        rowsLabel: 'Evidence-deficiency type',
+        colsLabel: 'Repair action',
+        rows: [
+          { id: 'SUFFICIENT', label: 'SUFFICIENT', detail: 'Control: the evidence is adequate. Establishes the floor the other cells are read against.' },
+          { id: 'MISSING', label: 'MISSING', detail: 'Gold evidence is withheld from the delivered set but left in the index, so escalation can still recover it.' },
+          { id: 'ABSENT', label: 'ABSENT', detail: 'Gold is removed from the index entirely, enforced at retrieval time so no escalation depth can recover it.' },
+          { id: 'CONFLICTING', label: 'CONFLICTING', detail: 'One constructed counter-passage asserts a different record\'s real answer in a mutually exclusive form. Constructed and resolvable by design.' },
+          { id: 'OUTDATED', label: 'OUTDATED', detail: 'The record\'s own real superseded revision is injected. Never synthesised — this is why the corpus was chosen.' },
+        ],
+        cols: [
+          { id: 'NONE', label: 'NONE', detail: 'No repair. Answer from the delivered context as-is.' },
+          { id: 'ESCALATE', label: 'ESCALATE', detail: 'Retrieve more: six additional passages. Budget-matched with DECOMPOSE by configuration.' },
+          { id: 'DECOMPOSE', label: 'DECOMPOSE', detail: 'Retrieve more, differently: split into sub-questions and retrieve per sub-question.' },
+          { id: 'ARBITRATE', label: 'ARBITRATE', detail: 'Group candidate answers and decide between them by corroboration support against the index.' },
+          { id: 'TIME_FILTER', label: 'TIME_FILTER', detail: 'Filter on temporal validity. A no-op unless a dated near-duplicate is present.' },
+          { id: 'ABSTAIN', label: 'ABSTAIN', detail: 'Decline to answer. Scores zero on answer correctness by construction, which is why a second DV was pre-registered.' },
+        ],
+        cells: [
+          { key: 'ABSENT|ABSTAIN', value: 0.0 },
+          { key: 'ABSENT|ARBITRATE', value: 0.026, best: true },
+          { key: 'ABSENT|DECOMPOSE', value: 0.026 },
+          { key: 'ABSENT|ESCALATE', value: 0.007 },
+          { key: 'ABSENT|NONE', value: 0.026 },
+          { key: 'ABSENT|TIME_FILTER', value: 0.026 },
+          { key: 'CONFLICTING|ABSTAIN', value: 0.0 },
+          { key: 'CONFLICTING|ARBITRATE', value: 0.807, best: true, note: 'Corrected 2026-09-17 — see below. The number stands; the causal reading does not.' },
+          { key: 'CONFLICTING|DECOMPOSE', value: 0.587 },
+          { key: 'CONFLICTING|ESCALATE', value: 0.215 },
+          { key: 'CONFLICTING|NONE', value: 0.569 },
+          { key: 'CONFLICTING|TIME_FILTER', value: 0.547 },
+          { key: 'MISSING|ABSTAIN', value: 0.0 },
+          { key: 'MISSING|ARBITRATE', value: 0.032 },
+          { key: 'MISSING|DECOMPOSE', value: 0.789, best: true },
+          { key: 'MISSING|ESCALATE', value: 0.322 },
+          { key: 'MISSING|NONE', value: 0.026 },
+          { key: 'MISSING|TIME_FILTER', value: 0.026 },
+          { key: 'OUTDATED|ABSTAIN', value: 0.0 },
+          { key: 'OUTDATED|ARBITRATE', value: 0.807 },
+          { key: 'OUTDATED|DECOMPOSE', value: 0.684 },
+          { key: 'OUTDATED|ESCALATE', value: 0.25 },
+          { key: 'OUTDATED|NONE', value: 0.656 },
+          { key: 'OUTDATED|TIME_FILTER', value: 0.823, best: true },
+          { key: 'SUFFICIENT|ABSTAIN', value: 0.0 },
+          { key: 'SUFFICIENT|ARBITRATE', value: 0.807 },
+          { key: 'SUFFICIENT|DECOMPOSE', value: 0.827 },
+          { key: 'SUFFICIENT|ESCALATE', value: 0.374 },
+          { key: 'SUFFICIENT|NONE', value: 0.831, best: true },
+          { key: 'SUFFICIENT|TIME_FILTER', value: 0.809 },
+        ],
+        provenance:
+          'Run 2026-09-15. 47 records x 5 types x 6 actions = 1,410 cells, every cell n = 47. 2,946 generator calls, no API spend. Floor check passed: SUFFICIENT x NONE = 0.831, so the reader can use good evidence and the cells are interpretable.',
+        caveat:
+          'Measured values, released under the project\'s own Tier P policy, which clears per-cell scores with passage text and prompts removed. Absolute numbers reflect a 250M-parameter local reader and are not comparable with published RAG systems; the factorial is a within-instance contrast.',
+      },
+      findings: [
+        {
+          id: 'kg-interaction',
+          label: 'Type and action interact',
+          value: 'partial eta-squared 0.32, permutation p = 1e-4',
+          interpretation:
+            'The action profile genuinely differs by deficiency type, corroborated by a mixed-model likelihood-ratio test. This says the cells differ; it does not by itself say that knowing the type is worth anything.',
+        },
+        {
+          id: 'kg-headroom',
+          label: 'Oracle typing beats the best single action',
+          value: '+6.6 F1 points, 95% CI [2.6, 10.5]',
+          interpretation:
+            'The pre-registered null is rejected, but by a margin whose lower bound sits exactly at the frozen practical threshold of three points rather than comfortably above it. The honest statement is that typing buys roughly six points and the data are consistent with as little as three.',
+        },
+        {
+          id: 'kg-conflation',
+          label: 'The number that must not be quoted',
+          value: '+41.5 F1 points against fixed escalation',
+          interpretation:
+            'Against a fixed-escalation policy typing looks enormous, but almost all of that is the action main effect: escalation is simply a poor universal policy for a small reader because it dilutes the context. Reporting this as the routing benefit would be the single easiest way to overstate the result.',
+        },
+        {
+          id: 'kg-predicted',
+          label: 'With a real detector the benefit reverses',
+          value: 'predicted routing 0.064 F1 below type-agnostic [-0.120, -0.012]',
+          interpretation:
+            'This is the result that matters for anyone wanting to build on it. The headroom is real and, on this evidence, unreachable: routing on a diagnosed type is worse than just picking one good action and applying it everywhere.',
+        },
+        {
+          id: 'kg-natural-conflict',
+          label: 'Constructed conflict is far easier to detect than natural conflict',
+          value: 'recall 0.957 against 0.574',
+          interpretation:
+            'A pre-registered threat to validity, now measured rather than feared. Nearly a third of natural conflicts are called sufficient — the dangerous error, because the system then answers from evidence it has not noticed contradicts itself.',
+        },
+        {
+          id: 'kg-abstain',
+          label: 'Knowing when to decline is the largest single effect',
+          value: '+0.96 selective utility for ABSENT to ABSTAIN',
+          interpretation:
+            'Invisible under answer correctness, where an abstention and a confident fabrication both score zero. It appears only because a second, abstention-sensitive dependent variable was pre-registered before the run.',
+        },
+      ],
+      correction: {
+        date: '2026-09-17',
+        title: 'What CONFLICTING x ARBITRATE actually measures',
+        detail:
+          'The study\'s only cell surviving multiple-comparison correction was read as arbitration resolving conflict by corroboration. A forensic re-analysis of the frozen artifacts — no model loaded, nothing modified — found otherwise. ARBITRATE scores identically to four decimal places in the conflicting, outdated and sufficient cells, and produces the same answer string as the sufficient cell on 45 of 47 records. The injected counter-passages are the only passages absent from the index that arbitration corroborates against: 47 of 47, against 0 of 1,315 gold and distractor passages. The counter-passage also quotes the whole question, giving it a query-token overlap of 1.000 against gold\'s 0.676, making it the strict maximum-overlap passage in 47 of 47 delivered sets. Two trivial rules — pick the maximum-overlap passage, or the one absent from the index — identify the counter-side in 47 of 47 instances with no generation at all.',
+        status:
+          'The number stands; the causal reading does not. The correction establishes that the artifact exists. Whether it explains the effect is what the pre-registered replication measures, and that replication has not been run.',
+      },
+      decisions: [
+        {
+          id: 'kg-change-direction',
+          title: 'Abandon the original proposal after the literature search',
+          decision:
+            'The proposed system was found to be published work, clause by clause, and the project was redirected to the question that remained open: whether deficiency type carries actionable information when the repairs genuinely differ.',
+          rationale:
+            'Building it anyway would have been re-implementation presented as research. The gap that was actually open is that no benchmark presents the deficiency types together with labels, so nothing had ever been required to discriminate them.',
+          tradeoff:
+            'The new question needs ground-truth labels that no existing benchmark carries, so the benchmark had to be built before the experiment could run at all.',
+        },
+        {
+          id: 'kg-oracle-types',
+          title: 'Make the type factor oracle rather than predicted',
+          decision:
+            'The factorial uses ground-truth deficiency types, so it measures whether type carries information independently of whether any detector can recover it. Detection is a separate experiment.',
+          rationale:
+            'Confounding the two would make a null result uninterpretable: a failure could mean type is useless, or merely that the detector is poor.',
+          tradeoff:
+            'The factorial alone cannot say anything about a deployable system. That required the third arm, which is where the benefit turned out to reverse.',
+        },
+        {
+          id: 'kg-freeze-analysis',
+          title: 'Freeze the analysis before the first result existed',
+          decision:
+            'Methods were written and the analysis script — including its out-of-sample action-selection rule — was committed before the first result row was produced.',
+          rationale:
+            'In-sample selection of the best action guarantees a positive headroom even under a true null. Fixing the rule in advance is the only way the number means anything.',
+          tradeoff:
+            'A pre-registered analysis cannot be improved after seeing the data, so a better test that becomes obvious later has to be reported as exploratory.',
+        },
+        {
+          id: 'kg-report-null-loudly',
+          title: 'Publish the correction against the original rather than editing it',
+          decision:
+            'The forensic finding was added as a new section with the original record left untouched, and the superseded claims were marked in place.',
+          rationale:
+            'The value of a frozen record is that it cannot be quietly revised. Editing the earlier sections would have destroyed the thing that makes pre-registration meaningful.',
+          tradeoff:
+            'The document now contains a claim and its refutation, which is harder to read than a corrected version would be.',
+        },
+      ],
+      verification: [
+        {
+          id: 'kg-preregistration',
+          label: 'Pre-registered and frozen before the run',
+          detail:
+            'Methods frozen and written before execution; the analysis script with its out-of-sample selection rule committed before the first result row existed.',
+          verified: true,
+        },
+        {
+          id: 'kg-gates',
+          label: 'Admission and label-verification gates',
+          detail:
+            'Contamination probing, independent NLI label verification with rejected records dropped entirely to keep the factorial balanced, a retrieval-ceiling admission criterion, and a leakage audit finding no ground-truth field or label string in any rendered prompt.',
+          verified: true,
+        },
+        {
+          id: 'kg-leakage-reported',
+          label: 'A gate that fails, reported rather than repaired',
+          detail:
+            'The surface-leakage gate does not pass for every deficiency type. The failure is reported in the results and bounds the detection claims rather than being quietly fixed.',
+          verified: true,
+        },
+        {
+          id: 'kg-forensics',
+          label: 'Forensic re-analysis of the frozen artifacts',
+          detail:
+            'A reproduction script re-derives every number in the correction from the frozen artifacts at a named commit, with no model loaded and no artifact modified.',
+          verified: true,
+        },
+      ],
+      results: [
+        'The interaction between deficiency type and repair action is real and large, and the pre-registered null is rejected on the primary measure.',
+        'The benefit is concentrated rather than general: for MISSING and SUFFICIENT the best action is also the globally best action, so knowing the type bought nothing.',
+        'Routing on a predicted type performs worse than applying a single good action everywhere, so the measured headroom is not currently reachable.',
+        'The headline cell was subsequently found to be measuring a construction artifact, and the replication that would settle it has not been run.',
+      ],
+      disclosure:
+        'The repository is private. Published here are measured scores, counts and statistics only — the categories the project\'s own release policy clears for public release with passage text and rendered prompts removed. No benchmark passage, rendered prompt, question or gold answer is reproduced. The HotpotQA replication factorial is not complete and no numbers are shown for it.',
+    },
     proof: [
       {
         id: 'knowledgeguard-study',
