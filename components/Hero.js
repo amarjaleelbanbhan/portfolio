@@ -2,24 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import GlitchText from './GlitchText';
-import {
-  getFlagshipCount,
-  getMergedContributionCount,
-  getProductionSystemCount,
-  getProfile,
-  getPublishedPackageCount,
-} from '@/lib/content';
+import PortraitOrbit from './PortraitOrbit';
+import { getDomainColor, getProfile } from '@/lib/content';
+import { duration, ease, fadeUp } from '@/lib/motion';
+
+// The Core is the hero's main visual, but the headline must paint first — the
+// page is never held behind WebGL initialisation.
+const EngineeringCore = dynamic(
+  () => import('./engineering-core/EngineeringCore'),
+  {
+    ssr: false,
+    loading: () => <div className="w-full aspect-square max-w-[520px] mx-auto" />,
+  }
+);
 
 const profile = getProfile();
-
-// Derived, never typed by hand — hand-typed counts are what drifted before.
-const mergedPrCount = getMergedContributionCount();
-const publishedPackageCount = getPublishedPackageCount();
-const productionSystemCount = getProductionSystemCount();
-const flagshipCount = getFlagshipCount();
 
 const roles = [
   'Software Engineer',
@@ -30,14 +30,14 @@ const roles = [
 ];
 
 const floatingChips = [
-  { label: 'Python',      color: '#3b82f6', delay: 0    },
-  { label: 'Next.js',     color: '#14b8a6', delay: 0.4  },
-  { label: 'Flutter',     color: '#f97316', delay: 0.8  },
-  { label: 'TypeScript',  color: '#6366f1', delay: 1.2  },
-  { label: 'RAG',         color: '#d946ef', delay: 1.6  },
-  { label: 'Supabase',    color: '#22c55e', delay: 2.0  },
+  { label: 'Python',          color: '#3b82f6', delay: 0   },
+  { label: 'Next.js',         color: '#14b8a6', delay: 0.4 },
+  { label: 'Flutter',         color: '#f97316', delay: 0.8 },
+  { label: 'TypeScript',      color: '#6366f1', delay: 1.2 },
+  { label: 'RAG',             color: '#d946ef', delay: 1.6 },
+  { label: 'Supabase',        color: '#22c55e', delay: 2.0 },
   { label: 'Static Analysis', color: '#f59e0b', delay: 2.4 },
-  { label: 'BLE',         color: '#14b8a6', delay: 2.8  },
+  { label: 'BLE',             color: '#14b8a6', delay: 2.8 },
 ];
 
 function useTypingEffect(strings, typingSpeed = 90, deletingSpeed = 50, pauseMs = 2200) {
@@ -72,29 +72,21 @@ function useTypingEffect(strings, typingSpeed = 90, deletingSpeed = 50, pauseMs 
   return displayText;
 }
 
-const socialIcons = [
-  {
-    label: 'GitHub',
-    href: profile.social.github,
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'LinkedIn',
-    href: profile.social.linkedin,
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-      </svg>
-    ),
-  },
-];
-
-// Render only the accounts profile actually exposes.
-const socialLinks = socialIcons.filter((item) => item.href);
+/**
+ * The headline doubles as the legend for the Engineering Core: the three
+ * disciplines it names are set in the same domain accents the core uses, so the
+ * colour language is taught by the sentence before it is used by the diagram.
+ */
+function Headline() {
+  return (
+    <>
+      I build software systems where{' '}
+      <span style={{ color: getDomainColor('ai') }}>AI</span>,{' '}
+      <span style={{ color: getDomainColor('security') }}>security</span>, and{' '}
+      <span style={{ color: getDomainColor('product') }}>product engineering</span> meet.
+    </>
+  );
+}
 
 export default function Hero() {
   const typedRole = useTypingEffect(roles);
@@ -109,16 +101,16 @@ export default function Hero() {
         <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-neon-green/4 rounded-full blur-[100px]" />
       </div>
 
-      {/* Floating tech chips */}
+      {/* Floating tech chips — kept, but dimmed. The headline is now the
+          hero's thesis and the core carries the labels, so these drop back to
+          ambient depth instead of reading as a second set of tags. They sit
+          behind the transparent canvas, which is where the depth comes from. */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {floatingChips.map((chip, i) => (
           <motion.div
             key={chip.label}
             initial={{ opacity: 0, y: 60 }}
-            animate={{
-              opacity: [0, 0.7, 0.7, 0],
-              y: [60, -20],
-            }}
+            animate={{ opacity: [0, 0.32, 0.32, 0], y: [60, -20] }}
             transition={{
               duration: 8 + i * 0.6,
               delay: chip.delay + 1.5,
@@ -141,234 +133,87 @@ export default function Hero() {
       </div>
 
       <div className="section-container relative w-full" style={{ zIndex: 1 }}>
-        <div className="grid gap-12 lg:grid-cols-2 items-center">
+        <div className="grid gap-10 lg:gap-12 lg:grid-cols-[1.05fr_1fr] items-center">
 
-          {/* ─── Left: Text Content ─── */}
+          {/* ─── Left: the thesis ─── */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: duration.slow, ease: ease.outExpo }}
             className="order-2 lg:order-1 flex flex-col"
           >
-            {/* Label */}
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-              className="font-code text-xs font-semibold uppercase tracking-[0.3em] text-neon-cyan mb-4 flex items-center gap-2"
+            {/* Identity row — the portrait keeps its rings and orbiting dots,
+                repositioned to support the headline rather than rival the core. */}
+            <motion.div
+              {...fadeUp({ delay: 0.05 })}
+              className="flex items-center gap-4 mb-6"
             >
-              <span className="w-6 h-px bg-neon-cyan/60" />
-              Hello, World — I&apos;m
-              <span className="w-6 h-px bg-neon-cyan/60" />
-            </motion.p>
+              <PortraitOrbit size="sm" showBadge={false} />
+              <div className="min-w-0">
+                <p className="font-code text-[11px] font-semibold uppercase tracking-[0.28em] text-neon-cyan mb-1.5">
+                  {profile.name}
+                </p>
+                <div className="flex items-center gap-1 text-sm text-slate-300 font-code min-h-[1.5rem]">
+                  <span className="text-neon-cyan select-none">&gt;&nbsp;</span>
+                  <span className="text-white">{typedRole}</span>
+                  <span
+                    className="inline-block w-0.5 h-4 bg-neon-cyan ml-0.5 cursor-blink"
+                    aria-hidden="true"
+                  />
+                </div>
+                <span className="mt-2 inline-flex items-center gap-2 rounded-full border border-neon-green/40 bg-midnight-light/80 px-3 py-1 text-[11px] font-code backdrop-blur-sm">
+                  <span className="w-1.5 h-1.5 bg-neon-green rounded-full animate-pulse" />
+                  <span className="text-neon-green font-semibold">Open to Work</span>
+                </span>
+              </div>
+            </motion.div>
 
-            {/* Name */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="text-5xl sm:text-6xl md:text-7xl font-bold leading-none tracking-tight mb-5"
+              {...fadeUp({ delay: 0.15 })}
+              className="text-[1.75rem] sm:text-4xl md:text-[2.75rem] font-bold leading-[1.12] tracking-tight mb-5 text-slate-50 text-balance"
             >
-              <GlitchText text="AMAR JALEEL" />
+              <Headline />
             </motion.h1>
 
-            {/* Typing role */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.6 }}
-              className="flex items-center gap-1 text-lg md:text-xl text-slate-300 mb-6 font-code min-h-[1.75rem]"
+            <motion.p
+              {...fadeUp({ delay: 0.25 })}
+              className="text-base text-slate-300 max-w-xl leading-relaxed mb-8"
             >
-              <span className="text-neon-cyan select-none">&gt;&nbsp;</span>
-              <span className="text-white">{typedRole}</span>
-              <span
-                className="inline-block w-0.5 h-5 bg-neon-cyan ml-0.5 cursor-blink"
-                aria-hidden="true"
-              />
-            </motion.div>
+              I&apos;m <GlitchText as="span" text="Amar Jaleel" />, a Computer Science student and software
+              engineer building production applications, developer and security tools, applied AI
+              research systems, and experimental systems software.
+            </motion.p>
 
-            {/* Bio */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.6 }}
-              className="mb-8 space-y-3"
-            >
-              <p className="text-base text-slate-300 max-w-xl leading-relaxed">
-                Software engineer building product, AI, security, and systems software.
-                CS student at{' '}
-                <span className="text-neon-cyan font-medium">{profile.university}</span>, currently
-                working on a field-reporting platform in production, a published npm security tool,
-                and a controlled study on evidence deficiency in{' '}
-                <span className="text-slate-200 font-medium">RAG</span> systems.
-              </p>
-              <p className="text-sm text-slate-500 max-w-lg leading-relaxed font-code">
-                <span className="text-neon-green">{mergedPrCount}</span> merged upstream PRs ·{' '}
-                <span className="text-neon-cyan">{publishedPackageCount}</span> published npm package ·{' '}
-                <span className="text-neon-magenta">{productionSystemCount}</span> system in production
-              </p>
-            </motion.div>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.6 }}
-              className="flex flex-wrap gap-3 mb-9"
+              {...fadeUp({ delay: 0.35 })}
+              className="flex flex-wrap gap-3"
             >
               <Link
                 href="/projects"
-                className="group px-7 py-3.5 bg-neon-cyan text-midnight font-bold rounded-lg shadow-lg shadow-neon-cyan/30 hover:bg-neon-green hover:shadow-neon-green/30 transition-all duration-300 text-sm flex items-center gap-2"
+                className="group px-6 py-3.5 bg-neon-cyan text-midnight font-bold rounded-lg shadow-lg shadow-neon-cyan/30 hover:bg-neon-green hover:shadow-neon-green/30 transition-all duration-300 text-sm flex items-center gap-2"
               >
-                View My Work
+                Explore Engineering Work
                 <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
               </Link>
               <Link
-                href="/contact"
-                className="px-7 py-3.5 border border-neon-cyan/40 text-neon-cyan font-semibold rounded-lg hover:border-neon-cyan hover:bg-neon-cyan/8 hover:shadow-lg hover:shadow-neon-cyan/10 transition-all duration-300 text-sm"
+                href="/projects#open-source"
+                className="px-6 py-3.5 border border-neon-green/40 text-neon-green font-semibold rounded-lg hover:border-neon-green hover:bg-neon-green/8 transition-all duration-300 text-sm"
               >
-                Get in Touch
+                View Open Source
+              </Link>
+              <Link
+                href="/contact"
+                className="px-6 py-3.5 text-slate-300 font-semibold rounded-lg border border-white/10 hover:border-white/25 hover:text-white transition-all duration-300 text-sm"
+              >
+                Work With Me
               </Link>
             </motion.div>
-
-            {/* Social links */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              className="flex items-center gap-1"
-            >
-              {socialLinks.map(({ label, href, icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="p-2.5 text-slate-500 hover:text-neon-cyan transition-all duration-200 rounded-lg hover:bg-white/5 hover:scale-110"
-                >
-                  {icon}
-                </a>
-              ))}
-              <span className="ml-3 text-xs text-slate-600 font-code">{'// find me online'}</span>
-            </motion.div>
           </motion.div>
 
-          {/* ─── Right: Portrait + Orbiting elements ─── */}
-          <motion.div
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="order-1 lg:order-2 flex justify-center lg:justify-end"
-          >
-            <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96">
-
-              {/* Outer ambient glow */}
-              <div className="absolute inset-[-20px] rounded-full bg-gradient-to-br from-neon-cyan/20 via-transparent to-neon-magenta/15 blur-3xl animate-pulse" />
-
-              {/* Slow outer orbit ring */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[-8px] rounded-full"
-                style={{
-                  background: 'conic-gradient(from 0deg, rgba(20,184,166,0) 0%, rgba(20,184,166,0.6) 25%, rgba(217,70,239,0.4) 50%, rgba(34,197,94,0.3) 75%, rgba(20,184,166,0) 100%)',
-                  borderRadius: '50%',
-                  padding: '1.5px',
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-midnight" />
-              </motion.div>
-
-              {/* Fast inner orbit ring */}
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[4px] rounded-full"
-                style={{
-                  background: 'conic-gradient(from 180deg, rgba(34,197,94,0) 0%, rgba(34,197,94,0.5) 20%, rgba(34,197,94,0) 40%)',
-                  borderRadius: '50%',
-                  padding: '1px',
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-midnight" />
-              </motion.div>
-
-              {/* Portrait */}
-              <div className="absolute inset-[10px] rounded-full overflow-hidden">
-                <Image
-                  src="/images/hero-portrait.jpg"
-                  alt="Amar Jaleel"
-                  fill
-                  // Rendered in a 256/320/384px circle, so never ask for more.
-                  sizes="(min-width: 768px) 384px, (min-width: 640px) 320px, 256px"
-                  className="object-cover object-top"
-                  style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.6)' }}
-                  priority
-                />
-              </div>
-
-              {/* Orbiting dot — cyan */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 rounded-full"
-                style={{ transformOrigin: 'center' }}
-              >
-                <div
-                  className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-3 h-3 rounded-full bg-neon-cyan shadow-lg shadow-neon-cyan/60"
-                  style={{ boxShadow: '0 0 10px rgba(20,184,166,0.8), 0 0 20px rgba(20,184,166,0.4)' }}
-                />
-              </motion.div>
-
-              {/* Orbiting dot — magenta */}
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[-4px] rounded-full"
-                style={{ transformOrigin: 'center' }}
-              >
-                <div
-                  className="absolute bottom-3 right-0 w-2.5 h-2.5 rounded-full bg-neon-magenta"
-                  style={{ boxShadow: '0 0 10px rgba(217,70,239,0.8), 0 0 20px rgba(217,70,239,0.4)' }}
-                />
-              </motion.div>
-
-              {/* Status badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, type: 'spring', stiffness: 200 }}
-                className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-midnight-light/90 border border-neon-green/40 rounded-full px-4 py-2 text-xs font-code shadow-xl shadow-black/50 backdrop-blur-sm whitespace-nowrap"
-              >
-                <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse shadow-lg shadow-neon-green/60" />
-                <span className="text-neon-green font-semibold">Open to Work</span>
-              </motion.div>
-
-              {/* Floating stat pill — top left */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.2, duration: 0.6 }}
-                className="absolute -left-8 top-1/4 flex items-center gap-2 bg-midnight-light/80 border border-white/10 rounded-xl px-3 py-2 text-xs font-code backdrop-blur-sm shadow-lg"
-              >
-                <span className="text-2xl font-bold text-neon-cyan">{mergedPrCount}</span>
-                <span className="text-slate-400 leading-tight">Merged<br/>Upstream PRs</span>
-              </motion.div>
-
-              {/* Floating stat pill — right */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.4, duration: 0.6 }}
-                className="absolute -right-8 top-1/3 flex items-center gap-2 bg-midnight-light/80 border border-white/10 rounded-xl px-3 py-2 text-xs font-code backdrop-blur-sm shadow-lg"
-              >
-                <span className="text-2xl font-bold text-neon-green">{flagshipCount}</span>
-                <span className="text-slate-400 leading-tight">Flagship<br/>Systems</span>
-              </motion.div>
-
-            </div>
-          </motion.div>
+          {/* ─── Right: the Engineering Core ─── */}
+          <div className="order-1 lg:order-2 w-full">
+            <EngineeringCore />
+          </div>
 
         </div>
       </div>
