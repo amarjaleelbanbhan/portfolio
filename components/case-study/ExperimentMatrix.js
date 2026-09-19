@@ -23,7 +23,15 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { duration, ease } from '@/lib/motion';
 
-export default function ExperimentMatrix({ experiment, accent, reduced = false }) {
+export default function ExperimentMatrix({
+  experiment,
+  accent,
+  reduced = false,
+  // The matrix is a top-level section of a case study and a subsection of a
+  // research entry, so the caller owns the level. Visual size is unchanged;
+  // only the semantics move.
+  as: Heading = 'h2',
+}) {
   const [selected, setSelected] = useState(null);
 
   if (!experiment?.rows?.length || !experiment?.cols?.length) return null;
@@ -48,12 +56,12 @@ export default function ExperimentMatrix({ experiment, accent, reduced = false }
 
   return (
     <section aria-labelledby="experiment-heading" className="mb-12 scroll-mt-24" id="experiment">
-      <h2
+      <Heading
         id="experiment-heading"
         className="text-xl sm:text-2xl font-bold text-slate-50 tracking-tight mb-2"
       >
         {title}
-      </h2>
+      </Heading>
       <p className="text-sm text-slate-400 leading-relaxed max-w-2xl mb-5">
         {rows.length} × {cols.length}, fully crossed. Every cell was run.
         {cells.length > 0 && <> Values are {measure}.</>} Select a row, column or cell to see what

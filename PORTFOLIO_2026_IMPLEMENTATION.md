@@ -1911,19 +1911,19 @@ Categories:
 
 ## Completed / Executed Research
 
-- [ ] KnowledgeGuard / EGB
+- [x] KnowledgeGuard / EGB
 
 ## Research-driven Engineering
 
-- [ ] CortexWard
+- [x] CortexWard
 
 ## Systems Experiments
 
-- [ ] Emergency Mesh
+- [x] Emergency Mesh
 
 ## Current FYP
 
-- [ ] SCAR-OS
+- [x] SCAR-OS
 
 SCAR-OS (previously VICE OS) must currently be represented carefully:
 
@@ -1933,11 +1933,83 @@ Do not claim unimplemented features are working.
 
 ## Phase Completion
 
-- [ ] Phase 15 complete
+- [x] Phase 15 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/research`.
+Documented in `docs/portfolio-2026/research-page.md`.
+
+**The page's argument is made structurally before it is made in prose.** Written
+as four careful paragraphs, a completed factorial, a pre-alpha security pipeline,
+a half-validated BLE protocol and a README all read as equally substantial. So
+the page opens with a ledger — four entries against four evidence states — and
+the honest shape is visible in one glance: 6 evidenced / 0 built for
+KnowledgeGuard, 0 evidenced / 3 built for CortexWard, 7 evidenced / 1 not built
+for Emergency Mesh, and 1 not built for SCAR-OS.
+
+**Nothing in that ledger is authored.** Every cell counts items derived from
+records the case studies already carry: findings, protocol steps with their own
+status, ladder rungs with theirs, and pre-registered work not yet run. A
+capability cannot be promoted by editing a sentence on this page — it has to be
+promoted in the record the case study also reads.
+
+Two mappings are deliberate: a `live` protocol step is **evidenced** because the
+record means it ran on two real phones, and an implemented ladder rung is
+**built** because the code exists and nothing has measured it. Implementation is
+not evidence.
+
+**Counts are not a score.** They are not comparable between rows — different
+projects document different kinds of item — and the caveat, the measure line and
+the table caption all say so. Cells are inspectable so the classification can be
+checked rather than trusted, and an empty cell is disabled.
+
+**KnowledgeGuard disclosure: preserved, not widened.** Published are measured
+scores, counts and statistics, the categories the project's own Tier P policy
+clears. Nothing was added whose publication status is ambiguous, and the
+already-cleared numbers were not reverted merely because the repository is
+private. All four readings are kept apart and none stands in for another: the
+measured interaction, the oracle gain with its interval, the **detector routing
+reversal** (0.064 F1 below type-agnostic), and the +41.5 figure rendered under
+the label "the number that must not be quoted" rather than as a success claim.
+The correction is rendered by the same component the case study uses, at the same
+weight, keeping its wording — *the number stands; the causal reading does not*.
+E6 is marked not run and the HotpotQA replication incomplete, with no numbers for
+either.
+
+**Emergency Mesh keeps all four of its states apart.** Hardware-verified
+behaviour and the unimplemented multi-hop relay come from the ledger; the
+simulation-only statement and the outstanding device validation come from a
+separate **Stated gaps** block, built from the case study's unevidenced
+verification items. Those were kept out of the counts on purpose: a caveat on the
+transport is not a ninth protocol step, and counting it would have
+double-counted single-hop transfer.
+
+**Validation gained five rules.** `category` must be known; `executed` requires a
+complete status, recorded results and a verified proof entry; a non-executed
+category carrying results is an error; `architecture-stage` must be
+`current-fyp` and must record what is not built; and `/research` is a known
+route. Anchor validation was also generalised — it previously accepted only
+project slugs, so `anchorsFor(path)` now returns the anchors each route actually
+renders and `null` where there is no scheme, which makes the rule stricter
+rather than looser.
+
+**No new 3D scene.** The brief rules out decoration, and a structured comparison
+is the right instrument for this content. Heading level became a prop on
+`ExperimentMatrix`, `ResearchFindings` and `ResearchCorrection` so they can be
+subsections here and top-level sections in a case study without changing size.
+
+**Browser-verified**, 73 checks on a production build at 1280/1024/768/430/390/
+360 px and under reduced motion: structure and metadata, every research-integrity
+assertion above, no restricted artifact names or private repository URLs, no
+overclaiming vocabulary, SCAR-OS on its canonical wording with no trace of the
+old name, ledger interaction, no target under 24px, nothing stranded after a
+jump scroll, no overflow, no console errors, and twelve existing routes plus the
+homepage story unaffected.
+
+One defect found and fixed: the ledger's row-header links were `next/link`,
+which rewrites an in-page `#hash` to `/research#hash` and routes a scroll
+through the client router.
 
 ---
 

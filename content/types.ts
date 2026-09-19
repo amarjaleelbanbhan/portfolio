@@ -77,6 +77,35 @@ export type SkillCategory = (typeof SKILL_CATEGORIES)[number];
 export const RESEARCH_STATUSES = ['active', 'complete', 'architecture-stage', 'paused'] as const;
 export type ResearchStatus = (typeof RESEARCH_STATUSES)[number];
 
+/**
+ * What kind of research an entry is.
+ *
+ * Separate from `status` on purpose. Status says how far along the work is;
+ * category says what sort of work it is, and the distinction between an
+ * executed experiment, engineering that came out of a research question, a
+ * systems experiment and a project still at the architecture stage is the whole
+ * organising idea of the research page. Collapsing them lets a plan sit beside
+ * a completed study as though the two were comparable.
+ */
+export const RESEARCH_CATEGORIES = [
+  'executed',
+  'research-engineering',
+  'systems-experiment',
+  'current-fyp',
+] as const;
+export type ResearchCategory = (typeof RESEARCH_CATEGORIES)[number];
+
+/**
+ * The strongest evidence that exists for one documented item.
+ *
+ * Ordered weakest-last. These four are the only states anything on the research
+ * page can be in, and every one of them is derived from a canonical record —
+ * a protocol step's `status`, a ladder rung's `status`, a verified finding, or
+ * a piece of future work that has not been done.
+ */
+export const EVIDENCE_STATES = ['executed', 'built', 'simulated', 'not-built'] as const;
+export type EvidenceState = (typeof EVIDENCE_STATES)[number];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared shapes
 // ─────────────────────────────────────────────────────────────────────────────
@@ -441,6 +470,8 @@ export interface ResearchProject {
   slug: string;
   title: string;
   status: ResearchStatus;
+  /** What sort of research this is. Drives grouping on /research. */
+  category: ResearchCategory;
   /** How this is described publicly. Keeps stage language in one place. */
   publicStage: string;
 

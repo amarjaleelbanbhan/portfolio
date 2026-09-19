@@ -23,6 +23,7 @@ import {
   PROJECT_STATUSES,
   PROJECT_TIERS,
   PROOF_TYPES,
+  RESEARCH_CATEGORIES,
   RESEARCH_STATUSES,
   SKILL_CATEGORIES,
   SOURCE_VISIBILITIES,
@@ -48,12 +49,49 @@ const EXISTING_ROUTES = new Set([
   '/projects',
   '/work',
   '/open-source',
+  '/research',
   '/skills',
   '/certifications',
   '/contact',
   '/hire',
   '/studio',
 ]);
+
+/**
+ * The anchors each route actually renders.
+ *
+ * A destination like `/research#research-knowledgeguard` is only as good as its
+ * anchor: a wrong one scrolls nowhere and looks like a broken page. Before
+ * Phase 15 this was checked against project slugs alone, which meant any route
+ * with its own anchor scheme could only be linked by loosening the rule.
+ *
+ * Returns `null` for a route with no known anchor scheme, which means "do not
+ * check" rather than "no anchors are valid" — better to skip than to reject a
+ * correct link.
+ */
+function anchorsFor(
+  path: string,
+  projectSlugs: Set<string>,
+  researchSlugs: Set<string>
+): Set<string> | null {
+  switch (path) {
+    case '/work':
+    case '/projects':
+      // Project cards carry their slug as an id; `open-source` is the
+      // contributions section.
+      return new Set([...projectSlugs, 'open-source']);
+    case '/research':
+      return new Set([...[...researchSlugs].map((slug) => `research-${slug}`), 'ledger']);
+    case '/':
+      return new Set([
+        'engineering-story',
+        'projects',
+        ...storyStages.map((stage) => stage.id),
+      ]);
+    default:
+      return null;
+  }
+}
 
 function isValidUrl(value: string): boolean {
   try {
@@ -71,6 +109,10 @@ export function validateContent(): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const add = (entity: string, id: string, message: string) =>
     issues.push({ entity, id, message });
+
+  // Needed by the domain and story anchor checks, which run before the research
+  // section builds its own set.
+  const allResearchSlugs = new Set(researchProjects.map((entry) => entry.slug));
 
   // ───────────────────────────── Profile ─────────────────────────────
   if (profile.title !== 'Software Engineer') {
@@ -253,10 +295,10 @@ export function validateContent(): ContentIssue[] {
     if (!EXISTING_ROUTES.has(path)) {
       add('domain', ref, `href "${meta.href}" points at a route that does not exist yet`);
     }
-    // A project anchor must match a real project slug, or the link scrolls
-    // nowhere. "open-source" is the contributions section on /projects.
-    if (hash && hash !== 'open-source' && !projectSlugs.has(hash)) {
-      add('domain', ref, `href anchor "#${hash}" matches no project slug`);
+    // The anchor must be one the destination route actually renders.
+    const domainAnchors = anchorsFor(path, projectSlugs, allResearchSlugs);
+    if (hash && domainAnchors && !domainAnchors.has(hash)) {
+      add('domain', ref, `href anchor "#${hash}" is not rendered by ${path}`);
     }
 
     // Curated technologies must be real skills actually used in this domain.
@@ -350,8 +392,9 @@ export function validateContent(): ContentIssue[] {
     if (!EXISTING_ROUTES.has(path)) {
       add('story', ref, `href "${stage.href}" points at a route that does not exist yet`);
     }
-    if (hash && hash !== 'open-source' && !projectSlugs.has(hash)) {
-      add('story', ref, `href anchor "#${hash}" matches no project slug`);
+    const storyAnchors = anchorsFor(path, projectSlugs, allResearchSlugs);
+    if (hash && storyAnchors && !storyAnchors.has(hash)) {
+      add('story', ref, `href anchor "#${hash}" is not rendered by ${path}`);
     }
   }
 
@@ -503,8 +546,43 @@ export function validateContent(): ContentIssue[] {
     if (!RESEARCH_STATUSES.includes(entry.status)) {
       add('research', ref, `invalid status "${entry.status}"`);
     }
+    if (!RESEARCH_CATEGORIES.includes(entry.category)) {
+      add('research', ref, `invalid category "${entry.category}"`);
+    }
     if (!entry.researchQuestion?.trim()) add('research', ref, 'missing researchQuestion');
     if (!entry.publicStage?.trim()) add('research', ref, 'missing publicStage');
+
+    // "Executed" is the strongest claim the research page makes, so it has to
+    // be backed by something: a completed status and at least one verified
+    // piece of evidence. A plan cannot be filed under executed research by
+    // editing one field.
+    if (entry.category === 'executed') {
+      if (entry.status !== 'complete') {
+        add('research', ref, `category "executed" requires status "complete", found "${entry.status}"`);
+      }
+      if (!entry.results?.trim()) {
+        add('research', ref, 'category "executed" requires recorded results');
+      }
+      if (!entry.proof.some((item) => item.verified)) {
+        add('research', ref, 'category "executed" requires at least one verified proof entry');
+      }
+    }
+
+    // Work that has not been done must never be filed as a result.
+    if (entry.category !== 'executed' && entry.results?.trim()) {
+      add('research', ref, `category "${entry.category}" carries results — recheck the category`);
+    }
+
+    // Research that is still at the architecture stage must say so and must not
+    // carry results. This is the SCAR-OS guard, generalised.
+    if (entry.status === 'architecture-stage') {
+      if (entry.category !== 'current-fyp') {
+        add('research', ref, 'architecture-stage research must be categorised as current-fyp');
+      }
+      if ((entry.limitations ?? []).length === 0) {
+        add('research', ref, 'architecture-stage research must record what is not built');
+      }
+    }
 
     if (entry.projectSlug && !projectSlugs.has(entry.projectSlug)) {
       add('research', ref, `projectSlug "${entry.projectSlug}" does not exist`);

@@ -1,4 +1,57 @@
-import type { ResearchProject } from './types';
+import type { ResearchCategory, ResearchProject } from './types';
+
+/**
+ * Copy for the four research categories.
+ *
+ * Only what cannot be derived lives here: the public label, one line saying
+ * what the category means, and the ordering. Which entries belong to a category
+ * comes from the entries themselves, and everything factual about them —
+ * findings, limitations, what is built and what is not — is derived from the
+ * research and project records by `getResearchOverviews()`.
+ *
+ * The categories exist because `status` alone lets a plan sit beside a
+ * completed study as though the two were comparable, which is the single
+ * easiest way for a research page to mislead.
+ */
+export interface ResearchCategoryMeta {
+  category: ResearchCategory;
+  label: string;
+  /** What this category is, in one line. */
+  description: string;
+  /** The question a reader should ask of anything in it. */
+  test: string;
+}
+
+export const researchCategories: ResearchCategoryMeta[] = [
+  {
+    category: 'executed',
+    label: 'Executed research',
+    description:
+      'A question was posed, an experiment was designed and frozen, it ran, and it produced results — including results that went against the hypothesis.',
+    test: 'Did it run, and what did the numbers turn out to mean?',
+  },
+  {
+    category: 'research-engineering',
+    label: 'Research-driven engineering',
+    description:
+      'Software built to answer a research question. The infrastructure is real; the evaluation it exists to support has not produced results yet.',
+    test: 'What is built, and what has it actually measured?',
+  },
+  {
+    category: 'systems-experiment',
+    label: 'Systems experiments',
+    description:
+      'Protocol and systems work where the interesting question is what survives contact with real hardware rather than a simulator.',
+    test: 'Which parts ran on a device, and which only in simulation?',
+  },
+  {
+    category: 'current-fyp',
+    label: 'Current final-year project',
+    description:
+      'University research at the stage it has actually reached. A proposal is not an implementation and is not presented as one.',
+    test: 'What exists today, as opposed to what is proposed?',
+  },
+];
 
 /**
  * Research entries. Modelled separately from products because a study has a
@@ -16,6 +69,7 @@ export const researchProjects: ResearchProject[] = [
     slug: 'knowledgeguard',
     title: 'KnowledgeGuard / EGB — typed evidence-deficiency diagnosis and repair for RAG',
     status: 'complete',
+    category: 'executed',
     publicStage: 'Controlled study — analysis complete',
     researchQuestion:
       'Can a RAG system identify how its retrieved evidence is deficient — missing, insufficient, conflicting, outdated, or absent from the corpus — and does that diagnosis carry actionable information for selecting a repair action?',
@@ -78,6 +132,7 @@ export const researchProjects: ResearchProject[] = [
     slug: 'cortexward-verification',
     title: 'CortexWard — closing the verification loop on automated security findings',
     status: 'active',
+    category: 'research-engineering',
     publicStage: 'Pre-alpha — verification loop running',
     researchQuestion:
       'Can an agent pipeline confirm that a reported security finding is real, and that a proposed fix removes it, instead of emitting unverified findings?',
@@ -99,6 +154,7 @@ export const researchProjects: ResearchProject[] = [
     slug: 'emergency-mesh-protocol',
     title: 'Emergency Mesh — store-and-forward messaging over Bluetooth Low Energy',
     status: 'active',
+    category: 'systems-experiment',
     publicStage: 'Active development — transport and protocol built and tested',
     researchQuestion:
       'Can phones relay messages for each other over BLE reliably enough to be useful when there is no internet, no cell service and no server?',
@@ -118,6 +174,7 @@ export const researchProjects: ResearchProject[] = [
     slug: 'scar-os',
     title: 'SCAR-OS — voice and intent-driven interaction in a developer operating environment',
     status: 'architecture-stage',
+    category: 'current-fyp',
     // Kept as a single string so the public stage wording cannot drift between
     // surfaces, and cannot be upgraded by editing a card in isolation.
     publicStage: 'Current FYP — Research & Architecture Stage',

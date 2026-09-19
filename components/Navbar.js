@@ -9,7 +9,7 @@ const profile = getProfile();
 /**
  * Primary navigation.
  *
- * The desktop row switches in at `lg`, not `md`. Seven destinations plus the
+ * The desktop row switches in at `lg`, not `md`. Eight destinations plus the
  * logo, the GitHub icon and the Resume button do not fit a 768px bar without
  * wrapping or shrinking the hit areas below 44px, and a tablet is perfectly
  * well served by the same menu a phone gets. Each phase that adds a destination
@@ -19,6 +19,7 @@ const profile = getProfile();
 const links = [
   { href: '/',               label: 'Home'        },
   { href: '/work',           label: 'Work'        },
+  { href: '/research',       label: 'Research'    },
   { href: '/open-source',    label: 'Open Source' },
   { href: '/skills',         label: 'Skills'      },
   { href: '/certifications', label: 'Certs'       },

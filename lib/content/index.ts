@@ -19,14 +19,20 @@ export type { ContentIssue } from './validation';
 // Types are re-exported so components can be typed without reaching past the
 // boundary into the content implementation.
 export type {
+  CapabilityLadder,
+  CaseStudy,
   ContributionDiff,
   ContributionFile,
   ContributionStatus,
   Credential,
   Domain,
   EducationEntry,
+  EvidenceState,
+  ExperimentGrid,
   MediaItem,
   OpenSourceContribution,
+  ResearchCategory,
+  ResearchFinding,
   Profile,
   Project,
   ProjectLinks,
@@ -43,8 +49,12 @@ export type {
 
 export {
   DOMAINS,
+  EVIDENCE_STATES,
   PROJECT_STATUSES,
   PROJECT_TIERS,
   PROOF_TYPES,
+  RESEARCH_CATEGORIES,
   SKILL_CATEGORIES,
 } from '@/content/types';
+
+export type { ResearchCategoryMeta } from '@/content/research';

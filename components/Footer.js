@@ -6,6 +6,7 @@ const profile = getProfile();
 const navLinks = [
   { href: '/',               label: 'Home'        },
   { href: '/work',           label: 'Work'        },
+  { href: '/research',       label: 'Research'    },
   { href: '/open-source',    label: 'Open Source' },
   { href: '/skills',         label: 'Skills'      },
   { href: '/certifications', label: 'Certs'       },

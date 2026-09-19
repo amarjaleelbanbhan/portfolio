@@ -13,7 +13,9 @@
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/motion';
 
-export function ResearchFindings({ findings = [], accent }) {
+// `as` lets a research entry render these as subsections without changing
+// their appearance; a case study keeps the default top-level level.
+export function ResearchFindings({ findings = [], accent, as: Heading = 'h2' }) {
   if (findings.length === 0) return null;
 
   return (
@@ -23,12 +25,12 @@ export function ResearchFindings({ findings = [], accent }) {
       {...fadeUp()}
       className="mb-12 scroll-mt-24"
     >
-      <h2
+      <Heading
         id="findings-heading"
         className="text-xl sm:text-2xl font-bold text-slate-50 tracking-tight mb-2"
       >
         What the results support
-      </h2>
+      </Heading>
       <p className="text-sm text-slate-400 leading-relaxed max-w-2xl mb-5">
         Each number is paired with what it does and does not license.
       </p>
@@ -55,7 +57,7 @@ export function ResearchFindings({ findings = [], accent }) {
   );
 }
 
-export function ResearchCorrection({ correction, accent }) {
+export function ResearchCorrection({ correction, accent, as: Heading = 'h2' }) {
   if (!correction?.detail?.trim()) return null;
 
   return (
@@ -65,12 +67,12 @@ export function ResearchCorrection({ correction, accent }) {
       {...fadeUp()}
       className="mb-12 scroll-mt-24"
     >
-      <h2
+      <Heading
         id="correction-heading"
         className="text-xl sm:text-2xl font-bold text-slate-50 tracking-tight mb-2"
       >
         Correction
-      </h2>
+      </Heading>
 
       <div
         className="surface-card p-5"

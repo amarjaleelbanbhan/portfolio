@@ -13,6 +13,7 @@ import {
   openSourceContributions,
   profile,
   projects,
+  researchCategories,
   researchProjects,
   skills,
 } from '@/content';
@@ -21,6 +22,7 @@ import type {
   Credential,
   Domain,
   EducationEntry,
+  EvidenceState,
   OpenSourceContribution,
   Profile,
   Project,
@@ -30,8 +32,10 @@ import type {
   ResearchProject,
   Skill,
   SkillCategory,
+  VerificationItem,
 } from '@/content/types';
 import type { DomainMeta } from '@/content/domains';
+import type { ResearchCategoryMeta } from '@/content/research';
 import type { StoryStage } from '@/content/story';
 
 // ─────────────────────────────── Profile ───────────────────────────────
@@ -125,6 +129,178 @@ export function getResearchBySlug(slug: string): ResearchProject | undefined {
 
 export function getResearchForProject(projectSlug: string): ResearchProject | undefined {
   return researchProjects.find((r) => r.projectSlug === projectSlug);
+}
+
+export function getResearchCategories(): ResearchCategoryMeta[] {
+  return researchCategories;
+}
+
+/**
+ * One documented capability or finding, tagged with the strongest evidence that
+ * exists for it.
+ *
+ * `source` records which canonical structure it came from, so a reader — and a
+ * future maintainer — can see that nothing here was written by hand for the
+ * research page.
+ */
+export interface EvidenceItem {
+  id: string;
+  label: string;
+  detail: string;
+  state: EvidenceState;
+  source: 'finding' | 'protocol-step' | 'ladder-rung' | 'future-work' | 'limitation';
+}
+
+/**
+ * Evidence state for one research entry, derived — never authored.
+ *
+ * The three sources are the structures the case studies already carry:
+ *
+ * | Canonical record          | Maps to                                    |
+ * |---------------------------|--------------------------------------------|
+ * | `caseStudy.findings`      | `executed` — a measured result exists       |
+ * | `caseStudy.network.steps` | `live` → executed, `simulated` → simulated, |
+ * |                           | `not-implemented` → not-built               |
+ * | `caseStudy.ladder.stages` | `implemented`/`partial` → built,            |
+ * |                           | `planned` → not-built                       |
+ * | `research.futureWork`     | `not-built`                                 |
+ *
+ * A protocol step marked `live` is `executed` rather than `built` because the
+ * canonical record means it was exercised on real hardware, which is a result,
+ * not a feature. A ladder rung marked implemented is `built`: the code exists
+ * and nothing has measured how well it works.
+ *
+ * Counts from different entries are NOT comparable — they count different kinds
+ * of item — and every surface that renders them has to say so.
+ */
+export function getResearchEvidence(entry: ResearchProject): EvidenceItem[] {
+  const project = entry.projectSlug ? getProjectBySlug(entry.projectSlug) : undefined;
+  const study = project?.caseStudy;
+  const items: EvidenceItem[] = [];
+
+  for (const finding of study?.findings ?? []) {
+    items.push({
+      id: finding.id,
+      label: finding.label,
+      detail: finding.interpretation,
+      state: 'executed',
+      source: 'finding',
+    });
+  }
+
+  for (const step of study?.network?.steps ?? []) {
+    items.push({
+      id: step.id,
+      label: step.label,
+      detail: step.detail,
+      state:
+        step.status === 'live' ? 'executed' : step.status === 'simulated' ? 'simulated' : 'not-built',
+      source: 'protocol-step',
+    });
+  }
+
+  for (const rung of study?.ladder?.stages ?? []) {
+    items.push({
+      id: rung.id,
+      label: `${rung.level} · ${rung.label}`,
+      detail: rung.status === 'planned' && rung.gap ? rung.gap : rung.meaning,
+      state: rung.status === 'planned' ? 'not-built' : 'built',
+      source: 'ladder-rung',
+    });
+  }
+
+  for (const [index, work] of (entry.futureWork ?? []).entries()) {
+    items.push({
+      id: `${entry.slug}-future-${index}`,
+      // Future work is written as one sentence; the first clause is its name.
+      label: work.split(/ — |\. /)[0],
+      detail: work,
+      state: 'not-built',
+      source: 'future-work',
+    });
+  }
+
+  // An entry with no case study and no future work still has to say something
+  // true about what exists. Its limitations are the only structured record of
+  // that, and for SCAR-OS they say exactly the right thing.
+  if (items.length === 0) {
+    for (const [index, limitation] of (entry.limitations ?? []).entries()) {
+      items.push({
+        id: `${entry.slug}-limit-${index}`,
+        label: 'Not implemented',
+        detail: limitation,
+        state: 'not-built',
+        source: 'limitation',
+      });
+    }
+  }
+
+  return items;
+}
+
+export interface ResearchOverview {
+  research: ResearchProject;
+  categoryMeta: ResearchCategoryMeta;
+  project?: Project;
+  /** `/work/<slug>` when the project has a reviewed case study. */
+  caseStudyHref?: string;
+  evidence: EvidenceItem[];
+  /** Count of evidence items in each state, for the ledger. */
+  counts: Record<EvidenceState, number>;
+  /** Verified proof only, matching the rule the rest of the site follows. */
+  proof: Proof[];
+  /**
+   * Verification activities the case study records as *not* independently
+   * evidenced — "the native stack has not been verified on a device", "mesh
+   * behaviour beyond one hop exists only in simulation".
+   *
+   * Kept out of the ledger deliberately. These are qualifications on work that
+   * exists, not items in their own right, and counting them alongside protocol
+   * steps would both double-count single-hop transfer and quietly turn a
+   * caveat into a tally. They are the answer to "what is still missing", so
+   * they get their own block instead.
+   */
+  gaps: VerificationItem[];
+}
+
+/**
+ * Every research entry with its category copy, its project, and its derived
+ * evidence, in category order.
+ */
+export function getResearchOverviews(): ResearchOverview[] {
+  const order = new Map(researchCategories.map((meta, index) => [meta.category, index]));
+
+  return researchProjects
+    .map((entry): ResearchOverview | undefined => {
+      const categoryMeta = researchCategories.find((meta) => meta.category === entry.category);
+      if (!categoryMeta) return undefined;
+
+      const project = entry.projectSlug ? getProjectBySlug(entry.projectSlug) : undefined;
+      const evidence = getResearchEvidence(entry);
+      const counts: Record<EvidenceState, number> = {
+        executed: 0,
+        built: 0,
+        simulated: 0,
+        'not-built': 0,
+      };
+      for (const item of evidence) counts[item.state] += 1;
+
+      return {
+        research: entry,
+        categoryMeta,
+        project,
+        caseStudyHref: project?.caseStudy ? `/work/${project.slug}` : undefined,
+        evidence,
+        counts,
+        proof: entry.proof.filter((item) => item.verified),
+        gaps: (project?.caseStudy?.verification ?? []).filter((item) => !item.verified),
+      };
+    })
+    .filter((overview): overview is ResearchOverview => Boolean(overview))
+    .sort(
+      (a, b) =>
+        (order.get(a.research.category) ?? 99) - (order.get(b.research.category) ?? 99)
+    );
 }
 
 // ───────────────────────────── Open source ─────────────────────────────

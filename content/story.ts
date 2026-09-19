@@ -122,7 +122,10 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Illustrative design, not a results chart. The study asks whether typed diagnosis carries actionable information; it does not establish a universal or final repair policy. The repository is private, so the benchmark and analysis are not currently publishable.',
-    href: '/work#knowledgeguard',
+    // Points at the research page rather than the project listing: the stage is
+    // about the study, and /research is where the factorial, the findings and
+    // the published correction live.
+    href: '/research#research-knowledgeguard',
   },
   {
     id: 'story-systems',
