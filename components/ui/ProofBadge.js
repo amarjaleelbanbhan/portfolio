@@ -16,6 +16,9 @@ const PROOF = {
   'production-release': { label: 'Production Release', color: '#22c55e' },
   benchmark: { label: 'Benchmark', color: '#38bdf8' },
   'merged-pr': { label: 'Merged PR', color: '#22c55e' },
+  // Grey, not green, and it never says "merged": an open request must not read
+  // as a landed change anywhere on the site.
+  'pull-request': { label: 'Pull Request', color: '#64748b' },
   'package-release': { label: 'Package', color: '#14b8a6' },
   deployment: { label: 'Deployment', color: '#14b8a6' },
   'research-result': { label: 'Research Result', color: '#a855f7' },

@@ -153,6 +153,152 @@ export function getContributionsForDisplay(): OpenSourceContribution[] {
   });
 }
 
+/**
+ * Technical areas that contributions actually carry, each with its count.
+ *
+ * Derived rather than listed: an area nobody has worked in would be a filter
+ * button that always returns nothing, and a new area should appear without
+ * anyone editing the page.
+ */
+export function getContributionAreas(): { key: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const contribution of openSourceContributions) {
+    for (const area of contribution.areas) {
+      counts.set(area, (counts.get(area) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
+}
+
+/** Languages across all contributions, most-used first. */
+export function getContributionLanguages(): { key: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const contribution of openSourceContributions) {
+    for (const language of contribution.languages) {
+      counts.set(language, (counts.get(language) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
+}
+
+export interface UpstreamRepository {
+  /** `owner/repo`. */
+  repository: string;
+  organization: string;
+  /** Just the repository half, for compact labels. */
+  name: string;
+  contributions: OpenSourceContribution[];
+  mergedCount: number;
+  openCount: number;
+}
+
+/**
+ * Upstream repositories worked in, with the contributions that landed in each.
+ *
+ * This is the whole basis of the repository graph on /open-source: the graph
+ * draws exactly these relationships and nothing else, so it cannot depict
+ * activity, reviews or influence that the contribution records do not contain.
+ */
+export function getUpstreamRepositories(): UpstreamRepository[] {
+  const byRepository = new Map<string, UpstreamRepository>();
+  for (const contribution of getContributionsForDisplay()) {
+    const existing = byRepository.get(contribution.repository);
+    const entry: UpstreamRepository = existing ?? {
+      repository: contribution.repository,
+      organization: contribution.organization,
+      name: contribution.repository.split('/')[1] ?? contribution.repository,
+      contributions: [],
+      mergedCount: 0,
+      openCount: 0,
+    };
+    entry.contributions.push(contribution);
+    if (contribution.status === 'merged') entry.mergedCount += 1;
+    if (contribution.status === 'open') entry.openCount += 1;
+    byRepository.set(contribution.repository, entry);
+  }
+  return [...byRepository.values()].sort(
+    (a, b) => b.contributions.length - a.contributions.length || a.name.localeCompare(b.name)
+  );
+}
+
+export interface ContributionStats {
+  merged: number;
+  open: number;
+  total: number;
+  repositories: number;
+  organizations: number;
+  /** Files, additions and deletions summed across every recorded diff. */
+  filesChanged: number;
+  additions: number;
+  deletions: number;
+  /** Contributions whose pull request documents tests or checks. */
+  withVerification: number;
+  /**
+   * The oldest `asOf` across every contribution's proof — the date the whole
+   * set can honestly be described as verified to, since it is only as current
+   * as its least recently checked member.
+   */
+  verifiedAsOf: string | null;
+}
+
+/**
+ * Headline numbers for /open-source, every one of them counted from the
+ * records rather than written down. There is deliberately no "contribution
+ * score" here — the only figures are things that were individually verified.
+ */
+export function getContributionStats(): ContributionStats {
+  const stats: ContributionStats = {
+    merged: 0,
+    open: 0,
+    total: openSourceContributions.length,
+    repositories: new Set(openSourceContributions.map((c) => c.repository)).size,
+    organizations: new Set(openSourceContributions.map((c) => c.organization)).size,
+    filesChanged: 0,
+    additions: 0,
+    deletions: 0,
+    withVerification: 0,
+    verifiedAsOf: null,
+  };
+  for (const contribution of openSourceContributions) {
+    if (contribution.status === 'merged') stats.merged += 1;
+    if (contribution.status === 'open') stats.open += 1;
+    if (contribution.verification?.length) stats.withVerification += 1;
+    if (contribution.diff) {
+      stats.filesChanged += contribution.diff.files;
+      stats.additions += contribution.diff.additions;
+      stats.deletions += contribution.diff.deletions;
+    }
+    for (const item of contribution.proof) {
+      // The oldest check is the honest one to advertise: the set as a whole is
+      // only as current as its least recently verified member.
+      if (!item.asOf) continue;
+      if (stats.verifiedAsOf === null || item.asOf < stats.verifiedAsOf) {
+        stats.verifiedAsOf = item.asOf;
+      }
+    }
+  }
+  return stats;
+}
+
+/**
+ * Whole days between opening and merge, or null when either date is unknown or
+ * the request is not merged. Same-day merges return 0, which is a real answer
+ * and not a missing one.
+ */
+export function getDaysToMerge(contribution: OpenSourceContribution): number | null {
+  if (contribution.status !== 'merged' || !contribution.openedAt || !contribution.mergedAt) {
+    return null;
+  }
+  const opened = Date.parse(`${contribution.openedAt}T00:00:00Z`);
+  const merged = Date.parse(`${contribution.mergedAt}T00:00:00Z`);
+  if (Number.isNaN(opened) || Number.isNaN(merged)) return null;
+  return Math.round((merged - opened) / 86_400_000);
+}
+
 // ─────────────────────────────── Skills ───────────────────────────────
 
 const bySkillOrder = (a: Skill, b: Skill) =>

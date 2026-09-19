@@ -79,7 +79,7 @@ export const coreDomains: DomainMeta[] = [
     label: 'Open Source',
     description:
       'Upstream contributions merged into projects maintained by other people, including Pydantic AI, Promptfoo and the Academy Software Foundation.',
-    href: '/work#open-source',
+    href: '/open-source',
     angle: 288,
   },
 ];

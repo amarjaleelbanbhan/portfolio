@@ -44,6 +44,10 @@ export const PROOF_TYPES = [
   'production-release',
   'benchmark',
   'merged-pr',
+  // An upstream pull request that is NOT merged. Separate from `merged-pr`
+  // because the badge for a merged change reads green and says "merged", and an
+  // open request rendered with it would claim an outcome that has not happened.
+  'pull-request',
   'package-release',
   'deployment',
   'research-result',
@@ -462,6 +466,33 @@ export interface ResearchProject {
 // Open source
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * One file touched by a pull request, with its real line counts.
+ *
+ * Recorded rather than described so the page can show what was actually
+ * changed — including whether a test file was part of the diff — without
+ * reproducing the diff itself or paraphrasing it into something softer.
+ */
+export interface ContributionFile {
+  path: string;
+  additions: number;
+  deletions: number;
+}
+
+/**
+ * Diff size, straight from the GitHub API.
+ *
+ * `files` is the API's own `changed_files`; `paths` may be shorter if a diff is
+ * larger than one page, which is why the two are stored separately rather than
+ * one being derived from the other.
+ */
+export interface ContributionDiff {
+  files: number;
+  additions: number;
+  deletions: number;
+  paths: ContributionFile[];
+}
+
 export interface OpenSourceContribution {
   id: string;
   /** `owner/repo`. */
@@ -471,6 +502,23 @@ export interface OpenSourceContribution {
   url: string;
   title: string;
   summary?: string;
+
+  /**
+   * The upstream engineering problem, stated as it existed before the change.
+   * Required: a contribution listed without the problem it solved is a link,
+   * not evidence.
+   */
+  problem: string;
+  /** What was actually changed. Required, for the same reason. */
+  change: string;
+  /**
+   * Tests and checks documented in the pull request itself. Never inferred —
+   * an entry here means the request states it, not that it seems likely.
+   */
+  verification?: string[];
+  /** The upstream issue this request closes, e.g. "#5964". */
+  issueRef?: string;
+
   status: ContributionStatus;
   /** ISO date merged, when merged. */
   mergedAt?: string;
@@ -478,6 +526,7 @@ export interface OpenSourceContribution {
   openedAt?: string;
   languages: string[];
   areas: string[];
+  diff?: ContributionDiff;
   proof: Proof[];
 }
 

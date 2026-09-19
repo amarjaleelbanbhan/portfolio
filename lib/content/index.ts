@@ -19,6 +19,9 @@ export type { ContentIssue } from './validation';
 // Types are re-exported so components can be typed without reaching past the
 // boundary into the content implementation.
 export type {
+  ContributionDiff,
+  ContributionFile,
+  ContributionStatus,
   Credential,
   Domain,
   EducationEntry,

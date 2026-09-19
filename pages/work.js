@@ -45,6 +45,8 @@ const archived = getArchivedProjects();
 const allProjects = getAllProjects();
 const caseStudySlugs = new Set(getCaseStudyProjects().map((p) => p.slug));
 const contributions = getContributionsForDisplay();
+const mergedCount = contributions.filter((c) => c.status === 'merged').length;
+const openCount = contributions.filter((c) => c.status === 'open').length;
 
 const DOMAIN_LABELS = {
   product: 'Product',
@@ -299,8 +301,11 @@ export default function Work() {
           )}
 
           {/* ── Upstream contributions ──
-              Evidence of engineering work, kept here so /work#open-source is a
-              real destination. The dedicated Open Source page is Phase 14. */}
+              Phase 14 gave this its own page, so what stays here is a pointer
+              rather than a second copy of the list. The `open-source` id is
+              kept deliberately: /work#open-source is linked from documentation
+              and was a Core destination, and an anchor that silently stops
+              resolving is worse than a short section. */}
           <section
             id="open-source"
             aria-labelledby="open-source-heading"
@@ -312,37 +317,19 @@ export default function Work() {
               blurb="Pull requests into codebases maintained by other people, shown with their current status."
               count={contributions.length}
             />
-            <ul className="list-none m-0 p-0 grid gap-2 sm:grid-cols-2">
-              {contributions.map((c) => (
-                <li key={c.id}>
-                  <a
-                    href={c.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2.5 py-2 min-h-[44px] sm:min-h-0"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="w-1.5 h-1.5 rounded-full shrink-0"
-                      style={{
-                        background: c.status === 'merged' ? '#22c55e' : 'transparent',
-                        border: c.status === 'merged' ? 'none' : '1px solid #64748b',
-                      }}
-                    />
-                    <span className="font-code text-xs text-slate-300 group-hover:text-white transition-colors truncate">
-                      {c.repository}
-                      <span className="text-slate-500">#{c.prNumber}</span>
-                    </span>
-                    <span
-                      className="font-code text-[10px] uppercase tracking-wider shrink-0 ml-auto"
-                      style={{ color: c.status === 'merged' ? '#22c55e' : '#64748b' }}
-                    >
-                      {c.status}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div className="surface-card p-5 flex flex-wrap items-center justify-between gap-4">
+              <p className="text-sm text-slate-400 leading-relaxed max-w-xl m-0">
+                {mergedCount} merged into repositories maintained by other people
+                {openCount > 0 && `, ${openCount} still open`}. Each one is shown with the problem
+                it addressed, the change made, its test evidence and its current status.
+              </p>
+              <Link
+                href="/open-source"
+                className="font-code text-xs font-semibold px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-lg border border-neon-green/40 text-neon-green hover:bg-neon-green/10 transition-colors"
+              >
+                View all contributions →
+              </Link>
+            </div>
           </section>
         </main>
         <Footer />

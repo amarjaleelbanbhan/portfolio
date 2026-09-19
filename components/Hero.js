@@ -196,7 +196,7 @@ export default function Hero() {
                 <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
               </Link>
               <Link
-                href="/work#open-source"
+                href="/open-source"
                 className="px-6 py-3.5 border border-neon-green/40 text-neon-green font-semibold rounded-lg hover:border-neon-green hover:bg-neon-green/8 transition-all duration-300 text-sm"
               >
                 View Open Source

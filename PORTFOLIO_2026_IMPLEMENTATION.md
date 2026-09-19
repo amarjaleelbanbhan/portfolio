@@ -1805,31 +1805,99 @@ Intro:
 
 Add verified contributions:
 
-- [ ] Pydantic AI #5969
-- [ ] Promptfoo #9781
-- [ ] loop-engineering #395
-- [ ] loop-engineering #437
-- [ ] MCP-Audit/MCTS #233
-- [ ] Academy Software Foundation DNA #195
-- [ ] eye-tracker #61 with current correct status
+- [x] Pydantic AI #5969
+- [x] Promptfoo #9781
+- [x] loop-engineering #395
+- [x] loop-engineering #437
+- [x] MCP-Audit/MCTS #233
+- [x] Academy Software Foundation DNA #195
+- [x] eye-tracker #61 with current correct status
 
 Each contribution must show:
 
-- [ ] repository
-- [ ] problem
-- [ ] change
-- [ ] tests/evidence
-- [ ] status
-- [ ] link
-- [ ] language/area tags
+- [x] repository
+- [x] problem
+- [x] change
+- [x] tests/evidence
+- [x] status
+- [x] link
+- [x] language/area tags
 
 ## Phase Completion
 
-- [ ] Phase 14 complete
+- [x] Phase 14 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/open-source`.
+Documented in `docs/portfolio-2026/open-source-page.md`.
+
+**All seven pull requests were re-read from the GitHub API on 2026-09-20**, not
+trusted from the Phase 1 cache. Every recorded field matched; the check added
+four missing `openedAt` dates and confirmed eye-tracker#61 is **still open**.
+Two language lists were corrected against the actual diffs: #395 touches
+`action.yml` and a README, so it is YAML and Shell rather than JavaScript.
+
+**The page is not a GitHub dashboard, deliberately.** No heat map, no streak, no
+total "contributions", no impact score. What a reader actually wants from an
+upstream change is two paragraphs — what was wrong before, and what was changed
+— so those are the largest text on every card and the repository name is not.
+Nothing counts reviews, reactions, stars or downstream impact, because none of
+that is in the records.
+
+**Four new required content fields**, every one sourced from the pull request
+itself: `problem`, `change`, `verification` (tests the PR documents, never
+inferred) and `diff` (files, additions, deletions and per-file paths from the
+API). `verification` is optional on purpose — #395 documents no tests and the
+card says so in as many words, because hiding an empty section would imply by
+omission that every entry came with tests.
+
+**"Never present an open PR as merged" is now enforced three times over.** The
+`merged-pr` proof type renders green and reads "Merged PR", and eye-tracker#61
+was carrying it. There is now a separate `pull-request` proof type that renders
+grey and never says merged, `ProofBadge` renders it that way, and validation
+**rejects** a `merged-pr` proof on any contribution that is not merged.
+
+**Five validation rules added** — required problem and change, no merged proof on
+an unmerged request, `mergedAt` not before `openedAt`, internally consistent
+diff arithmetic, and `/open-source` registered as a real route. All five were
+confirmed to fire by injecting defects.
+
+**The lifecycle rail is two stops, and that is the point.** A real pull request
+has review rounds, CI and revisions, none of which is in the records, so none of
+it is drawn. Only opened and merged-or-not — which is what makes the terminal
+stop honest rather than decorative.
+
+**The repository graph encodes one thing**: pull requests per repository, as node
+size, with the number also printed. Lines are a decorative `aria-hidden` SVG;
+every node is a real `<button>` in DOM order, and below `md` the ring is dropped
+for a plain tappable list rather than asking a touch user to hover or drag.
+
+**Shared filter primitive.** `components/ui/FilterChipGroup` was extracted from
+`/work`'s domain filters so the two pages cannot drift into subtly different
+radio-group keyboard behaviour.
+
+**Navigation moved to the `lg` breakpoint.** Seven destinations plus logo, GitHub
+and Resume do not fit a 768px bar without dropping hit areas below 44px. Measured
+fitting at 1024px. A phase adding an eighth destination must re-measure.
+
+**Browser-verified**, 58 checks on a production build at 1280/1024/768/430/390/
+360 px and under reduced motion: one `<h1>` carrying the claim, unique metadata,
+all seven contributions and URLs, problem/change/tests/files on every card, the
+counts matching the records, the open PR reading open everywhere and never
+merged, no invented activity language, status/area/graph filtering, arrow-key
+radio groups with one tab stop each, no overflow, nothing stranded after a
+jump-scroll, no console errors, and ten existing routes plus the homepage story
+and Engineering Core unaffected.
+
+**Three defects found and fixed by that pass**: 82px of horizontal overflow at
+360px caused by grid items defaulting to `min-width: auto` so an unbreakable file
+path widened its column instead of truncating; two interactive targets under 24px
+on desktop from an `sm:min-h-0` that belongs on chips and not on controls; and
+graph edges drawn at 0.25 CSS pixels by a non-scaling stroke, i.e. invisible.
+
+**Known follow-up for Phase 16:** the `javascript` skill still cites #395 as
+evidence, which the corrected language data contradicts.
 
 ---
 

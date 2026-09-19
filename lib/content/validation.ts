@@ -47,6 +47,7 @@ const EXISTING_ROUTES = new Set([
   '/',
   '/projects',
   '/work',
+  '/open-source',
   '/skills',
   '/certifications',
   '/contact',
@@ -547,6 +548,62 @@ export function validateContent(): ContentIssue[] {
     if (contribution.status !== 'merged' && contribution.mergedAt) {
       add('contribution', ref, `status is "${contribution.status}" but mergedAt is set`);
     }
+
+    // The point of the Open Source page is what the change was for and what it
+    // did. A contribution without both is a link, not evidence.
+    if (!contribution.problem?.trim()) add('contribution', ref, 'missing problem');
+    if (!contribution.change?.trim()) add('contribution', ref, 'missing change');
+
+    // Phase 14's hard rule: an unmerged request must never carry the merged
+    // badge. Enforced in the data as well as in the component, because the
+    // badge is green and says "merged", and that is not a mistake worth
+    // leaving to one render path.
+    if (contribution.status !== 'merged') {
+      for (const item of contribution.proof) {
+        if (item.type === 'merged-pr') {
+          add(
+            'contribution',
+            ref,
+            `status is "${contribution.status}" but proof "${item.id}" is typed merged-pr`
+          );
+        }
+      }
+    }
+
+    // A merge that predates its own opening would mean one of the two dates is
+    // wrong, and both are shown publicly.
+    if (contribution.openedAt && contribution.mergedAt && contribution.mergedAt < contribution.openedAt) {
+      add('contribution', ref, `mergedAt ${contribution.mergedAt} is before openedAt ${contribution.openedAt}`);
+    }
+
+    // Diff figures come from the GitHub API and are displayed as measurements,
+    // so they are checked for internal consistency rather than trusted.
+    const diff = contribution.diff;
+    if (diff) {
+      if (diff.files < 1) add('contribution', ref, 'diff claims fewer than one changed file');
+      if (diff.paths.length > diff.files) {
+        add('contribution', ref, `diff lists ${diff.paths.length} paths but claims ${diff.files} changed files`);
+      }
+      const pathAdditions = diff.paths.reduce((sum, file) => sum + file.additions, 0);
+      const pathDeletions = diff.paths.reduce((sum, file) => sum + file.deletions, 0);
+      // Only checked when the path list is complete; a truncated list legitimately
+      // sums to less than the totals.
+      if (diff.paths.length === diff.files) {
+        if (pathAdditions !== diff.additions) {
+          add('contribution', ref, `diff additions ${diff.additions} do not match the per-file total ${pathAdditions}`);
+        }
+        if (pathDeletions !== diff.deletions) {
+          add('contribution', ref, `diff deletions ${diff.deletions} do not match the per-file total ${pathDeletions}`);
+        }
+      }
+      for (const file of diff.paths) {
+        if (!file.path?.trim()) add('contribution', ref, 'diff path entry has no path');
+        if (file.additions < 0 || file.deletions < 0) {
+          add('contribution', ref, `diff path "${file.path}" has a negative line count`);
+        }
+      }
+    }
+
     validateProof(contribution.proof, 'contribution', ref, add);
   }
 

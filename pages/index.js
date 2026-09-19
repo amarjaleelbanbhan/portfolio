@@ -11,13 +11,16 @@ import Achievements from '@/components/Achievements';
 import Education from '@/components/Education';
 import SpotlightGrid from '@/components/SpotlightGrid';
 import ProjectCard from '@/components/ProjectCard';
-import { getFeaturedProjects, getProfile } from '@/lib/content';
+import { getFeaturedProjects, getMergedContributionCount, getProfile } from '@/lib/content';
 
 const AnimatedStats = dynamic(() => import('@/components/AnimatedStats'), { ssr: false });
 
 // Ordered by explicit featuredRank, not by position in the array.
 const featuredProjects = getFeaturedProjects(3);
 const profile = getProfile();
+// Derived, not written out: the bio used to say "six" and would have gone stale
+// the moment a seventh pull request merged.
+const mergedContributionCount = getMergedContributionCount();
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -81,7 +84,12 @@ export default function Home() {
                     </p>
                     <p className="text-slate-400 leading-relaxed text-sm">
                       I also contribute upstream rather than only to my own repositories —{' '}
-                      <span className="text-neon-green font-semibold">six merged pull requests</span>{' '}
+                      <Link
+                        href="/open-source"
+                        className="text-neon-green font-semibold hover:text-white underline decoration-dotted underline-offset-4"
+                      >
+                        {mergedContributionCount} merged pull requests
+                      </Link>{' '}
                       into projects including Pydantic AI, Promptfoo and the Academy Software Foundation.
                     </p>
                     <p className="text-slate-500 text-sm font-code italic">

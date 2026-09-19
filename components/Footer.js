@@ -4,11 +4,12 @@ import { getProfile, getSocialLinks } from '@/lib/content';
 const profile = getProfile();
 
 const navLinks = [
-  { href: '/',               label: 'Home'     },
-  { href: '/work',           label: 'Work' },
-  { href: '/skills',         label: 'Skills'   },
-  { href: '/certifications', label: 'Certs'    },
-  { href: '/contact',        label: 'Contact'  },
+  { href: '/',               label: 'Home'        },
+  { href: '/work',           label: 'Work'        },
+  { href: '/open-source',    label: 'Open Source' },
+  { href: '/skills',         label: 'Skills'      },
+  { href: '/certifications', label: 'Certs'       },
+  { href: '/contact',        label: 'Contact'     },
 ];
 
 const socialLinks = [
@@ -57,7 +58,7 @@ export default function Footer() {
                   <a
                     href={href}
                     target={href.startsWith('mailto') ? '_self' : '_blank'}
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-sm text-slate-400 hover:text-neon-cyan transition-colors duration-200"
                   >
                     {label}

@@ -165,6 +165,6 @@ export const storyStages: StoryStage[] = [
     ],
     caveat:
       'Statuses are read from the canonical contribution records. Open pull requests are shown as open; nothing here is a contribution score or a simulated activity graph.',
-    href: '/work#open-source',
+    href: '/open-source',
   },
 ];

@@ -6,13 +6,24 @@ import { getProfile } from '@/lib/content';
 
 const profile = getProfile();
 
+/**
+ * Primary navigation.
+ *
+ * The desktop row switches in at `lg`, not `md`. Seven destinations plus the
+ * logo, the GitHub icon and the Resume button do not fit a 768px bar without
+ * wrapping or shrinking the hit areas below 44px, and a tablet is perfectly
+ * well served by the same menu a phone gets. Each phase that adds a destination
+ * should re-check that the row still fits rather than letting it collapse
+ * silently.
+ */
 const links = [
-  { href: '/',               label: 'Home'     },
-  { href: '/work',           label: 'Work' },
-  { href: '/skills',         label: 'Skills'   },
-  { href: '/certifications', label: 'Certs'    },
-  { href: '/studio',         label: 'Studio'   },
-  { href: '/contact',        label: 'Contact'  },
+  { href: '/',               label: 'Home'        },
+  { href: '/work',           label: 'Work'        },
+  { href: '/open-source',    label: 'Open Source' },
+  { href: '/skills',         label: 'Skills'      },
+  { href: '/certifications', label: 'Certs'       },
+  { href: '/studio',         label: 'Studio'      },
+  { href: '/contact',        label: 'Contact'     },
 ];
 
 export default function Navbar() {
@@ -55,7 +66,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-1 text-sm font-medium">
+        <div className="hidden lg:flex items-center gap-1 text-sm font-medium">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -110,7 +121,7 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-slate-300 hover:text-neon-cyan transition-colors"
+          className="lg:hidden p-2 text-slate-300 hover:text-neon-cyan transition-colors"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
         >
@@ -132,7 +143,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden overflow-hidden border-t border-white/5 bg-midnight/98 backdrop-blur-lg"
+            className="lg:hidden overflow-hidden border-t border-white/5 bg-midnight/98 backdrop-blur-lg"
           >
             <div className="px-4 py-3 space-y-1">
               {links.map((link) => (
