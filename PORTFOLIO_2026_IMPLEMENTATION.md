@@ -1361,9 +1361,9 @@ Categories:
 
 ## Current FYP
 
-- [ ] VICE OS
+- [ ] SCAR-OS
 
-VICE OS must currently be represented carefully:
+SCAR-OS (previously VICE OS) must currently be represented carefully:
 
 `Current FYP — Research & Architecture Stage`
 
@@ -2152,7 +2152,7 @@ Check every major path.
 - [ ] no broken repository links
 - [ ] no AI attribution in git metadata
 - [ ] no private information leakage
-- [ ] VICE OS accurately described
+- [ ] SCAR-OS accurately described
 - [ ] Emergency Mesh limitation accurately described
 - [ ] CortexWard accurately marked pre-alpha
 - [ ] KnowledgeGuard research limitations preserved

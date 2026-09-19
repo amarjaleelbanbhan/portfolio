@@ -73,7 +73,7 @@ const projectVisuals = {
       </svg>
     ),
   },
-  'vice-os': {
+  'scar-os': {
     gradient: 'from-indigo-500/20 via-blue-500/10 to-transparent',
     accent: '#6366f1',
     icon: (

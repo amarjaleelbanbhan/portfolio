@@ -147,7 +147,7 @@ release and users. Fields: `researchQuestion`, `hypothesis`, `method`,
 Prose is not duplicated: a project points at research via `researchSlug`, and
 research points back via `projectSlug`.
 
-VICE OS's public wording lives in a single `publicStage` field
+SCAR-OS's public wording lives in a single `publicStage` field
 (`"Current FYP — Research & Architecture Stage"`) so it cannot drift between
 surfaces, and validation independently rejects a `production`/`released` status
 or a `featured` flag on it.
@@ -238,7 +238,8 @@ marked featured, public source missing a URL, **private source carrying a URL**,
 malformed URLs, skills referencing nonexistent projects/contributions/research,
 project technologies referencing nonexistent skills, duplicate PRs, contribution
 URL not matching its repo and number, merged without `mergedAt`, unverified
-proof, VICE OS misrepresented, and Bus Reservation System reintroduced.
+proof, SCAR-OS misrepresented or reverting to its old name, and Bus Reservation
+System reintroduced.
 
 The rules were confirmed to fire by injecting six deliberate defects and checking
 each was reported.
@@ -296,14 +297,37 @@ Practical notes for that phase:
 
 ---
 
-## 9. Naming discrepancy to confirm
+## 9. Naming — resolved
 
-The Phase 2 brief refers to the final-year project as **SCAR-OS** in one section
-and **VICE OS** in two others. The repository is `VICE-OS` and its description is
-"Integrating Voice and Intent-Driven Interaction in a Developer-Oriented
-Operating Environment", so this was implemented as **VICE OS**.
+Phase 2 shipped the final-year project as **VICE OS**, flagging the brief's
+inconsistent use of "SCAR-OS" as a question to confirm. It was confirmed at the
+start of Phase 3: the canonical name is **SCAR-OS**, and VICE OS is the previous
+name.
 
-If a rename to SCAR-OS is intended, it is a one-line change to
-`content/projects.ts` and `content/research.ts` plus the slug — which is
-precisely the kind of rename the slug-based identity model was built to make
-safe.
+The rename touched five files and broke nothing, which is the slug-based identity
+model working as intended:
+
+| File | Change |
+|---|---|
+| `content/projects.ts` | `id`, `slug`, `title`, `researchSlug` |
+| `content/research.ts` | `id`, `slug`, `title`, `projectSlug` |
+| `components/ProjectCard.js` | visual key `vice-os` → `scar-os` |
+| `lib/content/validation.ts` | stage rule re-pointed, plus a new rule rejecting the old name |
+| `PORTFOLIO_2026_IMPLEMENTATION.md` | forward-looking checklist items |
+
+Three things deliberately did **not** change:
+
+1. **The GitHub repository is still `VICE-OS`.** It is private, so it publishes no
+   URL and the old name is not visible on any public surface. Renaming someone's
+   repository is not a portfolio-content decision.
+2. **Historical documents keep the old name.** `content-audit.md` and the Phase 1
+   and 2 completion notes record what was true when they were written. Rewriting
+   them would falsify the record.
+3. **The stage.** Still `status: research`, `tier: current-fyp`, `publicStage:
+   "Current FYP — Research & Architecture Stage"`. A rename is not progress, and
+   validation still rejects any attempt to present it as shipped software.
+
+No redirect was needed: there is no `/projects/[slug]` route, and the slug appears
+in no URL, sitemap entry or anchor — only as a React key and a visual-map lookup.
+When case-study routes arrive (Phase 7), they will be built on `scar-os` from the
+start, so no legacy URL will ever have existed.

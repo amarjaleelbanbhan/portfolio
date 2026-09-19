@@ -169,20 +169,29 @@ export function validateContent(): ContentIssue[] {
     validateProof(project.proof, 'project', ref, add);
   }
 
-  // VICE OS must not drift into looking like shipped software.
-  const viceOs = projects.find((p) => p.slug === 'vice-os');
-  if (viceOs) {
-    if (IMPLEMENTATION_STATUSES.has(viceOs.status)) {
-      add('project', 'vice-os', `status "${viceOs.status}" implies implemented software; it has none`);
+  // SCAR-OS (previously named VICE OS) must not drift into looking like shipped
+  // software. The rename changed the name only, never the stage.
+  const scarOs = projects.find((p) => p.slug === 'scar-os');
+  if (scarOs) {
+    if (IMPLEMENTATION_STATUSES.has(scarOs.status)) {
+      add('project', 'scar-os', `status "${scarOs.status}" implies implemented software; it has none`);
     }
-    if (viceOs.tier !== 'current-fyp') {
-      add('project', 'vice-os', `tier must be "current-fyp", found "${viceOs.tier}"`);
+    if (scarOs.tier !== 'current-fyp') {
+      add('project', 'scar-os', `tier must be "current-fyp", found "${scarOs.tier}"`);
     }
-    if (viceOs.featured) {
-      add('project', 'vice-os', 'must not be featured while at research/architecture stage');
+    if (scarOs.featured) {
+      add('project', 'scar-os', 'must not be featured while at research/architecture stage');
     }
   } else {
-    add('project', 'vice-os', 'VICE OS is missing from the project registry');
+    add('project', 'scar-os', 'SCAR-OS is missing from the project registry');
+  }
+
+  // The old name must not reappear on a public surface. The GitHub repository is
+  // still called VICE-OS, but it is private and publishes no URL.
+  for (const project of projects) {
+    if (/vice[- ]?os/i.test(project.slug) || /vice[- ]?os/i.test(project.title)) {
+      add('project', project.slug, 'uses the superseded name "VICE OS" — the project is now SCAR-OS');
+    }
   }
 
   // Phase 1 removed this because the repository 404s.

@@ -295,9 +295,9 @@ export const projects: Project[] = [
 
   // ─────────────────────────── Current FYP ───────────────────────────
   {
-    id: 'prj-vice-os',
-    slug: 'vice-os',
-    title: 'VICE OS',
+    id: 'prj-scar-os',
+    slug: 'scar-os',
+    title: 'SCAR-OS',
     summary:
       'Integrating voice and intent-driven interaction into a developer-oriented operating environment. Final-year project, currently at the research and architecture stage — no implementation yet.',
     tier: 'current-fyp',
@@ -312,7 +312,9 @@ export const projects: Project[] = [
     links: {},
     source: { visibility: 'private', label: 'Private repository' },
     note: 'Current FYP — Research & Architecture Stage.',
-    researchSlug: 'vice-os',
+    // The GitHub repository is still named VICE-OS; it is private, so no URL is
+    // published and the old name is not visible anywhere public.
+    researchSlug: 'scar-os',
     proof: [],
   },
 

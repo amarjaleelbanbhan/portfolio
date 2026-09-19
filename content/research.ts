@@ -79,9 +79,9 @@ export const researchProjects: ResearchProject[] = [
     proof: [],
   },
   {
-    id: 'res-vice-os',
-    slug: 'vice-os',
-    title: 'VICE OS — voice and intent-driven interaction in a developer operating environment',
+    id: 'res-scar-os',
+    slug: 'scar-os',
+    title: 'SCAR-OS — voice and intent-driven interaction in a developer operating environment',
     status: 'architecture-stage',
     // Kept as a single string so the public stage wording cannot drift between
     // surfaces, and cannot be upgraded by editing a card in isolation.
@@ -92,7 +92,7 @@ export const researchProjects: ResearchProject[] = [
       'No implementation yet. The repository contains a README only.',
     ],
     source: { visibility: 'private', label: 'Private repository' },
-    projectSlug: 'vice-os',
+    projectSlug: 'scar-os',
     proof: [],
   },
 ];
