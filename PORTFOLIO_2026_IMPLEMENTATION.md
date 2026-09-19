@@ -1691,31 +1691,48 @@ marginal. Both assertions were corrected rather than the product.
 
 # PHASE 12 — SCENEFORGE CASE STUDY
 
-Story:
-
-`HTML/CSS/JS → Canonical Scene → Timeline → Chromium → Frames → FFmpeg → MP4`
-
-Show verified:
-
-- [ ] offline design
-- [ ] deterministic rendering
-- [ ] canonical model
-- [ ] local composer
-- [ ] asset system
-- [ ] 169/169 tests
-- [ ] 50-second dogfood render
-- [ ] 1,500 frames
-- [ ] actual rendered preview where available
-
-Do not embed an unnecessarily heavy editor into the portfolio.
-
 ## Phase Completion
 
-- [ ] Phase 12 complete
+- [x] Phase 12 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/work/sceneforge`.
+
+**Two claims were checked and deliberately not made.** The repository's `output/`
+directory contains only a `.gitkeep`, so **no render artifact exists** — the page
+uses an explicitly labelled architecture visualization and states that no
+rendered frame or output video is shown. And the documentation makes **no
+determinism claim**, so none is made here; that absence is listed as a
+verification item rather than passed over. The phase brief warned specifically
+against carrying forward previously reported test counts or rendering
+benchmarks: the documentation states none, so none are quoted.
+
+**Verified pipeline:** a JSON manifest of HTML, CSS and JavaScript scenes is
+compiled into one composition document per scene, placed in time by a dedicated
+timeline package, rendered by headless Chrome and encoded by FFmpeg into a single
+MP4 at a fixed 1920x1080, 30 frames per second stage. Express backend, React and
+Monaco editor, local only — no cloud APIs, keys or uploads.
+
+**The decisions worth the page** are the trust-model ones. The editor preview
+sanitises markup and never executes scene JavaScript, because the preview runs in
+the author's own session; execution happens only during a render, where the blast
+radius is a render job. Script tags in scene markup are stripped and scene code
+that navigates the page is rejected outright. Each scene compiles to its own
+document specifically so CSS cannot leak between scenes.
+
+**Honest operational limits:** rendering is CPU-heavy and single-job, and the
+documentation is explicit that it needs a queue before more than a handful of
+users touch it. The character engine is vendored as a pinned build because its
+published package fails to install at all, so updates are manual.
+
+**Browser-verified**, 22 checks: 200 with a single `<h1>`, active-development
+status preserved, no empty headings, the absence of a render artifact stated,
+determinism explicitly not claimed, no invented test counts or rendering
+benchmarks, **no `<video>` element anywhere on the page**, operational limits
+stated, no repository link on a private project with the private marker shown,
+no overflow at 360/390/430/768 px, reduced motion clean, and the homepage and all
+other case studies unaffected.
 
 ---
 

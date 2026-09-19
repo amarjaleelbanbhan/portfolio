@@ -1005,11 +1005,168 @@ limitations: [
     featuredRank: 5,
     sortOrder: 5,
     updatedAt: '2026-08-16',
+    limitations: [
+      'Rendering is CPU-heavy and single-job; the documentation is explicit that it needs a queue in front of it before more than a handful of users use it.',
+      'The editor preview never executes scene JavaScript, so animation and dynamic behaviour are only visible after a full render.',
+      'The character engine is vendored as a pinned build because its published package fails to install, so updates are manual and can drift from upstream.',
+      'No render artifact is published with the project, and the documentation states no test counts, rendering benchmarks or determinism guarantee.',
+    ],
     technologies: ['javascript', 'react', 'ffmpeg', 'headless-chrome', 'nodejs'],
     tags: ['JavaScript', 'Express', 'Headless Chrome', 'FFmpeg', 'React'],
     links: {},
     source: { visibility: 'private', label: 'Private repository' },
     note: 'Repository private.',
+    problem:
+      'Producing short motion graphics from code normally means either a heavyweight editor or a cloud rendering service. Neither lets you write a scene as ordinary HTML, CSS and JavaScript and get a video file back on your own machine.',
+    role:
+      'Sole engineer. Backend render pipeline, manifest model and validation, editor frontend, and the composition layer between them.',
+    // Derived from the private repository, reviewed 2026-09-20: README and the
+    // docs directory. Claims are limited to what that documentation states. In
+    // particular: no render artifact is committed to the repository, and no
+    // determinism guarantee is documented, so neither is claimed here.
+    caseStudy: {
+      context:
+        'A local tool for turning a JSON manifest of HTML, CSS and JavaScript scenes into a single MP4, scene by scene. No cloud APIs, no keys and no uploads — the whole pipeline runs on the machine that owns the files.',
+      constraints: [
+        'Scene code is arbitrary HTML, CSS and JavaScript supplied by the user, so the editor preview and the renderer need different trust models.',
+        'Every scene shares one output document, so CSS from one scene must not leak into another.',
+        'Rendering drives a real browser and a real encoder, which makes it CPU-heavy and single-job rather than something to expose to concurrent users.',
+        'The stage is fixed at 1920x1080 and 30 frames per second, so timeline maths has to line up scene boundaries with frame boundaries.',
+        'One upstream dependency could not be installed from its published package at all, which forced a vendoring decision.',
+      ],
+      built:
+        'An Express backend that compiles a scene manifest into per-scene compositions, drives headless Chrome to capture frames and hands them to FFmpeg, plus a React and Monaco editor with one editor per scene, a live preview and a render button. Timeline arithmetic comes from a dedicated package rather than being reimplemented.',
+      architecture: {
+        summary:
+          'A manifest becomes a video in stages: each scene is compiled to its own composition document, the timeline places those documents in time, headless Chrome renders frames, and FFmpeg encodes them into one MP4.',
+        nodes: [
+          { id: 'editor', label: 'Editor', kind: 'client', detail: 'React, Vite, Monaco' },
+          { id: 'manifest', label: 'Scene manifest', kind: 'data', detail: 'JSON, validated' },
+          { id: 'api', label: 'Express API', kind: 'service', detail: 'Local only' },
+          { id: 'compose', label: 'Compositions', kind: 'process', detail: 'One document per scene' },
+          { id: 'timeline', label: 'Timeline', kind: 'process', detail: 'Start and duration' },
+          { id: 'chrome', label: 'Headless Chrome', kind: 'service', detail: 'Frame capture' },
+          { id: 'ffmpeg', label: 'FFmpeg', kind: 'external', detail: 'Encode' },
+          { id: 'mp4', label: 'MP4', kind: 'data', detail: '1920x1080 at 30fps' },
+        ],
+        flows: [
+          { from: 'editor', to: 'manifest', label: 'author' },
+          { from: 'manifest', to: 'api', label: 'submit' },
+          { from: 'api', to: 'compose', label: 'compile' },
+          { from: 'compose', to: 'timeline', label: 'place' },
+          { from: 'timeline', to: 'chrome', label: 'render' },
+          { from: 'chrome', to: 'ffmpeg', label: 'frames' },
+          { from: 'ffmpeg', to: 'mp4', label: 'encode' },
+        ],
+        caveat:
+          'Illustrative architecture drawn from the project documentation. It is not a screenshot of the editor and not a frame from a render — no render artifact is published with this project, so none is shown.',
+      },
+      decisions: [
+        {
+          id: 'sf-document-per-scene',
+          title: 'Compile each scene into its own document',
+          decision:
+            'Every scene becomes a separate composition document, embedded into the output with its own start time and duration, rather than all scenes sharing one page.',
+          rationale:
+            'Separate documents give each scene its own CSS scope, so a scene can style the page body normally and cannot leak styles into the scene after it. Sharing a document would have made every selector a potential collision.',
+          tradeoff:
+            'More documents to coordinate, and anything intended to persist across scenes has to be arranged deliberately rather than simply existing on the page.',
+        },
+        {
+          id: 'sf-preview-never-runs-js',
+          title: 'The preview sanitises and never executes scene JavaScript',
+          decision:
+            'The in-browser preview renders sanitised markup only. Scene JavaScript runs during the render and nowhere else.',
+          rationale:
+            'The preview lives in the author\'s own browser session. Executing arbitrary scene JavaScript there would put the editor at the mercy of the content it is editing.',
+          tradeoff:
+            'The preview cannot show anything the scene\'s JavaScript does, so animation and dynamic behaviour are only visible after a render.',
+        },
+        {
+          id: 'sf-strip-scripts',
+          title: 'Strip script tags and reject navigating scene code',
+          decision:
+            'Script tags inside a scene\'s markup are stripped, JavaScript belongs in a dedicated field, and scene code that tries to navigate the page is rejected outright with a client error.',
+          rationale:
+            'A scene that navigates the rendering browser breaks the render for every scene after it, and inline scripts blur the boundary between markup and behaviour that the rest of the pipeline depends on.',
+          tradeoff:
+            'A legitimate pattern — an inline bootstrap script — has to be rewritten to fit the manifest shape.',
+        },
+        {
+          id: 'sf-vendor-engine',
+          title: 'Vendor the character engine rather than depend on it',
+          decision:
+            'The mascot engine is committed into the repository as a pinned build, with refresh instructions recorded next to the code that uses it.',
+          rationale:
+            'Its published package cannot be installed — the manifest fails version parsing — so a normal dependency was not available.',
+          tradeoff:
+            'Updates are manual and the vendored copy can drift from upstream, which is why the refresh procedure is documented rather than assumed.',
+        },
+      ],
+      concerns: [
+        {
+          id: 'sf-trust-split',
+          title: 'Two trust models for the same code',
+          detail:
+            'The preview sanitises markup and never runs scene JavaScript; the renderer executes it in a browser it controls. The split is deliberate — the risky operation happens where the blast radius is a render job rather than the author\'s session.',
+        },
+        {
+          id: 'sf-input-validation',
+          title: 'Manifest limits are enforced, not assumed',
+          detail:
+            'Scene identifiers must match a restricted character set, and the manifest is capped at twenty scenes of sixty seconds each. Validation rules are covered by the test suite.',
+        },
+        {
+          id: 'sf-escaping',
+          title: 'Breakout escaping is tested',
+          detail:
+            'Scene content is embedded into generated documents, so the tests specifically cover escaping that would otherwise let style or script content break out of its container.',
+        },
+        {
+          id: 'sf-single-job',
+          title: 'Rendering is single-job by nature',
+          detail:
+            'A render drives a browser and an encoder and is CPU-heavy, so the documentation is explicit that it needs a queue in front of it before more than a handful of users touch it.',
+        },
+      ],
+      verification: [
+        {
+          id: 'sf-tests',
+          label: 'Backend test suite',
+          detail:
+            'Covers the timeline arithmetic, the shape of composition output, breakout escaping for style and script content, and every manifest-validation rule. No test count is quoted here because the repository documentation does not state one.',
+          verified: true,
+        },
+        {
+          id: 'sf-doctor',
+          label: 'Environment check endpoint',
+          detail:
+            'A diagnostic endpoint reports whether Chrome, FFmpeg, disk and GPU are actually available, so a render failure can be told apart from a missing dependency.',
+          verified: true,
+        },
+        {
+          id: 'sf-render-artifact',
+          label: 'No published render output',
+          detail:
+            'The repository\'s output directory contains no committed video, so there is no render artifact to show and none is claimed. The pipeline is described rather than demonstrated.',
+          verified: false,
+        },
+        {
+          id: 'sf-determinism',
+          label: 'Determinism is not a documented guarantee',
+          detail:
+            'Frames are captured from a real browser against a fixed stage and frame rate, but the project documentation makes no claim that two renders of the same manifest are byte-identical, so none is made here.',
+          verified: false,
+        },
+      ],
+      results: [
+        'A manifest of HTML, CSS and JavaScript scenes compiles into per-scene composition documents and encodes to a single MP4 at a fixed 1920x1080, 30 frames per second stage.',
+        'Scenes are CSS-isolated from each other by construction rather than by naming convention.',
+        'Two upstream rendering quirks were diagnosed and worked around: a package that cannot be installed from its published manifest, and a build variant that throws inside its render loop under headless Chrome and paints nothing.',
+      ],
+      disclosure:
+        'The repository is private. This page describes the rendering architecture and the engineering decisions behind it. No editor screenshot, rendered frame or output video is shown, because none is published with the project — and no test counts or rendering benchmarks are quoted, because the repository documentation does not state any.',
+    },
     proof: [],
   },
 
