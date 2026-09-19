@@ -1090,52 +1090,127 @@ above — it belongs with the Phase 5 narrative it would respond to.
 
 Narrative:
 
-`BUILT → VERIFIED → RESEARCHED → SYSTEMS → CONTRIBUTED`
+`BUILT -> VERIFIED -> RESEARCHED -> SYSTEMS -> CONTRIBUTED`
 
 ## BUILT — RODIFT
 
-- [ ] Visualize field report → backend → assignment → notification → resolution.
-- [ ] Use Flutter / Next.js / Supabase / PostgreSQL / PostGIS / FCM evidence.
-- [ ] Do not expose private company data.
+- [x] Visualize field report -> backend -> assignment -> notification -> resolution.
+- [x] Use Flutter / Next.js / Supabase / PostgreSQL / PostGIS / FCM evidence.
+- [x] Do not expose private company data.
 
 ## VERIFIED — VeriPatch
 
-- [ ] dependency graph
-- [ ] vulnerability
-- [ ] sandbox
-- [ ] rescan
-- [ ] build/test
-- [ ] evidence report
+- [x] dependency graph
+- [x] vulnerability
+- [x] sandbox
+- [x] rescan
+- [x] build/test
+- [x] evidence report
 
 ## RESEARCHED — KnowledgeGuard
 
-- [ ] query
-- [ ] retrieved evidence
-- [ ] deficiency type
-- [ ] repair action
-- [ ] measured result
+- [x] query
+- [x] retrieved evidence
+- [x] deficiency type
+- [x] repair action
+- [ ] measured result — deliberately not shown. The canonical research record
+      states the factorial was executed and the analysis completed, and publishes
+      no results, so the grid is uniform and carries no numbers. This unchecks
+      until the study is publishable; inventing a chart would have been the only
+      way to tick it.
 
 ## SYSTEMS — Emergency Mesh
 
-- [ ] node discovery
-- [ ] encrypted message
-- [ ] forwarding/store
-- [ ] ACK
-- [ ] clearly label simulation where relevant
+- [x] node discovery
+- [x] encrypted message
+- [x] forwarding/store
+- [x] ACK
+- [x] clearly label simulation where relevant
 
 ## CONTRIBUTED — Open Source
 
-- [ ] transition into upstream repository contributions
-- [ ] merged/open status visible
-- [ ] no contribution score
+- [x] transition into upstream repository contributions
+- [x] merged/open status visible
+- [x] no contribution score
 
 ## Phase Completion
 
-- [ ] Phase 5 complete
+- [x] Phase 5 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Deliverable:
+`docs/portfolio-2026/homepage-engineering-story.md`.
+
+**Five stages, not five cards.** Each has a diagram built for its own engineering
+problem — a connected application flow, a verification pipeline with an explicit
+isolation boundary, a factorial grid, a BLE network, a contribution graph — drawn
+from one shared vocabulary of nodes, links and pulses so the five read as one
+directed piece rather than the same sphere relabelled.
+
+**Authored copy, derived facts.** `content/story.ts` holds only what cannot be
+looked up: titles, explanation, step labels, caveat, destination. Statuses,
+technologies, proof, limitations, contribution URLs and counts are all resolved
+through `getStoryStages()`. Nine validation rules stop the two drifting apart,
+the sharpest being that a stage's domain must be one of its project's domains —
+which is how the story would most plausibly start lying. Each rule was confirmed
+to fire by deliberately breaking it.
+
+**Honesty is built into the drawings, not bolted on as captions.** Emergency
+Mesh's third node is drawn out of range with a dashed link, no packet and no
+acknowledgement, because animating a clean multi-hop delivery would imply live
+multi-hop relay has been validated across physical devices and the research
+record says it has not. KnowledgeGuard's factorial grid is uniform, with no
+shaded cell and no numbers, because no results are published. RODIFT's diagram
+imitates no real screen and shows no client outcome. Every stage carries a
+caveat, and validation rejects a stage without one.
+
+**The Engineering Core is connected but not driven.** The stages share the Core's
+domains and accent tokens, so the colour that lit a node in the hero heads its
+chapter here. `useCoreInteraction` was not forked and scroll does not drive the
+Core: by the time the story is read the hero canvas is off-screen and
+`SceneCanvas` has stopped its frame loop by design, so syncing would either
+update something invisible or require keeping an off-screen canvas rendering —
+which this phase explicitly rules out. Verified: the page still has exactly two
+canvases.
+
+**Scroll drives emphasis, never visibility.** Every stage renders fully visible
+from first paint; the observer only decides which diagram the sticky panel shows.
+Verified: jumping straight to the bottom of the page leaves 0 on-screen elements
+below 0.05 opacity, and jump navigation to `#story-systems` lands on a fully
+visible stage.
+
+**Two defects found by looking at the rendered page.** The RODIFT diagram's
+"Validate" and "Geo-match" nodes overlapped at their original coordinates, and
+the KnowledgeGuard grid's row labels ran underneath the retrieval node — both
+invisible in code review and obvious in a screenshot. Also fixed a proof badge
+that printed "Tagged release v2.0.0 v2.0.0" because the label already contained
+the value, and a limitations list that showed the same Emergency Mesh limitation
+twice because the project and research records word it slightly differently.
+
+**Homepage cleanup.** The centred name/tagline block under the hero was removed:
+after Phase 4 it repeated the hero's name, positioning and call to action, and it
+carried a second `<h1>`. Its ResumeButton moved into the bio panel. No component
+was deleted — `GlitchText` and `NeonButton` remain, and only their unused imports
+went. The page now has exactly one `<h1>` and `#projects` is intact.
+
+**Measured.** `/` static JS went 1484 KB -> 1558 KB (+74 KB, +5%) for five
+diagrams and the story components; `/hire` is unchanged at 488 KB, so nothing
+leaked into the client funnel. `domInteractive` improved, 251 ms -> 150 ms median
+of five runs. No new render loops: the only continuous motion is SVG
+`animateMotion`, and there is no `requestAnimationFrame` in this phase. FCP is
+deliberately not compared — it ranged 1872-4072 ms across five runs of the same
+build under software rasterisation, so it measures the harness, not the page.
+
+**Browser-verified** on a production build: five stages in the right order, every
+status matching canonical content, all 7 contributions with 6 merged and 1 open
+rendered as open, no console or hydration errors, nothing hidden after fast
+scroll, reduced motion keeping all 32 step items and every diagram, no horizontal
+overflow at 360/390/430 px, the Engineering Core still interactive, and `/hire`,
+`/studio/request` and `/studio/admin` untouched.
+
+**Not done, by design:** no `/work` page, no case-study component system, no
+Research or Open Source page, no Skill Galaxy, no CMS.
 
 ---
 
