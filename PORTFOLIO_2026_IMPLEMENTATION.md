@@ -744,6 +744,16 @@ is removed from `profile.ts` with an explanatory comment, social links are now
 derived via `getSocialLinks()` so they render only what exists, and JSON-LD
 `sameAs` derives from the same source.
 
+**A third defect, found in the Phase 2 re-audit.** `components/GravitySkills.js`
+was still reading a hardcoded nine-item array — the architecture doc already
+claimed it read from the content layer, so the claim was ahead of the code. The
+array had also drifted: it advertised TensorFlow, Linux and Cybersecurity, none
+of which exist in the skill registry with evidence behind them. It now uses
+`getRepresentativeSkills()`, which takes the highest-ranked featured skill per
+category. That rule is explicit rather than positional, so appending a skill
+cannot silently change what renders, and it returns nine labels — the same body
+count, so the Matter.js physics is untouched.
+
 **Repository docs.** README rewritten to describe the real stack (Next.js 16,
 React 19, a Supabase-backed API route — not "static only") and the content
 workflow. `PROJECT_STATUS_REPORT.md`, `suggestion.md` and `Data.md` moved to
