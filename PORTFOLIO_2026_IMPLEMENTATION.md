@@ -781,14 +781,14 @@ Do not remove the existing modern visual identity.
 
 Create/refine:
 
-- [ ] background tokens
-- [ ] surface tokens
-- [ ] border tokens
-- [ ] text hierarchy
-- [ ] spacing
-- [ ] radii
-- [ ] shadows
-- [ ] domain accent system
+- [x] background tokens
+- [x] surface tokens
+- [x] border tokens
+- [x] text hierarchy
+- [x] spacing
+- [x] radii
+- [x] shadows
+- [x] domain accent system
 
 Suggested domain mapping:
 
@@ -803,46 +803,135 @@ Do not turn the whole site into rainbow UI.
 
 ## Typography
 
-- [ ] Inter for normal UI/body where appropriate.
-- [ ] JetBrains Mono for technical metadata/code.
-- [ ] Display styling used sparingly.
+- [x] Inter for normal UI/body where appropriate.
+- [x] JetBrains Mono for technical metadata/code.
+- [x] Display styling used sparingly.
 
 ## Motion Tokens
 
 Create shared motion settings:
 
-- [ ] fast
-- [ ] normal
-- [ ] slow
-- [ ] cinematic
-- [ ] shared easings
-- [ ] reduced-motion variants
+- [x] fast
+- [x] normal
+- [x] slow
+- [x] cinematic
+- [x] shared easings
+- [x] reduced-motion variants
 
 ## Reusable Effects
 
-- [ ] section reveal
-- [ ] project depth hover
-- [ ] architecture line animation
-- [ ] tag expansion
-- [ ] proof reveal
-- [ ] navigation transitions
-- [ ] modal/drawer transitions
-- [ ] media parallax
-- [ ] route/page transition strategy
+- [x] section reveal
+- [x] project depth hover
+- [x] architecture line animation
+- [x] tag expansion
+- [x] proof reveal
+- [ ] navigation transitions — deferred; the navbar is rebuilt in Phase 4/5 and
+      a transition designed against the current one would be discarded.
+- [x] modal/drawer transitions
+- [ ] media parallax — deferred to Phase 4, which introduces the first media
+      surfaces that need it.
+- [ ] route/page transition strategy — deferred to Phase 4. Pages Router route
+      transitions interact with the boot sequence and scroll restoration, and
+      that is a decision to make with the new homepage, not before it.
 
 ## Accessibility
 
-- [ ] Effects respect reduced-motion preference.
-- [ ] Keyboard interaction remains possible.
-- [ ] Visual-only data also exists in semantic DOM.
+- [x] Effects respect reduced-motion preference.
+- [x] Keyboard interaction remains possible.
+- [x] Visual-only data also exists in semantic DOM.
 
 ## Phase Completion
 
-- [ ] Phase 3 complete
+- [x] Phase 3 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-19. Deliverable:
+`docs/portfolio-2026/design-motion-system.md`.
+
+**Almost nothing changed visually, on purpose.** The phase moved values that
+already existed into one place. `#07111f`, `#14b8a6`, the `rgba(10,15,28,0.55)`
+card fill and `cubic-bezier(0.16, 1, 0.3, 1)` were literals repeated across
+`globals.css` and `tailwind.config.js`; they now have names in
+`styles/tokens.css`. No colour or curve was re-picked.
+
+**Token architecture salvaged, palette replaced.** The Codex `tokens.css` was
+classified ADAPT, and that was right: the `@property` registration, scale shape,
+z-index ladder and reduced-motion contract were the correct structure, while its
+`--void: #050508` near-black and 15 realm palettes clashed with the live
+identity. `[data-realm]` became `[data-domain]`, keyed one-to-one to the
+canonical `Domain` union, so a domain colour is derived from content rather than
+chosen per component. `lib/realms.ts` and `styles/universe.css` were removed as
+the audit scheduled for this phase.
+
+**The motion system encodes the Phase 1 regression rule.** Entrance presets
+animate on mount; nothing in the shared system triggers on scroll intersection.
+That is the bug that left `/projects` cards at opacity 0 after a jump-scroll, and
+a rule inside the system survives copy-paste in a way a comment on one page does
+not. Verified in a production build: jumping straight to the bottom of `/`,
+`/projects` and `/skills` leaves 0 on-screen elements below 0.05 opacity.
+
+**Framer Motion had been ignoring reduced motion entirely.** CSS collapsed the
+token-driven transitions, but Framer never reads CSS, so every motion component
+kept animating. `MotionConfig reducedMotion="user"` in `_app.js` fixes it
+globally — transform and layout animation stop while opacity still resolves, so
+content ends visible rather than stranded at its initial state.
+
+**Both documented defects fixed at the cause, and measured.**
+
+The particle canvas was `position: fixed; z-index: 0` inside `#__next`. Within a
+stacking context a positioned element with z-index 0 paints above *unpositioned*
+block and inline content — so any page without a positioned wrapper had its body
+text painted over, which is exactly why only `/skills` showed it. Moving the
+canvas to a negative index fixes every page at once instead of adding
+`relative z-10` to each section forever.
+
+Horizontal overflow measured 34px on `/` at 375px with `overflow-x: clip`
+temporarily lifted — the clip clamps `scrollWidth`, so the defect reads as 0
+until you remove it. The cause was the Education timeline: rows enter with
+`x: ±50` while the mobile layout is a single full-width column, and because they
+used `whileInView` the offset persisted below the fold rather than being
+transient. Now 0px at both 375px and 1280px. The clip stays as a backstop and is
+commented as one. Hero's three decorative glows still extend past the viewport
+but are clipped by Hero's own `overflow-hidden` and contribute nothing to
+`scrollWidth`.
+
+**R3F proven, not assumed.** R3F, drei and postprocessing had been in
+`package.json` for a long time without ever being imported or built here — the
+salvage audit called the stack unproven ground. `components/three/SceneCanvas.js`
+is now the single boundary handling capability, visibility, reduced motion, DPR
+and fallback, and `pages/dev/r3f-probe` (noindex, robots-disallowed, unlinked)
+renders a lit shaded mesh through it. Measured tier 1 on the test machine, WebGL
+true, 538x318 canvas.
+
+**A real bug found while verifying.** GravitySkills called
+`render.canvas.remove()` on cleanup. The canvas belongs to React, not Matter, so
+detaching it left the physics drawing into an orphaned element on any re-mount —
+and StrictMode re-mounts every time, so the canvas was missing entirely in
+development while working in production. Removing that one line fixed it in both.
+
+**Existing effects adapted, never removed.** SkillCube keeps its scene,
+materials, lighting and rotation speeds and gained off-screen pausing, a
+tier-capped pixel ratio and a static frame under reduced motion. ParticleNetwork
+thins to 45/30 particles on weaker tiers rather than switching off. GravitySkills
+keeps Matter.js untouched. SpotlightGrid, GlitchText, SecretProject and
+TerminalGame were not touched at all.
+
+**Browser-verified** against a production build with Chrome: 9 routes at 200, 0
+console errors, 14 project cards, SkillCube and GravitySkills both rendering and
+the physics canvas confirmed animating by pixel diff, reduced-motion tokens
+collapsing to 0s, and `/hire`, `/studio/request` and `/studio/admin` each
+reporting 0 ambient canvases, 0 scanlines and 0 scroll bars.
+
+**Deferred with reasons, not silently:** navigation transitions, media parallax
+and the route/page transition strategy are all left unchecked above — each is a
+decision that belongs with the Phase 4 homepage rather than one made against a
+navbar and page shell that Phase 4 replaces.
+
+**Known residual risk:** `pages/skills.js` still uses `whileInView` in four
+places. It verifies clean under jump-scroll today, so it was not rewritten for
+its own sake, but it is the pattern the shared system now forbids and the next
+phase to touch that page should migrate it.
 
 ---
 
