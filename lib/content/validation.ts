@@ -7,6 +7,7 @@
  * safety.
  */
 import {
+  coreDomains,
   credentials,
   education,
   openSourceContributions,
@@ -33,6 +34,23 @@ export interface ContentIssue {
 }
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * Routes that exist today.
+ *
+ * The Engineering Core must not link at pages a later phase has not built yet,
+ * so its destinations are checked against this list. Add to it when a phase
+ * actually ships the route.
+ */
+const EXISTING_ROUTES = new Set([
+  '/',
+  '/projects',
+  '/skills',
+  '/certifications',
+  '/contact',
+  '/hire',
+  '/studio',
+]);
 
 function isValidUrl(value: string): boolean {
   try {
@@ -197,6 +215,74 @@ export function validateContent(): ContentIssue[] {
   // Phase 1 removed this because the repository 404s.
   if (projects.some((p) => /bus[- ]?reservation/i.test(p.slug) || /bus reservation/i.test(p.title))) {
     add('project', 'bus-reservation', 'Bus Reservation System must not be restored — its repository 404s');
+  }
+
+  // ─────────────────────────── Core domains ───────────────────────────
+  // The homepage Engineering Core presents these five. Copy is curated; every
+  // fact it implies is checked here, so the core cannot advertise a technology
+  // that is not genuinely part of that work or link somewhere that does not
+  // exist.
+  const seenDomains = new Set<string>();
+  const seenAngles = new Set<number>();
+
+  for (const meta of coreDomains) {
+    const ref = meta.domain;
+
+    if (!DOMAINS.includes(meta.domain)) {
+      add('domain', ref, `"${meta.domain}" is not a canonical Domain`);
+    }
+    if (seenDomains.has(meta.domain)) add('domain', ref, `duplicate domain "${meta.domain}"`);
+    seenDomains.add(meta.domain);
+
+    if (!meta.label?.trim()) add('domain', ref, 'missing label');
+    if (!meta.description?.trim()) add('domain', ref, 'missing description');
+
+    // Two nodes at one angle would overlap on the core ring.
+    if (seenAngles.has(meta.angle)) add('domain', ref, `duplicate ring angle ${meta.angle}`);
+    seenAngles.add(meta.angle);
+    if (meta.angle < 0 || meta.angle >= 360) {
+      add('domain', ref, `ring angle ${meta.angle} is outside 0–359`);
+    }
+
+    // Destinations must be routes that exist today. Phase 4 explicitly forbids
+    // linking the core at pages a later phase has not built yet.
+    const [path, hash] = meta.href.split('#');
+    if (!EXISTING_ROUTES.has(path)) {
+      add('domain', ref, `href "${meta.href}" points at a route that does not exist yet`);
+    }
+    // A project anchor must match a real project slug, or the link scrolls
+    // nowhere. "open-source" is the contributions section on /projects.
+    if (hash && hash !== 'open-source' && !projectSlugs.has(hash)) {
+      add('domain', ref, `href anchor "#${hash}" matches no project slug`);
+    }
+
+    // Curated technologies must be real skills actually used in this domain.
+    const domainProjectTech = new Set(
+      projects
+        .filter((p) => p.tier !== 'archive' && p.domains?.includes(meta.domain))
+        .flatMap((p) => p.technologies ?? [])
+    );
+    for (const slug of meta.technologies ?? []) {
+      if (!skills.some((sk) => sk.slug === slug)) {
+        add('domain', ref, `technology "${slug}" does not exist in the skill registry`);
+      } else if (!domainProjectTech.has(slug)) {
+        add(
+          'domain',
+          ref,
+          `technology "${slug}" is not used by any non-archive project in this domain`
+        );
+      }
+    }
+
+    if (meta.domain !== 'open-source' && (meta.technologies ?? []).length === 0) {
+      add('domain', ref, 'has no technologies to display');
+    }
+  }
+
+  // The core is designed around five nodes; a sixth would break the ring layout
+  // and the keyboard order that mirrors it.
+  if (coreDomains.length !== 5) {
+    add('domain', 'core', `expected 5 core domains, found ${coreDomains.length}`);
   }
 
   // ───────────────────────────── Research ─────────────────────────────

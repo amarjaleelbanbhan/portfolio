@@ -6,6 +6,7 @@
  * these function signatures stay and only their bodies change.
  */
 import {
+  coreDomains,
   credentials,
   education,
   openSourceContributions,
@@ -17,6 +18,7 @@ import {
 import { SKILL_CATEGORIES } from '@/content/types';
 import type {
   Credential,
+  Domain,
   EducationEntry,
   OpenSourceContribution,
   Profile,
@@ -27,6 +29,7 @@ import type {
   Skill,
   SkillCategory,
 } from '@/content/types';
+import type { DomainMeta } from '@/content/domains';
 
 // ─────────────────────────────── Profile ───────────────────────────────
 
@@ -294,4 +297,137 @@ export function getPublishedPackageCount(): number {
 
 export function getProductionSystemCount(): number {
   return getProjectsByStatus('production').length;
+}
+
+// ─────────────────────────── Engineering domains ───────────────────────────
+
+const DOMAIN_COLORS: Record<Domain, string> = {
+  product: '#14b8a6',
+  ai: '#8b5cf6',
+  security: '#f59e0b',
+  systems: '#38bdf8',
+  research: '#a855f7',
+  'open-source': '#22c55e',
+};
+
+/** Domain accent, matching --domain-* in styles/tokens.css. */
+export function getDomainColor(domain: Domain): string {
+  return DOMAIN_COLORS[domain];
+}
+
+/**
+ * Projects in a domain, strongest first, excluding the archive.
+ *
+ * The homepage core represents current work; a retired 2023 project should not
+ * pull weight in a domain's technology list.
+ */
+export function getProjectsByDomain(domain: Domain): Project[] {
+  const rank: Record<string, number> = {
+    flagship: 0,
+    'current-fyp': 1,
+    secondary: 2,
+    archive: 3,
+  };
+  return projects
+    .filter((p) => p.domains?.includes(domain) && p.tier !== 'archive')
+    .sort(
+      (a, b) =>
+        (rank[a.tier] ?? 9) - (rank[b.tier] ?? 9) ||
+        (a.featuredRank ?? 99) - (b.featuredRank ?? 99) ||
+        (a.sortOrder ?? 99) - (b.sortOrder ?? 99)
+    );
+}
+
+export interface DomainTechnology {
+  key: string;
+  label: string;
+  color: string;
+}
+
+/**
+ * The technologies shown for a domain.
+ *
+ * Ordering is curated in content/domains.ts rather than derived. Deriving it was
+ * tried and produced misleading lists: ranking by how exclusive a technology is
+ * to a domain surfaced one-off tech (Product opened with "WebGL, FFmpeg,
+ * Headless") and buried the stack the domain is actually built on. Ranking by
+ * frequency instead surfaced Node.js everywhere and said nothing.
+ *
+ * Curation is safe here because validation enforces the facts: every slug must
+ * exist in the skill registry AND be used by a non-archive project in that
+ * domain. So the list can be ordered for a reader, but it cannot claim a
+ * technology that is not genuinely part of that work.
+ *
+ * Open Source is the exception and stays fully derived — what matters there is
+ * whose codebase the work landed in, which comes straight from merged
+ * contributions.
+ */
+export function getDomainTechnologies(domain: Domain, limit = 4): DomainTechnology[] {
+  if (domain === 'open-source') {
+    const seen = new Set<string>();
+    const repos: DomainTechnology[] = [];
+    for (const contribution of getMergedContributions()) {
+      const name = contribution.repository.split('/')[1] ?? contribution.repository;
+      if (seen.has(name)) continue;
+      seen.add(name);
+      repos.push({ key: name, label: name, color: DOMAIN_COLORS['open-source'] });
+    }
+    return repos.slice(0, limit);
+  }
+
+  const meta = coreDomains.find((d) => d.domain === domain);
+  return (meta?.technologies ?? [])
+    .map((slug) => ({ slug, skill: getSkillBySlug(slug) }))
+    .filter((entry) => Boolean(entry.skill))
+    .slice(0, limit)
+    .map((entry) => ({
+      key: entry.slug,
+      label: entry.skill!.shortName ?? entry.skill!.name,
+      color: entry.skill!.color ?? DOMAIN_COLORS[domain],
+    }));
+}
+
+// `technologies` is deliberately re-typed: DomainMeta carries curated skill
+// slugs, while a summary carries them resolved to label + colour.
+export interface DomainSummary extends Omit<DomainMeta, 'technologies'> {
+  color: string;
+  projects: Project[];
+  technologies: DomainTechnology[];
+  /** Derived headline evidence for the domain. Never hand-typed. */
+  stat: { value: number; label: string };
+}
+
+/**
+ * Everything the Engineering Core needs about one domain.
+ *
+ * Copy and destination come from content/domains.ts; every fact is derived here,
+ * so a new project or merged PR updates the homepage without anyone editing it.
+ */
+export function getDomainSummary(domain: Domain): DomainSummary | undefined {
+  const meta = coreDomains.find((d) => d.domain === domain);
+  if (!meta) return undefined;
+
+  const domainProjects = getProjectsByDomain(domain);
+  const stat =
+    domain === 'open-source'
+      ? { value: getMergedContributions().length, label: 'merged upstream PRs' }
+      : {
+          value: domainProjects.length,
+          label: domainProjects.length === 1 ? 'project' : 'projects',
+        };
+
+  return {
+    ...meta,
+    color: DOMAIN_COLORS[domain],
+    projects: domainProjects,
+    technologies: getDomainTechnologies(domain),
+    stat,
+  };
+}
+
+/** All five core domains, in ring order. */
+export function getCoreDomains(): DomainSummary[] {
+  return coreDomains
+    .map((meta) => getDomainSummary(meta.domain))
+    .filter((d): d is DomainSummary => Boolean(d));
 }

@@ -9,6 +9,8 @@
 export * from './types';
 
 export { profile } from './profile';
+export { coreDomains } from './domains';
+export type { DomainMeta } from './domains';
 export { projects } from './projects';
 export { researchProjects } from './research';
 export { openSourceContributions } from './open-source';
