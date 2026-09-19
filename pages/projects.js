@@ -97,10 +97,14 @@ export default function Projects() {
                   {group.map((project, idx) => (
                     <motion.div
                       key={project.slug}
+                      // Anchor target: the homepage Engineering Core deep-links
+                      // each domain at its strongest project. scroll-mt clears
+                      // the fixed navbar so the card is not hidden under it.
+                      id={project.slug}
                       initial={{ opacity: 0, y: 24 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
-                      className="h-full"
+                      className="h-full scroll-mt-24"
                     >
                       <ProjectCard {...project} />
                     </motion.div>
@@ -122,10 +126,11 @@ export default function Projects() {
 
           {/* Upstream contributions — the dedicated page lands in a later phase. */}
           <motion.section
+            id="open-source"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="pt-8 border-t border-white/5"
+            className="pt-8 border-t border-white/5 scroll-mt-24"
           >
             <h2 className="text-xl font-semibold text-slate-100">Open Source Contributions</h2>
             <p className="text-sm text-slate-500 mt-1 mb-5">
