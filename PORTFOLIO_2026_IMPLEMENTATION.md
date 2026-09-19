@@ -1621,42 +1621,71 @@ story and every other route unaffected.
 
 # PHASE 11 — CORTEXWARD CASE STUDY
 
-Label clearly:
-
-`PRE-ALPHA / ACTIVE DEVELOPMENT`
-
-## Verification Ladder
-
-- [ ] None
-- [ ] Static Reachability
-- [ ] Taint Confirmed
-- [ ] Dynamic PoC
-- [ ] Differential Test
-
-Show:
-
-- [ ] Hexagonal architecture
-- [ ] Code Property Graph
-- [ ] scanners
-- [ ] verification system
-- [ ] agents
-- [ ] sandbox
-- [ ] SARIF/VEX
-- [ ] benchmark/evaluation concepts
-
-Separate:
-
-- [ ] Implemented
-- [ ] In Progress
-- [ ] Planned
-
 ## Phase Completion
 
-- [ ] Phase 11 complete
+- [x] Phase 11 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/work/cortexward`.
+
+**Status preserved: pre-alpha.** The page describes engineering, not the
+repository's "autonomous AI security engineer" tagline, and a browser assertion
+checks that no "autonomous platform" or "complete security" phrasing appears.
+
+**The README and the roadmap disagree, and the roadmap wins.** The README summary
+says the core verification loop is closed — that `ward scan --sandbox` generates a
+proof-of-concept, runs it in Docker and climbs to the `DYNAMIC_POC` rung.
+`ROADMAP.md`, which carries evidence per line, records the opposite: the sandbox
+adapter is built and tested, but **nothing in the agent pipeline calls it**, and
+no component produces proof-of-concept evidence for it to replay. Rungs 3 and 4
+are therefore presented as not built, the discrepancy is disclosed on the page
+itself, and it is recorded in the canonical limitations.
+
+**The Verification Ladder is the centrepiece**, rendered as an ordered list where
+each rung states its own status in words as well as colour and marker shape:
+rungs 0-2 (pattern match, static reachability, taint confirmed) implemented;
+rungs 3-4 (dynamic proof-of-concept, differential test) not built, each with the
+specific reason it is blocked. Expanding a rung explains what reaching it would
+mean.
+
+**Two structural rules carried through**, because they are the design: a language
+model can never climb the ladder on its own — model judgement is bounded and only
+concrete analysis produces rungs — and refutation is first-class, with evidence
+that a finding is *not* exploitable driving a not-affected verdict rather than
+being discarded.
+
+**Implemented, from the per-phase roadmap:** phases 0-4 complete — domain core,
+workspace and port contracts, the Code Property Graph engine (AST, control flow,
+data flow and call graph over tree-sitter with reachability, taint and slice
+queries), four scanner adapters with cross-tool correlation and SARIF 2.1.0
+output, and the seven-agent framework with multi-provider model support.
+CycloneDX-VEX export is fully covered and verified end to end.
+
+**Not implemented, stated as such:** dynamic and differential verification,
+patch-gate validation, verification and patch-quality metrics (the manifest
+fields exist and are deliberately left empty rather than estimated), a distinct
+false-positive-reduction capability, contamination-controlled evaluation splits,
+and broader benchmark datasets. Six of eleven phases are partially built; the
+v1.0 phase has not started.
+
+**New reusable piece:** a `CapabilityLadder` model and component, generic enough
+for any graded capability set. Its `status` field is required — a ladder that
+does not say which rungs are built is a roadmap presented as a feature list.
+
+**Browser-verified**, 33 checks: 200 with a single `<h1>`, pre-alpha preserved, no
+empty headings, five rungs rendered with three implemented and two not built, the
+sandbox wiring gap stated verbatim, the README-versus-roadmap discrepancy
+disclosed, both structural rules present, no autonomous-platform marketing, no
+invented exploit demonstrations, the repository link present with no private
+marker, expansion working with `aria-expanded`, no overflow at 360/390/430/768
+px, reduced motion clean, and the homepage Core, story and all other case studies
+unaffected.
+
+**Two test artifacts, not product bugs**, worth recording: status labels are
+rendered uppercase by CSS so a case-sensitive assertion missed them, and the
+homepage R3F canvas mounts at roughly four seconds so a three-second wait was
+marginal. Both assertions were corrected rather than the product.
 
 ---
 

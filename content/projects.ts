@@ -749,8 +749,12 @@ export const projects: Project[] = [
     featuredRank: 4,
     sortOrder: 4,
     updatedAt: '2026-09-18',
-    limitations: [
-      'Pre-alpha. The core scan and verification loop runs, but the project is not ready for general use.',
+limitations: [
+      'Pre-alpha. Six of eleven phases are partially built and the v1.0 phase has not started.',
+      'The verification pipeline reaches the taint rung. Dynamic proof-of-concept and differential-test verification are not built: the sandbox adapter exists but nothing in the agent pipeline calls it, and no component produces proof-of-concept evidence yet.',
+      'Verification and patch-quality metrics are left unpopulated because they need evidence at rungs the pipeline does not yet produce.',
+      'A distinct false-positive-reduction capability, contamination-controlled evaluation splits and broader benchmark datasets remain unbuilt.',
+      'The summary at the top of the repository README describes the verification loop as closed to the dynamic rung; the per-phase roadmap records that wiring as not yet built. This page follows the roadmap.',
     ],
     technologies: ['python', 'docker', 'static-analysis', 'llm-agents'],
     tags: ['Python', 'Static Analysis', 'Sandboxing', 'LLM Agents'],
@@ -763,6 +767,220 @@ export const projects: Project[] = [
     },
     note: 'Pre-alpha, per the project’s own status badge.',
     researchSlug: 'cortexward-verification',
+    problem:
+      'A static analyser can tell you a dangerous pattern appears in your code. It cannot tell you whether that line is reachable, whether attacker-controlled data gets to it, or whether the finding is exploitable at all — so teams drown in findings they cannot triage. An LLM can reason about the code but cannot prove anything about it.',
+    role:
+      'Sole author and architect. Domain model, Code Property Graph engine, scanner adapters, agent pipeline, reporters and the evaluation harness.',
+    // Derived from the public repository, reviewed 2026-09-20: README.md,
+    // ROADMAP.md and ARCHITECTURE.md. Where the README's summary and the
+    // per-phase roadmap disagree about what is built, the roadmap is followed —
+    // it carries evidence for every line, and it is the more conservative of the
+    // two. That disagreement is itself recorded in the limitations.
+    caseStudy: {
+      context:
+        'Built as a security tool that has to earn its own conclusions. The design premise is that a finding is only as strong as the evidence attached to it, and that a language model — however fluent — is not evidence.',
+      constraints: [
+        'A model can be persuasive and wrong, so model judgement cannot be allowed to establish that a finding is real.',
+        'Running a proof-of-concept means executing potentially hostile code, which has to be isolated from the host.',
+        'Output has to be consumable by tools that already exist, which means standard formats rather than a bespoke report shape.',
+        'Every capability has to be honest about its own maturity, because a security tool that overstates its confidence is worse than one that says nothing.',
+      ],
+      built:
+        'A Python monorepo of independently versioned packages behind a hexagonal architecture. A Code Property Graph engine builds AST, control-flow, data-flow and call graphs over tree-sitter and answers reachability, taint and slice queries. Four scanner adapters feed a correlation layer. A seven-agent pipeline grounds its reasoning in the graph, and results are exported as SARIF, CycloneDX-VEX and a native JSON format.',
+      architecture: {
+        summary:
+          'Ports and adapters throughout: the domain core is pure with no I/O, every external capability is a protocol-typed port, and adapters are discovered as plugins so a new scanner or model provider needs no core change.',
+        nodes: [
+          { id: 'cli', label: 'ward CLI', kind: 'client', detail: 'scan, baseline, bench' },
+          { id: 'orch', label: 'Orchestrator', kind: 'service', detail: 'Seven-agent pipeline' },
+          { id: 'cpg', label: 'Code Property Graph', kind: 'process', detail: 'AST, CFG, DFG, calls' },
+          { id: 'scanners', label: 'Scanner adapters', kind: 'process', detail: 'Four, plus correlation' },
+          { id: 'llm', label: 'LLM adapters', kind: 'external', detail: 'Bounded, cannot verify' },
+          { id: 'domain', label: 'Domain core', kind: 'service', detail: 'Pure, no I/O' },
+          { id: 'store', label: 'Event-sourced log', kind: 'data', detail: 'SQLite storage port' },
+          { id: 'report', label: 'Reporters', kind: 'data', detail: 'SARIF, VEX, JSON' },
+        ],
+        flows: [
+          { from: 'cli', to: 'orch', label: 'invoke' },
+          { from: 'orch', to: 'scanners', label: 'detect' },
+          { from: 'orch', to: 'cpg', label: 'query' },
+          { from: 'orch', to: 'llm', label: 'reason' },
+          { from: 'scanners', to: 'domain', label: 'findings' },
+          { from: 'cpg', to: 'domain', label: 'evidence' },
+          { from: 'llm', to: 'domain', label: 'hypotheses' },
+          { from: 'domain', to: 'store', label: 'events' },
+          { from: 'domain', to: 'report', label: 'verdicts' },
+        ],
+        caveat:
+          'Architecture as documented in the public repository. Implemented components only — the packages listed here all exist and ship; see the ladder below for which verification capabilities are built.',
+      },
+      ladder: {
+        title: 'The Verification Ladder',
+        intro:
+          'Rather than a binary "did an exploit run", each finding is assigned the strongest evidence that can actually be produced for it, and confidence is calibrated to that rung. Two rungs are built today and two are not — the distinction is the point, so it is stated on every rung rather than summarised.',
+        stages: [
+          {
+            id: 'rung-0',
+            level: '0',
+            label: 'NONE',
+            evidence: 'A pattern match — a detector fired.',
+            meaning:
+              'The weakest rung. It says a scanner matched something, and nothing more. Findings that never climb above this are exactly the noise the project exists to reduce.',
+            status: 'implemented',
+          },
+          {
+            id: 'rung-1',
+            level: '1',
+            label: 'STATIC_REACHABILITY',
+            evidence: 'A reachability proof from the code graph.',
+            meaning:
+              'The sink is reachable in the call graph. This is the first rung that requires real analysis rather than a match, and it comes from the Code Property Graph rather than from a model.',
+            status: 'implemented',
+          },
+          {
+            id: 'rung-2',
+            level: '2',
+            label: 'TAINT_CONFIRMED',
+            evidence: 'A data-flow trace from source to sink.',
+            meaning:
+              'Attacker-controlled data actually reaches the dangerous operation. This is the highest rung the pipeline currently reaches, and a finding corroborated to here is marked verified while its exploitability verdict stays under investigation — because reachable and tainted is not the same as demonstrated.',
+            status: 'implemented',
+          },
+          {
+            id: 'rung-3',
+            level: '3',
+            label: 'DYNAMIC_POC',
+            evidence: 'A proof-of-concept that actually ran in a sandbox.',
+            meaning:
+              'A generated exploit executes in an isolated container and fires. This would be the first rung that demonstrates rather than infers exploitability.',
+            status: 'planned',
+            gap:
+              'The Docker sandbox adapter is built and tested, but nothing in the agent pipeline calls it yet, and no component produces proof-of-concept evidence for it to replay. Both are documented as unbuilt rather than in progress.',
+          },
+          {
+            id: 'rung-4',
+            level: '4',
+            label: 'DIFFERENTIAL_TEST',
+            evidence: 'A test that discriminates vulnerable from fixed code.',
+            meaning:
+              'The strongest rung: a check that behaves differently before and after the fix, which is what makes a patch verifiable rather than plausible.',
+            status: 'planned',
+            gap:
+              'Blocked behind the same gap as rung 3, and needs a design for invoking an arbitrary target project\'s test suite generically across ecosystems.',
+          },
+        ],
+        rules: [
+          'A language model can never climb the ladder on its own. Model judgement is bounded by design and only concrete analysis produces rungs — this is enforced structurally rather than by convention.',
+          'Refutation is first-class. Evidence that a finding is not exploitable is captured and drives it toward a not-affected verdict, instead of being discarded as a non-result.',
+        ],
+        caveat:
+          'Rung status is taken from the repository\'s per-phase roadmap, which documents evidence for each line, rather than from the summary at the top of its README.',
+      },
+      decisions: [
+        {
+          id: 'cw-llm-cannot-verify',
+          title: 'A model is never allowed to be the evidence',
+          decision:
+            'Language models participate in the pipeline as a source of hypotheses, but model judgement cannot raise a finding\'s verification rung. Only concrete analysis — graph reachability, taint tracing, sandboxed execution — can.',
+          rationale:
+            'A fluent, confident and wrong explanation is the characteristic failure of model-assisted security tooling. Making the ladder structurally unreachable by a model means that failure cannot silently become a verdict.',
+          tradeoff:
+            'The tool is far more conservative than an LLM reviewer and will leave findings at a low rung that a model would happily call exploitable.',
+        },
+        {
+          id: 'cw-hexagonal',
+          title: 'Hexagonal architecture with plugin-discovered adapters',
+          decision:
+            'The domain core is pure with no I/O, every external capability sits behind a protocol-typed port, and adapters register through entry-point discovery so adding one requires no core change.',
+          rationale:
+            'A security tool is mostly integrations — scanners, model providers, version control, sandboxes, report formats. Keeping them at the edge means the verification logic can be tested without any of them.',
+          tradeoff:
+            'Considerably more indirection than a direct implementation, and a contributor has to understand the port catalogue before adding a capability.',
+        },
+        {
+          id: 'cw-cpg',
+          title: 'Build a Code Property Graph rather than pattern-matching harder',
+          decision:
+            'A graph engine over tree-sitter unifies AST, control flow, data flow and the call graph, and answers reachability, taint and slice queries that the rest of the system treats as evidence.',
+          rationale:
+            'Reachability and taint are the two questions that separate a real finding from a match, and neither can be answered by a better regular expression.',
+          tradeoff:
+            'A graph has to be built per language, so language coverage is bounded by the tree-sitter grammars and query sets actually written.',
+        },
+        {
+          id: 'cw-standard-formats',
+          title: 'Emit SARIF and CycloneDX-VEX rather than a bespoke report',
+          decision:
+            'Findings export as SARIF 2.1.0, exploitability as CycloneDX-VEX, with a native JSON format alongside.',
+          rationale:
+            'A verdict that cannot be ingested by the tooling a team already runs does not change anything. Standard formats make the output actionable without adoption.',
+          tradeoff:
+            'The mapping onto CycloneDX\'s own state enumeration is documented as one-directional rather than a lossless round-trip, so some internal nuance is lost on export.',
+        },
+      ],
+      concerns: [
+        {
+          id: 'cw-sandbox-isolation',
+          title: 'Executing untrusted code',
+          detail:
+            'Dynamic verification means running code from the project under test. The sandbox adapter isolates that in Docker — built and tested, though not yet wired into the pipeline.',
+        },
+        {
+          id: 'cw-model-boundary',
+          title: 'The model boundary is a trust boundary',
+          detail:
+            'Model output enters the system as a hypothesis, never as a fact. The ladder is the mechanism that enforces it.',
+        },
+        {
+          id: 'cw-audit-trail',
+          title: 'Event-sourced finding log',
+          detail:
+            'Findings are stored as an append-only event log, so how a verdict was reached remains reconstructable rather than being overwritten by its latest state.',
+        },
+      ],
+      verification: [
+        {
+          id: 'cw-ci',
+          label: 'Quality gate reproducible locally',
+          detail:
+            'The same gate CI runs is a single make target, alongside pre-commit hooks and a dev container.',
+          verified: true,
+        },
+        {
+          id: 'cw-eval',
+          label: 'Evaluation harness with a statistical protocol',
+          detail:
+            'Detection metrics, a versioned golden dataset, run manifests, and a protocol specifying bootstrap confidence intervals and McNemar\'s test.',
+          verified: true,
+        },
+        {
+          id: 'cw-eval-gap',
+          label: 'Verification and patch-quality metrics are not populated',
+          detail:
+            'Those metrics need evidence at rungs the pipeline does not yet produce, so the fields exist in the manifest and are deliberately left empty rather than estimated.',
+          verified: false,
+        },
+        {
+          id: 'cw-vex-e2e',
+          label: 'VEX export verified end to end',
+          detail:
+            'The CycloneDX-VEX reporter is fully covered and was verified by a real scan producing a valid document.',
+          verified: true,
+        },
+      ],
+      results: [
+        'Phases 0 through 4 are complete: domain core, workspace and port contracts, the Code Property Graph engine, four scanners with SARIF output, and the seven-agent framework with multi-provider model support.',
+        'Six further phases are partially built, each with specific documented items still open, and the v1.0 phase has not started.',
+        'The verification pipeline reaches the taint rung today. The two rungs that would demonstrate rather than infer exploitability are not built.',
+      ],
+      timeline: [
+        { id: 'cw-p2', label: 'Code Property Graph engine', detail: 'AST, control flow, data flow and call graph over tree-sitter.' },
+        { id: 'cw-p3', label: 'Scanners and SARIF', detail: 'Four scanner adapters with cross-tool correlation.' },
+        { id: 'cw-p4', label: 'Agent framework', detail: 'Seven agents, multi-provider models, graph-grounded reachability evidence.' },
+      ],
+      disclosure:
+        'The repository is public, so every claim here can be checked against it. Where the README summary and the per-phase roadmap disagree about what is built, this page follows the roadmap, which documents evidence for each line and is the more conservative of the two.',
+    },
     proof: [
       {
         id: 'cortexward-public',

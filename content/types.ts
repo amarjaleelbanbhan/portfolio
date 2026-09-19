@@ -270,6 +270,37 @@ export interface ResearchFinding {
   corrected?: boolean;
 }
 
+/**
+ * A staged capability ladder.
+ *
+ * Built for CortexWard's Verification Ladder, but deliberately generic: any
+ * project with graded capability levels can use it. `status` is the point —
+ * a ladder that does not say which rungs are built is a roadmap presented as a
+ * feature list, which is the specific failure this shape exists to prevent.
+ */
+export interface LadderStage {
+  id: string;
+  /** Rung number or short key, shown as the marker. */
+  level: string;
+  label: string;
+  /** What evidence this rung represents. */
+  evidence: string;
+  /** What reaching it actually means. */
+  meaning: string;
+  status: 'implemented' | 'partial' | 'planned';
+  /** Why it is not built yet, when it is not. */
+  gap?: string;
+}
+
+export interface CapabilityLadder {
+  title: string;
+  intro: string;
+  stages: LadderStage[];
+  /** Structural rules the ladder enforces. */
+  rules?: string[];
+  caveat: string;
+}
+
 export interface CaseStudy {
   /** The situation the work happened in. */
   context?: string;
@@ -294,6 +325,8 @@ export interface CaseStudy {
   findings?: ResearchFinding[];
   /** A published correction to an earlier interpretation. */
   correction?: { date: string; title: string; detail: string; status: string };
+  /** Graded capability levels, each stating whether it is built. */
+  ladder?: CapabilityLadder;
 }
 
 export interface Project {

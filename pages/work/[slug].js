@@ -19,6 +19,7 @@ import ProjectHero from '@/components/case-study/ProjectHero';
 import ProjectArchitecture from '@/components/case-study/ProjectArchitecture';
 import RelatedWork from '@/components/case-study/RelatedWork';
 import ExperimentMatrix from '@/components/case-study/ExperimentMatrix';
+import CapabilityLadder from '@/components/case-study/CapabilityLadder';
 import { ResearchCorrection, ResearchFindings } from '@/components/case-study/ResearchFindings';
 import {
   ConcernSection,
@@ -118,6 +119,8 @@ export default function CaseStudy({ project, related }) {
             />
 
             <ProseSection id="contribution" title="My contribution" body={project.role} />
+
+            <CapabilityLadder ladder={study.ladder} accent={accent} reduced={reduced} />
 
             <ExperimentMatrix experiment={study.experiment} accent={accent} reduced={reduced} />
 
