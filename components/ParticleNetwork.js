@@ -1,8 +1,23 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { quickDeviceTier } from '@/lib/deviceTier';
 
 const PARTICLE_COUNT = 90;
+
+/**
+ * Particle count for a device tier.
+ *
+ * Weak devices get a thinner field, never an empty one: the ambient network is
+ * part of the site's identity, so it is adapted rather than switched off. The
+ * floor keeps the connection lines meaningful — below roughly 30 particles the
+ * network reads as scattered dots instead of a graph.
+ */
+function countForTier(tier) {
+  if (tier >= 2) return PARTICLE_COUNT;
+  if (tier === 1) return Math.round(PARTICLE_COUNT * 0.5);
+  return 30;
+}
 const MAX_CONNECT_DIST = 150;
 const MOUSE_RADIUS = 140;
 const PARALLAX_STRENGTH = 26; // px of drift at full depth
@@ -105,6 +120,8 @@ export default function ParticleNetwork() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Synchronous and browser-safe, so it can be read here without a re-render.
+    const particleCount = countForTier(quickDeviceTier());
 
     let animId;
     let particles = [];
@@ -124,7 +141,7 @@ export default function ParticleNetwork() {
       canvas.style.width = cssW + 'px';
       canvas.style.height = cssH + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle(cssW, cssH));
+      particles = Array.from({ length: particleCount }, () => new Particle(cssW, cssH));
     }
 
     function onMouseMove(e) {
@@ -245,8 +262,8 @@ export default function ParticleNetwork() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.6 }}
+      className="ambient-canvas"
+      style={{ opacity: 0.6 }}
       aria-hidden="true"
     />
   );
