@@ -3408,22 +3408,107 @@ Kept and verified in use: `three`, `@react-three/fiber`, `framer-motion`,
 
 # PHASE 35 — ERROR BOUNDARIES + FALLBACKS
 
-- [ ] 3D scene error boundaries.
-- [ ] Static visualization fallback.
-- [ ] API failure states.
-- [ ] Supabase failure states.
-- [ ] image/video fallbacks.
-- [ ] empty CMS states.
-- [ ] graceful admin errors.
-- [ ] public content remains usable without WebGL.
+- [x] 3D scene error boundaries.
+- [x] Static visualization fallback.
+- [x] API failure states.
+- [x] Supabase failure states.
+- [x] image/video fallbacks.
+- [x] empty CMS states.
+- [x] graceful admin errors.
+- [x] public content remains usable without WebGL.
 
 ## Phase Completion
 
-- [ ] Phase 35 complete
+- [x] Phase 35 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+**Tested by breaking things, not by reading them.** Finding a `catch` in a
+component proves nothing about what a visitor gets. Each case below actually
+breaks the thing and then asks the page what it shows: WebGL refused, the GL
+context lost mid-session, the contact API failing four different ways, Supabase
+unreachable, the portrait blocked at the network layer.
+
+**22 fault-injection checks, 22 passing.** Two real defects were found, and
+both were the kind that only a failing run reveals.
+
+### `/skills` was completely blank without WebGL
+
+`SkillCube` constructed a `THREE.WebGLRenderer` unconditionally. On a browser
+with WebGL disabled that throws from inside an effect — and an effect that
+throws unmounts the tree above it — so the **entire page** rendered empty: no
+heading, no skill galaxy, no links, nothing. The galaxy is plain DOM and 26
+real buttons; it never needed a GPU. One decorative cube was taking all of it
+down.
+
+Measured before: `h1=null, 1 word, 0 links, 0 skill nodes`.
+Measured after: **identical with and without WebGL** — 90 words, 36 buttons,
+26 skill nodes, 3 sections — plus a flat isometric stand-in in the cube's place.
+
+Two things were wrong, so both were fixed:
+
+1. `SkillCube` now reads the WebGL flag `useDeviceTier` already probes, and
+   renders `CubeFallback` instead of building a renderer it cannot have. A
+   browser without WebGL is a supported browser, not an error.
+2. The error boundary that existed inside `SceneCanvas` only ever covered the
+   React Three Fiber scenes. It is now `components/ErrorBoundary.js`, shared,
+   and wraps every widget that talks to a GPU, a physics engine or a canvas:
+   `SkillCube`, `GravitySkills` and `SecretProject`. **A decorative widget must
+   not be able to take a page down**, and until now three of them could.
+
+### The admin showed "Failed to fetch"
+
+Every Supabase call site shaped HTTP errors carefully — `23514` explained,
+`401` explained, credentials deliberately never distinguished — and then let a
+*rejected* `fetch` through untouched. With the network gone, the browser's own
+`TypeError: Failed to fetch` appeared on screen as if it were an explanation.
+It says nothing about what failed and reads like a bug in the page.
+
+`supabaseFetch` in `lib/supabase.js` now wraps all six call sites across
+`session.js`, `cms/client.js` and `cms/media.js`, and marks the error
+`unreachable` — preserving the distinction the membership check already relied
+on, because **a request that never arrived is not a request that was refused**,
+and signing someone out for bad wifi is a real way to lose work.
+
+Now shown: *"Could not reach the database. Check the connection and try
+again."*
+
+### A check that was too lenient to be worth running
+
+The first version of the admin assertion accepted any message matching
+`/failed|network|connection/` — which `Failed to fetch` satisfies. It passed
+against the raw `TypeError`. It now requires a sentence the site wrote and
+**fails** if `Failed to fetch`, `TypeError` or `NetworkError` appears anywhere
+in the visible text. The defect was already there; the check was agreeing with
+it.
+
+### Verified per the checklist
+
+| Item | How it was broken | What happened |
+|---|---|---|
+| 3D scene error boundaries | `getContext('webgl')` forced to null; live context destroyed with `WEBGL_lose_context` | Page survives both; `/` keeps its h1, 12,642 characters and all 11 domain elements |
+| Static visualization fallback | WebGL refused | `/` shows `CoreFallback` and keeps 11 `[data-domain]` links; `/skills` shows `CubeFallback` |
+| API failure states | `/api/contact` forced to 500, 429, non-JSON, and a rejected fetch | Form stays mounted and usable in all four, zero page errors, and each announces something specific — including *"the connection failed. Please email me directly."* |
+| Supabase failure states | Every `supabase.co` request rejected | Admin stays on its gate, explains itself, throws nothing, and leaks no key material |
+| image/video fallbacks | `hero-portrait` blocked at the network layer | Page unaffected, zero errors, alt text intact. The only `<video>` is an admin preview on a five-minute signed URL, rendered on demand |
+| Empty CMS states | — | Every list has one: enquiries, each content section, media, audit, SEO, lead notes. The health page states plainly that the public site reads `content/`, not the database |
+| Graceful admin errors | Network loss, bad credentials, unreachable membership check | Explained, never a stack trace; the gate holds and no session is stored after a failure |
+| Public content usable without WebGL | WebGL refused site-wide | `/` 1,547 words and 66 links; `/skills` fully interactive with all 26 skill nodes. Zero console errors on either |
+
+Also verified: `/404` is a real page with the navigation and 24 links, not a
+bare message.
+
+### Known and deliberately open
+
+- **No top-level app error boundary.** Per-widget boundaries are the better
+  tool — they lose one widget instead of the page — and the pages themselves
+  are static content with no runtime data fetching to fail. A blanket boundary
+  that replaces a whole working page with an apology would be a downgrade.
+- **The authenticated admin failure paths** (a write rejected by RLS mid-edit,
+  a session expiring during a save) still need one signed-in pass, the same gap
+  Phases 21–31 record.
 
 ---
 

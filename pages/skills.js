@@ -25,6 +25,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SkillGalaxy from '@/components/skills/SkillGalaxy';
 import SkillEvidencePanel from '@/components/skills/SkillEvidencePanel';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { usePrefersReducedMotion } from '@/lib/useMediaQuery';
 import { fadeUp } from '@/lib/motion';
 import { getSkillEvidenceDetail, getSkillGraph } from '@/lib/content';
@@ -185,7 +186,11 @@ export default function Skills() {
               modelled as skills because there is nothing to attach yet. */}
           <div className="grid gap-6 lg:grid-cols-2 mb-10 [&>*]:min-w-0">
             <motion.div {...fadeUp()}>
-              <SkillCube />
+              {/* A decorative widget must not be able to take the page with
+                  it: the galaxy above and the evidence below are plain DOM. */}
+              <ErrorBoundary label="SkillCube">
+                <SkillCube />
+              </ErrorBoundary>
             </motion.div>
 
             <motion.div {...fadeUp({ delay: 0.05 })} className="glass-panel p-6">
@@ -228,7 +233,9 @@ export default function Skills() {
               Preserved exactly. It is not a skill reference and never was; it is
               the part of the page that is simply enjoyable to poke at. */}
           <motion.div {...fadeUp()}>
-            <GravitySkills />
+            <ErrorBoundary label="GravitySkills">
+              <GravitySkills />
+            </ErrorBoundary>
           </motion.div>
         </main>
         <Footer />

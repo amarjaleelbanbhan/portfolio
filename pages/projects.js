@@ -13,6 +13,7 @@ import {
   getFlagshipProjects,
   getSecondaryProjects,
 } from '@/lib/content';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const SecretProject = dynamic(() => import('@/components/SecretProject'), {
   ssr: false,
@@ -153,7 +154,9 @@ export default function Projects() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="md:max-w-xl"
           >
-            <SecretProject />
+            <ErrorBoundary label="SecretProject">
+              <SecretProject />
+            </ErrorBoundary>
           </motion.div>
 
           {/* Upstream contributions — the dedicated page lands in a later phase. */}
