@@ -46,14 +46,14 @@ a plain question from here.
 
 ---
 
-## 3. Where submissions go, and what could not be verified
+## 3. Where submissions go
 
 Into the existing `studio_leads` table, discriminated by `source`
 (`contact:<category>`), using **exactly the columns the Studio request flow has
-been writing since Phase 0.5**. That path is already proven, the RLS policy
-already allows `anon` to INSERT and nothing else, and the admin dashboard
-already reads the table — so contact enquiries are visible to the admin with no
-schema change at all.
+been writing since Phase 0.5**. That path is already proven and the admin
+dashboard already reads the table, so contact enquiries are visible with no
+schema change at all — though the live test below found the policy to be
+stricter than the column list alone suggests.
 
 A dedicated `contact_messages` table is the right long-term shape and belongs
 with the CMS database phase.
@@ -198,9 +198,11 @@ errors.
 
 ## 8. Open items
 
-- **One live submission needs to be sent to confirm the database write**, and
-  that writes a real row into the production leads table. It needs Amar's
-  go-ahead, or a dedicated `contact_messages` table, whichever he prefers.
+- **Two `TEST —` rows need deleting** from `studio_leads` in the Supabase
+  dashboard; `anon` cannot remove them.
+- **The leads RLS policy pins `source`**, so contact enquiries are stored under
+  the Studio's value and cannot be filtered apart in SQL. Widening the policy or
+  adding a `contact_messages` table fixes it; either is a production change.
 - A durable, shared rate limit needs somewhere to store counters.
 - The admin dashboard shows contact enquiries because they share the leads
   table, but it does not yet *filter* by `source`. That is the CRM phase.
