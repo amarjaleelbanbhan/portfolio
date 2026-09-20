@@ -22,6 +22,8 @@ export type {
   FeaturedDecision,
   Opportunity,
 } from './about';
+export { contactCategories } from './contact';
+export type { ContactCategory } from './contact';
 export { coreDomains } from './domains';
 export type { DomainMeta } from './domains';
 export { storyStages } from './story';

@@ -2316,38 +2316,91 @@ Replace mailto-only flow.
 
 Categories:
 
-- [ ] Engineering opportunity
-- [ ] Internship/job
-- [ ] Research collaboration
-- [ ] Open source
-- [ ] Client project
-- [ ] Other
+- [x] Engineering opportunity
+- [x] Internship/job
+- [x] Research collaboration
+- [x] Open source
+- [x] Client project — routes to the Studio request form
+- [x] Other
 
-- [ ] Secure backend submission.
-- [ ] Validation.
-- [ ] spam protection.
-- [ ] user feedback.
-- [ ] admin visibility.
+- [x] Secure backend submission.
+- [x] Validation.
+- [x] spam protection.
+- [x] user feedback.
+- [x] admin visibility — shares the `studio_leads` table the admin already reads.
 
 ## Client Funnel
 
 Preserve:
 
-- [ ] `/hire`
-- [ ] `/studio`
-- [ ] `/studio/request`
+- [x] `/hire`
+- [x] `/studio`
+- [x] `/studio/request`
 
 Clarify:
 
 `Amar Digital Systems — independent engineering practice by Amar Jaleel`
 
+- [x] Stated in both footers; "View agency page" replaced.
+
 ## Phase Completion
 
-- [ ] Phase 19 complete
+- [x] Phase 19 complete — **with one open item**, below.
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Routes: `/contact` rebuilt, `/api/contact` added.
+Documented in `docs/portfolio-2026/contact-and-funnel.md`.
+
+**The old form failed silently.** It built a `mailto:` URL and navigated to it,
+which does nothing visible unless the visitor has a mail client configured — no
+confirmation, no record, and no way for anyone to know a message was lost. That
+was the default path, and silent failure is the worst property a contact form can
+have.
+
+**Categories are canonical**, read by both the form and the API, because one that
+exists on only one side is a submission that fails for a reason nobody can see.
+The category is asked first, since it changes what the rest of the form is for.
+`client_project` surfaces a pointer to the Studio request form rather than
+collecting half a project brief badly.
+
+**Submissions go to the existing `studio_leads` table**, discriminated by
+`source`, using exactly the columns the Studio flow has written since Phase 0.5.
+No schema change, a proven insert path, and admin visibility for free.
+
+**Three spam layers, none load-bearing alone:** an off-screen `aria-hidden`
+honeypot that returns the `201` a bot expects and writes nothing, a 2.5-second
+timing gate (client-supplied, so advisory), and a rate limit.
+
+**The rate limit's first version was wrong and the test caught it.** One counter
+for all requests punished someone who mistypes their email four times exactly
+like a bot — locked out for ten minutes. It is now two counters: 30 requests per
+ten minutes to blunt a flood, and **3 accepted submissions**, counted only after
+validation passes. Verified: eight consecutive invalid submissions all return
+400.
+
+**Feedback is per field and persistent.** `aria-invalid` plus a matching
+`aria-describedby` on each bad field, focus moved to the first problem, and a
+`role="status"` region rather than a toast — a toast that has faded is a result
+the visitor cannot get back to.
+
+**The funnel is preserved and the positioning clarified.** Both footers now read
+"An independent engineering practice by Amar Jaleel", and "View agency page"
+became "How I work" — *agency* implies a company with staff, and a check asserts
+the word appears on none of the three routes.
+
+**Browser-verified**, 42 checks, plus direct API probes covering the empty body,
+a hostile payload (including `javascript:` on the URL field, rejected on
+protocol), the honeypot, the timing gate, method rejection and both rate limits.
+
+> **OPEN ITEM — needs Amar's go-ahead.** The portfolio's Supabase project is not
+> in the account reachable from this workspace, so its schema could not be
+> inspected and **a successful insert could not be verified** — confirming it
+> means writing a real row into the production leads table, which `anon` cannot
+> delete. Everything up to the database call is verified. Because `source` might
+> carry a CHECK constraint, the route retries once with the value the table is
+> known to accept, so no enquiry is lost either way. One live test submission, or
+> a dedicated `contact_messages` table, will close this.
 
 ---
 

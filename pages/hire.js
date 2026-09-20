@@ -199,9 +199,9 @@ export default function Hire() {
             <p>I will start by understanding what is actually wrong or missing — not by pushing a package you may not need.</p>
             <Link href="/studio/request" className={styles.primaryButton}>Tell me what you need →</Link>
             <div className={styles.finalLinks}>
-              <Link href="/studio">View agency page</Link>
+              <Link href="/studio">How I work</Link>
               <Link href="/work">View technical work</Link>
-              <Link href="/">About Amar</Link>
+              <Link href="/about">About Amar</Link>
             </div>
           </section>
         </main>
@@ -209,7 +209,7 @@ export default function Hire() {
         <footer className={styles.footer}>
           <div className={styles.brand}>
             <span className={styles.mark}>A</span>
-            <span><strong>Amar Digital Systems</strong><small>Websites · Apps · AI · Automation</small></span>
+            <span><strong>Amar Digital Systems</strong><small>An independent engineering practice by Amar Jaleel</small></span>
           </div>
           <p>amarjaleel.me/hire</p>
         </footer>

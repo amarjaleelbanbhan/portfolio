@@ -7,6 +7,7 @@
  */
 import {
   aboutIntro,
+  contactCategories,
   coreDomains,
   credentials,
   storyStages,
@@ -41,6 +42,7 @@ import type {
   VerificationItem,
 } from '@/content/types';
 import type { AboutIntro, EngineeringPrinciple, Opportunity } from '@/content/about';
+import type { ContactCategory } from '@/content/contact';
 import type { DomainMeta } from '@/content/domains';
 import type { ResearchCategoryMeta } from '@/content/research';
 import type { StoryStage } from '@/content/story';
@@ -1304,4 +1306,17 @@ export function getResumeSkills(): { category: SkillCategory; names: string[] }[
 
 export function getResumeSummary(): string {
   return resumeSummary;
+}
+
+
+// ───────────────────────────────── Contact ─────────────────────────────────
+
+/**
+ * The enquiry categories the form offers and the API validates against.
+ *
+ * One list for both ends: a category that exists on one side and not the other
+ * is a submission that fails for a reason nobody can see.
+ */
+export function getContactCategories(): ContactCategory[] {
+  return contactCategories;
 }

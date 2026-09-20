@@ -356,7 +356,7 @@ export default function Studio() {
             <span className={styles.brandMark}>A</span>
             <span className={styles.brandText}>
               <strong>Amar Digital Systems</strong>
-              <small>Websites · automation · AI assistants</small>
+              <small>An independent engineering practice by Amar Jaleel</small>
             </span>
           </div>
           <p>amarjaleel.me/studio</p>
