@@ -2459,11 +2459,20 @@ Do not delete the current admin until replacement is verified.
 
 ## Phase Completion
 
-- [ ] Phase 20 complete
+- [x] Phase 20 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/admin`.
+
+Sidebar shell with fourteen sections, a Cmd-K command palette with subsequence
+matching, responsive to 360px and keyboard-navigable throughout. Classified as
+`admin` chrome, so no boot sequence, particles or scanlines — a tool opened
+twenty times a day should open instantly. `noindex` on every page and
+`Disallow: /admin` in robots.txt.
+
+`/studio/admin` is untouched and still works, as the brief requires until the
+replacement is verified.
 
 ---
 
@@ -2483,11 +2492,34 @@ _Add notes here after completion._
 
 ## Phase Completion
 
-- [ ] Phase 21 complete
+- [x] Phase 21 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20 for the application layer.
+
+**Authorisation is two steps.** Signing in proves identity; `portfolio_admins`
+membership proves authorisation. A signed-in non-admin is told plainly rather
+than dropped into an interface where every panel is empty. That check is for
+honesty — **row-level security is the boundary**, and it was verified directly.
+
+Three gaps in the old admin, fixed once in `lib/admin/session.js`: refresh (the
+token was stored and never used, so a session expired mid-task), the membership
+check, and server-side sign-out (clearing storage left the refresh token valid).
+
+**Verified anonymously:** `portfolio_admins`, `studio_leads`, `lead_notes`,
+`lead_activity`, `admin_audit_log` and `site_settings` all refuse anonymous
+reads; the public content tables leak no drafts; anonymous inserts into
+`portfolio_projects`, `site_settings` and `admin_audit_log` are refused. Bad
+credentials are rejected without revealing whether the account exists, and no
+session is stored after a failure.
+
+**Not verified here:** an authenticated admin round trip. No admin credentials
+exist in this environment and asking for a password to type in is not something
+to do. Needs one signed-in pass.
+
+**Supabase Auth configuration** — public signup and leaked-password protection —
+is dashboard configuration rather than application code, and remains open.
 
 ---
 
@@ -2526,11 +2558,27 @@ Maintain static fallback during migration where useful.
 
 ## Phase Completion
 
-- [ ] Phase 22 complete
+- [x] Phase 22 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20 as contracts and a documented schema. **No new migration
+was written or applied** — the three September 20 migrations already created the
+tables.
+
+What this phase added is the application's half. `lib/cms/contracts.js`
+validates every flexible JSONB column against shapes that **mirror
+`content/types.ts`**, so the database holds the canonical model rather than a
+second incompatible one.
+
+`supabase/README.md` records the nine-migration history and the `supabase db
+pull` commands for an authoritative export. `supabase/schema-reference.sql`
+describes the live schema and is labelled documentation rather than a migration —
+reconstructing policy bodies from prose and calling them "the applied migration"
+would put a guess in a file that eventually gets run.
+
+Site content blocks are a **closed set with no `html` block**, which is what
+stops the CMS becoming a way to inject markup into a page.
 
 ---
 
@@ -2560,11 +2608,25 @@ No source-code edit should be required for normal project content updates.
 
 ## Phase Completion
 
-- [ ] Phase 23 complete
+- [x] Phase 23 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+One schema-driven editor covers all seven content tables rather than seven
+partial ones. Create, edit, publish, unpublish and delete, with a typed
+confirmation on delete, an unsaved-changes guard, per-field errors wired through
+`aria-describedby`, and reference pickers for foreign keys.
+
+**Publishing is separate from saving** and moves `is_published` and
+`published_at` together — the anonymous read policy needs both, so a flag set
+without a date produces a record the admin calls live and the public never sees.
+The list and the editor both show what the public actually sees, and the
+dashboard counts the mismatched ones separately.
+
+Media, metrics and ordering are covered. Drag-to-reorder is not — `sort_order`
+is a number field.
 
 ---
 
@@ -2603,11 +2665,23 @@ Public rendering must not depend on live GitHub API uptime.
 
 ## Phase Completion
 
-- [ ] Phase 24 complete
+- [x] Phase 24 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20 through the same schema-driven editor.
+
+Research carries methodology, results, corrections, limitations, future work and
+disclosure notes as validated JSON, with the rule that **a measured value with no
+interpretation is refused** — the failure mode research writing actually has.
+
+Open source validates that only a merged request carries a merge date, and that
+the pull-request URL matches its repository and number.
+
+`lib/cms/migrate.js` moves the canonical content in without changing what any of
+it says. It matches on slug, or pull-request URL for contributions, so re-running
+is a no-op; it never deletes; and it never gives a private project a repository
+URL. Everything imports **unpublished**.
 
 ---
 
@@ -2650,11 +2724,27 @@ Views:
 
 ## Phase Completion
 
-- [ ] Phase 25 complete
+- [x] Phase 25 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/admin/leads`.
+
+A list and a pipeline board over the same data, because they answer different
+questions. Status, priority, estimated value, follow-up dates and internal tags
+are editable, and **every change appends to `lead_activity` with its before and
+after** — "status changed" on its own tells you nothing a month later.
+
+Notes are attributed to the signed-in user's own id, because the policy requires
+it and because an author taken from a form field is not attribution. The email
+action opens a draft and records `last_contacted_at`, since a CRM that opens a
+draft and forgets is not tracking anything.
+
+**The intake fields are never editable.** They are what someone actually wrote.
+Nothing deletes a lead; `archived` is the closest thing and it keeps the record.
+
+The contact form's category is parsed back out of the message, so the CRM shows
+"Research collaboration" rather than "studio_request".
 
 ---
 
@@ -2681,11 +2771,24 @@ Optimize:
 
 ## Phase Completion
 
-- [ ] Phase 26 complete
+- [x] Phase 26 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/admin/media`.
+
+Built around the property that makes media different from every other record: **a
+file in the public bucket is fetchable by URL regardless of whether its row is
+published**, because object storage does not consult a table. Private is the
+upload default, "make public" is an explicit copy behind a confirmation,
+deleting offers to remove the object too, and private previews use five-minute
+signed URLs.
+
+**SVG is refused in the public bucket** — it is script-capable and there is no
+sanitiser here. Type and size are checked in the browser for a fast answer; the
+real enforcement is the bucket's own MIME allowlist and 10 MiB limit.
+
+Alt text is prompted on upload, and missing alt text is flagged in the library.
 
 ---
 
@@ -2719,11 +2822,19 @@ Admin warnings:
 
 ## Phase Completion
 
-- [ ] Phase 27 complete
+- [x] Phase 27 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/admin/seo`.
+
+Honest about its own scope: the public pages still take their metadata from the
+source, so editing a record's SEO stores correctly and changes nothing live yet —
+and the page says exactly that rather than implying otherwise.
+
+What it does today is real: missing descriptions, thin descriptions, titles that
+search results truncate, and duplicate titles across CMS records, each linking to
+the record. Plus what the sitemap and robots.txt actually ship.
 
 ---
 
@@ -2746,11 +2857,19 @@ Create admin health checks for:
 
 ## Phase Completion
 
-- [ ] Phase 28 complete
+- [x] Phase 28 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/admin/health`.
+
+Answers the question a CMS usually cannot: **is the public site reading any of
+this?** It is not — the pages render from `content/`, and the page says so
+plainly, because a dashboard implying otherwise would be the most expensive kind
+of wrong. Canonical counts and database counts sit side by side, per table.
+
+It is also where the content migration and the bulk publish run, because
+migrating is how the two sides stop disagreeing.
 
 ---
 
@@ -2785,11 +2904,19 @@ Avoid destructive publish/delete commands unless confirmation is explicit.
 
 ## Phase Completion
 
-- [ ] Phase 29 complete
+- [x] Phase 29 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20 as part of the shell.
+
+Cmd-K from anywhere, with subsequence matching so "opsr" finds Open Source. A
+real dialog: focus enters on open and returns to the opener on close, Escape
+closes, Tab is trapped, and it follows the ARIA combobox pattern so the
+highlighted option is announced rather than silently changing what Enter does.
+The shortcut yields while typing in a field.
+
+Search across records is per-section rather than global.
 
 ---
 
@@ -2808,11 +2935,23 @@ CMS workflow:
 
 ## Phase Completion
 
-- [ ] Phase 30 complete
+- [x] Phase 30 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+**Partially complete, and deliberately not claimed as finished.**
+
+Works and is tested: draft and published states; publish and unpublish as one
+operation moving both columns; scheduled publication, in the sense that a future
+`published_at` is honoured by the policy and the row stays invisible until then;
+and a visibility label computed from what the public sees rather than echoed from
+the flag.
+
+**Does not exist:** independent draft revisions, publishing history, preview of
+an unpublished record as it would render, and rollback. There are no revision
+tables, and the brief is explicit that these need separate design. Scheduling
+works only because the policy compares a timestamp — no job flips anything, and
+nothing in the interface pretends otherwise.
 
 ---
 
@@ -2841,11 +2980,22 @@ Store:
 
 ## Phase Completion
 
-- [ ] Phase 31 complete
+- [x] Phase 31 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/admin/audit`.
+
+Every create, update, delete, publish, unpublish, migration and media operation
+appends through one data layer, so a new editor screen cannot forget to log it.
+The viewer is read-only because the table is append-only.
+
+It states what it is: **a record of what the admin client did, not proof of every
+statement the database saw.** A direct SQL session writes nothing here. An audit
+log trusted more than it deserves is worse than none; real guarantees need
+triggers, which is a schema change and is written up rather than assumed.
+
+Credential-shaped keys are stripped from `detail` before it is written.
 
 ---
 
