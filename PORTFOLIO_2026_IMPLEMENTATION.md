@@ -2233,25 +2233,78 @@ the badge is not cut off. Fourteen controls were under 24px on a pointer from an
 
 # PHASE 18 — RESUME SYSTEM
 
-- [ ] Replace stale resume presentation.
-- [ ] Create `/resume`.
-- [ ] Use canonical portfolio data where practical.
-- [ ] Ensure project names/statuses match portfolio.
-- [ ] Include current OSS evidence.
-- [ ] Include current research.
-- [ ] Prevent resume/site content drift.
+- [x] Replace stale resume presentation.
+- [x] Create `/resume`.
+- [x] Use canonical portfolio data where practical.
+- [x] Ensure project names/statuses match portfolio.
+- [x] Include current OSS evidence.
+- [x] Include current research.
+- [x] Prevent resume/site content drift.
 
 Optional later:
 
-- [ ] PDF generation if maintainable.
+- [x] PDF generation if maintainable — via the browser's own print pipeline, so
+  there is no artifact to regenerate and nothing that can go stale between
+  builds. Verified by driving `Page.printToPDF`: 262 KB, 4 pages, A4.
 
 ## Phase Completion
 
-- [ ] Phase 18 complete
+- [x] Phase 18 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. Route: `/resume`.
+Documented in `docs/portfolio-2026/resume-system.md`.
+
+**The static file had already drifted, exactly as Phase 2 predicted.**
+`public/resume.html` still called the final-year project **VICE OS** — renamed
+site-wide in Phase 3, with validation rejecting the old name in content ever
+since, but the résumé was not content so nothing checked it. It also listed
+seven skills the registry does not carry, including the `linux` entry Phase 16
+removed for having no evidence. The contribution list, statuses and credential
+counts were all typed by hand.
+
+**It is now a route rendered from the same selectors as the site**, so a status
+change, a merged pull request or a new credential updates it in the same commit,
+and content validation fails the build if a reference stops resolving.
+
+**Two shaping rules live in the selectors, not the page.**
+`getResumeProjects()` excludes the archive — a résumé is a claim about current
+capability and a retired 2023 project is not one. `getResumeSkills()` returns
+every skill rather than featured ones, because a résumé is the one surface where
+completeness beats curation and every skill now has evidence behind it. The page
+then prints flagship work and the FYP in full and names the secondary projects in
+one line: four A4 pages of project entries is a portfolio, and the site already
+is the portfolio.
+
+**Spoken languages became canonical.** English, Urdu and Sindhi were on the old
+résumé; rather than drop a published claim, `Profile.spokenLanguages` models it
+and validation fails if it is empty.
+
+**No PDF generator, deliberately.** The print stylesheet inverts to black on
+white, hides the site chrome and the print button, resets the document's Tailwind
+colours wholesale, **expands link destinations** so a printed copy does not throw
+away every URL, and sets `break-inside: avoid` on sections and entries. The
+browser's "Save as PDF" produces the document — one fewer dependency, and one
+fewer artifact that can silently stop matching the site.
+
+**The print pass caught a bad bug:** the first version hid `header` and `footer`
+wholesale to drop the site chrome, and the résumé's own name-and-contact block is
+a `<header>` — so **the printed résumé had no name on it.** The rule is now
+`header.sticky`, which is the Navbar's class and not the document's.
+
+**The old URL still works.** `/resume.html` permanently redirects (308) because a
+copy may be in an application already sent, and `profile.resumeUrl` is now
+validated against the routes that exist — a résumé button that 404s would be
+broken in the navigation of every page.
+
+**Browser-verified**, 54 checks on a production build at 1280/768/430/390/360 px,
+under reduced motion and under emulated print media: the drift gone, every fact
+matching the site, all seven pull requests with the open one printed as open,
+9 Google / 2 Udemy with no "11 Google", the print rules (nav hidden, **name
+visible and black**, white background, URLs expanded), a real multi-page PDF from
+`printToPDF`, the redirect, no remaining link to the deleted file, no target
+under 24px, no overflow, no console errors, and eleven other routes unaffected.
 
 ---
 

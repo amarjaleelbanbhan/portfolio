@@ -9,7 +9,13 @@
 export * from './types';
 
 export { profile } from './profile';
-export { aboutIntro, engineeringPrinciples, featuredDecisions, opportunities } from './about';
+export {
+  aboutIntro,
+  engineeringPrinciples,
+  featuredDecisions,
+  opportunities,
+  resumeSummary,
+} from './about';
 export type {
   AboutIntro,
   EngineeringPrinciple,

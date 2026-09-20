@@ -60,6 +60,7 @@ const EXISTING_ROUTES = new Set([
   '/contact',
   '/hire',
   '/studio',
+  '/resume',
 ]);
 
 /**
@@ -130,6 +131,16 @@ export function validateContent(): ContentIssue[] {
     if (value && !isValidUrl(value)) {
       add('profile', 'profile', `social.${key} is not a valid URL: ${value}`);
     }
+  }
+
+  // The résumé is a route now, not a static file. A resumeUrl pointing at a
+  // page that does not exist is a broken button in the navigation of every
+  // single page, which is the kind of thing nobody notices for months.
+  if (!EXISTING_ROUTES.has(profile.resumeUrl)) {
+    add('profile', 'profile', `resumeUrl "${profile.resumeUrl}" is not a route that exists`);
+  }
+  if ((profile.spokenLanguages ?? []).length === 0) {
+    add('profile', 'profile', 'no spoken languages recorded — the résumé would print an empty section');
   }
 
   // ───────────────────────────── Projects ─────────────────────────────

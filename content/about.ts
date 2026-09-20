@@ -162,3 +162,17 @@ export const opportunities: Opportunity[] = [
       'Reading an unfamiliar codebase well enough to change it safely, under someone else\'s review and standards.',
   },
 ];
+
+/**
+ * The résumé summary.
+ *
+ * Kept here rather than on the page because it is a claim about Amar and
+ * belongs with the other ones. Everything it says is evidenced elsewhere on the
+ * site: the production platform, the published package, the executed study and
+ * the merged upstream work all have records behind them.
+ *
+ * Numbers are deliberately absent — the résumé page derives its counts from the
+ * contribution records, so this text cannot go stale when one more merges.
+ */
+export const resumeSummary =
+  'Software engineer working across product engineering, security and developer tooling, applied AI, and systems. Computer Science student at Sukkur IBA University. Shipped a field issue-reporting platform now in production use, published a security CLI to npm, and ran a controlled study on evidence deficiency in retrieval-augmented generation — including publishing a correction against its own headline result. Contributes fixes upstream to projects maintained by other people, not only to personal repositories.';

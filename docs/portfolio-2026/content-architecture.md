@@ -286,9 +286,13 @@ Practical notes for that phase:
 
 ## 8. Duplication intentionally remaining
 
+> **Resolved in Phase 18.** `public/resume.html` was the largest entry in this
+> table and is gone: `/resume` renders from the selectors, so there is no second
+> copy to keep in step. It had already drifted — see
+> `docs/portfolio-2026/resume-system.md`.
+
 | What | Where | Why |
 |---|---|---|
-| **Resume content** | `public/resume.html` | Hand-maintained mirror of the canonical data. Phase 18 generates it. Its Phase 1 factual corrections are intact; any content change must still be made in both places until then. |
 | **Studio / Hire copy** | `pages/hire.js`, `pages/studio.js` | Client-funnel marketing copy, not portfolio content. No model defined for it yet. |
 | **Project card visuals** | `components/ProjectCard.js` | SVG/gradient per project. Now keyed by slug, so it cannot silently break, but it still lives beside the UI rather than in content. Reasonable — it is design, not data. |
 | **"Currently learning"** | `pages/skills.js` | Deliberately not modelled as skills: there is no evidence to attach, and a skill in this model must point at real work. |

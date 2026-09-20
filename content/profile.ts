@@ -16,7 +16,16 @@ export const profile: Profile = {
   whatsapp: '923444432197',
 
   siteUrl: 'https://amarjaleel.me',
-  resumeUrl: '/resume.html',
+  // Phase 18 replaced the hand-maintained static file with a route generated
+  // from these same records. /resume.html permanently redirects here, so any
+  // copy of the old link still resolves.
+  resumeUrl: '/resume',
+
+  spokenLanguages: [
+    { name: 'English', level: 'Professional' },
+    { name: 'Urdu', level: 'Native' },
+    { name: 'Sindhi', level: 'Native' },
+  ],
 
   // twitter/x removed 2026-09-18: twitter.com/ajbanbhan and x.com/ajbanbhan
   // both return 404, while a control handle returns 200 — the account does not

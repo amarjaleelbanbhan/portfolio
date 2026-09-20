@@ -110,18 +110,17 @@ export default function Navbar() {
             </svg>
           </a>
 
-          {/* Resume CTA */}
-          <a
+          {/* Résumé CTA. An internal route since Phase 18, so it navigates in
+              place rather than opening a tab onto a static file. */}
+          <Link
             href={profile.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             className="ml-2 px-4 py-1.5 bg-neon-cyan text-midnight font-semibold rounded-md text-sm hover:bg-neon-green transition-colors duration-200 flex items-center gap-1.5"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Resume
-          </a>
+            Résumé
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -177,17 +176,15 @@ export default function Navbar() {
                   </svg>
                   GitHub
                 </a>
-                <a
+                <Link
                   href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-neon-cyan text-midnight font-semibold rounded-lg text-sm"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
-                  Resume
-                </a>
+                  Résumé
+                </Link>
               </div>
             </div>
           </motion.div>

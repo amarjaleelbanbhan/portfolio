@@ -316,6 +316,106 @@ a {
   }
 }
 
+/* ─── Print ───
+   The résumé has no PDF generator on purpose: the browser's own "Save as PDF"
+   produces the document, so there is no artifact to regenerate and no way for a
+   downloaded copy to disagree with the site.
+
+   That only works if the printed page is a real document rather than a
+   screenshot of a dark website, which is what these rules are for. They are
+   global because `/resume` is the only page that opts into them — everything
+   below is scoped to `.resume-doc`, `.resume-chrome` or the ambient layers that
+   should never print anywhere. */
+@media print {
+  /* Ink. A dark theme on paper is unreadable and unkind to whoever prints it. */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  /* Site furniture that means nothing on paper.
+
+     `header.sticky` rather than `header`: that class is the Navbar's, and the
+     bare selector also matched the résumé's own name-and-contact block, which
+     printed a document with no name on it. */
+  .resume-chrome,
+  .ambient-canvas,
+  .scanlines,
+  .scroll-progress,
+  header.sticky,
+  footer {
+    display: none !important;
+  }
+
+  .section-container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .resume-doc {
+    max-width: none;
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  /* Tailwind's colour utilities are far too specific to override one by one, so
+     the document's text colours are reset wholesale and the few that carry
+     meaning are re-applied below. */
+  .resume-doc,
+  .resume-doc * {
+    color: #1f2937 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .resume-doc .resume-h1 {
+    color: #000000 !important;
+    font-size: 20pt;
+  }
+
+  .resume-doc .resume-h2 {
+    color: #0f766e !important;
+    border-bottom: 1px solid #d1d5db !important;
+    font-size: 8.5pt;
+  }
+
+  /* Links print as text plus their destination — a printed résumé whose links
+     are invisible has thrown the information away. Contact links keep just
+     their label, because the label already is the address. */
+  .resume-doc a {
+    color: #0f766e !important;
+    text-decoration: none;
+  }
+
+  .resume-doc .resume-entry a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 8pt;
+    color: #6b7280 !important;
+    word-break: break-all;
+  }
+
+  /* Nothing should be split across a page boundary mid-thought. */
+  .resume-section {
+    break-inside: avoid;
+    margin-bottom: 14pt;
+  }
+
+  .resume-entry {
+    break-inside: avoid;
+  }
+
+  .resume-doc h1,
+  .resume-doc h2 {
+    break-after: avoid;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}
+
 /* ─── Custom scrollbar ─── */
 ::-webkit-scrollbar {
   width: 6px;

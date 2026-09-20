@@ -19,6 +19,7 @@ import {
   projects,
   researchCategories,
   researchProjects,
+  resumeSummary,
   skills,
 } from '@/content';
 import { SKILL_CATEGORIES } from '@/content/types';
@@ -1225,4 +1226,82 @@ export function getAboutIntro(): AboutIntro[] {
 
 export function getOpportunities(): Opportunity[] {
   return opportunities;
+}
+
+
+// ───────────────────────────────── Résumé ─────────────────────────────────
+
+export interface ResumeEntry {
+  slug: string;
+  title: string;
+  /** Portfolio tier, so a résumé can print flagship work in full and name the rest. */
+  tier: ProjectTier;
+  /** Public status wording, formatted by the caller from `status`. */
+  status: ProjectStatus;
+  summary: string;
+  technologies: string[];
+  /** Links worth printing, already labelled. Never a private repository. */
+  links: { label: string; url: string }[];
+  /** What to print where there is nothing to link to. */
+  sourceNote?: string;
+}
+
+/**
+ * The projects a résumé should carry, in portfolio order.
+ *
+ * Flagship work, then the current FYP, then secondary projects — the archive is
+ * excluded, because a résumé is a claim about current capability and a retired
+ * 2023 project is not one. Everything comes from the project records, so a
+ * status change on the site changes the résumé in the same commit.
+ */
+export function getResumeProjects(): ResumeEntry[] {
+  const order: Record<string, number> = { flagship: 0, 'current-fyp': 1, secondary: 2 };
+
+  return projects
+    .filter((project) => project.tier !== 'archive')
+    .sort(
+      (a, b) =>
+        (order[a.tier] ?? 9) - (order[b.tier] ?? 9) ||
+        (a.featuredRank ?? 99) - (b.featuredRank ?? 99) ||
+        a.sortOrder - b.sortOrder
+    )
+    .map((project) => {
+      const links: { label: string; url: string }[] = [];
+      if (project.links.package) links.push({ label: 'npm', url: project.links.package });
+      if (project.links.repository) links.push({ label: 'Source', url: project.links.repository });
+      if (project.links.demo) links.push({ label: 'Live', url: project.links.demo });
+
+      return {
+        slug: project.slug,
+        title: project.shortTitle ?? project.title,
+        tier: project.tier,
+        status: project.status,
+        summary: project.summary,
+        technologies: (project.technologies ?? [])
+          .map((slug) => getSkillBySlug(slug))
+          .filter((skill): skill is Skill => Boolean(skill))
+          .map((skill) => skill.shortName ?? skill.name),
+        links,
+        // The honest marker, for work whose source cannot be linked.
+        sourceNote: project.source.visibility === 'public' ? undefined : project.source.label,
+      };
+    });
+}
+
+/**
+ * Skills grouped for a résumé: every category that has skills, all of them.
+ *
+ * Not `featured` only. A résumé is the one surface where completeness beats
+ * curation, and since Phase 16 every skill in the registry has evidence behind
+ * it, so listing all of them claims nothing extra.
+ */
+export function getResumeSkills(): { category: SkillCategory; names: string[] }[] {
+  return SKILL_CATEGORIES.map((category) => ({
+    category,
+    names: getSkillsByCategory(category).map((skill) => skill.name),
+  })).filter((group) => group.names.length > 0);
+}
+
+export function getResumeSummary(): string {
+  return resumeSummary;
 }

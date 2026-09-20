@@ -634,7 +634,15 @@ export interface Profile {
   whatsapp?: string;
 
   siteUrl: string;
+  /** Where the résumé lives. Validated against the routes that exist. */
   resumeUrl: string;
+
+  /**
+   * Spoken languages and fluency. Carried over from the static résumé that
+   * Phase 18 replaced — modelled rather than dropped, because it was already
+   * published and a résumé is the one surface that genuinely needs it.
+   */
+  spokenLanguages: { name: string; level: string }[];
 
   social: {
     github: string;
