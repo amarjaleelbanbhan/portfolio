@@ -58,24 +58,40 @@ schema change at all.
 A dedicated `contact_messages` table is the right long-term shape and belongs
 with the CMS database phase.
 
-> **Untested, and it needs to be said plainly.** The portfolio's Supabase
-> project (`yokgnzxwrbymarjdfyhk`) is **not in the Supabase account available
-> from this workspace** — that account holds two unrelated projects — so its
-> schema could not be inspected, and a successful insert could not be verified
-> without writing a real row into the production leads table, which `anon`
-> cannot then delete.
->
-> Everything up to the database call is verified: validation, the honeypot, the
-> timing gate, both rate limits, error shapes and the UI's handling of each. The
-> insert itself is not.
->
-> Because `source` might carry a CHECK constraint that rejects the new
-> discriminator, the route **retries once with the value the table is known to
-> accept** if the first insert is rejected with a 400. The category is in the
-> message body either way, so no enquiry is lost to that uncertainty. The
-> fallback is logged.
+### Verified live, and it found something
 
----
+One marked test submission was sent with Amar's go-ahead. The first attempt was
+**rejected**:
+
+```
+401  {"code":"42501","message":"new row violates row-level security policy for table \"studio_leads\""}
+```
+
+The Studio flow's identical-shaped insert succeeds. The difference is one column:
+`source`. **The table's RLS policy constrains what a row may contain, not only
+who may insert one** — its `WITH CHECK` pins `source` to the value the Studio
+flow sends, so `contact:<category>` is refused.
+
+Two things follow.
+
+1. **The fallback was necessary, and it was also wrong.** It only retried on
+   `400`; PostgREST reports a `WITH CHECK` failure as **401**, which is not the
+   status a constraint violation suggests. Fixed to retry on 400, 401 and 403 —
+   and re-tested, which now returns `201` with the reason logged.
+2. **Category filtering in SQL is not available yet.** The category is the first
+   line of every message, so nothing is lost to a human reading the enquiry, but
+   the admin cannot `WHERE source LIKE 'contact:%'` until either the policy is
+   widened or a dedicated `contact_messages` table exists.
+
+> The Phase 0.5 security review listed anonymous `INSERT` as "assumed allowed —
+> not tested". It is allowed, but only for rows the policy's `WITH CHECK`
+> approves. That is a stricter and better posture than assumed, and it is worth
+> recording because it is invisible until something tries to write a different
+> shape.
+
+**Two test rows now exist in `studio_leads`**, both prefixed `TEST —`, one from
+each endpoint. `anon` cannot delete them; they need removing from the Supabase
+dashboard.
 
 ## 4. Spam protection: three weak layers, none load-bearing
 

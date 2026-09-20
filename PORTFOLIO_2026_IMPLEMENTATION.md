@@ -2393,14 +2393,27 @@ the word appears on none of the three routes.
 a hostile payload (including `javascript:` on the URL field, rejected on
 protocol), the honeypot, the timing gate, method rejection and both rate limits.
 
-> **OPEN ITEM — needs Amar's go-ahead.** The portfolio's Supabase project is not
-> in the account reachable from this workspace, so its schema could not be
-> inspected and **a successful insert could not be verified** — confirming it
-> means writing a real row into the production leads table, which `anon` cannot
-> delete. Everything up to the database call is verified. Because `source` might
-> carry a CHECK constraint, the route retries once with the value the table is
-> known to accept, so no enquiry is lost either way. One live test submission, or
-> a dedicated `contact_messages` table, will close this.
+**Verified live, and the test earned its keep.** One marked submission was sent
+with approval. It was **rejected** — `401 / 42501, "new row violates row-level
+security policy for table studio_leads"` — while the Studio flow's
+identical-shaped insert succeeds. The difference is one column: the table's RLS
+policy constrains what a row may *contain*, not only who may insert one, and its
+`WITH CHECK` pins `source`.
+
+That exposed a bug in the fallback: it only retried on `400`, and PostgREST
+reports a `WITH CHECK` failure as **401**. Fixed to retry on 400/401/403, and
+re-tested — now `201`, with the reason logged. Phase 0.5 had listed anonymous
+INSERT as "assumed allowed — not tested"; it is allowed, but only for row shapes
+the policy approves, which is stricter and better than assumed.
+
+**Remaining limitation:** the category is the first line of every message, so
+nothing is lost to a human reading it, but the admin cannot filter on
+`source LIKE 'contact:%'` until the policy is widened or a dedicated
+`contact_messages` table exists. That is CMS-database work.
+
+**Two rows prefixed `TEST —` now exist in `studio_leads`**, one from each
+endpoint. `anon` cannot delete them; they need removing from the Supabase
+dashboard.
 
 ---
 

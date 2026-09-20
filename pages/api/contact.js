@@ -211,14 +211,26 @@ export default async function handler(req, res) {
   try {
     let response = await insert(payload);
 
-    // The portfolio's Supabase project is not reachable from this workspace, so
-    // whether `source` carries a CHECK constraint could not be verified. If the
-    // discriminator is rejected, fall back to the value the table is known to
-    // accept rather than losing the enquiry — the category is still in the
-    // message body either way.
-    if (response.status === 400) {
+    // The table's row-level security policy constrains what a row may contain,
+    // not just who may insert one: a live test showed `source: "contact:…"`
+    // rejected with 401 / 42501 ("new row violates row-level security policy")
+    // while the Studio flow's `source: "studio_request"` is accepted. So the
+    // policy's WITH CHECK pins that column.
+    //
+    // Retry with the value the policy accepts rather than lose the enquiry. The
+    // category is still the first line of the message either way, so nothing is
+    // actually lost — only the ability to filter on it in SQL, which is what a
+    // dedicated contact table will fix.
+    //
+    // 401 and 403 are both checked because PostgREST reports a WITH CHECK
+    // failure as 401, which is not the status a constraint violation suggests.
+    if ([400, 401, 403].includes(response.status)) {
       const detail = await response.text();
-      console.warn('contact: discriminator rejected, retrying with the known-good source', detail);
+      console.warn(
+        'contact: the leads policy rejected the contact discriminator, retrying as studio_request',
+        response.status,
+        detail
+      );
       response = await insert({ ...payload, source: 'studio_request' });
     }
 
