@@ -16,7 +16,7 @@
 import { useId, useMemo } from 'react';
 
 const BASE =
-  'w-full rounded-lg border bg-white/5 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-teal-400/60';
+  'w-full rounded-lg border bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-teal-400/60';
 
 function borderFor(hasError) {
   return hasError ? 'rgba(248,113,113,0.6)' : 'rgba(255,255,255,0.12)';

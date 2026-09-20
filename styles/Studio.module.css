@@ -31,7 +31,7 @@
   backdrop-filter:blur(18px) saturate(130%);
 }
 
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none}
 .brandMark{
   display:grid;place-items:center;
   width:42px;height:42px;border-radius:14px;
@@ -306,4 +306,10 @@
   .faqGrid article{padding:20px}
   .auditCta{padding:58px 20px}
   .footer{align-items:flex-start;flex-direction:column;padding:28px 20px}
+}
+
+
+/* Touch targets — see the note in Hire.module.css. */
+@media(max-width:767px){
+  .textLink{display:inline-flex;align-items:center;min-height:44px}
 }

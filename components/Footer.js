@@ -40,10 +40,10 @@ export default function Footer() {
           {/* Nav */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3 font-code">Navigate</p>
-            <ul className="space-y-2">
+            <ul className="space-y-0 sm:space-y-2">
               {navLinks.map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="text-sm text-slate-400 hover:text-neon-cyan transition-colors duration-200">
+                  <Link href={href} className="inline-flex items-center min-h-[44px] sm:min-h-0 text-sm text-slate-400 hover:text-neon-cyan transition-colors duration-200">
                     {label}
                   </Link>
                 </li>
@@ -54,14 +54,14 @@ export default function Footer() {
           {/* Social */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3 font-code">Connect</p>
-            <ul className="space-y-2">
+            <ul className="space-y-0 sm:space-y-2">
               {socialLinks.map(({ label, href }) => (
                 <li key={label}>
                   <a
                     href={href}
                     target={href.startsWith('mailto') ? '_self' : '_blank'}
                     rel="noopener noreferrer"
-                    className="text-sm text-slate-400 hover:text-neon-cyan transition-colors duration-200"
+                    className="inline-flex items-center min-h-[44px] sm:min-h-0 text-sm text-slate-400 hover:text-neon-cyan transition-colors duration-200"
                   >
                     {label}
                   </a>

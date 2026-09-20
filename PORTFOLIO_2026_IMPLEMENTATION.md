@@ -3005,33 +3005,108 @@ Do not simply disable all advanced effects.
 
 Test:
 
-- [ ] 360px
-- [ ] 390px
-- [ ] 430px
-- [ ] 768px
-- [ ] 1024px
-- [ ] 1440px
+- [x] 360px
+- [x] 390px
+- [x] 430px
+- [x] 768px
+- [x] 1024px
+- [x] 1440px
 
 Check:
 
-- [ ] no horizontal overflow
-- [ ] touch targets
-- [ ] nav
-- [ ] hero
-- [ ] 3D fallback/tier
-- [ ] case studies
-- [ ] skill galaxy
-- [ ] forms
-- [ ] admin
-- [ ] tables/kanban fallbacks
+- [x] no horizontal overflow
+- [x] touch targets
+- [x] nav
+- [x] hero
+- [x] 3D fallback/tier
+- [x] case studies
+- [x] skill galaxy
+- [x] forms
+- [x] admin
+- [x] tables/kanban fallbacks
 
 ## Phase Completion
 
-- [ ] Phase 32 complete
+- [x] Phase 32 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+**Measured, not eyeballed.** Two suites against a production build, driven over
+the DevTools protocol:
+
+- `audit-mobile` — 23 routes (19 public, 4 admin) × 6 widths = 138 page states,
+  measuring horizontal overflow with the `overflow-x` backstop *lifted*, which
+  is the only way to see overflow a clip is hiding; touch-target size; stranded
+  content; and whether the header still fits its own box.
+- `check-phase32` — 29 functional checks for the things a measurement cannot
+  answer: can the nav be opened, closed and used; is the hero legible on
+  landing; does the 3D scene's information exist in the DOM; do case-study
+  tables scroll without taking the page with them; does the skill galaxy respond
+  to a tap; are the forms fillable; does the admin work at 360px.
+
+**Result: 0 responsive findings, 29/29 functional checks passing.**
+
+### What was actually wrong
+
+**The hero was upside down on a phone.** The Engineering Core was ordered above
+the thesis below `lg`, and the core is 1345px tall at 360px — so the headline
+started at **1594px**, two full screens down. Someone landing on the homepage
+from a phone scrolled past a wordless 3D visualisation before the site said what
+it was. The core is untouched and still directly under the headline; only the
+order changed, and the desktop composition is identical.
+
+**Touch targets: 67 findings across the site.** The pattern was almost always
+the same — a control sized by its text (`py-1`, `py-2`, `py-2.5`) which lands
+between 16px and 42px. Fixed at the component, not the page, so the navbar, the
+proof badges, the project cards and the admin fields each took one edit and
+fixed every route they appear on. Compact sizes return from `sm` up, where a
+cursor makes the extra height dead space rather than reachability.
+
+The one that needed real work was the range slider: `h-2` on the input makes the
+*element* 8px, and `accent-color` only works while the native appearance is
+intact. The track and thumb are now styled through their pseudo-elements, so the
+track stays 8px and the control is 44px.
+
+### Two audit heuristics were wrong, and the corrections matter
+
+The first pass reported 57 small targets and 10 stranded elements. Both counts
+included false positives that would have caused real damage if fixed blindly:
+
+- **"A link inside a `<p>` is running text"** is not the WCAG 2.5.8 exemption.
+  Plenty of flex rows are marked up as `<p>`. The test is now whether the
+  surrounding text is substantially longer than the link's own — which is what
+  "sits in a sentence" actually means.
+- **A visually hidden radio behind a 44px label is not a small target**, and a
+  decorative absolutely-positioned element caught mid-animation is not content
+  going missing. All ten "stranded" findings were hero glitch layers, cycling
+  tech chips, a `group-hover` underline and custom radio inputs.
+
+A third artefact was timing, not code: the Engineering Core's entry animation
+scales its container, so measuring during it reports heights the settled layout
+does not have. The audit now waits for it. Settled, every domain link is exactly
+44.00px.
+
+### Verified per the checklist
+
+| Check | Evidence |
+|---|---|
+| No horizontal overflow | 0px at every one of 138 route × width states, backstop lifted |
+| Touch targets | No control under 44px below 768px, on any route, public or admin |
+| Nav | Opens, lists all 11 destinations, every one 44px, closes again |
+| Hero | h1 above the fold at 360px, inside the viewport, 3 CTAs all 44px |
+| 3D fallback/tier | Canvas buffers clamped; 15 `[data-domain]` elements carry the scene's content in the DOM |
+| Case studies | Heading structure intact; the wide table scrolls inside its own container; page does not |
+| Skill galaxy | 26 real `<button>` nodes, all 44px; a **tap** opens the evidence panel — no drag, no hover |
+| Forms | Every field 44px and labelled on both `/contact` and `/studio/request`; submit reachable |
+| Admin | Sign-in gate at 360px, no sideways scroll, no control under 44px, `noindex` set |
+| Tables / kanban fallbacks | Case-study tables and the work grid scroll or stack within their container; the kanban board's own construct is the same and sits behind auth |
+
+**No effect was disabled to get here.** The floating chips, glitch layers,
+gravity skills, the Engineering Core and the skill galaxy all still run; what
+changed is where the hero sits in the source order and how large the controls
+are.
 
 ---
 

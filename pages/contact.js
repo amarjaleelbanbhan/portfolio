@@ -404,7 +404,7 @@ export default function Contact() {
                     or{' '}
                     <a
                       href={`mailto:${profile.email}`}
-                      className="text-neon-cyan hover:text-white transition-colors"
+                      className="inline-flex items-center min-h-[44px] sm:min-h-0 text-neon-cyan hover:text-white transition-colors"
                     >
                       {profile.email}
                     </a>

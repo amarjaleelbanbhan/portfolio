@@ -87,7 +87,7 @@ export default function ExperimentMatrix({
                       type="button"
                       onClick={() => setSelected(isActive ? null : { kind: 'col', id: col.id })}
                       aria-pressed={isActive}
-                      className="w-full font-code text-[9px] uppercase tracking-wide px-1 py-2 rounded transition-colors"
+                      className="w-full min-h-[44px] sm:min-h-0 font-code text-[9px] uppercase tracking-wide px-1 py-2 rounded transition-colors"
                       style={{
                         color: isActive ? accent : '#94a3b8',
                         background: isActive ? `${accent}1f` : 'transparent',
@@ -110,7 +110,7 @@ export default function ExperimentMatrix({
                       type="button"
                       onClick={() => setSelected(rowActive ? null : { kind: 'row', id: row.id })}
                       aria-pressed={rowActive}
-                      className="w-full text-left font-code text-[10px] uppercase tracking-wide px-1.5 py-2 rounded transition-colors whitespace-nowrap"
+                      className="w-full min-h-[44px] sm:min-h-0 text-left font-code text-[10px] uppercase tracking-wide px-1.5 py-2 rounded transition-colors whitespace-nowrap"
                       style={{
                         color: rowActive ? accent : '#cbd5e1',
                         background: rowActive ? `${accent}1f` : 'transparent',
@@ -143,7 +143,7 @@ export default function ExperimentMatrix({
                             delay: reduced ? 0 : ci * 0.015,
                             ease: ease.outExpo,
                           }}
-                          className="w-full min-w-[46px] rounded px-1 py-2.5 font-code text-[11px] tabular-nums transition-[box-shadow] border"
+                          className="w-full min-w-[46px] min-h-[44px] sm:min-h-0 rounded px-1 py-2.5 font-code text-[11px] tabular-nums transition-[box-shadow] border"
                           style={{
                             background: cell ? `${accent}${Math.round(intensity * 40 + 8).toString(16).padStart(2, '0')}` : 'transparent',
                             borderColor: isActive ? accent : cell?.best ? `${accent}66` : 'rgba(255,255,255,0.06)',

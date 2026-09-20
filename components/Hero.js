@@ -135,12 +135,17 @@ export default function Hero() {
       <div className="section-container relative w-full" style={{ zIndex: 1 }}>
         <div className="grid gap-10 lg:gap-12 lg:grid-cols-[1.05fr_1fr] items-center">
 
-          {/* ─── Left: the thesis ─── */}
+          {/* ─── Left: the thesis ───
+              First in source and first in the grid at every width. The core
+              used to be ordered above it on narrow screens, which put the
+              headline 1594px down at 360px — two screens of scrolling before
+              the page says what it is. The core is still there, directly
+              underneath. */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: duration.slow, ease: ease.outExpo }}
-            className="order-2 lg:order-1 flex flex-col"
+            className="order-1 flex flex-col"
           >
             {/* Identity row — the portrait keeps its rings and orbiting dots,
                 repositioned to support the headline rather than rival the core. */}
@@ -211,7 +216,7 @@ export default function Hero() {
           </motion.div>
 
           {/* ─── Right: the Engineering Core ─── */}
-          <div className="order-1 lg:order-2 w-full">
+          <div className="order-2 w-full">
             <EngineeringCore />
           </div>
 

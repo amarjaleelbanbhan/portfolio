@@ -42,7 +42,7 @@ export default function ProjectFilters({
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             placeholder="Search projects or technologies"
-            className="w-full rounded-lg border border-white/10 bg-[rgba(8,12,26,0.6)] px-3.5 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 font-code focus-visible:outline-none focus-visible:border-neon-cyan/60"
+            className="w-full min-h-[44px] rounded-lg border border-white/10 bg-[rgba(8,12,26,0.6)] px-3.5 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 font-code focus-visible:outline-none focus-visible:border-neon-cyan/60"
           />
         </div>
 

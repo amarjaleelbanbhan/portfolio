@@ -166,7 +166,7 @@ function Library({ session, setSession }) {
                 accept={BUCKET_MIME[bucket].join(',')}
                 onChange={(event) => setFile(event.target.files?.[0] ?? null)}
                 aria-describedby="media-file-help"
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-slate-300 file:mr-3 file:rounded file:border-0 file:bg-white/10 file:px-3 file:py-1.5 file:text-xs file:text-slate-200"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-300 file:mr-3 file:rounded file:border-0 file:bg-white/10 file:px-3 file:py-1.5 file:text-xs file:text-slate-200"
               />
               <p id="media-file-help" className="mt-1.5 text-xs text-slate-500 m-0">
                 Up to 10 MB. {BUCKET_MIME[bucket].join(', ')}.
@@ -183,7 +183,7 @@ function Library({ session, setSession }) {
                 type="text"
                 value={folder}
                 onChange={(event) => setFolder(event.target.value)}
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-teal-400/60"
               />
             </div>
 
@@ -197,7 +197,7 @@ function Library({ session, setSession }) {
                 value={altText}
                 onChange={(event) => setAltText(event.target.value)}
                 aria-describedby="media-alt-help"
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-teal-400/60"
               />
               <p id="media-alt-help" className="mt-1.5 text-xs text-slate-500 m-0">
                 What the image conveys. Leave empty only if it is purely decorative.
@@ -213,7 +213,7 @@ function Library({ session, setSession }) {
                 type="text"
                 value={caption}
                 onChange={(event) => setCaption(event.target.value)}
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-teal-400/60"
               />
             </div>
           </div>

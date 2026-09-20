@@ -68,7 +68,10 @@ export default function ProofBadge({ proof, className = '' }) {
         href={proof.sourceUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${classes} hover:brightness-125`}
+        // A linked badge is a control, so it carries a 44px touch target on
+        // touch-sized screens. The chip returns to its compact size from `sm`
+        // up, where a pointer makes the extra height dead space.
+        className={`${classes} hover:brightness-125 min-h-[44px] px-3 sm:min-h-0 sm:px-2.5`}
         style={styleProps}
         title={proof.description}
       >

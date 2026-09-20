@@ -38,7 +38,7 @@ export default function ProjectHero({ project, technologies = [], reduced = fals
       <nav aria-label="Breadcrumb" className="mb-5">
         <Link
           href="/work"
-          className="font-code text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          className="inline-flex items-center min-h-[44px] sm:min-h-0 font-code text-xs text-slate-500 hover:text-slate-300 transition-colors"
         >
           ← Engineering Work
         </Link>

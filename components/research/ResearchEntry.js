@@ -202,7 +202,7 @@ export default function ResearchEntry({ overview, reduced = false }) {
               href={research.source.repositoryUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-neon-cyan transition-colors"
+              className="inline-flex items-center min-h-[44px] sm:min-h-0 hover:text-neon-cyan transition-colors"
             >
               {'// source: repository'}
             </a>

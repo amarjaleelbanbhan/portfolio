@@ -47,7 +47,7 @@ function CertCard({ title, description, credentialUrl, issuer, issuedAt, color, 
           href={credentialUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
+          className="inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-0 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
           style={{ color }}
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

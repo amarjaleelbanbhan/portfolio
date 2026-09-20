@@ -55,7 +55,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
           <p className="flex items-center gap-2.5 flex-wrap mb-4">
             <Link
               href={stage.href}
-              className="font-code text-xs font-semibold text-slate-200 hover:text-white underline decoration-dotted underline-offset-4"
+              className="inline-flex items-center min-h-[44px] sm:min-h-0 font-code text-xs font-semibold text-slate-200 hover:text-white underline decoration-dotted underline-offset-4"
             >
               {project.shortTitle ?? project.title}
             </Link>
@@ -180,7 +180,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
       <motion.div {...fadeUp({ delay: 0.16 })}>
         <Link
           href={stage.href}
-          className="inline-flex items-center gap-2 font-code text-xs font-semibold group"
+          className="inline-flex items-center gap-2 min-h-[44px] sm:min-h-0 font-code text-xs font-semibold group"
           style={{ color: stage.color }}
         >
           {stage.contributions ? 'See all contributions' : `See ${project?.shortTitle ?? project?.title ?? 'the project'}`}

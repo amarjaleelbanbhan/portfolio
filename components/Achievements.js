@@ -92,7 +92,7 @@ export default function Achievements() {
                   href={item.credentialUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-neon-cyan hover:text-neon-green transition-colors"
+                  className="inline-flex items-center gap-1 min-h-[44px] sm:min-h-0 text-sm text-neon-cyan hover:text-neon-green transition-colors"
                 >
                   <span>Verify Credential</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

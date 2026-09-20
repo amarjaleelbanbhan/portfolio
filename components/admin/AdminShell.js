@@ -149,7 +149,7 @@ function SignIn({ onSubmit, busy, message, tone }) {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-lg border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm outline-none focus:border-teal-400/60"
+              className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3.5 py-2.5 text-sm outline-none focus:border-teal-400/60"
             />
           </div>
           <div>
@@ -163,7 +163,7 @@ function SignIn({ onSubmit, busy, message, tone }) {
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-lg border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm outline-none focus:border-teal-400/60"
+              className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3.5 py-2.5 text-sm outline-none focus:border-teal-400/60"
             />
           </div>
 

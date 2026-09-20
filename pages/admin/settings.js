@@ -125,7 +125,7 @@ function Settings({ session, setSession }) {
             value={newKey}
             onChange={(event) => setNewKey(event.target.value)}
             placeholder="site.navigation"
-            className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
+            className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
           />
         </div>
         <button
@@ -174,7 +174,7 @@ function Settings({ session, setSession }) {
                 onChange={(event) =>
                   setDrafts((current) => ({ ...current, [row.setting_key]: event.target.value }))
                 }
-                className="w-full resize-y rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 font-code text-xs leading-relaxed text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full resize-y rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 font-code text-xs leading-relaxed text-slate-100 outline-none focus:border-teal-400/60"
               />
 
               <button

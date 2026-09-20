@@ -28,7 +28,7 @@
   backdrop-filter:blur(18px) saturate(135%);
 }
 
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none;color:#fff}
 .brand>span:last-child{display:flex;flex-direction:column;line-height:1.05}
 .brand strong{font-size:14px;letter-spacing:-.01em}
 .brand small{margin-top:5px;color:#718398;font-size:10px;letter-spacing:.05em}
@@ -170,4 +170,14 @@
   .stepsGrid{grid-template-columns:1fr}
   .finalCta{padding:76px 20px}
   .footer{align-items:flex-start;flex-direction:column;padding:26px 20px}
+}
+
+
+/* Touch targets. Pointer-less screens get a 44px minimum on every control;
+   the compact sizes above are kept from 768px up, where they are hit with a
+   cursor rather than a thumb. */
+@media(max-width:767px){
+  .headerButton,
+  .finalLinks a,
+  .textLink{display:inline-flex;align-items:center;justify-content:center;min-height:44px}
 }

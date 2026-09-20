@@ -117,7 +117,7 @@ export default function Home() {
                           {link ? (
                             <a
                               href={link}
-                              className="block text-sm text-slate-400 hover:text-neon-cyan transition-colors truncate"
+                              className="flex items-center min-h-[44px] sm:min-h-0 text-sm text-slate-400 hover:text-neon-cyan transition-colors truncate"
                             >
                               {value}
                             </a>
@@ -156,7 +156,7 @@ export default function Home() {
               </h2>
               <Link
                 href="/work"
-                className="text-sm font-medium text-neon-cyan hover:text-white transition-colors font-code"
+                className="inline-flex items-center min-h-[44px] sm:min-h-0 text-sm font-medium text-neon-cyan hover:text-white transition-colors font-code"
               >
                 View all projects →
               </Link>

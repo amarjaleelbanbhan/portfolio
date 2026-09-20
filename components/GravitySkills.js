@@ -178,7 +178,7 @@ export default function GravitySkills() {
         </h2>
         <button
           onClick={handleShake}
-          className="px-4 py-2 text-sm font-medium text-white bg-white/10 border border-[var(--neon-cyan)]/50 rounded-lg hover:bg-[var(--neon-cyan)]/20 hover:border-[var(--neon-cyan)] transition-all duration-300 hover:shadow-[0_0_15px_var(--neon-cyan)]"
+          className="min-h-[44px] px-4 py-2 text-sm font-medium text-white bg-white/10 border border-[var(--neon-cyan)]/50 rounded-lg hover:bg-[var(--neon-cyan)]/20 hover:border-[var(--neon-cyan)] transition-all duration-300 hover:shadow-[0_0_15px_var(--neon-cyan)]"
         >
           Reset
         </button>
