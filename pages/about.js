@@ -84,7 +84,7 @@ export default function About() {
     <>
       <Seo
         title="About — Amar Jaleel, Software Engineer"
-        description="Software engineer working across product, security tooling, applied AI research and systems. Engineering philosophy shown through real recorded decisions and what each one cost."
+        description="Software engineer across product, security tooling, applied AI research and systems. Engineering philosophy shown through real decisions and what each one cost."
         path="/about"
         type="profile"
       />

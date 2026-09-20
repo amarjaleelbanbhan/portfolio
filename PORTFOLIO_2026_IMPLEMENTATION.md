@@ -3518,17 +3518,17 @@ Check every major path.
 
 ## Public
 
-- [ ] `/`
-- [ ] `/work`
-- [ ] all flagship project pages
-- [ ] `/research`
-- [ ] `/open-source`
-- [ ] `/about`
-- [ ] `/resume`
-- [ ] `/contact`
-- [ ] `/hire`
-- [ ] `/studio`
-- [ ] `/studio/request`
+- [x] `/`
+- [x] `/work`
+- [x] all flagship project pages
+- [x] `/research`
+- [x] `/open-source`
+- [x] `/about`
+- [x] `/resume`
+- [x] `/contact`
+- [x] `/hire`
+- [x] `/studio`
+- [x] `/studio/request`
 
 ## Admin
 
@@ -3546,41 +3546,184 @@ Check every major path.
 
 ## Technical
 
-- [ ] production build
-- [ ] lint
-- [ ] tests
-- [ ] links
-- [ ] mobile
-- [ ] accessibility
-- [ ] reduced motion
-- [ ] WebGL fallback
-- [ ] metadata
-- [ ] sitemap
-- [ ] robots
-- [ ] RLS
-- [ ] secrets
-- [ ] forms
-- [ ] error handling
+- [x] production build
+- [x] lint
+- [x] tests
+- [x] links
+- [x] mobile
+- [x] accessibility
+- [x] reduced motion
+- [x] WebGL fallback
+- [x] metadata
+- [x] sitemap
+- [x] robots
+- [x] RLS
+- [x] secrets
+- [x] forms
+- [x] error handling
 
 ## Final Content Review
 
-- [ ] no false metrics
-- [ ] no stale project statuses
-- [ ] no broken repository links
+- [x] no false metrics
+- [x] no stale project statuses
+- [x] no broken repository links
 - [ ] no AI attribution in git metadata
-- [ ] no private information leakage
-- [ ] SCAR-OS accurately described
-- [ ] Emergency Mesh limitation accurately described
-- [ ] CortexWard accurately marked pre-alpha
-- [ ] KnowledgeGuard research limitations preserved
+- [x] no private information leakage
+- [x] SCAR-OS accurately described
+- [x] Emergency Mesh limitation accurately described
+- [x] CortexWard accurately marked pre-alpha
+- [x] KnowledgeGuard research limitations preserved
 
 ## Phase Completion
 
-- [ ] Phase 36 complete
+- [x] Phase 36 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20, **with two items deliberately left unticked** — see
+"Not done" at the end. Ticking them would have been the easy thing and the
+wrong one.
+
+## 152 checks, 8 suites, 0 findings
+
+All against a production build:
+
+| Suite | Result |
+|---|---|
+| `qa-final` — routes, links, metadata, sitemap, robots, admin gate, secrets, API | **60/60** |
+| `qa-content` — the standing claims about what this site may say | **26/26** |
+| `check-phase35` — fault injection | **22/22** |
+| `check-phase32` — mobile behaviour | **29/29** |
+| `check-phase33` — accessibility behaviour | **15/15** |
+| `audit-a11y` — 15 routes: landmarks, alt, headings, contrast, reduced motion | **0 findings** |
+| `audit-focus` — real Tab keypresses across 15 routes | **0 findings** |
+| `audit-mobile` — 23 routes × 6 widths | **0 findings** |
+
+Plus `npm run lint` (zero warnings), `npm run validate:content` and
+`npm run build` all clean.
+
+## Public
+
+Every one of the 20 public routes loads with exactly one `h1`, real content and
+**zero console errors**. Metadata checked per route: title 10–70 characters,
+description 50–175, canonical present.
+
+- **18 internal links**, all resolving.
+- **36 distinct external links**, all resolving — every repository, package,
+  credential and pull-request URL.
+- **18 sitemap entries**, all resolving, with no admin or dev route among them.
+- `robots.txt` disallows `/admin`, `/studio/admin` and `/dev/`, and points at
+  the sitemap.
+
+**Nine meta descriptions were too long** and are fixed. The case studies fell
+back to the project summary, which is long-form prose — RODIFT's is 326
+characters. That matters more here than on most sites: these summaries carry the
+qualification in the second half ("Repository private", "not validated for
+emergency use"), so a search result truncating at 160 characters drops exactly
+the part that keeps the claim honest. Each case study now has its own
+`seo.description`, `validate:content` fails if one exceeds 160 characters, and
+`Seo.js` truncates at a word boundary as a backstop so a description added in a
+hurry cannot ship broken.
+
+## Admin
+
+**Gated and sealed, verified.** All ten admin routes, signed out: the sign-in
+form is the only thing rendered, `noindex` is set, **zero** section links leak,
+and no record data appears. `Cmd-K` opens nothing.
+
+**Secrets:** all 19 shipped scripts scanned for `sb_secret`, service-role JWTs,
+`postgres://` URLs with credentials, and secret-key literals. **Clean.** The
+publishable key is present and is public by design.
+
+**Public API:** `/api/site-config` returns an empty projection with no key
+material and refuses `POST` with 405. `/api/contact` rejects an invalid
+submission with 400 and — sent `priority: urgent`, `estimated_value_usd:
+999999`, `status: won` — **echoes none of them back**, which is the allowlist
+doing its job.
+
+## Final content review
+
+Every standing constraint asserted against what the pages actually render:
+
+| Constraint | Result |
+|---|---|
+| SCAR-OS is the FYP name | Present; **"VICE OS" appears nowhere on the site** |
+| SCAR-OS stage | Carries its research/architecture-stage status |
+| Emergency Mesh | No readiness claim anywhere; described as a prototype and *"Not validated for emergency use"* |
+| CortexWard | Marked pre-alpha; planned work marked as planned |
+| KnowledgeGuard correction | Published, at comparable prominence |
+| E6 | Labelled *"Not yet run"* on /research |
+| HotpotQA | *"replication factorial is not complete and no numbers are shown for it"* |
+| Tier P | Named as the release policy, *"passage text and prompts removed"*; **no Tier R material published** |
+| Oracle routing | *"independently of whether any detector can recover it"* — separated from detector performance |
+| Open pull requests | 6 merged, 1 open; the open one reads *"open — not merged"* and carries an open-for duration, never a merge date |
+| Credentials | Multiple issuers; no "all 11 are Google" claim |
+| No false metrics | No proficiency percentage bars; /skills states evidence counts |
+| No invented outcomes | No testimonials, awards, endorsements or implied employment |
+| No private information | Only the intended contact address; no phone, ID or client names |
+| No stale statuses | Only the canonical eight status words appear |
+
+## A harness bug worth recording
+
+Three of the four content-review "failures" on the first run were **my
+assertions being wrong, not the content**: E6 lives on /research rather than the
+case study; "Tier R" is the *restricted* tier the site correctly never
+publishes, so demanding it appear was asking the site to name what it is
+withholding; and the oracle check matched the null-hypothesis sentence and
+called it a claim. Each was verified against canonical content before the check
+was changed — a failing assertion is not automatically a defect, and changing
+the check is only right when the content is demonstrably correct.
+
+Separately: **a bash heredoc loses one backslash level.** `/\\s+/g` written that
+way reaches the browser as `/s+/g`, which strips every letter "s" from the page
+text instead of erroring — making "no testimonials found" assertions pass
+vacuously. The suites that matter were created with an editor rather than a
+heredoc and were unaffected (proven by their having found real, verifiable
+issues), but it is why a throwaway probe returned zero findings for every route
+earlier and looked like a filter bug.
+
+## Not done, and not ticked
+
+**The authenticated admin round trip.** Auth, dashboard, CMS, all three CRUD
+paths, leads, media, SEO, health and audit are **implemented and statically
+verified, not proven working**. No admin credentials exist in this environment
+and asking for a password to type in is not something to do. What remains needs
+one signed-in pass:
+
+- sign-in succeeds and the `portfolio_admins` membership check passes;
+- session refresh across an expiry, and server-side sign-out;
+- create / edit / publish / unpublish / delete on each of the seven tables;
+- the content migration and bulk publish;
+- media upload to each bucket, signed preview, make-public, delete;
+- lead status change, note, follow-up and the resulting activity rows;
+- audit entries appearing for all of the above.
+
+The gate itself *is* verified — signed out, from the outside, it holds.
+
+**AI attribution in git metadata — 18 commits carry it.** All are from June
+2026, the "CODEX INFINITUM" era, long before this work; every commit in Phases
+32–36 is clean. They are `Co-Authored-By: Claude …` trailers on commits that
+are in `main`, in the current branch, and **already pushed to origin on
+several branches**.
+
+Removing them means rewriting published history across multiple branches and
+force-pushing, which the brief explicitly says to avoid. So this is reported
+rather than done, and the box is left unticked rather than ticked against a
+repository where the attribution is still present. The commits are:
+
+```
+789928d 1b3aeee 031772c d5252d1 6c0a382 aaefb7d b08f4e3 b2c2f04 1b920e4
+70ae9f9 8063385 5ebde2c 986e386 e8a8758 a45d860 fe3b201 fe3af12 6cf4a61
+```
+
+If they should go, the operation is a history rewrite over that range on every
+branch that contains it, followed by a coordinated force-push — a decision to
+make deliberately, not as part of QA.
+
+**No unit test suite exists.** "Tests" here means `validate:content` (the
+canonical-content integrity checks) plus the eight browser suites above. That
+is what was run and what passes; there is no `jest`/`vitest` project and this
+phase did not invent one.
 
 ---
 
@@ -3588,24 +3731,45 @@ _Add notes here after completion._
 
 The project is complete only when:
 
-- [ ] The portfolio clearly presents Amar as a serious software / AI / security / systems engineer.
-- [ ] The strongest current projects dominate the experience.
-- [ ] Engineering evidence replaces vanity stats.
-- [ ] 3D/motion/animations remain ambitious but purposeful.
-- [ ] Mobile gets an adapted high-quality experience.
-- [ ] Skills are linked to real project evidence.
-- [ ] Research is separated from product marketing.
-- [ ] Open-source work is clearly visible.
-- [ ] Current FYP is represented honestly.
-- [ ] Client and recruiter flows coexist without confusing identity.
+- [x] The portfolio clearly presents Amar as a serious software / AI / security / systems engineer.
+- [x] The strongest current projects dominate the experience.
+- [x] Engineering evidence replaces vanity stats.
+- [x] 3D/motion/animations remain ambitious but purposeful.
+- [x] Mobile gets an adapted high-quality experience.
+- [x] Skills are linked to real project evidence.
+- [x] Research is separated from product marketing.
+- [x] Open-source work is clearly visible.
+- [x] Current FYP is represented honestly.
+- [x] Client and recruiter flows coexist without confusing identity.
 - [ ] Admin is a real portfolio control center.
 - [ ] Portfolio content can be maintained without repeatedly editing source files.
-- [ ] Admin and public data access are secured.
-- [ ] SEO domain and metadata are correct.
-- [ ] Resume and portfolio use consistent facts.
-- [ ] Accessibility and fallbacks are implemented.
-- [ ] Production validation passes.
-- [ ] No Claude/AI co-author attribution exists anywhere in repository history created by this work.
+- [x] Admin and public data access are secured.
+- [x] SEO domain and metadata are correct.
+- [x] Resume and portfolio use consistent facts.
+- [x] Accessibility and fallbacks are implemented.
+- [x] Production validation passes.
+- [x] No Claude/AI co-author attribution exists anywhere in repository history created by this work.
+
+**The two unticked items are the same gap.** The control centre is built —
+fourteen sections, one schema-driven editor over seven tables, CRM, media, SEO,
+health, audit — and its gate is verified from the outside: signed out, every
+route shows only the sign-in form, leaks no navigation and no data. What has
+never happened is a single signed-in pass. No admin credentials exist in this
+environment, so create/edit/publish/delete, the content migration, media upload
+and the audit entries they should produce are **implemented and statically
+verified, not proven working**. Until someone signs in once, "the content can be
+maintained without editing source files" is a claim about code rather than a
+demonstrated fact, and the public site still renders from `content/` by design.
+
+Everything needed for that pass is listed in the Phase 36 notes above.
+
+**On attribution:** all 96 commits of this work, across both author identities,
+are clean — verified, which is why that box is ticked. Eighteen commits from
+June 2026 carry `Co-Authored-By: Claude` trailers; they pre-date this work by
+three months, are already pushed on `main` and several branches, and removing
+them would require rewriting published history and force-pushing. They are
+listed in the Phase 36 notes, and the unqualified Phase 36 checklist item is
+left unticked because of them.
 
 ---
 

@@ -151,6 +151,23 @@ export function validateContent(): ContentIssue[] {
   for (const project of projects) {
     const ref = project.slug || project.id || '(missing id)';
 
+    // A case study without its own `seo.description` falls back to the
+    // summary, which is long-form prose — RODIFT's is 326 characters, and a
+    // search result cuts it off mid-sentence. On a site whose summaries carry
+    // the qualification in the second half ("Repository private", "not
+    // validated for emergency use"), a truncated description is the one that
+    // drops it. `Seo.js` truncates as a backstop; this is what stops it being
+    // needed.
+    const metaDescription = project.seo?.description ?? project.summary;
+    if (project.caseStudy && metaDescription && metaDescription.length > 160) {
+      add(
+        'project',
+        ref,
+        `meta description is ${metaDescription.length} characters; search ` +
+          'results truncate at about 160. Add a shorter seo.description.'
+      );
+    }
+
     if (!project.id) add('project', ref, 'missing id');
     if (!project.slug) add('project', ref, 'missing slug');
     if (project.slug && !SLUG_RE.test(project.slug)) {
