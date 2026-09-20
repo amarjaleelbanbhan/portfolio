@@ -52,12 +52,12 @@ export default function Research() {
     <>
       <Seo
         title="Research — Amar Jaleel"
-        description="A completed RAG factorial with its published correction, security verification infrastructure that has not been evaluated yet, a BLE protocol tested on real phones, and a final-year project at the architecture stage."
+        description="A completed RAG factorial with its published correction, security tooling not yet evaluated, a BLE protocol tested on phones, and an FYP at architecture stage."
         path="/research"
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container" data-domain="research">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container" data-domain="research">
           {/* ── Introduction ── */}
           <motion.div {...fadeUp()} className="mb-10">
             <p className="section-label">{'// research'}</p>

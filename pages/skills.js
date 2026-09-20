@@ -23,12 +23,24 @@ import { motion } from 'framer-motion';
 import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import SkillCube from '@/components/SkillCube';
 import SkillGalaxy from '@/components/skills/SkillGalaxy';
 import SkillEvidencePanel from '@/components/skills/SkillEvidencePanel';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { usePrefersReducedMotion } from '@/lib/useMediaQuery';
 import { fadeUp } from '@/lib/motion';
 import { getSkillEvidenceDetail, getSkillGraph } from '@/lib/content';
+
+// Three.js is 176 kB gzip. Statically importing SkillCube put all of it in the
+// route's first-load chunk — for a decorative rotating cube — which made
+// /skills 400 kB against roughly 225 kB for every other page. Loading it the
+// same way the Engineering Core and the physics toy are loaded moves that
+// weight off the critical path without changing what either one does.
+const SkillCube = dynamic(() => import('@/components/SkillCube'), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 shadow-inner shadow-black/30 aspect-square" />
+  ),
+});
 
 const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ssr: false,
@@ -51,7 +63,7 @@ const totals = {
   evidence: graph.nodes.reduce((sum, node) => sum + node.evidenceCount, 0),
 };
 
-const LEARNING_COLORS = ['#8b5cf6', '#ef4444', '#f59e0b', '#14b8a6'];
+const LEARNING_COLORS = ['#986ef7', '#ef4444', '#f59e0b', '#14b8a6'];
 
 // Areas of current focus. Deliberately not modelled as skills: there is no
 // evidence to attach yet, and a skill in this model must point at real work.
@@ -99,7 +111,7 @@ export default function Skills() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           {/* ── Header ── */}
           <motion.div {...fadeUp()} className="mb-8">
             <p className="section-label">{'// capabilities'}</p>
@@ -174,7 +186,11 @@ export default function Skills() {
               modelled as skills because there is nothing to attach yet. */}
           <div className="grid gap-6 lg:grid-cols-2 mb-10 [&>*]:min-w-0">
             <motion.div {...fadeUp()}>
-              <SkillCube />
+              {/* A decorative widget must not be able to take the page with
+                  it: the galaxy above and the evidence below are plain DOM. */}
+              <ErrorBoundary label="SkillCube">
+                <SkillCube />
+              </ErrorBoundary>
             </motion.div>
 
             <motion.div {...fadeUp({ delay: 0.05 })} className="glass-panel p-6">
@@ -217,7 +233,9 @@ export default function Skills() {
               Preserved exactly. It is not a skill reference and never was; it is
               the part of the page that is simply enjoyable to poke at. */}
           <motion.div {...fadeUp()}>
-            <GravitySkills />
+            <ErrorBoundary label="GravitySkills">
+              <GravitySkills />
+            </ErrorBoundary>
           </motion.div>
         </main>
         <Footer />

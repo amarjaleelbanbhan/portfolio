@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import { duration, ease } from '@/lib/motion';
 
 const MERGED = '#22c55e';
-const PENDING = '#64748b';
+const PENDING = '#8291aa';
 
 export default function ContributionLifecycle({
   status,

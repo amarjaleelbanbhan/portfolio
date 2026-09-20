@@ -176,6 +176,8 @@ export default function SecretProject() {
               width={350}
               height={150}
               className="w-full"
+              role="img"
+              aria-label={`Two sine waves on a dark field: a green target wave and a cyan wave you tune with the sliders below. Current match ${matchPercentage}%.`}
             />
             {/* Match indicator */}
             <div className="absolute top-2 right-2 text-xs">
@@ -199,7 +201,7 @@ export default function SecretProject() {
                 step="0.001"
                 value={frequency}
                 onChange={(e) => applyTuning(parseFloat(e.target.value), amplitude)}
-                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--neon-cyan)]"
+                className="range-input"
               />
             </div>
 
@@ -215,7 +217,7 @@ export default function SecretProject() {
                 step="1"
                 value={amplitude}
                 onChange={(e) => applyTuning(frequency, parseInt(e.target.value))}
-                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--neon-cyan)]"
+                className="range-input"
               />
             </div>
           </div>

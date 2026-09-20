@@ -33,7 +33,7 @@ const floatingChips = [
   { label: 'Python',          color: '#3b82f6', delay: 0   },
   { label: 'Next.js',         color: '#14b8a6', delay: 0.4 },
   { label: 'Flutter',         color: '#f97316', delay: 0.8 },
-  { label: 'TypeScript',      color: '#6366f1', delay: 1.2 },
+  { label: 'TypeScript',      color: '#797bf3', delay: 1.2 },
   { label: 'RAG',             color: '#d946ef', delay: 1.6 },
   { label: 'Supabase',        color: '#22c55e', delay: 2.0 },
   { label: 'Static Analysis', color: '#f59e0b', delay: 2.4 },
@@ -94,8 +94,13 @@ export default function Hero() {
   return (
     <div className="relative min-h-[92vh] flex items-center overflow-hidden">
 
-      {/* Deep gradient overlays for depth */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Deep gradient overlays for depth.
+          Pinned to a fixed band rather than `inset-0`: the hero grows when the
+          Engineering Core mounts under the thesis, and a blob positioned at
+          `top-1/3` of a growing container moves with it — which is a 0.159
+          layout shift for a decoration nobody is reading. The band is the
+          hero's own minimum height, so it never reflows. */}
+      <div className="absolute inset-x-0 top-0 h-[92vh] pointer-events-none overflow-hidden">
         <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-neon-cyan/6 rounded-full blur-[120px]" />
         <div className="absolute top-1/3 -right-48 w-[500px] h-[500px] bg-neon-magenta/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-neon-green/4 rounded-full blur-[100px]" />
@@ -105,7 +110,7 @@ export default function Hero() {
           hero's thesis and the core carries the labels, so these drop back to
           ambient depth instead of reading as a second set of tags. They sit
           behind the transparent canvas, which is where the depth comes from. */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-[92vh] pointer-events-none overflow-hidden">
         {floatingChips.map((chip, i) => (
           <motion.div
             key={chip.label}
@@ -135,12 +140,17 @@ export default function Hero() {
       <div className="section-container relative w-full" style={{ zIndex: 1 }}>
         <div className="grid gap-10 lg:gap-12 lg:grid-cols-[1.05fr_1fr] items-center">
 
-          {/* ─── Left: the thesis ─── */}
+          {/* ─── Left: the thesis ───
+              First in source and first in the grid at every width. The core
+              used to be ordered above it on narrow screens, which put the
+              headline 1594px down at 360px — two screens of scrolling before
+              the page says what it is. The core is still there, directly
+              underneath. */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: duration.slow, ease: ease.outExpo }}
-            className="order-2 lg:order-1 flex flex-col"
+            className="order-1 flex flex-col"
           >
             {/* Identity row — the portrait keeps its rings and orbiting dots,
                 repositioned to support the headline rather than rival the core. */}
@@ -211,7 +221,7 @@ export default function Hero() {
           </motion.div>
 
           {/* ─── Right: the Engineering Core ─── */}
-          <div className="order-1 lg:order-2 w-full">
+          <div className="order-2 w-full">
             <EngineeringCore />
           </div>
 

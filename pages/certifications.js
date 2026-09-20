@@ -34,9 +34,9 @@ function CertCard({ title, description, credentialUrl, issuer, issuedAt, color, 
                 {issuer}
               </span>
             </div>
-            <h3 className="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors leading-snug">
+            <h2 className="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors leading-snug">
               {title}
-            </h3>
+            </h2>
             <p className="text-[11px] text-slate-500 font-code mt-1">{issuedAt}</p>
           </div>
         </div>
@@ -47,7 +47,7 @@ function CertCard({ title, description, credentialUrl, issuer, issuedAt, color, 
           href={credentialUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
+          className="inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-0 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
           style={{ color }}
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@ export default function Certifications() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container space-y-8">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container space-y-8">
 
           {/* Header */}
           <motion.div

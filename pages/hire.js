@@ -74,7 +74,7 @@ export default function Hire() {
           </div>
         </header>
 
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <section className={styles.hero}>
             <div className={styles.glowOne} aria-hidden="true" />
             <div className={styles.glowTwo} aria-hidden="true" />

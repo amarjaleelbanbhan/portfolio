@@ -88,7 +88,7 @@ export default function ContributedDiagram({ color, contributions = [], reduced 
                 {repo.name}
               </text>
               {!repo.merged && (
-                <text x={x + 12} y={y + 12} className="font-code" style={{ fontSize: 6, fill: '#64748b' }}>
+                <text x={x + 12} y={y + 12} className="font-code" style={{ fontSize: 6, fill: '#8291aa' }}>
                   open
                 </text>
               )}

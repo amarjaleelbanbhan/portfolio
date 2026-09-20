@@ -13,6 +13,7 @@ import {
   getFlagshipProjects,
   getSecondaryProjects,
 } from '@/lib/content';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const SecretProject = dynamic(() => import('@/components/SecretProject'), {
   ssr: false,
@@ -75,7 +76,7 @@ export default function Projects() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container space-y-10">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container space-y-10">
 
           {/* Header */}
           <motion.div
@@ -153,7 +154,9 @@ export default function Projects() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="md:max-w-xl"
           >
-            <SecretProject />
+            <ErrorBoundary label="SecretProject">
+              <SecretProject />
+            </ErrorBoundary>
           </motion.div>
 
           {/* Upstream contributions — the dedicated page lands in a later phase. */}
@@ -182,7 +185,7 @@ export default function Projects() {
                       className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded font-code shrink-0"
                       style={
                         pr.status === 'merged'
-                          ? { color: '#a855f7', background: '#a855f714', border: '1px solid #a855f733' }
+                          ? { color: '#af63f8', background: '#af63f814', border: '1px solid #af63f833' }
                           : { color: '#22c55e', background: '#22c55e14', border: '1px solid #22c55e33' }
                       }
                     >

@@ -11,16 +11,41 @@ import useInViewport from '@/lib/useInViewport';
 // runs a render loop unconditionally — it pauses off-screen and on hidden tabs,
 // caps pixel ratio on weaker hardware, and draws a single static frame when the
 // visitor has asked for reduced motion.
+/**
+ * What the cube looks like when there is no GPU to turn it: the same six face
+ * colours as a flat isometric diagram. It is decorative either way, so it is
+ * aria-hidden like the canvas it replaces.
+ */
+function CubeFallback() {
+  const faces = ['#14b8a6', '#22c55e', '#af63f8', '#38bdf8', '#f59e0b', '#d946ef'];
+  return (
+    <div className="grid h-[220px] place-items-center">
+      <div className="grid grid-cols-3 gap-1.5 rotate-[24deg] skew-y-[-12deg]">
+        {faces.map((c) => (
+          <span
+            key={c}
+            className="block w-9 h-9 rounded-[3px]"
+            style={{ background: `${c}2e`, border: `1px solid ${c}66` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function SkillCube() {
   const containerRef = useRef(null);
   const frameRef = useRef(null);
   const [viewportRef, inViewport] = useInViewport();
-  const { tier, shouldAnimate } = useDeviceTier();
+  const { tier, shouldAnimate, ready, webgl } = useDeviceTier();
 
   // Read live values inside the animation loop without re-creating the scene
   // every time they change. Written in an effect, not during render, because a
   // ref is not render state.
   const stateRef = useRef({ inViewport: true, shouldAnimate: true });
+  // Derived, not stored: useDeviceTier already probes WebGL SSR-safely, so
+  // this needs no state and no effect that sets it.
+  const unavailable = ready && !webgl;
   useEffect(() => {
     stateRef.current = { inViewport, shouldAnimate };
   }, [inViewport, shouldAnimate]);
@@ -30,6 +55,13 @@ export default function SkillCube() {
   const maxDpr = tier >= 2 ? 2 : tier === 1 ? 1.5 : 1;
 
   useEffect(() => {
+    // A browser with WebGL disabled is a supported browser, not an error. This
+    // used to construct a WebGLRenderer regardless, which throws from inside an
+    // effect — and an effect that throws unmounts the tree above it, so the
+    // whole of /skills went blank: no heading, no galaxy, no links, on a page
+    // whose content is plain DOM and never needed a GPU.
+    if (!ready || !webgl) return undefined;
+
     // Capture the node now so cleanup detaches from the same element even if
     // the ref has already been cleared by the time it runs.
     const container = containerRef.current;
@@ -113,7 +145,7 @@ export default function SkillCube() {
       materials.forEach((mat) => mat.dispose());
       container?.removeChild(renderer.domElement);
     };
-  }, [maxDpr]);
+  }, [maxDpr, ready, webgl]);
 
   return (
     <div
@@ -127,8 +159,12 @@ export default function SkillCube() {
       // what lets the observer below do its job at all.
       className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 shadow-inner shadow-black/30 overflow-hidden"
     >
-      <div ref={containerRef} className="w-full min-w-0" aria-label="3D rotating skill cube" />
-      <p className="text-center text-sm text-slate-300 mt-3">Creative tech stack in motion</p>
+      <div ref={containerRef} className="w-full min-w-0" aria-hidden="true">
+        {unavailable && <CubeFallback />}
+      </div>
+      <p className="text-center text-sm text-slate-300 mt-3">
+        {unavailable ? 'Creative tech stack' : 'Creative tech stack in motion'}
+      </p>
     </div>
   );
 }

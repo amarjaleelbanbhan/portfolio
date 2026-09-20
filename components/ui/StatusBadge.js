@@ -14,11 +14,11 @@ const STATUS = {
   production: { color: '#22c55e', label: 'Production' },
   released: { color: '#22c55e', label: 'Released' },
   'active-development': { color: '#f59e0b', label: 'Active Development' },
-  research: { color: '#8b5cf6', label: 'Research' },
+  research: { color: '#986ef7', label: 'Research' },
   prototype: { color: '#38bdf8', label: 'Prototype' },
   'pre-alpha': { color: '#f97316', label: 'Pre-alpha' },
   completed: { color: '#14b8a6', label: 'Completed' },
-  archived: { color: '#64748b', label: 'Archived' },
+  archived: { color: '#8291aa', label: 'Archived' },
 };
 
 /** The public label for a status, for callers that need the text alone. */

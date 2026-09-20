@@ -108,7 +108,7 @@ export default function StudioRequest() {
           <Link href="/hire" className={styles.backLink}>← Back to services</Link>
         </header>
 
-        <main className={styles.main}>
+        <main id="main-content" tabIndex={-1} className={styles.main}>
           <section className={styles.intro}>
             <div className={styles.availability}><span /> Project inquiries open</div>
             <p className={styles.eyebrow}>Start here</p>

@@ -41,7 +41,7 @@ const repositories = getUpstreamRepositories();
 const stats = getContributionStats();
 
 const MERGED = '#22c55e';
-const PENDING = '#64748b';
+const PENDING = '#8291aa';
 
 const statusOptions = [
   { key: 'all', label: 'All', count: stats.total, color: MERGED },
@@ -66,7 +66,7 @@ const summary = [
   { key: 'merged', value: stats.merged, label: 'merged upstream', color: MERGED },
   { key: 'open', value: stats.open, label: 'open, not merged', color: PENDING },
   { key: 'repos', value: stats.repositories, label: 'upstream repositories', color: '#38bdf8' },
-  { key: 'files', value: stats.filesChanged, label: 'files changed', color: '#8b5cf6' },
+  { key: 'files', value: stats.filesChanged, label: 'files changed', color: '#986ef7' },
 ];
 
 export default function OpenSource() {
@@ -102,7 +102,7 @@ export default function OpenSource() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container" data-domain="open-source">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container" data-domain="open-source">
           {/* ── Introduction ── */}
           <motion.div {...fadeUp()} className="mb-8">
             <p className="section-label">{'// open source'}</p>

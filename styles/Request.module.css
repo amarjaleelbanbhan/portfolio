@@ -21,7 +21,7 @@
   backdrop-filter:blur(18px) saturate(125%);
 }
 
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none}
 .mark{
   display:grid;
   place-items:center;
@@ -225,4 +225,10 @@
   .nextCard{padding:18px}
   .formCard{border-radius:22px}
   .formHeader h2{font-size:24px}
+}
+
+
+/* Touch targets — see the note in Hire.module.css. */
+@media(max-width:767px){
+  .backLink{display:inline-flex;align-items:center;min-height:44px}
 }

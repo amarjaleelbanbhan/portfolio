@@ -133,7 +133,11 @@ export default function ParticleNetwork() {
     const par = { x: 0, y: 0, tx: 0, ty: 0 };
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // A full-viewport canvas at 3x on a phone is nine times the fill rate of
+      // 1x for an ambient effect nobody inspects pixel by pixel. Tier 2 keeps
+      // 2x; everything else is capped at 1.5.
+      const dprCeiling = quickDeviceTier() >= 2 ? 2 : 1.5;
+      const dpr = Math.min(window.devicePixelRatio || 1, dprCeiling);
       cssW = window.innerWidth;
       cssH = window.innerHeight;
       canvas.width = Math.floor(cssW * dpr);
@@ -230,13 +234,29 @@ export default function ParticleNetwork() {
       animId = requestAnimationFrame(animate);
     }
 
-    if (reduceMotion) {
-      // Single static frame — no animation loop, no motion.
-      for (const p of particles) { p.rx = p.x; p.ry = p.y; }
-      renderFrame(0);
-    } else {
-      animId = requestAnimationFrame(animate);
+    // The field is ambient, so it must never compete with the page appearing.
+    // Started on mount it ran through hydration and first paint, and at 90
+    // particles the O(n^2) connection pass is the largest repeating cost on
+    // every route — including the ones with no 3D at all, which were the
+    // slowest of the lot. Waiting for an idle moment after load costs the
+    // visitor nothing: the first second of a page is for reading it.
+    let startHandle = null;
+    function begin() {
+      if (reduceMotion) {
+        // Single static frame — no animation loop, no motion.
+        for (const p of particles) { p.rx = p.x; p.ry = p.y; }
+        renderFrame(0);
+      } else {
+        animId = requestAnimationFrame(animate);
+      }
     }
+    const deferStart = () => {
+      startHandle = typeof requestIdleCallback === 'function'
+        ? requestIdleCallback(begin, { timeout: 2000 })
+        : setTimeout(begin, 400);
+    };
+    if (document.readyState === 'complete') deferStart();
+    else window.addEventListener('load', deferStart, { once: true });
 
     // Pause the loop when the tab is hidden (saves battery/CPU)
     function onVisibility() {
@@ -251,6 +271,11 @@ export default function ParticleNetwork() {
 
     return () => {
       cancelAnimationFrame(animId);
+      window.removeEventListener('load', deferStart);
+      if (startHandle !== null) {
+        if (typeof cancelIdleCallback === 'function') cancelIdleCallback(startHandle);
+        clearTimeout(startHandle);
+      }
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMouseMove);

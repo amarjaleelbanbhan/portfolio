@@ -188,7 +188,7 @@ export default function LeadDetail({ lead, leads, onChange, onClose }) {
                 value={lead.status}
                 disabled={busy}
                 onChange={(event) => patch({ status: event.target.value })}
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
               >
                 {PIPELINE.map((stage) => (
                   <option key={stage.id} value={stage.id}>
@@ -207,7 +207,7 @@ export default function LeadDetail({ lead, leads, onChange, onClose }) {
                 value={lead.priority ?? 'normal'}
                 disabled={busy}
                 onChange={(event) => patch({ priority: event.target.value })}
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
               >
                 {PRIORITIES.map((entry) => (
                   <option key={entry.id} value={entry.id}>
@@ -235,7 +235,7 @@ export default function LeadDetail({ lead, leads, onChange, onClose }) {
                     patch({ estimated_value_usd: next });
                   }
                 }}
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
               />
             </div>
 
@@ -255,7 +255,7 @@ export default function LeadDetail({ lead, leads, onChange, onClose }) {
                       : null,
                   })
                 }
-                className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
+                className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
               />
               {followUpDue(lead) && (
                 <p className="mt-1 text-xs text-amber-300 m-0">This follow-up is due.</p>
@@ -277,7 +277,7 @@ export default function LeadDetail({ lead, leads, onChange, onClose }) {
                 const next = event.target.value.split(',').map((t) => t.trim()).filter(Boolean);
                 if (next.join('|') !== (lead.internal_tags ?? []).join('|')) patch({ internal_tags: next });
               }}
-              className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
+              className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 min-h-[44px] text-sm text-slate-100 outline-none focus:border-teal-400/60"
             />
           </div>
 
@@ -312,7 +312,7 @@ export default function LeadDetail({ lead, leads, onChange, onClose }) {
               value={noteText}
               onChange={(event) => setNoteText(event.target.value)}
               placeholder="Private. Never shown on the site."
-              className="w-full resize-y rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
+              className="w-full resize-y rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
             />
             <button
               type="submit"

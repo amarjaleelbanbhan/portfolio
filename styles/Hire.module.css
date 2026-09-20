@@ -28,7 +28,7 @@
   backdrop-filter:blur(18px) saturate(135%);
 }
 
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none;color:#fff}
 .brand>span:last-child{display:flex;flex-direction:column;line-height:1.05}
 .brand strong{font-size:14px;letter-spacing:-.01em}
 .brand small{margin-top:5px;color:#718398;font-size:10px;letter-spacing:.05em}
@@ -99,7 +99,7 @@
 .serviceCard{position:relative;min-height:360px;padding:28px;border:1px solid rgba(255,255,255,.08);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));display:flex;flex-direction:column;transition:.22s ease}
 .serviceCard:hover{transform:translateY(-5px);border-color:rgba(94,234,212,.22);background:linear-gradient(180deg,rgba(45,212,191,.05),rgba(255,255,255,.018))}
 .serviceCard:last-child{grid-column:1/-1;min-height:300px}
-.cardNumber{position:absolute;right:24px;top:22px;color:#3f566d;font-size:12px;font-weight:900;letter-spacing:.12em}
+.cardNumber{position:absolute;right:24px;top:22px;color:#8291aa;font-size:12px;font-weight:900;letter-spacing:.12em}
 .cardKicker{margin:0;color:#68e4d2;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
 .serviceCard h3{max-width:650px;margin:46px 0 14px;font-size:clamp(25px,2.4vw,34px);line-height:1.12;letter-spacing:-.035em}
 .cardText{max-width:720px;margin:0;color:#8799ac;font-size:14px;line-height:1.68}
@@ -135,7 +135,7 @@
 .finalLinks a:hover{color:#d9e4ec}
 
 .footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:28px clamp(20px,6vw,94px);background:#050d17;border-top:1px solid rgba(255,255,255,.06)}
-.footer p{margin:0;color:#64778c;font-size:10px}
+.footer p{margin:0;color:#8291aa;font-size:10px}
 
 @media(max-width:1020px){
   .hero{grid-template-columns:1fr;min-height:auto}
@@ -170,4 +170,14 @@
   .stepsGrid{grid-template-columns:1fr}
   .finalCta{padding:76px 20px}
   .footer{align-items:flex-start;flex-direction:column;padding:26px 20px}
+}
+
+
+/* Touch targets. Pointer-less screens get a 44px minimum on every control;
+   the compact sizes above are kept from 768px up, where they are hit with a
+   cursor rather than a thumb. */
+@media(max-width:767px){
+  .headerButton,
+  .finalLinks a,
+  .textLink{display:inline-flex;align-items:center;justify-content:center;min-height:44px}
 }

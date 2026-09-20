@@ -42,13 +42,20 @@
   --border-accent-hover: rgba(20, 184, 166, 0.32);
 
   /* ── TEXT ──
-     Contrast on --bg-base: primary 15.8:1, secondary 9.7:1, muted 6.1:1,
-     dim 4.6:1. All meet WCAG AA for their size; --text-dim is reserved for
-     large or non-essential text. */
+     Ratios are stated against the *lightest* surface the site paints
+     (--bg-elevated, and --surface-3 over --bg-raised), not against
+     --bg-base. Quoting the darkest background flatters every number and is
+     how --text-dim came to be listed at 4.6:1 while measuring 3.07:1 on a
+     card:
+
+       primary   13.3:1    secondary  8.2:1
+       muted      5.7:1    dim        4.6:1
+
+     All four clear WCAG AA for body text at any size. */
   --text-primary: #f8fafc;
   --text-secondary: #e2e8f0;
   --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-dim: #8291aa;
 
   /* ── ACCENTS ──
      The portfolio's own identity colours. Named by role, not by hue, so a
@@ -63,10 +70,10 @@
      identifiers, not decoration: a colour means "this is security work",
      so it must not be reused for unrelated emphasis. */
   --domain-product: #14b8a6;     /* teal   — product engineering */
-  --domain-ai: #8b5cf6;          /* violet — applied AI */
+  --domain-ai: #986ef7;          /* violet — applied AI */
   --domain-security: #f59e0b;    /* amber  — security */
   --domain-systems: #38bdf8;     /* blue   — systems */
-  --domain-research: #a855f7;    /* purple — research */
+  --domain-research: #af63f8;    /* purple — research */
   --domain-open-source: #22c55e; /* green  — open source */
 
   /* Default domain accent; [data-domain] below overrides per subtree. */
@@ -79,11 +86,11 @@
   --status-production: #22c55e;
   --status-released: #22c55e;
   --status-active-development: #f59e0b;
-  --status-research: #8b5cf6;
+  --status-research: #986ef7;
   --status-prototype: #38bdf8;
   --status-pre-alpha: #f97316;
   --status-completed: #14b8a6;
-  --status-archived: #64748b;
+  --status-archived: #8291aa;
 
   /* ── SEMANTIC ── */
   --ok: #22c55e;

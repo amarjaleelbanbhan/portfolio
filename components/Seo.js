@@ -21,10 +21,23 @@ export default function Seo({
   const { pathname } = useRouter();
   const url = absoluteUrl(path ?? pathname);
 
+  // Backstop, not the mechanism. Search results truncate a description at
+  // roughly 160 characters, and the case studies used to fall back to the
+  // project summary — which is long-form prose, up to 326 characters, so it
+  // was being cut mid-sentence in the one place where an unfinished
+  // qualification reads worst. Each page now carries its own description and
+  // `npm run validate:content` fails if one is too long; this only exists so
+  // that a description added in a hurry truncates at a word rather than
+  // shipping broken.
+  const meta =
+    description && description.length > 160
+      ? `${description.slice(0, 157).replace(/[\s,;:—-]+\S*$/, '')}…`
+      : description;
+
   return (
     <Head>
       <title>{title}</title>
-      <meta name="description" content={description} />
+      <meta name="description" content={meta} />
       {/* No canonical on excluded pages — /404 would point at a URL that 404s. */}
       {!noindex && <link rel="canonical" href={url} />}
       <meta
@@ -35,7 +48,7 @@ export default function Seo({
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
       <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
+      <meta property="og:description" content={meta} />
       <meta property="og:image" content={image} />
       <meta property="og:site_name" content="Amar Jaleel" />
       <meta property="og:locale" content="en_US" />
@@ -43,7 +56,7 @@ export default function Seo({
       {/* No twitter:site/creator — the @ajbanbhan handle does not exist. */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
+      <meta name="twitter:description" content={meta} />
       <meta name="twitter:image" content={image} />
     </Head>
   );

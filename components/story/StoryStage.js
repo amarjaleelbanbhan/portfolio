@@ -55,7 +55,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
           <p className="flex items-center gap-2.5 flex-wrap mb-4">
             <Link
               href={stage.href}
-              className="font-code text-xs font-semibold text-slate-200 hover:text-white underline decoration-dotted underline-offset-4"
+              className="inline-flex items-center min-h-[44px] sm:min-h-0 font-code text-xs font-semibold text-slate-200 hover:text-white underline decoration-dotted underline-offset-4"
             >
               {project.shortTitle ?? project.title}
             </Link>
@@ -140,7 +140,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
                     aria-hidden="true"
                     className="w-1.5 h-1.5 rounded-full shrink-0"
                     style={{ background: c.status === 'merged' ? stage.color : 'transparent',
-                             border: c.status === 'merged' ? 'none' : '1px solid #64748b' }}
+                             border: c.status === 'merged' ? 'none' : '1px solid #8291aa' }}
                   />
                   <span className="font-code text-xs text-slate-300 group-hover:text-white transition-colors truncate">
                     {c.repository}
@@ -148,7 +148,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
                   </span>
                   <span
                     className="font-code text-[10px] uppercase tracking-wider shrink-0"
-                    style={{ color: c.status === 'merged' ? stage.color : '#64748b' }}
+                    style={{ color: c.status === 'merged' ? stage.color : '#8291aa' }}
                   >
                     {c.status}
                   </span>
@@ -180,7 +180,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
       <motion.div {...fadeUp({ delay: 0.16 })}>
         <Link
           href={stage.href}
-          className="inline-flex items-center gap-2 font-code text-xs font-semibold group"
+          className="inline-flex items-center gap-2 min-h-[44px] sm:min-h-0 font-code text-xs font-semibold group"
           style={{ color: stage.color }}
         >
           {stage.contributions ? 'See all contributions' : `See ${project?.shortTitle ?? project?.title ?? 'the project'}`}

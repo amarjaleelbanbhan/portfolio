@@ -22,7 +22,7 @@ import { duration, ease } from '@/lib/motion';
 const STATUS = {
   live: { label: 'Runs on real hardware', color: '#22c55e', mark: '●' },
   simulated: { label: 'Simulated only', color: '#f59e0b', mark: '◐' },
-  'not-implemented': { label: 'Not implemented', color: '#64748b', mark: '○' },
+  'not-implemented': { label: 'Not implemented', color: '#8291aa', mark: '○' },
 };
 
 const W = 320;
@@ -79,7 +79,7 @@ export default function ProtocolWalkthrough({ walkthrough, accent, reduced = fal
                     y1={a.y}
                     x2={b.x - 16}
                     y2={b.y}
-                    stroke={link.established ? accent : '#64748b'}
+                    stroke={link.established ? accent : '#8291aa'}
                     strokeOpacity={lit ? 0.95 : link.established ? 0.35 : 0.2}
                     strokeWidth={lit ? 2 : 1}
                     strokeDasharray={link.established ? undefined : '3 3'}
@@ -93,7 +93,7 @@ export default function ProtocolWalkthrough({ walkthrough, accent, reduced = fal
                       y={a.y - 8}
                       textAnchor="middle"
                       className="font-code"
-                      style={{ fontSize: 6, fill: '#64748b' }}
+                      style={{ fontSize: 6, fill: '#8291aa' }}
                     >
                       NO LINK
                     </text>
@@ -125,7 +125,7 @@ export default function ProtocolWalkthrough({ walkthrough, accent, reduced = fal
                     height={36}
                     rx={4}
                     fill="rgba(8,12,26,0.92)"
-                    stroke={node.inRange ? accent : '#64748b'}
+                    stroke={node.inRange ? accent : '#8291aa'}
                     strokeOpacity={lit ? 1 : 0.45}
                     strokeWidth={lit ? 1.6 : 1}
                   />
@@ -142,7 +142,7 @@ export default function ProtocolWalkthrough({ walkthrough, accent, reduced = fal
                     y={p.y + 32}
                     textAnchor="middle"
                     className="font-code"
-                    style={{ fontSize: 6.5, fill: node.inRange ? '#94a3b8' : '#64748b' }}
+                    style={{ fontSize: 6.5, fill: node.inRange ? '#94a3b8' : '#8291aa' }}
                   >
                     {node.label}
                   </text>

@@ -20,7 +20,7 @@ import { duration, ease } from '@/lib/motion';
 const STATUS = {
   implemented: { label: 'Implemented', color: '#22c55e', mark: '●' },
   partial: { label: 'Partial', color: '#f59e0b', mark: '◐' },
-  planned: { label: 'Not built yet', color: '#64748b', mark: '○' },
+  planned: { label: 'Not built yet', color: '#8291aa', mark: '○' },
 };
 
 export default function CapabilityLadder({ ladder, accent, reduced = false }) {

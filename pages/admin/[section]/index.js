@@ -90,7 +90,7 @@ function RecordList({ schema, session, setSession }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={`Search ${schema.plural.toLowerCase()}`}
-            className="w-full rounded-lg border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
+            className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
           />
         </div>
 
@@ -166,7 +166,7 @@ function RecordList({ schema, session, setSession }) {
                       <span
                         className="font-code text-[10px] uppercase tracking-wider"
                         style={{
-                          color: live ? '#22c55e' : label === 'Draft' ? '#64748b' : '#f59e0b',
+                          color: live ? '#22c55e' : label === 'Draft' ? '#8291aa' : '#f59e0b',
                         }}
                       >
                         {label}

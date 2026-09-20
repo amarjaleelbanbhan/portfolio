@@ -6,8 +6,12 @@
  *   1 = Standard        (mid-range)    — reduced particles, simplified 3D
  *   0 = Minimal         (weak/mobile)  — CSS+SVG 2D map, no WebGL
  *
- * A fast synchronous heuristic runs first (SSR-safe). A precise GPU probe via
- * @pmndrs/detect-gpu is loaded lazily in later phases to refine the tier.
+ * A fast synchronous heuristic runs first, and is SSR-safe. It is also the
+ * only probe: the plan to refine the tier with @pmndrs/detect-gpu was never
+ * wired up through Phase 34, and the package was removed rather than left in
+ * the manifest describing an intention. The heuristic below has been measured
+ * against the real scenes and holds; if a precise GPU probe is wanted later,
+ * it is a lazy import at the one call site.
  */
 
 export type DeviceTier = 0 | 1 | 2;
@@ -34,6 +38,15 @@ export function supportsWebGL(): boolean {
   }
 }
 
+/**
+ * True when the primary input is a finger, which is the most reliable signal
+ * available that this is a phone or tablet rather than a desktop.
+ */
+export function isTouchPrimary(): boolean {
+  if (!isBrowser()) return false;
+  return window.matchMedia("(pointer: coarse)").matches;
+}
+
 /** Quick heuristic tier from memory + cores + WebGL (doc 8 getParticleBudget). */
 export function quickDeviceTier(): DeviceTier {
   if (!isBrowser()) return 2; // assume capable on the server; refined on mount
@@ -43,9 +56,17 @@ export function quickDeviceTier(): DeviceTier {
   const memory = nav.deviceMemory ?? 4; // GB (Chromium only; default 4)
   const cores = navigator.hardwareConcurrency ?? 4;
 
-  if (memory >= 8 && cores >= 8) return 2;
-  if (memory >= 4 && cores >= 4) return 1;
-  return 0;
+  const tier: DeviceTier =
+    memory >= 8 && cores >= 8 ? 2 : memory >= 4 && cores >= 4 ? 1 : 0;
+
+  // A flagship phone reports eight cores and eight gigabytes and would land on
+  // tier 2 — the same particle count and the same 2x device pixel ratio as a
+  // desktop, on a GPU that is thermally limited and a battery that is not
+  // plugged in. Cores are not the constraint on a phone; sustained power is.
+  // Capping touch devices at tier 1 halves the particle field and the 3D pixel
+  // ratio without removing either.
+  if (tier === 2 && isTouchPrimary()) return 1;
+  return tier;
 }
 
 /** Particle budget multiplier per tier (doc 8 §Particle Budget). */

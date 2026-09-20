@@ -90,7 +90,7 @@ export default function ProjectCard({ slug, title, summary, tags, status, note, 
         {hasCaseStudy && (
           <Link
             href={`/work/${slug}`}
-            className="inline-flex items-center gap-1.5 text-xs font-code font-semibold mb-3 hover:brightness-125 transition-[filter]"
+            className="inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-0 text-xs font-code font-semibold mb-3 hover:brightness-125 transition-[filter]"
             style={{ color: visual.accent }}
           >
             Read the case study
@@ -99,7 +99,7 @@ export default function ProjectCard({ slug, title, summary, tags, status, note, 
         )}
 
         {/* Links */}
-        <div className="flex items-center gap-3 mt-auto pt-1">
+        <div className="flex items-center gap-3 mt-auto pt-1 [&_a]:min-h-[44px] sm:[&_a]:min-h-0">
           {/* Private work gets an honest marker instead of a button that 404s. */}
           {isPrivateSource && (
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">

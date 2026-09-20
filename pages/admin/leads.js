@@ -154,8 +154,8 @@ function Crm({ session, setSession }) {
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {[
           { value: rows?.length ?? '—', label: 'enquiries', tone: '#5eead4' },
-          { value: counts.get('new') ?? 0, label: 'new, unread', tone: (counts.get('new') ?? 0) ? '#f59e0b' : '#64748b' },
-          { value: due, label: 'follow-ups due', tone: due ? '#f59e0b' : '#64748b' },
+          { value: counts.get('new') ?? 0, label: 'new, unread', tone: (counts.get('new') ?? 0) ? '#f59e0b' : '#8291aa' },
+          { value: due, label: 'follow-ups due', tone: due ? '#f59e0b' : '#8291aa' },
           {
             value: pipelineValue ? formatMoney(pipelineValue) : '—',
             label: 'open pipeline value',
@@ -217,7 +217,7 @@ function Crm({ session, setSession }) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search name, email, message or tag"
-              className="w-full rounded-lg border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
+              className="w-full rounded-lg border border-white/12 bg-white/5 min-h-[44px] px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-teal-400/60"
             />
           </div>
 

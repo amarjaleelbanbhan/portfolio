@@ -107,10 +107,10 @@ component.
 | Domain | Colour | |
 |---|---|---|
 | `product` | `#14b8a6` | teal |
-| `ai` | `#8b5cf6` | violet |
+| `ai` | `#986ef7` | violet |
 | `security` | `#f59e0b` | amber |
 | `systems` | `#38bdf8` | blue |
-| `research` | `#a855f7` | purple |
+| `research` | `#af63f8` | purple |
 | `open-source` | `#22c55e` | green |
 
 **These are identifiers, not decoration.** Amber means security work. Using it

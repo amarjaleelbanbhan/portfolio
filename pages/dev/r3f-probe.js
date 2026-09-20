@@ -55,7 +55,7 @@ export default function R3FProbe() {
         description="Internal rendering probe."
         noindex
       />
-      <main className="section-container">
+      <main id="main-content" tabIndex={-1} className="section-container">
         <p className="section-label">Internal</p>
         <h1 className="section-heading">React Three Fiber probe</h1>
         <p className="mt-3 text-slate-400 max-w-2xl">

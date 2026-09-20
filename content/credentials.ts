@@ -44,7 +44,7 @@ export const credentials: Credential[] = [
     category: 'AI',
     description: 'Generative AI fundamentals, responsible AI practice and practical tool use.',
     featured: true,
-    color: '#8b5cf6',
+    color: '#986ef7',
     icon: '🤖',
   },
   {
@@ -104,7 +104,7 @@ export const credentials: Credential[] = [
     category: 'AI',
     description: 'Bias, fairness and responsible deployment of AI systems.',
     featured: false,
-    color: '#a855f7',
+    color: '#af63f8',
     icon: '🛡️',
   },
   {

@@ -174,7 +174,7 @@ export default function Work() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           {/* ── Introduction ── */}
           <motion.div {...fadeUp()} className="mb-8">
             <p className="section-label">{'// engineering work'}</p>

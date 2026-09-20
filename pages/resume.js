@@ -77,7 +77,7 @@ export default function Resume() {
     <>
       <Seo
         title="Résumé — Amar Jaleel, Software Engineer"
-        description="Amar Jaleel's résumé: selected engineering work with its real status, upstream contributions, research, education and credentials — generated from the same records as the rest of the site."
+        description="Selected engineering work with its real status, upstream contributions, research and credentials — generated from the same records as the rest of the site."
         path="/resume"
       />
       <div className="min-h-screen flex flex-col bg-transparent">
@@ -85,7 +85,7 @@ export default function Resume() {
           <Navbar />
         </div>
 
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           {/* ── Screen-only controls ── */}
           <div className="resume-chrome mb-8 flex flex-wrap items-center gap-3">
             <PrintButton />

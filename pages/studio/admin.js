@@ -191,7 +191,7 @@ export default function StudioAdmin() {
         noindex
       />
 
-      <main className="min-h-screen bg-[#07111f] text-white px-5 py-8 md:py-12">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-[#07111f] text-white px-5 py-8 md:py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
             <div>

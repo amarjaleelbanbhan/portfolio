@@ -37,7 +37,7 @@ const projectVisuals = {
   },
   'knowledgeguard': {
     gradient: 'from-purple-500/20 via-violet-500/10 to-transparent',
-    accent: '#a855f7',
+    accent: '#af63f8',
     icon: (
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
         <circle cx="19" cy="19" r="11" strokeOpacity="0.5" />
@@ -86,7 +86,7 @@ const projectVisuals = {
   },
   'scar-os': {
     gradient: 'from-indigo-500/20 via-blue-500/10 to-transparent',
-    accent: '#6366f1',
+    accent: '#797bf3',
     icon: (
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
         <rect x="14" y="7" width="12" height="20" rx="6" strokeOpacity="0.5" />
@@ -108,7 +108,7 @@ const projectVisuals = {
   },
   'smart-notebook': {
     gradient: 'from-violet-500/20 via-purple-500/10 to-transparent',
-    accent: '#8b5cf6',
+    accent: '#986ef7',
     icon: (
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 opacity-60">
         <rect x="8" y="8" width="32" height="36" rx="3" strokeOpacity="0.4" />

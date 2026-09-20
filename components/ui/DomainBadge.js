@@ -9,10 +9,10 @@
 
 const DOMAIN = {
   product: { color: '#14b8a6', label: 'Product' },
-  ai: { color: '#8b5cf6', label: 'Applied AI' },
+  ai: { color: '#986ef7', label: 'Applied AI' },
   security: { color: '#f59e0b', label: 'Security' },
   systems: { color: '#38bdf8', label: 'Systems' },
-  research: { color: '#a855f7', label: 'Research' },
+  research: { color: '#af63f8', label: 'Research' },
   'open-source': { color: '#22c55e', label: 'Open Source' },
 };
 

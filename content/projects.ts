@@ -16,6 +16,10 @@ export const projects: Project[] = [
   {
     id: 'prj-rodift',
     slug: 'rodift',
+    seo: {
+      description:
+        'Enterprise field issue-reporting platform: staff report outlet problems from a mobile app, geo-matched and routed through the org hierarchy to resolution.',
+    },
     title: 'RODIFT',
     shortTitle: 'RODIFT',
     summary:
@@ -241,6 +245,10 @@ export const projects: Project[] = [
   {
     id: 'prj-veripatch',
     slug: 'veripatch',
+    seo: {
+      description:
+        'Verified remediation for npm vulnerabilities: applies candidate fixes in a sandbox, proves the vulnerability is gone, and emits an audit-grade evidence report.',
+    },
     title: 'VeriPatch',
     summary:
       'Verified remediation for npm vulnerabilities. Scans a project, applies candidate fixes inside a sandbox, proves the vulnerability is eliminated and the fix is safe, then emits an audit-grade evidence report.',
@@ -470,6 +478,10 @@ export const projects: Project[] = [
   {
     id: 'prj-knowledgeguard',
     slug: 'knowledgeguard',
+    seo: {
+      description:
+        'A controlled study asking whether a RAG system can diagnose how its retrieved evidence is deficient, and whether that diagnosis helps select a repair action.',
+    },
     title: 'KnowledgeGuard / EGB',
     shortTitle: 'KnowledgeGuard',
     summary:
@@ -739,6 +751,10 @@ export const projects: Project[] = [
   {
     id: 'prj-cortexward',
     slug: 'cortexward',
+    seo: {
+      description:
+        'Pre-alpha AI software-security engineer: a multi-scanner and agent pipeline with a closed verification loop rather than reporting unverified findings.',
+    },
     title: 'CortexWard',
     summary:
       'An AI software-security engineer that understands, verifies, fixes, and secures code. Runs a multi-scanner and agent pipeline with a closed verification loop rather than reporting unverified findings.',
@@ -995,6 +1011,10 @@ limitations: [
   {
     id: 'prj-sceneforge',
     slug: 'sceneforge',
+    seo: {
+      description:
+        'Turns a JSON manifest of HTML/CSS/JS scenes into a single MP4. Headless Chrome renders frames, FFmpeg composes them. Runs locally — no cloud APIs, no uploads.',
+    },
     title: 'SceneForge',
     summary:
       'Turns a JSON manifest of HTML/CSS/JS scenes into a single MP4, scene by scene. Headless Chrome renders frames, FFmpeg composes them, and a React/Monaco editor drives it. Runs entirely locally — no cloud APIs, no uploads.',
@@ -1174,6 +1194,10 @@ limitations: [
   {
     id: 'prj-emergency-mesh',
     slug: 'emergency-mesh',
+    seo: {
+      description:
+        'A prototype BLE mesh: phones relay messages for each other with no internet, no cell service and no server in the path. Not validated for emergency use.',
+    },
     title: 'Emergency Mesh',
     summary:
       'Offline emergency communication. Phones exchange messages directly over Bluetooth Low Energy, relaying for each other, with no internet, no cell service and no server anywhere in the path.',

@@ -212,7 +212,7 @@ function Dashboard({ session }) {
                   <td className="px-4 py-2.5 text-right font-code tabular-nums text-slate-400">
                     {row.total ?? '—'}
                   </td>
-                  <td className="px-4 py-2.5 text-right font-code tabular-nums" style={{ color: row.published ? '#22c55e' : '#64748b' }}>
+                  <td className="px-4 py-2.5 text-right font-code tabular-nums" style={{ color: row.published ? '#22c55e' : '#8291aa' }}>
                     {row.published ?? '—'}
                   </td>
                   <td className="px-4 py-2.5 text-right font-code tabular-nums" style={{ color: row.flagged ? '#f59e0b' : '#475569' }}>

@@ -3005,33 +3005,108 @@ Do not simply disable all advanced effects.
 
 Test:
 
-- [ ] 360px
-- [ ] 390px
-- [ ] 430px
-- [ ] 768px
-- [ ] 1024px
-- [ ] 1440px
+- [x] 360px
+- [x] 390px
+- [x] 430px
+- [x] 768px
+- [x] 1024px
+- [x] 1440px
 
 Check:
 
-- [ ] no horizontal overflow
-- [ ] touch targets
-- [ ] nav
-- [ ] hero
-- [ ] 3D fallback/tier
-- [ ] case studies
-- [ ] skill galaxy
-- [ ] forms
-- [ ] admin
-- [ ] tables/kanban fallbacks
+- [x] no horizontal overflow
+- [x] touch targets
+- [x] nav
+- [x] hero
+- [x] 3D fallback/tier
+- [x] case studies
+- [x] skill galaxy
+- [x] forms
+- [x] admin
+- [x] tables/kanban fallbacks
 
 ## Phase Completion
 
-- [ ] Phase 32 complete
+- [x] Phase 32 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+**Measured, not eyeballed.** Two suites against a production build, driven over
+the DevTools protocol:
+
+- `audit-mobile` — 23 routes (19 public, 4 admin) × 6 widths = 138 page states,
+  measuring horizontal overflow with the `overflow-x` backstop *lifted*, which
+  is the only way to see overflow a clip is hiding; touch-target size; stranded
+  content; and whether the header still fits its own box.
+- `check-phase32` — 29 functional checks for the things a measurement cannot
+  answer: can the nav be opened, closed and used; is the hero legible on
+  landing; does the 3D scene's information exist in the DOM; do case-study
+  tables scroll without taking the page with them; does the skill galaxy respond
+  to a tap; are the forms fillable; does the admin work at 360px.
+
+**Result: 0 responsive findings, 29/29 functional checks passing.**
+
+### What was actually wrong
+
+**The hero was upside down on a phone.** The Engineering Core was ordered above
+the thesis below `lg`, and the core is 1345px tall at 360px — so the headline
+started at **1594px**, two full screens down. Someone landing on the homepage
+from a phone scrolled past a wordless 3D visualisation before the site said what
+it was. The core is untouched and still directly under the headline; only the
+order changed, and the desktop composition is identical.
+
+**Touch targets: 67 findings across the site.** The pattern was almost always
+the same — a control sized by its text (`py-1`, `py-2`, `py-2.5`) which lands
+between 16px and 42px. Fixed at the component, not the page, so the navbar, the
+proof badges, the project cards and the admin fields each took one edit and
+fixed every route they appear on. Compact sizes return from `sm` up, where a
+cursor makes the extra height dead space rather than reachability.
+
+The one that needed real work was the range slider: `h-2` on the input makes the
+*element* 8px, and `accent-color` only works while the native appearance is
+intact. The track and thumb are now styled through their pseudo-elements, so the
+track stays 8px and the control is 44px.
+
+### Two audit heuristics were wrong, and the corrections matter
+
+The first pass reported 57 small targets and 10 stranded elements. Both counts
+included false positives that would have caused real damage if fixed blindly:
+
+- **"A link inside a `<p>` is running text"** is not the WCAG 2.5.8 exemption.
+  Plenty of flex rows are marked up as `<p>`. The test is now whether the
+  surrounding text is substantially longer than the link's own — which is what
+  "sits in a sentence" actually means.
+- **A visually hidden radio behind a 44px label is not a small target**, and a
+  decorative absolutely-positioned element caught mid-animation is not content
+  going missing. All ten "stranded" findings were hero glitch layers, cycling
+  tech chips, a `group-hover` underline and custom radio inputs.
+
+A third artefact was timing, not code: the Engineering Core's entry animation
+scales its container, so measuring during it reports heights the settled layout
+does not have. The audit now waits for it. Settled, every domain link is exactly
+44.00px.
+
+### Verified per the checklist
+
+| Check | Evidence |
+|---|---|
+| No horizontal overflow | 0px at every one of 138 route × width states, backstop lifted |
+| Touch targets | No control under 44px below 768px, on any route, public or admin |
+| Nav | Opens, lists all 11 destinations, every one 44px, closes again |
+| Hero | h1 above the fold at 360px, inside the viewport, 3 CTAs all 44px |
+| 3D fallback/tier | Canvas buffers clamped; 15 `[data-domain]` elements carry the scene's content in the DOM |
+| Case studies | Heading structure intact; the wide table scrolls inside its own container; page does not |
+| Skill galaxy | 26 real `<button>` nodes, all 44px; a **tap** opens the evidence panel — no drag, no hover |
+| Forms | Every field 44px and labelled on both `/contact` and `/studio/request`; submit reachable |
+| Admin | Sign-in gate at 360px, no sideways scroll, no control under 44px, `noindex` set |
+| Tables / kanban fallbacks | Case-study tables and the work grid scroll or stack within their container; the kanban board's own construct is the same and sits behind auth |
+
+**No effect was disabled to get here.** The floating chips, glitch layers,
+gravity skills, the Engineering Core and the skill galaxy all still run; what
+changed is where the hero sits in the source order and how large the controls
+are.
 
 ---
 
@@ -3039,25 +3114,123 @@ _Add notes here after completion._
 
 Implement/test:
 
-- [ ] skip link
-- [ ] semantic landmarks
-- [ ] keyboard navigation
-- [ ] focus-visible
-- [ ] dialog accessibility
-- [ ] alt text
-- [ ] color contrast
-- [ ] reduced motion
-- [ ] screen-reader project content
-- [ ] interactive skill accessibility
-- [ ] 3D information represented in DOM
+- [x] skip link
+- [x] semantic landmarks
+- [x] keyboard navigation
+- [x] focus-visible
+- [x] dialog accessibility
+- [x] alt text
+- [x] color contrast
+- [x] reduced motion
+- [x] screen-reader project content
+- [x] interactive skill accessibility
+- [x] 3D information represented in DOM
 
 ## Phase Completion
 
-- [ ] Phase 33 complete
+- [x] Phase 33 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+Three suites, all against a production build: an attribute and contrast sweep
+over 15 routes, a keyboard sweep that sends **real Tab keypresses**, and 15
+behavioural checks. **0 findings, 15/15 behavioural checks passing.**
+
+### The contrast problem was a palette problem
+
+The first pass found contrast failures on 15 of 15 routes — hundreds of
+instances. Fixing them element by element would have meant touching ~1,400
+usages, so they were fixed where they came from.
+
+Stock Tailwind `slate` does not clear AA on this background. Measured against
+the lightest surface the site actually paints, `slate-500` is **3.07:1** and
+`slate-600` is **1.93:1** — and both are used for real text: dates, captions,
+the `//` annotations. The scale is now shifted up one rung in
+`tailwind.config.js`, which keeps three distinct muted steps and clears 4.5:1
+on all of them:
+
+| | before | after | worst-case ratio |
+|---|---|---|---|
+| `slate-400` | `#94a3b8` | `#aab6c9` | 7.14:1 |
+| `slate-500` | `#64748b` | `#94a3b8` | 5.71:1 |
+| `slate-600` | `#475569` | `#8291aa` | 4.58:1 |
+
+On a background this dark there is no room for a fourth step: anything dimmer
+than the new 600 fails AA for body text, and that is now written down in the
+config rather than rediscovered.
+
+The purple domain accents failed too — `#8b5cf6` at 3.89:1, `#a855f7` at
+4.16:1, `#6366f1` at 3.86:1 — so each was mixed with 8–14% white to clear 4.6:1
+while staying the same identity colour. **60 replacements across 31 files**,
+because the same hexes were duplicated in `content/`, `lib/content/selectors.ts`
+and the token file instead of being read from one place.
+
+`--text-dim` was documented at 4.6:1 and measured **3.07:1** on a card. The
+token file quoted its ratios against `--bg-base`, the *darkest* background,
+which flatters every number. It now quotes the lightest surface, and the value
+was corrected to match.
+
+### The skip link did not exist
+
+Not on any public route. Added once in `_app.js`, with `id="main-content"` and
+`tabindex="-1"` on every page's `<main>` — without the tabindex the browser
+scrolls and leaves focus in the document head, so the next Tab walks straight
+back into the navigation the link just skipped. Verified by activating it and
+asserting `document.activeElement` is the main element, not by checking the
+markup exists.
+
+### Also fixed
+
+- Three canvases were reaching assistive technology as unnamed "graphic": the
+  R3F scene canvas is now `aria-hidden` (its content is already in the DOM as
+  the domain ring's links, so announcing it would read everything twice), and
+  the two toy canvases got `role="img"` with labels that say what is on them.
+- `/certifications` jumped h1 → h3.
+
+### Two harness bugs that were nearly shipped as fixes
+
+Both would have caused real damage, so they are recorded rather than quietly
+corrected:
+
+1. **`.focus()` from script is not a keyboard.** Chrome only matches
+   `:focus-visible` on a programmatic focus when the previous interaction was
+   already a keyboard one, so the first sweep reported six controls with no
+   focus ring. Re-tested with real Tab keypresses: **every tab stop on every
+   route draws a visible ring**, and nothing needed changing.
+2. **A gradient is not a background colour.** The contrast walk composited
+   through `.workflowVisual` — which paints a dark gradient with no
+   background-*color* — onto a white ancestor, and reported white-on-white at
+   1.00:1 for a panel that is visibly dark. It now stops at a gradient and
+   returns "cannot judge", except where the CSS shorthand also set an opaque
+   colour underneath (the body's ambient wash over `--bg-base`), which is
+   judgeable and is judged.
+
+A third was the same class of thing: `rawKeyDown` carries no text, and Chrome
+only runs a key's default action for a `keyDown` that does — so Enter appeared
+not to activate the skill nodes. With the correct event, it does.
+
+### Verified per the checklist
+
+| Check | Evidence |
+|---|---|
+| Skip link | First tab stop on every route; activating it puts focus **on** `#main-content` |
+| Semantic landmarks | Exactly one `main` and one `footer` per route; every `nav` named |
+| Keyboard navigation | 13–67 distinct tab stops per route, all reached, wrapping cleanly; no positive tabindex; no click handler unreachable by keyboard |
+| Focus-visible | Every tab stop on all 15 routes draws an outline or shadow, tested with real Tab |
+| Dialog accessibility | Cmd-K opens nothing while signed out and no dialog leaks through the gate; the palette's own focus trap and return still need a signed-in pass |
+| Alt text | No `img` without `alt`; no visible `svg` that is neither hidden nor named; no unlabelled `canvas` |
+| Colour contrast | 0 text nodes below AA across 15 routes, computed per WCAG 2.x against the composited background |
+| Reduced motion | Preference applied, no infinite CSS animation survives, **no content stranded invisible**, headline still renders |
+| Screen-reader project content | A case study yields **1,843 words** and a 24-heading outline with all decorative subtrees removed; its table has scoped headers and a caption; its figure has a caption |
+| Interactive skill accessibility | 26 focusable buttons, each exposing `aria-pressed` and an accessible name carrying its evidence count; **Enter** opens the evidence panel |
+| 3D information in DOM | 15 `[data-domain]` elements carry the scene's content as real links; the canvas itself is hidden so it is not read twice |
+
+**Still not verified:** the command palette's focus trap, focus return and
+Escape behaviour with a signed-in session. It is behind the admin gate, there
+are no credentials in this environment, and the implementation is unchanged
+since Phase 29 — the same one-signed-in-pass gap the tracker already records.
 
 ---
 
@@ -3067,57 +3240,275 @@ Measure before blindly removing visual features.
 
 Optimize:
 
-- [ ] dynamic imports
-- [ ] lazy 3D
-- [ ] viewport mounting
-- [ ] pause off-screen rendering
-- [ ] pause hidden-tab rendering
-- [ ] DPR clamping
-- [ ] particle reduction
-- [ ] texture optimization
-- [ ] screenshot optimization
-- [ ] video preview optimization
-- [ ] bundle analysis
-- [ ] remove genuinely unused dependencies
+- [x] dynamic imports
+- [x] lazy 3D
+- [x] viewport mounting
+- [x] pause off-screen rendering
+- [x] pause hidden-tab rendering
+- [x] DPR clamping
+- [x] particle reduction
+- [x] texture optimization
+- [x] screenshot optimization
+- [x] video preview optimization
+- [x] bundle analysis
+- [x] remove genuinely unused dependencies
 
 Measure:
 
-- [ ] LCP
-- [ ] CLS
-- [ ] INP
-- [ ] JS bundle
-- [ ] 3D startup cost
-- [ ] mobile memory
-- [ ] animation FPS
+- [x] LCP
+- [x] CLS
+- [x] INP
+- [x] JS bundle
+- [x] 3D startup cost
+- [x] mobile memory
+- [x] animation FPS
 
 ## Phase Completion
 
-- [ ] Phase 34 complete
+- [x] Phase 34 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. The phase says *measure before blindly removing visual
+features*, so nothing was removed: every effect, scene and easter egg still
+runs. What changed is when they start, how big they are, and what a phone is
+assumed to be.
+
+### The measurement environment, stated up front
+
+390px, 4× CPU throttle, against a production build, boot screen skipped (a
+returning visitor's experience, which is also the one the boot screen was
+hiding). Every figure below is a **median of 3–5 loads**, and LCP on this
+machine varies by ±2–3s between samples. So the honest split is:
+
+- **Deterministic** — bundle bytes, CLS, dependency count. These are claims.
+- **Directional** — LCP and INP. Real but noisy; medians and spreads recorded.
+- **Clear signal** — frame rate on the pages that were particle-bound.
+
+A single sample is how "/" looked like an 8.2s regression in one run and
+5.7s in the next. Reporting the first would have been wrong.
+
+### What was actually slow
+
+**`/skills` shipped all of Three.js on the critical path.** `pages/skills.js`
+statically imported `SkillCube`, which statically imports `* as THREE` — 176 kB
+gzip in the route's first-load chunk, for a decorative rotating cube, making
+/skills **400.3 kB** against roughly 225 kB for every other page. Loaded the way
+the Engineering Core and the physics toy already were:
+
+| | before | after |
+|---|---|---|
+| `/skills` first-load JS (gzip) | **400.3 kB** | **223.5 kB** |
+
+**The ambient particle field was the most expensive thing on every page.** The
+clue was that `/contact` — no 3D, no heavy visuals — had the worst long-task
+total of any route. 90 particles with an O(n²) connection pass is ~4,000
+distance checks per frame, started in a mount effect, competing with hydration
+and first paint on all 20 routes. It now starts on an idle callback after
+`load`. The field is unchanged; it simply no longer races the page.
+
+**A phone was being treated as a desktop.** `quickDeviceTier` keyed on
+`deviceMemory` and `hardwareConcurrency` alone, so a flagship phone reporting
+8 GB and 8 cores landed on **tier 2** — full 90-particle field and 2× device
+pixel ratio, on a thermally-limited GPU and a battery. Cores are not the
+constraint on a phone; sustained power is. Touch-primary devices are now capped
+at tier 1: half the particles, DPR 1.5 instead of 2, nothing switched off.
+
+**CLS 0.159 on the homepage**, which the boot screen had been hiding from every
+previous measurement. One source: the hero's decorative gradient blob sits at
+`top-1/3` of a container that grows by ~900px when the Engineering Core mounts
+beneath the thesis. The decorative layer is now pinned to a fixed band rather
+than `inset-0`, so it cannot track the content. **0.159 → 0.000.**
+
+### Results
+
+Median of 3, mobile profile:
+
+| | before | after |
+|---|---|---|
+| worst CLS | **0.159** | **0.000** |
+| `/contact` LCP | 5600ms | **2016ms** *(median of 5)* |
+| `/contact` FPS | 20.3 | **54.7** |
+| `/work/knowledgeguard` FPS | 15.5 | 23.9 |
+| `/` LCP | 6568ms | 5728ms *(median of 5)* |
+| `/skills` LCP | 6160ms | 4668ms |
+| max heap | 18.9 MB | 16.3 MB |
+| worst INP | 784ms | 680ms — improved, but inside the noise |
+
+**3D startup cost**, median of 3 — the number that matters is that first paint
+never waits for it:
+
+| route | desktop | mobile 4× |
+|---|---|---|
+| `/` Engineering Core | canvas at 3702ms, **+1670ms after FCP** | 7258ms, **+4042ms after FCP** |
+| `/skills` | canvas at 5511ms, **+2679ms after FCP** | 1998ms, **+1382ms after FCP** |
+
+### Dependencies: 20 → 9
+
+Eleven removed after checking each import, not each name:
+
+`@formspree/react`, `@react-three/drei`, `@react-three/postprocessing`,
+`@tsparticles/react`, `@tsparticles/slim`, `tsparticles`, `chart.js`,
+`react-markdown` — never imported at all.
+
+`@pmndrs/detect-gpu` — appeared only in a comment promising a lazy GPU probe
+"in later phases". Thirty phases later it was still a comment. Removed, and the
+comment now says what the code does.
+
+`gsap` and `zustand` — imported only by three unreachable salvage files
+(`lib/journey/avatarScript.ts`, `lib/journey/cinematicCamera.ts`,
+`store/universeStore.ts`) from a superseded design that `CameraRig.js` explicitly
+replaced ("No GSAP"). The files went with them — and removing the packages
+*without* the files fails the build, because `next build` type-checks them.
+That is worth recording: they were not inert.
+
+Kept and verified in use: `three`, `@react-three/fiber`, `framer-motion`,
+`matter-js`, `react-confetti`, `@tailwindcss/typography`.
+
+### The checklist, item by item
+
+| Item | State |
+|---|---|
+| Dynamic imports | Boot screen, particle field, R3F `Canvas`, `CoreScene`, `GravitySkills` and now `SkillCube` |
+| Lazy 3D | R3F itself is behind `dynamic()` inside `SceneCanvas`, so a page with no 3D never downloads it |
+| Viewport mounting | `useInViewport` with a 200px margin gates the render loop |
+| Pause off-screen | `frameloop='demand'` when out of viewport |
+| Pause hidden tab | Was true only as a side effect of the platform suspending rAF. Now explicit: `useDocumentVisible` feeds `frameloop`, matching what SceneCanvas's own docs already claimed |
+| DPR clamping | 3D: [1,2] / [1,1.5] / [1,1] by tier. 2D field: capped at 1.5 below tier 2 — a full-viewport canvas at 3× is nine times the fill rate of 1× |
+| Particle reduction | 90 / 45 / 30 by tier, and phones no longer reach tier 2. Never zero: the field is part of the site's identity |
+| Texture optimization | No textures exist. The scenes are untextured materials |
+| Screenshot optimization | No screenshots on any public page. The one real image is the portrait, through `next/image` with `sizes` and `priority` |
+| Video preview optimization | One `<video>`, in the admin media library, on a five-minute signed URL, rendered only when a preview is opened — no autoplay, no poster fetch on the public site |
+| Bundle analysis | Per-route gzip measured from the build manifest. Shared baseline 120.5 kB; every public route now 217–237 kB first load |
+| Remove unused dependencies | 20 → 9, above |
+| LCP / CLS / INP | Measured, median-of-N, table above |
+| JS bundle | Measured per route, table above |
+| 3D startup cost | Measured, table above |
+| Mobile memory | 7.7–18.9 MB used heap across all routes; worst case improved to 16.3 MB |
+| Animation FPS | Measured per route; the particle-bound pages improved most (`/contact` 20.3 → 54.7) |
+
+### Known and deliberately open
+
+- **LCP is still 4–7s on a 4× throttled phone.** It is a static export of
+  content-dense pages, so this is parse and hydrate cost, not waterfall cost —
+  the CPU-only pass matched the CPU+3G pass almost exactly. The remaining lever
+  is Framer Motion, used in 51 files; converting to `LazyMotion`/`m` is a
+  mechanical change across all of them and is a change to how every animation
+  on the site is declared. **Not attempted as part of final QA**, and recorded
+  here rather than half-done.
+- **`/dev/r3f-probe` still ships** at 358.9 kB. It is noindex, absent from the
+  sitemap, disallowed in robots.txt, linked from nowhere, and in its own chunk,
+  so it costs a visitor nothing. It is kept deliberately as the place to test
+  scene changes in isolation.
+- **The local server is HTTP/1.1.** Production is not, so the per-chunk request
+  costs in the 3G numbers are pessimistic. This is why the CPU-only pass is
+  reported alongside.
 
 ---
 
 # PHASE 35 — ERROR BOUNDARIES + FALLBACKS
 
-- [ ] 3D scene error boundaries.
-- [ ] Static visualization fallback.
-- [ ] API failure states.
-- [ ] Supabase failure states.
-- [ ] image/video fallbacks.
-- [ ] empty CMS states.
-- [ ] graceful admin errors.
-- [ ] public content remains usable without WebGL.
+- [x] 3D scene error boundaries.
+- [x] Static visualization fallback.
+- [x] API failure states.
+- [x] Supabase failure states.
+- [x] image/video fallbacks.
+- [x] empty CMS states.
+- [x] graceful admin errors.
+- [x] public content remains usable without WebGL.
 
 ## Phase Completion
 
-- [ ] Phase 35 complete
+- [x] Phase 35 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+**Tested by breaking things, not by reading them.** Finding a `catch` in a
+component proves nothing about what a visitor gets. Each case below actually
+breaks the thing and then asks the page what it shows: WebGL refused, the GL
+context lost mid-session, the contact API failing four different ways, Supabase
+unreachable, the portrait blocked at the network layer.
+
+**22 fault-injection checks, 22 passing.** Two real defects were found, and
+both were the kind that only a failing run reveals.
+
+### `/skills` was completely blank without WebGL
+
+`SkillCube` constructed a `THREE.WebGLRenderer` unconditionally. On a browser
+with WebGL disabled that throws from inside an effect — and an effect that
+throws unmounts the tree above it — so the **entire page** rendered empty: no
+heading, no skill galaxy, no links, nothing. The galaxy is plain DOM and 26
+real buttons; it never needed a GPU. One decorative cube was taking all of it
+down.
+
+Measured before: `h1=null, 1 word, 0 links, 0 skill nodes`.
+Measured after: **identical with and without WebGL** — 90 words, 36 buttons,
+26 skill nodes, 3 sections — plus a flat isometric stand-in in the cube's place.
+
+Two things were wrong, so both were fixed:
+
+1. `SkillCube` now reads the WebGL flag `useDeviceTier` already probes, and
+   renders `CubeFallback` instead of building a renderer it cannot have. A
+   browser without WebGL is a supported browser, not an error.
+2. The error boundary that existed inside `SceneCanvas` only ever covered the
+   React Three Fiber scenes. It is now `components/ErrorBoundary.js`, shared,
+   and wraps every widget that talks to a GPU, a physics engine or a canvas:
+   `SkillCube`, `GravitySkills` and `SecretProject`. **A decorative widget must
+   not be able to take a page down**, and until now three of them could.
+
+### The admin showed "Failed to fetch"
+
+Every Supabase call site shaped HTTP errors carefully — `23514` explained,
+`401` explained, credentials deliberately never distinguished — and then let a
+*rejected* `fetch` through untouched. With the network gone, the browser's own
+`TypeError: Failed to fetch` appeared on screen as if it were an explanation.
+It says nothing about what failed and reads like a bug in the page.
+
+`supabaseFetch` in `lib/supabase.js` now wraps all six call sites across
+`session.js`, `cms/client.js` and `cms/media.js`, and marks the error
+`unreachable` — preserving the distinction the membership check already relied
+on, because **a request that never arrived is not a request that was refused**,
+and signing someone out for bad wifi is a real way to lose work.
+
+Now shown: *"Could not reach the database. Check the connection and try
+again."*
+
+### A check that was too lenient to be worth running
+
+The first version of the admin assertion accepted any message matching
+`/failed|network|connection/` — which `Failed to fetch` satisfies. It passed
+against the raw `TypeError`. It now requires a sentence the site wrote and
+**fails** if `Failed to fetch`, `TypeError` or `NetworkError` appears anywhere
+in the visible text. The defect was already there; the check was agreeing with
+it.
+
+### Verified per the checklist
+
+| Item | How it was broken | What happened |
+|---|---|---|
+| 3D scene error boundaries | `getContext('webgl')` forced to null; live context destroyed with `WEBGL_lose_context` | Page survives both; `/` keeps its h1, 12,642 characters and all 11 domain elements |
+| Static visualization fallback | WebGL refused | `/` shows `CoreFallback` and keeps 11 `[data-domain]` links; `/skills` shows `CubeFallback` |
+| API failure states | `/api/contact` forced to 500, 429, non-JSON, and a rejected fetch | Form stays mounted and usable in all four, zero page errors, and each announces something specific — including *"the connection failed. Please email me directly."* |
+| Supabase failure states | Every `supabase.co` request rejected | Admin stays on its gate, explains itself, throws nothing, and leaks no key material |
+| image/video fallbacks | `hero-portrait` blocked at the network layer | Page unaffected, zero errors, alt text intact. The only `<video>` is an admin preview on a five-minute signed URL, rendered on demand |
+| Empty CMS states | — | Every list has one: enquiries, each content section, media, audit, SEO, lead notes. The health page states plainly that the public site reads `content/`, not the database |
+| Graceful admin errors | Network loss, bad credentials, unreachable membership check | Explained, never a stack trace; the gate holds and no session is stored after a failure |
+| Public content usable without WebGL | WebGL refused site-wide | `/` 1,547 words and 66 links; `/skills` fully interactive with all 26 skill nodes. Zero console errors on either |
+
+Also verified: `/404` is a real page with the navigation and 24 links, not a
+bare message.
+
+### Known and deliberately open
+
+- **No top-level app error boundary.** Per-widget boundaries are the better
+  tool — they lose one widget instead of the page — and the pages themselves
+  are static content with no runtime data fetching to fail. A blanket boundary
+  that replaces a whole working page with an apology would be a downgrade.
+- **The authenticated admin failure paths** (a write rejected by RLS mid-edit,
+  a session expiring during a save) still need one signed-in pass, the same gap
+  Phases 21–31 record.
 
 ---
 
@@ -3127,17 +3518,17 @@ Check every major path.
 
 ## Public
 
-- [ ] `/`
-- [ ] `/work`
-- [ ] all flagship project pages
-- [ ] `/research`
-- [ ] `/open-source`
-- [ ] `/about`
-- [ ] `/resume`
-- [ ] `/contact`
-- [ ] `/hire`
-- [ ] `/studio`
-- [ ] `/studio/request`
+- [x] `/`
+- [x] `/work`
+- [x] all flagship project pages
+- [x] `/research`
+- [x] `/open-source`
+- [x] `/about`
+- [x] `/resume`
+- [x] `/contact`
+- [x] `/hire`
+- [x] `/studio`
+- [x] `/studio/request`
 
 ## Admin
 
@@ -3155,41 +3546,184 @@ Check every major path.
 
 ## Technical
 
-- [ ] production build
-- [ ] lint
-- [ ] tests
-- [ ] links
-- [ ] mobile
-- [ ] accessibility
-- [ ] reduced motion
-- [ ] WebGL fallback
-- [ ] metadata
-- [ ] sitemap
-- [ ] robots
-- [ ] RLS
-- [ ] secrets
-- [ ] forms
-- [ ] error handling
+- [x] production build
+- [x] lint
+- [x] tests
+- [x] links
+- [x] mobile
+- [x] accessibility
+- [x] reduced motion
+- [x] WebGL fallback
+- [x] metadata
+- [x] sitemap
+- [x] robots
+- [x] RLS
+- [x] secrets
+- [x] forms
+- [x] error handling
 
 ## Final Content Review
 
-- [ ] no false metrics
-- [ ] no stale project statuses
-- [ ] no broken repository links
+- [x] no false metrics
+- [x] no stale project statuses
+- [x] no broken repository links
 - [ ] no AI attribution in git metadata
-- [ ] no private information leakage
-- [ ] SCAR-OS accurately described
-- [ ] Emergency Mesh limitation accurately described
-- [ ] CortexWard accurately marked pre-alpha
-- [ ] KnowledgeGuard research limitations preserved
+- [x] no private information leakage
+- [x] SCAR-OS accurately described
+- [x] Emergency Mesh limitation accurately described
+- [x] CortexWard accurately marked pre-alpha
+- [x] KnowledgeGuard research limitations preserved
 
 ## Phase Completion
 
-- [ ] Phase 36 complete
+- [x] Phase 36 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20, **with two items deliberately left unticked** — see
+"Not done" at the end. Ticking them would have been the easy thing and the
+wrong one.
+
+## 152 checks, 8 suites, 0 findings
+
+All against a production build:
+
+| Suite | Result |
+|---|---|
+| `qa-final` — routes, links, metadata, sitemap, robots, admin gate, secrets, API | **60/60** |
+| `qa-content` — the standing claims about what this site may say | **26/26** |
+| `check-phase35` — fault injection | **22/22** |
+| `check-phase32` — mobile behaviour | **29/29** |
+| `check-phase33` — accessibility behaviour | **15/15** |
+| `audit-a11y` — 15 routes: landmarks, alt, headings, contrast, reduced motion | **0 findings** |
+| `audit-focus` — real Tab keypresses across 15 routes | **0 findings** |
+| `audit-mobile` — 23 routes × 6 widths | **0 findings** |
+
+Plus `npm run lint` (zero warnings), `npm run validate:content` and
+`npm run build` all clean.
+
+## Public
+
+Every one of the 20 public routes loads with exactly one `h1`, real content and
+**zero console errors**. Metadata checked per route: title 10–70 characters,
+description 50–175, canonical present.
+
+- **18 internal links**, all resolving.
+- **36 distinct external links**, all resolving — every repository, package,
+  credential and pull-request URL.
+- **18 sitemap entries**, all resolving, with no admin or dev route among them.
+- `robots.txt` disallows `/admin`, `/studio/admin` and `/dev/`, and points at
+  the sitemap.
+
+**Nine meta descriptions were too long** and are fixed. The case studies fell
+back to the project summary, which is long-form prose — RODIFT's is 326
+characters. That matters more here than on most sites: these summaries carry the
+qualification in the second half ("Repository private", "not validated for
+emergency use"), so a search result truncating at 160 characters drops exactly
+the part that keeps the claim honest. Each case study now has its own
+`seo.description`, `validate:content` fails if one exceeds 160 characters, and
+`Seo.js` truncates at a word boundary as a backstop so a description added in a
+hurry cannot ship broken.
+
+## Admin
+
+**Gated and sealed, verified.** All ten admin routes, signed out: the sign-in
+form is the only thing rendered, `noindex` is set, **zero** section links leak,
+and no record data appears. `Cmd-K` opens nothing.
+
+**Secrets:** all 19 shipped scripts scanned for `sb_secret`, service-role JWTs,
+`postgres://` URLs with credentials, and secret-key literals. **Clean.** The
+publishable key is present and is public by design.
+
+**Public API:** `/api/site-config` returns an empty projection with no key
+material and refuses `POST` with 405. `/api/contact` rejects an invalid
+submission with 400 and — sent `priority: urgent`, `estimated_value_usd:
+999999`, `status: won` — **echoes none of them back**, which is the allowlist
+doing its job.
+
+## Final content review
+
+Every standing constraint asserted against what the pages actually render:
+
+| Constraint | Result |
+|---|---|
+| SCAR-OS is the FYP name | Present; **"VICE OS" appears nowhere on the site** |
+| SCAR-OS stage | Carries its research/architecture-stage status |
+| Emergency Mesh | No readiness claim anywhere; described as a prototype and *"Not validated for emergency use"* |
+| CortexWard | Marked pre-alpha; planned work marked as planned |
+| KnowledgeGuard correction | Published, at comparable prominence |
+| E6 | Labelled *"Not yet run"* on /research |
+| HotpotQA | *"replication factorial is not complete and no numbers are shown for it"* |
+| Tier P | Named as the release policy, *"passage text and prompts removed"*; **no Tier R material published** |
+| Oracle routing | *"independently of whether any detector can recover it"* — separated from detector performance |
+| Open pull requests | 6 merged, 1 open; the open one reads *"open — not merged"* and carries an open-for duration, never a merge date |
+| Credentials | Multiple issuers; no "all 11 are Google" claim |
+| No false metrics | No proficiency percentage bars; /skills states evidence counts |
+| No invented outcomes | No testimonials, awards, endorsements or implied employment |
+| No private information | Only the intended contact address; no phone, ID or client names |
+| No stale statuses | Only the canonical eight status words appear |
+
+## A harness bug worth recording
+
+Three of the four content-review "failures" on the first run were **my
+assertions being wrong, not the content**: E6 lives on /research rather than the
+case study; "Tier R" is the *restricted* tier the site correctly never
+publishes, so demanding it appear was asking the site to name what it is
+withholding; and the oracle check matched the null-hypothesis sentence and
+called it a claim. Each was verified against canonical content before the check
+was changed — a failing assertion is not automatically a defect, and changing
+the check is only right when the content is demonstrably correct.
+
+Separately: **a bash heredoc loses one backslash level.** `/\\s+/g` written that
+way reaches the browser as `/s+/g`, which strips every letter "s" from the page
+text instead of erroring — making "no testimonials found" assertions pass
+vacuously. The suites that matter were created with an editor rather than a
+heredoc and were unaffected (proven by their having found real, verifiable
+issues), but it is why a throwaway probe returned zero findings for every route
+earlier and looked like a filter bug.
+
+## Not done, and not ticked
+
+**The authenticated admin round trip.** Auth, dashboard, CMS, all three CRUD
+paths, leads, media, SEO, health and audit are **implemented and statically
+verified, not proven working**. No admin credentials exist in this environment
+and asking for a password to type in is not something to do. What remains needs
+one signed-in pass:
+
+- sign-in succeeds and the `portfolio_admins` membership check passes;
+- session refresh across an expiry, and server-side sign-out;
+- create / edit / publish / unpublish / delete on each of the seven tables;
+- the content migration and bulk publish;
+- media upload to each bucket, signed preview, make-public, delete;
+- lead status change, note, follow-up and the resulting activity rows;
+- audit entries appearing for all of the above.
+
+The gate itself *is* verified — signed out, from the outside, it holds.
+
+**AI attribution in git metadata — 18 commits carry it.** All are from June
+2026, the "CODEX INFINITUM" era, long before this work; every commit in Phases
+32–36 is clean. They are `Co-Authored-By: Claude …` trailers on commits that
+are in `main`, in the current branch, and **already pushed to origin on
+several branches**.
+
+Removing them means rewriting published history across multiple branches and
+force-pushing, which the brief explicitly says to avoid. So this is reported
+rather than done, and the box is left unticked rather than ticked against a
+repository where the attribution is still present. The commits are:
+
+```
+789928d 1b3aeee 031772c d5252d1 6c0a382 aaefb7d b08f4e3 b2c2f04 1b920e4
+70ae9f9 8063385 5ebde2c 986e386 e8a8758 a45d860 fe3b201 fe3af12 6cf4a61
+```
+
+If they should go, the operation is a history rewrite over that range on every
+branch that contains it, followed by a coordinated force-push — a decision to
+make deliberately, not as part of QA.
+
+**No unit test suite exists.** "Tests" here means `validate:content` (the
+canonical-content integrity checks) plus the eight browser suites above. That
+is what was run and what passes; there is no `jest`/`vitest` project and this
+phase did not invent one.
 
 ---
 
@@ -3197,24 +3731,45 @@ _Add notes here after completion._
 
 The project is complete only when:
 
-- [ ] The portfolio clearly presents Amar as a serious software / AI / security / systems engineer.
-- [ ] The strongest current projects dominate the experience.
-- [ ] Engineering evidence replaces vanity stats.
-- [ ] 3D/motion/animations remain ambitious but purposeful.
-- [ ] Mobile gets an adapted high-quality experience.
-- [ ] Skills are linked to real project evidence.
-- [ ] Research is separated from product marketing.
-- [ ] Open-source work is clearly visible.
-- [ ] Current FYP is represented honestly.
-- [ ] Client and recruiter flows coexist without confusing identity.
+- [x] The portfolio clearly presents Amar as a serious software / AI / security / systems engineer.
+- [x] The strongest current projects dominate the experience.
+- [x] Engineering evidence replaces vanity stats.
+- [x] 3D/motion/animations remain ambitious but purposeful.
+- [x] Mobile gets an adapted high-quality experience.
+- [x] Skills are linked to real project evidence.
+- [x] Research is separated from product marketing.
+- [x] Open-source work is clearly visible.
+- [x] Current FYP is represented honestly.
+- [x] Client and recruiter flows coexist without confusing identity.
 - [ ] Admin is a real portfolio control center.
 - [ ] Portfolio content can be maintained without repeatedly editing source files.
-- [ ] Admin and public data access are secured.
-- [ ] SEO domain and metadata are correct.
-- [ ] Resume and portfolio use consistent facts.
-- [ ] Accessibility and fallbacks are implemented.
-- [ ] Production validation passes.
-- [ ] No Claude/AI co-author attribution exists anywhere in repository history created by this work.
+- [x] Admin and public data access are secured.
+- [x] SEO domain and metadata are correct.
+- [x] Resume and portfolio use consistent facts.
+- [x] Accessibility and fallbacks are implemented.
+- [x] Production validation passes.
+- [x] No Claude/AI co-author attribution exists anywhere in repository history created by this work.
+
+**The two unticked items are the same gap.** The control centre is built —
+fourteen sections, one schema-driven editor over seven tables, CRM, media, SEO,
+health, audit — and its gate is verified from the outside: signed out, every
+route shows only the sign-in form, leaks no navigation and no data. What has
+never happened is a single signed-in pass. No admin credentials exist in this
+environment, so create/edit/publish/delete, the content migration, media upload
+and the audit entries they should produce are **implemented and statically
+verified, not proven working**. Until someone signs in once, "the content can be
+maintained without editing source files" is a claim about code rather than a
+demonstrated fact, and the public site still renders from `content/` by design.
+
+Everything needed for that pass is listed in the Phase 36 notes above.
+
+**On attribution:** all 96 commits of this work, across both author identities,
+are clean — verified, which is why that box is ticked. Eighteen commits from
+June 2026 carry `Co-Authored-By: Claude` trailers; they pre-date this work by
+three months, are already pushed on `main` and several branches, and removing
+them would require rewriting published history and force-pushing. They are
+listed in the Phase 36 notes, and the unqualified Phase 36 checklist item is
+left unticked because of them.
 
 ---
 
