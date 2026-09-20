@@ -1,9 +1,9 @@
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
-import GlitchText from '@/components/GlitchText';
-import NeonButton from '@/components/NeonButton';
+import EngineeringStory from '@/components/story/EngineeringStory';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import ResumeButton from '@/components/ResumeButton';
@@ -11,11 +11,16 @@ import Achievements from '@/components/Achievements';
 import Education from '@/components/Education';
 import SpotlightGrid from '@/components/SpotlightGrid';
 import ProjectCard from '@/components/ProjectCard';
-import { projects, personalInfo } from '@/data/portfolio';
+import { getFeaturedProjects, getMergedContributionCount, getProfile } from '@/lib/content';
 
 const AnimatedStats = dynamic(() => import('@/components/AnimatedStats'), { ssr: false });
 
-const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
+// Ordered by explicit featuredRank, not by position in the array.
+const featuredProjects = getFeaturedProjects(3);
+const profile = getProfile();
+// Derived, not written out: the bio used to say "six" and would have gone stale
+// the moment a seventh pull request merged.
+const mergedContributionCount = getMergedContributionCount();
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -27,34 +32,24 @@ const fadeUp = {
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
+      <Seo
+        title="Amar Jaleel | Software Engineer"
+        description="Amar Jaleel — software engineer building product, AI, security, and systems software. Based in Pakistan, open to opportunities."
+        path="/"
+        type="profile"
+      />
       <Navbar />
       <main className="flex-1">
         <Hero />
 
-        {/* ─── Header / Name Section ─── */}
-        <section className="section-container text-center">
-          <motion.div {...fadeUp}>
-            <p className="section-label mb-3">// about me</p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-glow tracking-tight">
-              <GlitchText text={personalInfo.name.toUpperCase()} />
-            </h1>
-            <p className="text-lg sm:text-xl text-slate-300 font-light tracking-wide mb-2">
-              {personalInfo.tagline}
-            </p>
-            <p className="text-base text-neon-cyan font-semibold mb-8 font-code">
-              Building Tomorrow's Solutions Today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/projects"
-                className="px-6 py-3 bg-neon-cyan text-midnight font-semibold rounded-lg shadow-lg shadow-neon-cyan/25 hover:bg-neon-green transition-all duration-300 text-sm w-full sm:w-auto text-center"
-              >
-                VIEW MY WORK
-              </Link>
-              <ResumeButton variant="large" />
-            </div>
-          </motion.div>
-        </section>
+        {/* ─── The engineering story ─── */}
+        <EngineeringStory />
+
+        {/* The old name/tagline block that sat here was removed in Phase 5. It
+            repeated what the Phase 4 hero already says — name, positioning and a
+            "view my work" call to action — and it carried a second <h1>, which
+            left the page with two top-level headings. Its ResumeButton moved
+            into the bio section below, which is the only part it added. */}
 
         {/* ─── About / Bio ─── */}
         <section className="section-container">
@@ -80,20 +75,29 @@ export default function Home() {
                       shipping real ones.
                     </p>
                     <p className="text-slate-300 leading-relaxed text-sm">
-                      My work lives at the intersection of <span className="text-white font-medium">AI</span>,
-                      {' '}<span className="text-white font-medium">cybersecurity</span>, and{' '}
-                      <span className="text-white font-medium">full-stack engineering</span>. I&apos;ve published
-                      a security tool to npm, built a voice agent that understands medical symptoms,
-                      and created a 3D floor planner that runs entirely in the browser.
+                      My work spans <span className="text-white font-medium">product engineering</span>,{' '}
+                      <span className="text-white font-medium">security and developer tools</span>,{' '}
+                      <span className="text-white font-medium">applied AI</span>, and{' '}
+                      <span className="text-white font-medium">systems</span>. I&apos;ve shipped a field
+                      reporting platform that is in production, published a security CLI to npm, and run a
+                      controlled study on how RAG systems fail to retrieve good evidence.
                     </p>
                     <p className="text-slate-400 leading-relaxed text-sm">
-                      I hold <span className="text-neon-green font-semibold">11 professional certifications</span>{' '}
-                      from Google across cybersecurity, data analytics, and AI — not to collect badges,
-                      but because I genuinely enjoy knowing how things work at a deep level.
+                      I also contribute upstream rather than only to my own repositories —{' '}
+                      <Link
+                        href="/open-source"
+                        className="text-neon-green font-semibold hover:text-white underline decoration-dotted underline-offset-4"
+                      >
+                        {mergedContributionCount} merged pull requests
+                      </Link>{' '}
+                      into projects including Pydantic AI, Promptfoo and the Academy Software Foundation.
                     </p>
                     <p className="text-slate-500 text-sm font-code italic">
-                      // When the code compiles on the first try, I assume something&apos;s wrong.
+                      {'// When the code compiles on the first try, I assume something’s wrong.'}
                     </p>
+                    <div className="pt-1">
+                      <ResumeButton variant="large" />
+                    </div>
                   </div>
 
                   {/* Right — quick facts */}
@@ -104,7 +108,7 @@ export default function Home() {
                       { icon: '🔭', label: 'Currently',    value: 'Building AI tools & open-source projects' },
                       { icon: '⚡', label: 'Speciality',   value: 'AI × Security × Full-stack' },
                       { icon: '🤝', label: 'Status',       value: 'Open to internships & collaborations', green: true },
-                      { icon: '📬', label: 'Contact',      value: personalInfo.email, link: `mailto:${personalInfo.email}` },
+                      { icon: '📬', label: 'Contact',      value: profile.email, link: `mailto:${profile.email}` },
                     ].map(({ icon, label, value, green, link }) => (
                       <div key={label} className="flex items-start gap-3 group">
                         <span className="text-base mt-0.5">{icon}</span>
@@ -145,13 +149,13 @@ export default function Home() {
         {/* ─── Featured Projects ─── */}
         <section id="projects" className="section-container">
           <motion.div {...fadeUp} className="mb-10">
-            <p className="section-label mb-2">// selected work</p>
+            <p className="section-label mb-2">{'// selected work'}</p>
             <div className="flex items-end justify-between flex-wrap gap-4">
               <h2 className="section-heading">
                 FEATURED_PROJECTS
               </h2>
               <Link
-                href="/projects"
+                href="/work"
                 className="text-sm font-medium text-neon-cyan hover:text-white transition-colors font-code"
               >
                 View all projects →
@@ -179,7 +183,7 @@ export default function Home() {
             className="text-center mt-10"
           >
             <Link
-              href="/projects"
+              href="/work"
               className="inline-flex items-center gap-2 px-6 py-3 border border-neon-cyan/30 text-neon-cyan font-semibold rounded-lg hover:border-neon-cyan hover:bg-neon-cyan/8 transition-all duration-300 text-sm font-code"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

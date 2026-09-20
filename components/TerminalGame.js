@@ -83,20 +83,13 @@ export default function TerminalGame() {
     };
   }, [gameState, moveButton]);
 
-  // Check win condition
-  useEffect(() => {
-    if (clicks >= REQUIRED_CLICKS && gameState === 'playing') {
-      setGameState('won');
-      setLogs((l) => [
-        ...l,
-        '> ✅ ACCESS GRANTED',
-        '> Decrypting contact data...',
-        '> 📧 EMAIL: banbhanamarjalil@gmail.com',
-        '> 📱 PHONE: +92 344 443 2197',
-        '> 💬 WHATSAPP: wa.me/923444432197',
-      ]);
-    }
-  }, [clicks, gameState]);
+  const WIN_LOGS = [
+    '> ✅ ACCESS GRANTED',
+    '> Decrypting contact data...',
+    '> 📧 EMAIL: banbhanamarjalil@gmail.com',
+    '> 📱 PHONE: +92 344 443 2197',
+    '> 💬 WHATSAPP: wa.me/923444432197',
+  ];
 
   const startGame = () => {
     setGameState('playing');
@@ -116,6 +109,15 @@ export default function TerminalGame() {
     if (gameState !== 'playing') return;
     const newClicks = clicks + 1;
     setClicks(newClicks);
+
+    // Resolve the win here rather than in an effect watching `clicks` — the
+    // click is what decides the game, so the state lands in one render.
+    if (newClicks >= REQUIRED_CLICKS) {
+      setGameState('won');
+      setLogs((l) => [...l, `> Node breached! [${newClicks}/${REQUIRED_CLICKS}]`, ...WIN_LOGS]);
+      return;
+    }
+
     setLogs((l) => [...l, `> Node breached! [${newClicks}/${REQUIRED_CLICKS}]`]);
     moveButton();
   };

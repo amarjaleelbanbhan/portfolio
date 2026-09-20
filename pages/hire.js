@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import styles from '@/styles/Hire.module.css';
 
 const services = [
@@ -54,17 +54,10 @@ const examples = [
 export default function Hire() {
   return (
     <>
-      <Head>
-        <title>Hire Amar · Websites, Apps, Chatbots & Automation</title>
-        <meta
-          name="description"
-          content="Hire Amar Digital Systems to build or repair websites, create web apps, add AI chatbots, and automate repetitive business workflows."
-        />
-        <meta property="og:title" content="Need something built or fixed?" />
-        <meta property="og:description" content="Websites, web apps, AI chatbots, bug fixes, and business automation — one clear place to start." />
-        <meta property="og:url" content="https://amarjaleel.me/hire" />
-        <link rel="canonical" href="https://amarjaleel.me/hire" />
-      </Head>
+      <Seo
+        title="Hire Amar · Websites, Apps, Chatbots & Automation"
+        description="Hire Amar Digital Systems to build or repair websites, create web apps, add AI chatbots, and automate repetitive business workflows."
+      />
 
       <div className={styles.page}>
         <header className={styles.header}>
@@ -206,9 +199,9 @@ export default function Hire() {
             <p>I will start by understanding what is actually wrong or missing — not by pushing a package you may not need.</p>
             <Link href="/studio/request" className={styles.primaryButton}>Tell me what you need →</Link>
             <div className={styles.finalLinks}>
-              <Link href="/studio">View agency page</Link>
-              <Link href="/projects">View technical work</Link>
-              <Link href="/">About Amar</Link>
+              <Link href="/studio">How I work</Link>
+              <Link href="/work">View technical work</Link>
+              <Link href="/about">About Amar</Link>
             </div>
           </section>
         </main>
@@ -216,7 +209,7 @@ export default function Hire() {
         <footer className={styles.footer}>
           <div className={styles.brand}>
             <span className={styles.mark}>A</span>
-            <span><strong>Amar Digital Systems</strong><small>Websites · Apps · AI · Automation</small></span>
+            <span><strong>Amar Digital Systems</strong><small>An independent engineering practice by Amar Jaleel</small></span>
           </div>
           <p>amarjaleel.me/hire</p>
         </footer>

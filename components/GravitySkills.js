@@ -1,23 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
+import { getRepresentativeSkills } from '@/lib/content';
 
-const SKILLS = [
-  'Python', 'React', 'Next.js', 'Cybersecurity', 'AI', 
-  'Node.js', 'Linux', 'SQL', 'TensorFlow'
-];
+// Labels come from canonical skill data, not a second hand-maintained list —
+// the previous hardcoded array had drifted and advertised skills with no
+// evidence behind them. One skill per category keeps the body count (and so the
+// physics) the same as before.
+const SKILLS = getRepresentativeSkills().map((s) => s.shortName ?? s.name);
 
 export default function GravitySkills() {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const engineRef = useRef(null);
-  const [isClient, setIsClient] = useState(false);
 
+  // No client-detection state needed: skills.js loads this with `ssr: false`,
+  // so it only ever mounts in the browser and renders its loading fallback.
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient || !containerRef.current || !canvasRef.current) return;
+    if (!containerRef.current || !canvasRef.current) return;
 
     const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Events } = Matter;
 
@@ -139,10 +138,13 @@ export default function GravitySkills() {
       Render.stop(render);
       Runner.stop(runner);
       Engine.clear(engine);
-      render.canvas.remove();
+      // Deliberately NOT render.canvas.remove(): the canvas belongs to React,
+      // not to Matter. Detaching it here left the physics rendering into an
+      // orphaned element whenever the effect re-ran — which StrictMode does on
+      // every mount, so the canvas was missing entirely in development.
       render.textures = {};
     };
-  }, [isClient]);
+  }, []);
 
   // Shake function to re-drop skills
   const handleShake = () => {
@@ -164,19 +166,11 @@ export default function GravitySkills() {
     });
   };
 
-  if (!isClient) {
-    return (
-      <div className="glass-panel p-6 h-[560px] flex items-center justify-center">
-        <p className="text-gray-400">Loading Physics Engine...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="glass-panel p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-[var(--neon-cyan)] flex items-center gap-3">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Head from 'next/head';
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import styles from '@/styles/Request.module.css';
 
 const initialState = {
@@ -91,15 +91,10 @@ export default function StudioRequest() {
 
   return (
     <>
-      <Head>
-        <title>Start a Project · Amar Digital Systems</title>
-        <meta
-          name="description"
-          content="Tell Amar Digital Systems what you need built, fixed, or automated: websites, web apps, AI chatbots, bug fixes, and business workflows."
-        />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href="https://amarjaleel.me/studio/request" />
-      </Head>
+      <Seo
+        title="Start a Project · Amar Digital Systems"
+        description="Tell Amar Digital Systems what you need built, fixed, or automated: websites, web apps, AI chatbots, bug fixes, and business workflows."
+      />
 
       <div className={styles.page}>
         <header className={styles.header}>

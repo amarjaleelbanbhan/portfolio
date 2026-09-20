@@ -1,17 +1,21 @@
 import { motion } from 'framer-motion';
-import { education } from '../data/portfolio';
+import { getEducation } from '@/lib/content';
+import { fadeUp, slideInResponsive, stagger } from '@/lib/motion';
+import { useIsWide } from '@/lib/useMediaQuery';
+
+const education = getEducation();
 
 export default function Education() {
+  // Below md the timeline is a single stacked column, so a horizontal entrance
+  // would push a full-width card past the viewport edge — that was a measured
+  // 34px of horizontal overflow on a 375px screen, masked by overflow-x: clip.
+  // Above md the cards are 5/12 wide with a half-width gutter, so there is room.
+  const isWide = useIsWide();
+
   return (
     <section className="py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10"
-        >
+        <motion.div {...fadeUp()} className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-gradient-cyan mb-2">
             Education & Training
           </h2>
@@ -24,11 +28,13 @@ export default function Education() {
 
           {education.map((item, index) => (
             <motion.div
-              key={item.school}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
+              key={item.id}
+              {...slideInResponsive({
+                from: index % 2 === 0 ? 'left' : 'right',
+                wide: isWide,
+                distance: 50,
+                delay: index * stagger.loose,
+              })}
               className={`relative flex ${
                 index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'
               } mb-8`}

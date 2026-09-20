@@ -1,15 +1,27 @@
+/**
+ * The résumé call to action.
+ *
+ * No longer a download: Phase 18 replaced the static file with `/resume`, a
+ * route generated from the same records as the site, which prints to PDF from
+ * the browser. A `download` attribute on an HTML route would have saved the
+ * markup rather than the document.
+ */
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { personalInfo } from '../data/portfolio';
+import { getProfile } from '@/lib/content';
+
+const profile = getProfile();
+
+// Framer needs a component reference, and next/link must stay the element so
+// client-side navigation and prefetching still apply.
+const MotionLink = motion.create(Link);
 
 export default function ResumeButton({ className = '', variant = 'default' }) {
   const isLarge = variant === 'large';
   
   return (
-    <motion.a
-      href={personalInfo.resumeFile}
-      download
-      target="_blank"
-      rel="noopener noreferrer"
+    <MotionLink
+      href={profile.resumeUrl}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className={`
@@ -41,11 +53,11 @@ export default function ResumeButton({ className = '', variant = 'default' }) {
           strokeLinecap="round" 
           strokeLinejoin="round" 
           strokeWidth={2} 
-          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
         />
       </svg>
       
-      <span>Download Resume</span>
+      <span>View Résumé</span>
       
       {/* Sparkle effect on large variant */}
       {isLarge && (
@@ -61,6 +73,6 @@ export default function ResumeButton({ className = '', variant = 'default' }) {
           </motion.span>
         </span>
       )}
-    </motion.a>
+    </MotionLink>
   );
 }

@@ -1,10 +1,16 @@
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export default function Custom404() {
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
+      <Seo
+        title="Page not found — Amar Jaleel"
+        description="The page you're looking for doesn't exist."
+        noindex
+      />
       <Navbar />
       <main className="flex-1 section-container flex flex-col items-center justify-center text-center gap-4">
         <p className="text-accent font-semibold">404</p>

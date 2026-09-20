@@ -2,11 +2,17 @@
 
 import { useState } from 'react';
 
-export default function GlitchText({ text }) {
+/**
+ * `as` exists because this is used both as a block heading and inline inside a
+ * paragraph. A <div> nested in a <p> is invalid HTML — the browser silently
+ * closes the paragraph, so the server markup and the hydrated DOM disagree and
+ * React throws a hydration error. Inline callers pass "span".
+ */
+export default function GlitchText({ text, as: Tag = 'div' }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
+    <Tag
       className="relative inline-block cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -35,6 +41,6 @@ export default function GlitchText({ text }) {
       <span className="relative z-10 text-white font-heading font-bold">
         {text}
       </span>
-    </div>
+    </Tag>
   );
 }

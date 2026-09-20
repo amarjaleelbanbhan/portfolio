@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { achievements } from '../data/portfolio';
+import { getAllCredentials } from '@/lib/content';
 
 // Professional SVG icons for each type
 const TypeIcon = ({ type }) => {
@@ -31,6 +31,8 @@ const typeColors = {
   achievement: 'from-neon-green to-emerald-500',
 };
 
+const credentials = getAllCredentials();
+
 export default function Achievements() {
   return (
     <section className="py-16">
@@ -49,9 +51,9 @@ export default function Achievements() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {achievements.map((item, index) => (
+          {credentials.map((item, index) => (
             <motion.div
-              key={item.title}
+              key={item.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -60,7 +62,7 @@ export default function Achievements() {
               className="glass-panel p-6 relative overflow-hidden group"
             >
               {/* Gradient accent */}
-              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${typeColors[item.type] || typeColors.certification}`} />
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${typeColors.certification}`} />
               
               {/* Icon & Type */}
               <div className="flex items-center gap-3 mb-4">
@@ -68,7 +70,7 @@ export default function Achievements() {
                   <TypeIcon type={item.type} />
                 </div>
                 <span className={`text-xs uppercase tracking-wider px-2 py-1 rounded bg-gradient-to-r ${typeColors[item.type] || typeColors.certification} text-midnight font-semibold`}>
-                  {item.type}
+                  {item.category}
                 </span>
               </div>
               
@@ -79,15 +81,15 @@ export default function Achievements() {
               
               {/* Organization & Date */}
               <div className="text-gray-400 text-sm mb-4">
-                <span className="text-neon-green">{item.organization}</span>
+                <span className="text-neon-green">{item.issuer}</span>
                 <span className="mx-2">•</span>
-                <span>{item.date}</span>
+                <span>{item.issuedAt}</span>
               </div>
               
               {/* Verify Link */}
-              {item.verifyLink && !item.verifyLink.includes('...') && (
+              {item.credentialUrl && (
                 <a
-                  href={item.verifyLink}
+                  href={item.credentialUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-sm text-neon-cyan hover:text-neon-green transition-colors"

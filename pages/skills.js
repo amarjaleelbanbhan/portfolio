@@ -1,9 +1,34 @@
+/**
+ * /skills — the technical ecosystem, backed by the work it came from.
+ *
+ * There is exactly one skill list on this page. Before Phase 16 there were
+ * three — a languages column with its evidence, eight category panels of chips,
+ * and the physics pills — all reading from canonical content but presenting it
+ * three different ways, so a reader could not tell which was the real answer.
+ * The Galaxy is now the canonical surface and the other two are gone as lists:
+ * the cube and the physics playground stay as what they always were, which is
+ * texture rather than reference.
+ *
+ * Deep links: `#skill-<slug>` preselects a technology, so the homepage tech
+ * stack and any future surface can point straight at a skill's evidence.
+ *
+ * Nothing here has a proficiency number. A skill's claim is the work it points
+ * at, content validation now rejects a skill with no work behind it, and every
+ * item in the evidence panel is a link to the thing itself.
+ */
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SkillCube from '@/components/SkillCube';
+import SkillGalaxy from '@/components/skills/SkillGalaxy';
+import SkillEvidencePanel from '@/components/skills/SkillEvidencePanel';
+import { usePrefersReducedMotion } from '@/lib/useMediaQuery';
+import { fadeUp } from '@/lib/motion';
+import { getSkillEvidenceDetail, getSkillGraph } from '@/lib/content';
 
 const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ssr: false,
@@ -14,230 +39,184 @@ const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ),
 });
 
-const languageSkills = [
-  { name: 'Python',      level: 90, color: '#3b82f6' },
-  { name: 'JavaScript',  level: 85, color: '#f59e0b' },
-  { name: 'HTML / CSS',  level: 88, color: '#f97316' },
-  { name: 'C++',         level: 80, color: '#8b5cf6' },
-  { name: 'SQL',         level: 80, color: '#06b6d4' },
-  { name: 'Java',        level: 78, color: '#ef4444' },
-  { name: 'R',           level: 75, color: '#10b981' },
-];
+const graph = getSkillGraph();
+const evidenceBySlug = Object.fromEntries(
+  graph.nodes.map((node) => [node.slug, getSkillEvidenceDetail(node.slug)])
+);
 
-const categories = [
-  {
-    title: 'AI / Machine Learning',
-    color: '#8b5cf6',
-    skills: ['TensorFlow', 'Scikit-Learn', 'Pandas', 'NumPy', 'Matplotlib'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Data & Analytics',
-    color: '#f59e0b',
-    skills: ['Tableau', 'Power BI', 'Excel', 'Google Analytics', 'BigQuery'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Cybersecurity',
-    color: '#ef4444',
-    skills: ['Linux', 'Wireshark', 'Kali Linux', 'OWASP', 'SIEM Tools', 'Nmap'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Web & Cloud',
-    color: '#14b8a6',
-    skills: ['React', 'Next.js', 'Node.js', 'Git', 'GitHub', 'Google Cloud', 'Docker'],
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-      </svg>
-    ),
-  },
-];
-
-const currentlyLearning = [
-  { label: 'Advanced ML & Deep Learning',     color: '#8b5cf6' },
-  { label: 'Cloud Security (AWS / Azure)',     color: '#ef4444' },
-  { label: 'Big Data Analytics & Spark',       color: '#f59e0b' },
-  { label: 'Advanced Cybersecurity & CTFs',   color: '#14b8a6' },
-];
-
-function ProgressBar({ name, level, color }) {
-  return (
-    <div className="mb-5">
-      <div className="flex justify-between mb-1.5">
-        <span className="text-sm font-medium text-slate-200">{name}</span>
-        <span className="text-xs font-code" style={{ color }}>{level}%</span>
-      </div>
-      <div className="w-full bg-white/6 rounded-full h-1.5 overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98], delay: 0.2 }}
-          className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${color}aa, ${color})` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function SkillChip({ name, color }) {
-  return (
-    <motion.span
-      whileHover={{ scale: 1.05 }}
-      className="inline-flex items-center px-3 py-1.5 m-1 text-xs font-medium rounded-lg border transition-all duration-200 cursor-default"
-      style={{
-        color,
-        background: `${color}12`,
-        borderColor: `${color}30`,
-      }}
-    >
-      {name}
-    </motion.span>
-  );
-}
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-50px' },
-  transition: { duration: 0.6 },
+const totals = {
+  skills: graph.nodes.length,
+  categories: graph.categories.length,
+  links: graph.edges.length,
+  evidence: graph.nodes.reduce((sum, node) => sum + node.evidenceCount, 0),
 };
 
+const LEARNING_COLORS = ['#8b5cf6', '#ef4444', '#f59e0b', '#14b8a6'];
+
+// Areas of current focus. Deliberately not modelled as skills: there is no
+// evidence to attach yet, and a skill in this model must point at real work.
+const currentlyLearning = [
+  'Program analysis and verification',
+  'RAG evaluation methodology',
+  'Distributed and offline-first systems',
+  'Operating systems and voice interaction (FYP)',
+].map((label, i) => ({ label, color: LEARNING_COLORS[i % LEARNING_COLORS.length] }));
+
 export default function Skills() {
+  const reduced = usePrefersReducedMotion();
+  const [selected, setSelected] = useState(null);
+  const [category, setCategory] = useState('all');
+
+  // Deep link support. Read once on mount and on hash change, so a link from
+  // the homepage tech stack lands on the right skill with its evidence open.
+  useEffect(() => {
+    const applyHash = () => {
+      const match = /^#skill-(.+)$/.exec(window.location.hash);
+      if (!match) return;
+      const slug = decodeURIComponent(match[1]);
+      if (evidenceBySlug[slug]) setSelected(slug);
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, []);
+
+  const selectSkill = useCallback((slug) => {
+    setSelected(slug);
+    // Selecting a skill from another cluster should not leave the board
+    // filtered to a category that hides it.
+    if (slug) setCategory('all');
+  }, []);
+
+  const detail = useMemo(() => (selected ? evidenceBySlug[selected] : null), [selected]);
+
   return (
     <>
-      <Head>
-        <title>Skills — Amar Jaleel</title>
-        <meta name="description" content="Amar Jaleel's technical skills in AI, cybersecurity, data analytics, and full-stack development." />
-      </Head>
+      <Seo
+        title="Skills — Amar Jaleel"
+        description="The technical ecosystem behind the work: every technology linked to the projects, research and upstream pull requests it was actually used in. No proficiency percentages."
+        path="/skills"
+      />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container">
-
-          {/* Header */}
-          <motion.div {...fadeUp} className="mb-12">
-            <p className="section-label mb-2">// capabilities</p>
-            <h1 className="section-heading mb-3">
-              <span className="text-neon-cyan font-code">&lt;</span>
-              Skills
-              <span className="text-neon-cyan font-code"> /&gt;</span>
+          {/* ── Header ── */}
+          <motion.div {...fadeUp()} className="mb-8">
+            <p className="section-label">{'// capabilities'}</p>
+            <h1 className="section-heading max-w-3xl text-balance">
+              Every technology here is attached to something you can open
             </h1>
-            <p className="text-slate-400 max-w-2xl leading-relaxed">
-              A comprehensive overview of my technical toolkit — from languages and frameworks
-              to specialized domains in AI, security, and data.
+            <p className="mt-3 text-slate-400 leading-relaxed max-w-2xl">
+              No proficiency bars. A percentage next to a language is self-assigned and measures
+              nothing, so this shows the work instead: select a technology and the panel lists the
+              projects, research and pull requests it was genuinely used in, each one a link.
+            </p>
+            <p className="mt-3 font-code text-[11px] text-slate-600">
+              {`// ${totals.skills} technologies · ${totals.categories} clusters · ${totals.evidence} evidence links · ${totals.links} shared-work connections`}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* ── The Galaxy ── */}
+          <motion.section
+            {...fadeUp({ delay: 0.05 })}
+            aria-labelledby="galaxy-heading"
+            id="galaxy"
+            className="mb-14 scroll-mt-24"
+          >
+            <h2 id="galaxy-heading" className="sr-only">
+              Skill galaxy
+            </h2>
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] items-start">
+              <div className="min-w-0">
+                <SkillGalaxy
+                  graph={graph}
+                  selected={selected}
+                  onSelect={selectSkill}
+                  activeCategory={category}
+                  onSelectCategory={(next) => {
+                    setCategory(next);
+                    setSelected(null);
+                  }}
+                  reduced={reduced}
+                />
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <p className="font-code text-[11px] text-slate-600 m-0">
+                    {'// lines join two technologies used on the same project, study or pull request'}
+                  </p>
+                  {(selected || category !== 'all') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelected(null);
+                        setCategory('all');
+                      }}
+                      className="font-code text-xs text-slate-400 hover:text-neon-cyan transition-colors min-h-[44px]"
+                    >
+                      Clear selection
+                    </button>
+                  )}
+                </div>
+              </div>
 
-            {/* ─── Left Column ─── */}
-            <div className="space-y-6">
+              <div className="lg:sticky lg:top-20 min-w-0">
+                <SkillEvidencePanel
+                  detail={detail}
+                  onSelectSkill={selectSkill}
+                  reduced={reduced}
+                />
+              </div>
+            </div>
+          </motion.section>
 
-              {/* Languages */}
-              <motion.div {...fadeUp} className="glass-panel p-6">
-                <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2.5">
-                  <svg className="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                  </svg>
-                  Programming Languages
-                </h2>
-                {languageSkills.map((skill) => (
-                  <ProgressBar key={skill.name} {...skill} />
+          {/* ── Cube and current focus ──
+              Kept from the original page. The cube is a visual signature, not a
+              second skill list, and "currently learning" is deliberately not
+              modelled as skills because there is nothing to attach yet. */}
+          <div className="grid gap-6 lg:grid-cols-2 mb-10 [&>*]:min-w-0">
+            <motion.div {...fadeUp()}>
+              <SkillCube />
+            </motion.div>
+
+            <motion.div {...fadeUp({ delay: 0.05 })} className="glass-panel p-6">
+              <h2 className="text-lg font-semibold text-white mb-2 flex items-center gap-2.5">
+                <svg aria-hidden="true" className="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Currently Learning
+              </h2>
+              <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                Not in the galaxy above, and deliberately so — there is no work to attach to these
+                yet, and a technology in this model earns its place by pointing at something.
+              </p>
+              <ul className="list-none m-0 p-0 space-y-3">
+                {currentlyLearning.map(({ label, color }) => (
+                  <li key={label} className="flex items-center gap-3 text-sm text-slate-300">
+                    <span
+                      aria-hidden="true"
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ background: color, boxShadow: `0 0 8px ${color}` }}
+                    />
+                    {label}
+                  </li>
                 ))}
-              </motion.div>
-
-              {/* Category chips */}
-              {categories.slice(0, 2).map((cat, idx) => (
-                <motion.div
-                  key={cat.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="glass-panel p-6"
+              </ul>
+              <p className="text-sm text-slate-500 mt-5">
+                The work these technologies came from is on the{' '}
+                <Link
+                  href="/work"
+                  className="text-neon-cyan hover:text-white underline decoration-dotted underline-offset-4"
                 >
-                  <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2.5" style={{ color: cat.color }}>
-                    {cat.icon}
-                    <span className="text-white">{cat.title}</span>
-                  </h2>
-                  <div className="flex flex-wrap -m-1">
-                    {cat.skills.map((s) => <SkillChip key={s} name={s} color={cat.color} />)}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* ─── Right Column ─── */}
-            <div className="space-y-6">
-
-              {/* 3D Cube */}
-              <motion.div {...fadeUp}>
-                <SkillCube />
-              </motion.div>
-
-              {/* Category chips cont. */}
-              {categories.slice(2).map((cat, idx) => (
-                <motion.div
-                  key={cat.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="glass-panel p-6"
-                >
-                  <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2.5">
-                    <span style={{ color: cat.color }}>{cat.icon}</span>
-                    {cat.title}
-                  </h2>
-                  <div className="flex flex-wrap -m-1">
-                    {cat.skills.map((s) => <SkillChip key={s} name={s} color={cat.color} />)}
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Currently learning */}
-              <motion.div {...fadeUp} className="glass-panel p-6">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2.5">
-                  <svg className="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Currently Learning
-                </h2>
-                <ul className="space-y-3">
-                  {currentlyLearning.map(({ label, color }) => (
-                    <li key={label} className="flex items-center gap-3 text-sm text-slate-300">
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
-                      {label}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
+                  work page
+                </Link>
+                .
+              </p>
+            </motion.div>
           </div>
 
-          {/* ─── Interactive Physics Skills ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mt-10"
-          >
+          {/* ── Physics playground ──
+              Preserved exactly. It is not a skill reference and never was; it is
+              the part of the page that is simply enjoyable to poke at. */}
+          <motion.div {...fadeUp()}>
             <GravitySkills />
           </motion.div>
         </main>

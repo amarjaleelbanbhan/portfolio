@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "assets": "node scripts/generate-assets.mjs",
+    "validate:content": "node scripts/validate-content.mjs"
   },
   "keywords": [
     "portfolio",

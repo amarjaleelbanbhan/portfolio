@@ -1,62 +1,16 @@
 'use client';
 
-import Head from 'next/head';
+import Seo from '@/components/Seo';
+import { getAllCredentials } from '@/lib/content';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-const certifications = [
-  {
-    name: 'Google Cybersecurity Professional',
-    link: 'https://www.coursera.org/account/accomplishments/specialization/U2DN4IX0N6H7',
-    description: 'Network security, Linux, Python scripting, SQL, and SIEM tools. 8-course specialization.',
-    org: 'Google',
-    color: '#ef4444',
-    icon: '🔒',
-  },
-  {
-    name: 'Google Data Analytics Professional',
-    link: 'https://www.coursera.org/account/accomplishments/specialization/W0BZT6HTJXZE',
-    description: 'Data cleaning, analysis, R programming, SQL, and Tableau visualization. 8-course specialization.',
-    org: 'Google',
-    color: '#f59e0b',
-    icon: '📊',
-  },
-  {
-    name: 'Google AI Essentials',
-    link: 'https://coursera.org/share/cccb05b37cae8b86455d73751d5c101a',
-    description: 'Generative AI fundamentals, responsible AI practices, and practical AI tool usage.',
-    org: 'Google',
-    color: '#8b5cf6',
-    icon: '🤖',
-  },
-  {
-    name: 'Python Bootcamp: Master Python',
-    link: 'https://www.udemy.com/certificate/UC-ea3dcd47-fe5c-4073-b11b-15d417c0f56a/',
-    description: 'Comprehensive Python programming with real-world projects — from basics to advanced applications.',
-    org: 'Udemy',
-    color: '#3b82f6',
-    icon: '🐍',
-  },
-  {
-    name: 'Discover the Art of Prompting',
-    link: 'https://www.coursera.org/account/accomplishments/verify/TUEGAHF57ZTM',
-    description: 'Prompt engineering techniques for generative AI models and practical AI productivity.',
-    org: 'Google',
-    color: '#10b981',
-    icon: '💬',
-  },
-  {
-    name: 'Introduction to AI',
-    link: 'https://www.coursera.org/account/accomplishments/verify/2D6R17WJ0GV4',
-    description: 'Foundational concepts in artificial intelligence, machine learning, and neural networks.',
-    org: 'Google',
-    color: '#14b8a6',
-    icon: '🧠',
-  },
-];
 
-function CertCard({ name, description, link, org, color, icon, index }) {
+const credentials = getAllCredentials();
+
+function CertCard({ title, description, credentialUrl, issuer, issuedAt, color, icon, index }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -77,19 +31,20 @@ function CertCard({ name, description, link, org, color, icon, index }) {
                 className="text-xs font-semibold px-2 py-0.5 rounded font-code"
                 style={{ color, background: `${color}15`, border: `1px solid ${color}25` }}
               >
-                {org}
+                {issuer}
               </span>
             </div>
             <h3 className="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors leading-snug">
-              {name}
+              {title}
             </h3>
+            <p className="text-[11px] text-slate-500 font-code mt-1">{issuedAt}</p>
           </div>
         </div>
 
         <p className="text-xs text-slate-400 leading-relaxed mb-4">{description}</p>
 
         <a
-          href={link}
+          href={credentialUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 mt-auto pt-1 w-fit"
@@ -108,10 +63,10 @@ function CertCard({ name, description, link, org, color, icon, index }) {
 export default function Certifications() {
   return (
     <>
-      <Head>
-        <title>Certifications — Amar Jaleel</title>
-        <meta name="description" content="Amar Jaleel's professional certifications in cybersecurity, data analytics, AI, and Python development." />
-      </Head>
+      <Seo
+        title="Certifications — Amar Jaleel"
+        description="Amar Jaleel's professional certifications in cybersecurity, data analytics, AI, and Python development."
+      />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
         <main className="flex-1 section-container space-y-8">
@@ -122,37 +77,21 @@ export default function Certifications() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="section-label mb-2">// credentials</p>
-            <h1 className="section-heading mb-3">Validated Learning</h1>
+            <p className="section-label mb-2">{'// credentials'}</p>
+            <h1 className="section-heading mb-3">Credentials</h1>
             <p className="text-slate-400 max-w-2xl leading-relaxed">
-              Professional certifications that reflect a focused commitment to security, analytics,
-              and applied AI. Every credential backed by a verifiable link.
+              Supporting evidence, not the main story — the engineering work on the{' '}
+              <Link href="/work" className="text-neon-cyan hover:underline">work page</Link>{' '}
+              is what I would rather be judged on. Every credential below links to its issuer for
+              verification.
             </p>
           </motion.div>
 
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap gap-6 py-5 border-y border-white/5"
-          >
-            {[
-              { value: '11+', label: 'Certifications' },
-              { value: '3',   label: 'Google Professional Certs' },
-              { value: '2026', label: 'Latest Issued' },
-            ].map(({ value, label }) => (
-              <div key={label} className="flex flex-col">
-                <span className="text-xl font-bold text-neon-cyan font-code">{value}</span>
-                <span className="text-xs text-slate-500 uppercase tracking-wider">{label}</span>
-              </div>
-            ))}
-          </motion.div>
 
           {/* Grid */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {certifications.map((cert, idx) => (
-              <CertCard key={cert.name} {...cert} index={idx} />
+            {credentials.map((cert, idx) => (
+              <CertCard key={cert.id} {...cert} index={idx} />
             ))}
           </div>
         </main>

@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import Link from 'next/link';
+import Seo from '@/components/Seo';
 import styles from '@/styles/Studio.module.css';
 
 const services = [
@@ -121,16 +121,10 @@ function WorkVisual({ type }) {
 export default function Studio() {
   return (
     <>
-      <Head>
-        <title>Amar Digital Systems · Websites, Lead Capture & Automation</title>
-        <meta
-          name="description"
-          content="Amar Digital Systems builds and fixes websites, improves lead capture, and automates repetitive follow-up for service businesses."
-        />
-        <meta property="og:title" content="Amar Digital Systems" />
-        <meta property="og:description" content="Websites, lead capture, and automations for service businesses." />
-        <meta property="og:url" content="https://amarjaleel.me/studio" />
-      </Head>
+      <Seo
+        title="Amar Digital Systems · Websites, Lead Capture & Automation"
+        description="Amar Digital Systems builds and fixes websites, improves lead capture, and automates repetitive follow-up for service businesses."
+      />
 
       <div className={styles.page}>
         <header className={styles.header}>
@@ -351,7 +345,7 @@ export default function Studio() {
               <p>Software engineering · web systems · automation</p>
               <div className={styles.contactActions}>
                 <Link className={styles.darkButton} href="/studio/request">Tell me what is broken</Link>
-                <Link className={styles.textLink} href="/projects">View technical work →</Link>
+                <Link className={styles.textLink} href="/work">View technical work →</Link>
               </div>
             </div>
           </section>
@@ -362,7 +356,7 @@ export default function Studio() {
             <span className={styles.brandMark}>A</span>
             <span className={styles.brandText}>
               <strong>Amar Digital Systems</strong>
-              <small>Websites · automation · AI assistants</small>
+              <small>An independent engineering practice by Amar Jaleel</small>
             </span>
           </div>
           <p>amarjaleel.me/studio</p>
