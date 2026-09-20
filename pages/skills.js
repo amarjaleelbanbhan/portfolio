@@ -23,12 +23,23 @@ import { motion } from 'framer-motion';
 import Seo from '@/components/Seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import SkillCube from '@/components/SkillCube';
 import SkillGalaxy from '@/components/skills/SkillGalaxy';
 import SkillEvidencePanel from '@/components/skills/SkillEvidencePanel';
 import { usePrefersReducedMotion } from '@/lib/useMediaQuery';
 import { fadeUp } from '@/lib/motion';
 import { getSkillEvidenceDetail, getSkillGraph } from '@/lib/content';
+
+// Three.js is 176 kB gzip. Statically importing SkillCube put all of it in the
+// route's first-load chunk — for a decorative rotating cube — which made
+// /skills 400 kB against roughly 225 kB for every other page. Loading it the
+// same way the Engineering Core and the physics toy are loaded moves that
+// weight off the critical path without changing what either one does.
+const SkillCube = dynamic(() => import('@/components/SkillCube'), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 shadow-inner shadow-black/30 aspect-square" />
+  ),
+});
 
 const GravitySkills = dynamic(() => import('@/components/GravitySkills'), {
   ssr: false,

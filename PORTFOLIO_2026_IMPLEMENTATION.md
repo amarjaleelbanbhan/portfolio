@@ -3240,36 +3240,169 @@ Measure before blindly removing visual features.
 
 Optimize:
 
-- [ ] dynamic imports
-- [ ] lazy 3D
-- [ ] viewport mounting
-- [ ] pause off-screen rendering
-- [ ] pause hidden-tab rendering
-- [ ] DPR clamping
-- [ ] particle reduction
-- [ ] texture optimization
-- [ ] screenshot optimization
-- [ ] video preview optimization
-- [ ] bundle analysis
-- [ ] remove genuinely unused dependencies
+- [x] dynamic imports
+- [x] lazy 3D
+- [x] viewport mounting
+- [x] pause off-screen rendering
+- [x] pause hidden-tab rendering
+- [x] DPR clamping
+- [x] particle reduction
+- [x] texture optimization
+- [x] screenshot optimization
+- [x] video preview optimization
+- [x] bundle analysis
+- [x] remove genuinely unused dependencies
 
 Measure:
 
-- [ ] LCP
-- [ ] CLS
-- [ ] INP
-- [ ] JS bundle
-- [ ] 3D startup cost
-- [ ] mobile memory
-- [ ] animation FPS
+- [x] LCP
+- [x] CLS
+- [x] INP
+- [x] JS bundle
+- [x] 3D startup cost
+- [x] mobile memory
+- [x] animation FPS
 
 ## Phase Completion
 
-- [ ] Phase 34 complete
+- [x] Phase 34 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20. The phase says *measure before blindly removing visual
+features*, so nothing was removed: every effect, scene and easter egg still
+runs. What changed is when they start, how big they are, and what a phone is
+assumed to be.
+
+### The measurement environment, stated up front
+
+390px, 4× CPU throttle, against a production build, boot screen skipped (a
+returning visitor's experience, which is also the one the boot screen was
+hiding). Every figure below is a **median of 3–5 loads**, and LCP on this
+machine varies by ±2–3s between samples. So the honest split is:
+
+- **Deterministic** — bundle bytes, CLS, dependency count. These are claims.
+- **Directional** — LCP and INP. Real but noisy; medians and spreads recorded.
+- **Clear signal** — frame rate on the pages that were particle-bound.
+
+A single sample is how "/" looked like an 8.2s regression in one run and
+5.7s in the next. Reporting the first would have been wrong.
+
+### What was actually slow
+
+**`/skills` shipped all of Three.js on the critical path.** `pages/skills.js`
+statically imported `SkillCube`, which statically imports `* as THREE` — 176 kB
+gzip in the route's first-load chunk, for a decorative rotating cube, making
+/skills **400.3 kB** against roughly 225 kB for every other page. Loaded the way
+the Engineering Core and the physics toy already were:
+
+| | before | after |
+|---|---|---|
+| `/skills` first-load JS (gzip) | **400.3 kB** | **223.5 kB** |
+
+**The ambient particle field was the most expensive thing on every page.** The
+clue was that `/contact` — no 3D, no heavy visuals — had the worst long-task
+total of any route. 90 particles with an O(n²) connection pass is ~4,000
+distance checks per frame, started in a mount effect, competing with hydration
+and first paint on all 20 routes. It now starts on an idle callback after
+`load`. The field is unchanged; it simply no longer races the page.
+
+**A phone was being treated as a desktop.** `quickDeviceTier` keyed on
+`deviceMemory` and `hardwareConcurrency` alone, so a flagship phone reporting
+8 GB and 8 cores landed on **tier 2** — full 90-particle field and 2× device
+pixel ratio, on a thermally-limited GPU and a battery. Cores are not the
+constraint on a phone; sustained power is. Touch-primary devices are now capped
+at tier 1: half the particles, DPR 1.5 instead of 2, nothing switched off.
+
+**CLS 0.159 on the homepage**, which the boot screen had been hiding from every
+previous measurement. One source: the hero's decorative gradient blob sits at
+`top-1/3` of a container that grows by ~900px when the Engineering Core mounts
+beneath the thesis. The decorative layer is now pinned to a fixed band rather
+than `inset-0`, so it cannot track the content. **0.159 → 0.000.**
+
+### Results
+
+Median of 3, mobile profile:
+
+| | before | after |
+|---|---|---|
+| worst CLS | **0.159** | **0.000** |
+| `/contact` LCP | 5600ms | **2016ms** *(median of 5)* |
+| `/contact` FPS | 20.3 | **54.7** |
+| `/work/knowledgeguard` FPS | 15.5 | 23.9 |
+| `/` LCP | 6568ms | 5728ms *(median of 5)* |
+| `/skills` LCP | 6160ms | 4668ms |
+| max heap | 18.9 MB | 16.3 MB |
+| worst INP | 784ms | 680ms — improved, but inside the noise |
+
+**3D startup cost**, median of 3 — the number that matters is that first paint
+never waits for it:
+
+| route | desktop | mobile 4× |
+|---|---|---|
+| `/` Engineering Core | canvas at 3702ms, **+1670ms after FCP** | 7258ms, **+4042ms after FCP** |
+| `/skills` | canvas at 5511ms, **+2679ms after FCP** | 1998ms, **+1382ms after FCP** |
+
+### Dependencies: 20 → 9
+
+Eleven removed after checking each import, not each name:
+
+`@formspree/react`, `@react-three/drei`, `@react-three/postprocessing`,
+`@tsparticles/react`, `@tsparticles/slim`, `tsparticles`, `chart.js`,
+`react-markdown` — never imported at all.
+
+`@pmndrs/detect-gpu` — appeared only in a comment promising a lazy GPU probe
+"in later phases". Thirty phases later it was still a comment. Removed, and the
+comment now says what the code does.
+
+`gsap` and `zustand` — imported only by three unreachable salvage files
+(`lib/journey/avatarScript.ts`, `lib/journey/cinematicCamera.ts`,
+`store/universeStore.ts`) from a superseded design that `CameraRig.js` explicitly
+replaced ("No GSAP"). The files went with them — and removing the packages
+*without* the files fails the build, because `next build` type-checks them.
+That is worth recording: they were not inert.
+
+Kept and verified in use: `three`, `@react-three/fiber`, `framer-motion`,
+`matter-js`, `react-confetti`, `@tailwindcss/typography`.
+
+### The checklist, item by item
+
+| Item | State |
+|---|---|
+| Dynamic imports | Boot screen, particle field, R3F `Canvas`, `CoreScene`, `GravitySkills` and now `SkillCube` |
+| Lazy 3D | R3F itself is behind `dynamic()` inside `SceneCanvas`, so a page with no 3D never downloads it |
+| Viewport mounting | `useInViewport` with a 200px margin gates the render loop |
+| Pause off-screen | `frameloop='demand'` when out of viewport |
+| Pause hidden tab | Was true only as a side effect of the platform suspending rAF. Now explicit: `useDocumentVisible` feeds `frameloop`, matching what SceneCanvas's own docs already claimed |
+| DPR clamping | 3D: [1,2] / [1,1.5] / [1,1] by tier. 2D field: capped at 1.5 below tier 2 — a full-viewport canvas at 3× is nine times the fill rate of 1× |
+| Particle reduction | 90 / 45 / 30 by tier, and phones no longer reach tier 2. Never zero: the field is part of the site's identity |
+| Texture optimization | No textures exist. The scenes are untextured materials |
+| Screenshot optimization | No screenshots on any public page. The one real image is the portrait, through `next/image` with `sizes` and `priority` |
+| Video preview optimization | One `<video>`, in the admin media library, on a five-minute signed URL, rendered only when a preview is opened — no autoplay, no poster fetch on the public site |
+| Bundle analysis | Per-route gzip measured from the build manifest. Shared baseline 120.5 kB; every public route now 217–237 kB first load |
+| Remove unused dependencies | 20 → 9, above |
+| LCP / CLS / INP | Measured, median-of-N, table above |
+| JS bundle | Measured per route, table above |
+| 3D startup cost | Measured, table above |
+| Mobile memory | 7.7–18.9 MB used heap across all routes; worst case improved to 16.3 MB |
+| Animation FPS | Measured per route; the particle-bound pages improved most (`/contact` 20.3 → 54.7) |
+
+### Known and deliberately open
+
+- **LCP is still 4–7s on a 4× throttled phone.** It is a static export of
+  content-dense pages, so this is parse and hydrate cost, not waterfall cost —
+  the CPU-only pass matched the CPU+3G pass almost exactly. The remaining lever
+  is Framer Motion, used in 51 files; converting to `LazyMotion`/`m` is a
+  mechanical change across all of them and is a change to how every animation
+  on the site is declared. **Not attempted as part of final QA**, and recorded
+  here rather than half-done.
+- **`/dev/r3f-probe` still ships** at 358.9 kB. It is noindex, absent from the
+  sitemap, disallowed in robots.txt, linked from nowhere, and in its own chunk,
+  so it costs a visitor nothing. It is kept deliberately as the place to test
+  scene changes in isolation.
+- **The local server is HTTP/1.1.** Production is not, so the per-chunk request
+  costs in the 3G numbers are pessimistic. This is why the CPU-only pass is
+  reported alongside.
 
 ---
 

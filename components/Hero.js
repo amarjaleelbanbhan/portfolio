@@ -94,8 +94,13 @@ export default function Hero() {
   return (
     <div className="relative min-h-[92vh] flex items-center overflow-hidden">
 
-      {/* Deep gradient overlays for depth */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Deep gradient overlays for depth.
+          Pinned to a fixed band rather than `inset-0`: the hero grows when the
+          Engineering Core mounts under the thesis, and a blob positioned at
+          `top-1/3` of a growing container moves with it — which is a 0.159
+          layout shift for a decoration nobody is reading. The band is the
+          hero's own minimum height, so it never reflows. */}
+      <div className="absolute inset-x-0 top-0 h-[92vh] pointer-events-none overflow-hidden">
         <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-neon-cyan/6 rounded-full blur-[120px]" />
         <div className="absolute top-1/3 -right-48 w-[500px] h-[500px] bg-neon-magenta/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-neon-green/4 rounded-full blur-[100px]" />
@@ -105,7 +110,7 @@ export default function Hero() {
           hero's thesis and the core carries the labels, so these drop back to
           ambient depth instead of reading as a second set of tags. They sit
           behind the transparent canvas, which is where the depth comes from. */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-[92vh] pointer-events-none overflow-hidden">
         {floatingChips.map((chip, i) => (
           <motion.div
             key={chip.label}

@@ -22,6 +22,7 @@ import { Component, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import useDeviceTier from '@/lib/useDeviceTier';
 import useInViewport from '@/lib/useInViewport';
+import useDocumentVisible from '@/lib/useDocumentVisible';
 
 const Canvas = dynamic(() => import('@react-three/fiber').then((m) => m.Canvas), {
   ssr: false,
@@ -68,6 +69,7 @@ export default function SceneCanvas({
 }) {
   const { tier, ready, webgl, reducedMotion, shouldAnimate } = useDeviceTier();
   const [ref, inViewport] = useInViewport();
+  const tabVisible = useDocumentVisible();
 
   // Until the mount heuristic has run we do not know what this device can do.
   // Rendering the fallback first and upgrading is the safe order: the reverse
@@ -94,7 +96,7 @@ export default function SceneCanvas({
           // Only drive frames when the scene is actually visible and motion is
           // wanted. 'demand' renders once and then only when invalidated, which
           // is exactly the right behaviour for a static or paused scene.
-          frameloop={inViewport && shouldAnimate && !reducedMotion ? 'always' : 'demand'}
+          frameloop={inViewport && tabVisible && shouldAnimate && !reducedMotion ? 'always' : 'demand'}
           gl={{ antialias: tier >= 2, powerPreference: 'high-performance' }}
           style={{ width: '100%', height: '100%' }}
           {...rest}
