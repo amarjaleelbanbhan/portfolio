@@ -189,7 +189,10 @@ function SignIn({ onSubmit, busy, message, tone }) {
         </form>
 
         <p className="mt-8 font-code text-[11px] text-slate-600">
-          <Link href="/" className="hover:text-teal-300 transition-colors">
+          <Link
+            href="/"
+            className="inline-flex min-h-[44px] items-center transition-colors hover:text-teal-300"
+          >
             ← back to the site
           </Link>
         </p>
