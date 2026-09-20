@@ -6,30 +6,30 @@
  * recorded. This writes the enquiry down.
  *
  * ── Where it goes ────────────────────────────────────────────────────────────
- * Into the existing `studio_leads` table, discriminated by `source`. A dedicated
- * `contact_messages` table is the right long-term shape and is scheduled for the
- * CMS database phase, but creating a table in a live project is a production
- * change, and this route deliberately does not need one: the columns it writes
- * are exactly the ones the Studio request flow has been writing since Phase 0.5,
- * so the insert path is already proven and the admin dashboard already reads it.
+ * Into `studio_leads`, through the one anonymous INSERT policy that exists. That
+ * policy's WITH CHECK pins `status` to `'new'` and `source` to
+ * `'studio_request'` and validates the intake columns, so a contact enquiry has
+ * to arrive in exactly that shape — confirmed by a live test, which rejected
+ * `source: 'contact:<category>'` with `401 / 42501`.
  *
  * ── Trust boundary ───────────────────────────────────────────────────────────
  * Everything below treats the request body as hostile. Types are coerced,
  * lengths are capped, the category is checked against the canonical list rather
- * than passed through, and the URL is parsed rather than pattern-matched. The
- * Supabase key used here is the publishable one — it is designed to be public,
- * and the table's RLS policy allows `anon` to INSERT and nothing else, which the
- * Phase 0.5 security review verified with live probes.
+ * than passed through, and the URL is parsed rather than pattern-matched.
+ *
+ * The payload is built field by field and the body is **never spread in**. The
+ * anonymous INSERT grant is table-wide, so the CRM columns added later —
+ * `priority`, `estimated_value_usd`, `internal_tags`, `next_follow_up_at` — are
+ * not independently constrained by the intake policy. An allowlist is the only
+ * thing standing between a stranger and filing themselves as an urgent lead.
+ *
+ * The key here is the *publishable* one, which is designed to be public and
+ * authorises nothing on its own. A secret key must never appear in this file.
  */
 import { contactCategories } from '@/content/contact';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CATEGORY_IDS = new Set(contactCategories.map((category) => category.id));
-
-// Same project and key as the Studio request flow. Publishable keys are public
-// by design; the protection is the row-level security policy behind them.
-const SUPABASE_URL = 'https://yokgnzxwrbymarjdfyhk.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_h1nOLJv7TuuOqbWkKbiMnQ_LkM8VdcX';
 
 /**
  * A form filled in faster than a human can read it is a bot.
@@ -180,59 +180,51 @@ export default async function handler(req, res) {
   const categoryLabel =
     contactCategories.find((entry) => entry.id === cleanCategory)?.label ?? cleanCategory;
 
+  /**
+   * An explicit allowlist, built field by field on the server.
+   *
+   * This is the only object that reaches the database, and every value in it is
+   * either validated above or a constant. The request body is never spread in.
+   * That matters more than it looks: the anonymous INSERT grant on
+   * `studio_leads` is table-wide, so the newer CRM columns — `priority`,
+   * `estimated_value_usd`, `internal_tags`, `next_follow_up_at` — are not
+   * independently constrained by the intake policy. A spread would let a
+   * stranger file themselves as an urgent $50,000 lead.
+   *
+   * `status` and `source` are fixed because the intake policy's WITH CHECK
+   * requires exactly `'new'` and `'studio_request'`. A live test in Phase 19
+   * confirmed that: `source: 'contact:<category>'` was rejected with
+   * `401 / 42501, new row violates row-level security policy`. The category is
+   * therefore carried as the first line of the message, where a human reading
+   * the enquiry sees it immediately.
+   *
+   * The cost is that contact enquiries cannot be told apart from Studio
+   * requests in SQL. `supabase/schema-reference.sql` carries the narrow policy
+   * change that would fix it properly.
+   */
   const payload = {
     name: cleanName.slice(0, 120),
     email: cleanEmail,
     company: String(organisation).trim().slice(0, 160) || null,
     website: cleanLink,
-    // `service` is the Studio's own vocabulary and a contact enquiry is not one
-    // of its options, so the category is carried in `source` and restated at the
-    // top of the message. That keeps this route inside the column shape the
-    // table has been accepting since Phase 0.5.
+    // Not one of the Studio's service options, and the intake policy validates
+    // this column, so the honest neutral value is the only correct one.
     service: 'not_sure',
     timeline: null,
-    problem: `[${categoryLabel}]\n\n${cleanMessage}`.slice(0, 5000),
-    source: `contact:${cleanCategory}`,
+    problem: `[Contact form — ${categoryLabel}]\n\n${cleanMessage}`.slice(0, 5000),
+    source: 'studio_request',
     status: 'new',
   };
 
   const insert = (body) =>
-    fetch(`${SUPABASE_URL}/rest/v1/studio_leads`, {
+    fetch(restUrl('studio_leads'), {
       method: 'POST',
-      headers: {
-        apikey: SUPABASE_PUBLISHABLE_KEY,
-        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
+      headers: anonHeaders({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
       body: JSON.stringify(body),
     });
 
   try {
-    let response = await insert(payload);
-
-    // The table's row-level security policy constrains what a row may contain,
-    // not just who may insert one: a live test showed `source: "contact:…"`
-    // rejected with 401 / 42501 ("new row violates row-level security policy")
-    // while the Studio flow's `source: "studio_request"` is accepted. So the
-    // policy's WITH CHECK pins that column.
-    //
-    // Retry with the value the policy accepts rather than lose the enquiry. The
-    // category is still the first line of the message either way, so nothing is
-    // actually lost — only the ability to filter on it in SQL, which is what a
-    // dedicated contact table will fix.
-    //
-    // 401 and 403 are both checked because PostgREST reports a WITH CHECK
-    // failure as 401, which is not the status a constraint violation suggests.
-    if ([400, 401, 403].includes(response.status)) {
-      const detail = await response.text();
-      console.warn(
-        'contact: the leads policy rejected the contact discriminator, retrying as studio_request',
-        response.status,
-        detail
-      );
-      response = await insert({ ...payload, source: 'studio_request' });
-    }
+    const response = await insert(payload);
 
     if (!response.ok) {
       console.error('contact: insert failed', response.status, await response.text());
