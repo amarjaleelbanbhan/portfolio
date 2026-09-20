@@ -154,8 +154,8 @@ function Crm({ session, setSession }) {
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {[
           { value: rows?.length ?? '—', label: 'enquiries', tone: '#5eead4' },
-          { value: counts.get('new') ?? 0, label: 'new, unread', tone: (counts.get('new') ?? 0) ? '#f59e0b' : '#64748b' },
-          { value: due, label: 'follow-ups due', tone: due ? '#f59e0b' : '#64748b' },
+          { value: counts.get('new') ?? 0, label: 'new, unread', tone: (counts.get('new') ?? 0) ? '#f59e0b' : '#8291aa' },
+          { value: due, label: 'follow-ups due', tone: due ? '#f59e0b' : '#8291aa' },
           {
             value: pipelineValue ? formatMoney(pipelineValue) : '—',
             label: 'open pipeline value',

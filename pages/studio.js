@@ -144,7 +144,7 @@ export default function Studio() {
           </nav>
         </header>
 
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <section className={styles.hero}>
             <div className={styles.heroGridGlow} aria-hidden="true" />
             <div className={styles.heroCopy}>

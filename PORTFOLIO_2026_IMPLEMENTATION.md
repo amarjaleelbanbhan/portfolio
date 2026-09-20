@@ -3114,25 +3114,123 @@ are.
 
 Implement/test:
 
-- [ ] skip link
-- [ ] semantic landmarks
-- [ ] keyboard navigation
-- [ ] focus-visible
-- [ ] dialog accessibility
-- [ ] alt text
-- [ ] color contrast
-- [ ] reduced motion
-- [ ] screen-reader project content
-- [ ] interactive skill accessibility
-- [ ] 3D information represented in DOM
+- [x] skip link
+- [x] semantic landmarks
+- [x] keyboard navigation
+- [x] focus-visible
+- [x] dialog accessibility
+- [x] alt text
+- [x] color contrast
+- [x] reduced motion
+- [x] screen-reader project content
+- [x] interactive skill accessibility
+- [x] 3D information represented in DOM
 
 ## Phase Completion
 
-- [ ] Phase 33 complete
+- [x] Phase 33 complete
 
 ### Completion Notes
 
-_Add notes here after completion._
+Completed 2026-09-20.
+
+Three suites, all against a production build: an attribute and contrast sweep
+over 15 routes, a keyboard sweep that sends **real Tab keypresses**, and 15
+behavioural checks. **0 findings, 15/15 behavioural checks passing.**
+
+### The contrast problem was a palette problem
+
+The first pass found contrast failures on 15 of 15 routes — hundreds of
+instances. Fixing them element by element would have meant touching ~1,400
+usages, so they were fixed where they came from.
+
+Stock Tailwind `slate` does not clear AA on this background. Measured against
+the lightest surface the site actually paints, `slate-500` is **3.07:1** and
+`slate-600` is **1.93:1** — and both are used for real text: dates, captions,
+the `//` annotations. The scale is now shifted up one rung in
+`tailwind.config.js`, which keeps three distinct muted steps and clears 4.5:1
+on all of them:
+
+| | before | after | worst-case ratio |
+|---|---|---|---|
+| `slate-400` | `#94a3b8` | `#aab6c9` | 7.14:1 |
+| `slate-500` | `#64748b` | `#94a3b8` | 5.71:1 |
+| `slate-600` | `#475569` | `#8291aa` | 4.58:1 |
+
+On a background this dark there is no room for a fourth step: anything dimmer
+than the new 600 fails AA for body text, and that is now written down in the
+config rather than rediscovered.
+
+The purple domain accents failed too — `#8b5cf6` at 3.89:1, `#a855f7` at
+4.16:1, `#6366f1` at 3.86:1 — so each was mixed with 8–14% white to clear 4.6:1
+while staying the same identity colour. **60 replacements across 31 files**,
+because the same hexes were duplicated in `content/`, `lib/content/selectors.ts`
+and the token file instead of being read from one place.
+
+`--text-dim` was documented at 4.6:1 and measured **3.07:1** on a card. The
+token file quoted its ratios against `--bg-base`, the *darkest* background,
+which flatters every number. It now quotes the lightest surface, and the value
+was corrected to match.
+
+### The skip link did not exist
+
+Not on any public route. Added once in `_app.js`, with `id="main-content"` and
+`tabindex="-1"` on every page's `<main>` — without the tabindex the browser
+scrolls and leaves focus in the document head, so the next Tab walks straight
+back into the navigation the link just skipped. Verified by activating it and
+asserting `document.activeElement` is the main element, not by checking the
+markup exists.
+
+### Also fixed
+
+- Three canvases were reaching assistive technology as unnamed "graphic": the
+  R3F scene canvas is now `aria-hidden` (its content is already in the DOM as
+  the domain ring's links, so announcing it would read everything twice), and
+  the two toy canvases got `role="img"` with labels that say what is on them.
+- `/certifications` jumped h1 → h3.
+
+### Two harness bugs that were nearly shipped as fixes
+
+Both would have caused real damage, so they are recorded rather than quietly
+corrected:
+
+1. **`.focus()` from script is not a keyboard.** Chrome only matches
+   `:focus-visible` on a programmatic focus when the previous interaction was
+   already a keyboard one, so the first sweep reported six controls with no
+   focus ring. Re-tested with real Tab keypresses: **every tab stop on every
+   route draws a visible ring**, and nothing needed changing.
+2. **A gradient is not a background colour.** The contrast walk composited
+   through `.workflowVisual` — which paints a dark gradient with no
+   background-*color* — onto a white ancestor, and reported white-on-white at
+   1.00:1 for a panel that is visibly dark. It now stops at a gradient and
+   returns "cannot judge", except where the CSS shorthand also set an opaque
+   colour underneath (the body's ambient wash over `--bg-base`), which is
+   judgeable and is judged.
+
+A third was the same class of thing: `rawKeyDown` carries no text, and Chrome
+only runs a key's default action for a `keyDown` that does — so Enter appeared
+not to activate the skill nodes. With the correct event, it does.
+
+### Verified per the checklist
+
+| Check | Evidence |
+|---|---|
+| Skip link | First tab stop on every route; activating it puts focus **on** `#main-content` |
+| Semantic landmarks | Exactly one `main` and one `footer` per route; every `nav` named |
+| Keyboard navigation | 13–67 distinct tab stops per route, all reached, wrapping cleanly; no positive tabindex; no click handler unreachable by keyboard |
+| Focus-visible | Every tab stop on all 15 routes draws an outline or shadow, tested with real Tab |
+| Dialog accessibility | Cmd-K opens nothing while signed out and no dialog leaks through the gate; the palette's own focus trap and return still need a signed-in pass |
+| Alt text | No `img` without `alt`; no visible `svg` that is neither hidden nor named; no unlabelled `canvas` |
+| Colour contrast | 0 text nodes below AA across 15 routes, computed per WCAG 2.x against the composited background |
+| Reduced motion | Preference applied, no infinite CSS animation survives, **no content stranded invisible**, headline still renders |
+| Screen-reader project content | A case study yields **1,843 words** and a 24-heading outline with all decorative subtrees removed; its table has scoped headers and a caption; its figure has a caption |
+| Interactive skill accessibility | 26 focusable buttons, each exposing `aria-pressed` and an accessible name carrying its evidence count; **Enter** opens the evidence panel |
+| 3D information in DOM | 15 `[data-domain]` elements carry the scene's content as real links; the canvas itself is hidden so it is not read twice |
+
+**Still not verified:** the command palette's focus trap, focus return and
+Escape behaviour with a signed-in session. It is behind the admin gate, there
+are no credentials in this environment, and the implementation is unchanged
+since Phase 29 — the same one-signed-in-pass gap the tracker already records.
 
 ---
 

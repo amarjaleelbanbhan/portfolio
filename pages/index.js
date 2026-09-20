@@ -39,7 +39,7 @@ export default function Home() {
         type="profile"
       />
       <Navbar />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <Hero />
 
         {/* ─── The engineering story ─── */}

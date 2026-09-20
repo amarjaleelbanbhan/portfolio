@@ -18,12 +18,12 @@ const PROOF = {
   'merged-pr': { label: 'Merged PR', color: '#22c55e' },
   // Grey, not green, and it never says "merged": an open request must not read
   // as a landed change anywhere on the site.
-  'pull-request': { label: 'Pull Request', color: '#64748b' },
+  'pull-request': { label: 'Pull Request', color: '#8291aa' },
   'package-release': { label: 'Package', color: '#14b8a6' },
   deployment: { label: 'Deployment', color: '#14b8a6' },
-  'research-result': { label: 'Research Result', color: '#a855f7' },
+  'research-result': { label: 'Research Result', color: '#af63f8' },
   ci: { label: 'CI', color: '#38bdf8' },
-  demo: { label: 'Demo', color: '#8b5cf6' },
+  demo: { label: 'Demo', color: '#986ef7' },
   'user-evidence': { label: 'User Evidence', color: '#f59e0b' },
 };
 

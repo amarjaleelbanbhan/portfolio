@@ -254,11 +254,11 @@ function Library({ session, setSession }) {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-code text-xs text-slate-200 m-0">{item.storage_path}</p>
                     <p className="mt-1 flex flex-wrap items-center gap-2 font-code text-[10px] uppercase tracking-wider m-0">
-                      <span style={{ color: isPublicBucket ? '#f59e0b' : '#64748b' }}>
+                      <span style={{ color: isPublicBucket ? '#f59e0b' : '#8291aa' }}>
                         {isPublicBucket ? 'public bucket' : 'private bucket'}
                       </span>
                       <span className="text-slate-600">{item.media_type}</span>
-                      <span style={{ color: item.is_published ? '#22c55e' : '#64748b' }}>
+                      <span style={{ color: item.is_published ? '#22c55e' : '#8291aa' }}>
                         {item.is_published ? 'published' : 'draft'}
                       </span>
                       {item.metadata?.restricted && <span className="text-amber-300">restricted</span>}

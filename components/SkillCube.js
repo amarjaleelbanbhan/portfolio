@@ -127,7 +127,7 @@ export default function SkillCube() {
       // what lets the observer below do its job at all.
       className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 shadow-inner shadow-black/30 overflow-hidden"
     >
-      <div ref={containerRef} className="w-full min-w-0" aria-label="3D rotating skill cube" />
+      <div ref={containerRef} className="w-full min-w-0" aria-hidden="true" />
       <p className="text-center text-sm text-slate-300 mt-3">Creative tech stack in motion</p>
     </div>
   );

@@ -99,7 +99,7 @@ export default function CaseStudy({ project, related }) {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           <article>
             <ProjectHero project={project} technologies={technologies} reduced={reduced} />
 

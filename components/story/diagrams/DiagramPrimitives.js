@@ -130,7 +130,7 @@ export function DiagramCaption({ x, y, children, anchor = 'middle', dim = true }
       y={y}
       textAnchor={anchor}
       className="font-code"
-      style={{ fontSize: 7, fill: dim ? '#64748b' : '#94a3b8', letterSpacing: '0.08em' }}
+      style={{ fontSize: 7, fill: dim ? '#8291aa' : '#94a3b8', letterSpacing: '0.08em' }}
     >
       {children}
     </text>

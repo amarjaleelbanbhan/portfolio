@@ -491,3 +491,42 @@ a {
     min-height: 44px;
   }
 }
+
+/* Skip link.
+ *
+ * Off-screen rather than `display: none`, because a hidden element is not
+ * focusable and a skip link that cannot be focused is not a skip link. It
+ * comes back on focus, over everything, in the accent so it is unmistakable.
+ *
+ * `#main-content` is `tabindex="-1"` on every page so the jump actually moves
+ * focus; without it the browser scrolls and leaves focus in the document
+ * head, and the next Tab returns to the navigation it just skipped.
+ */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  padding: 0.75rem 1.25rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--bg-base);
+  font-family: var(--font-code);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  box-shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.7);
+  transition: transform var(--duration-fast) var(--ease-out-expo);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+/* The target must not draw a ring when it is jumped to — it is a landmark
+   receiving focus programmatically, not a control someone tabbed onto. */
+#main-content:focus,
+#main-content:focus-visible {
+  outline: none;
+}

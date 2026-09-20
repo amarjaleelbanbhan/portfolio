@@ -185,7 +185,12 @@ export default function GravitySkills() {
       </div>
       <p className="text-gray-400 text-sm mb-3">Drag and throw the skill pills!</p>
       <div ref={containerRef} className="relative w-full rounded-lg overflow-hidden border border-white/10">
-        <canvas ref={canvasRef} className="w-full" />
+        <canvas
+          ref={canvasRef}
+          className="w-full"
+          role="img"
+          aria-label={`A physics toy: ${SKILLS.length} skill pills — ${SKILLS.join(', ')} — falling and colliding. The same technologies are listed as text in the skill galaxy above.`}
+        />
       </div>
     </div>
   );

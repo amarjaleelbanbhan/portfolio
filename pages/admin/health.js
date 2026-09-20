@@ -178,7 +178,7 @@ function Health({ session, setSession }) {
                   </td>
                   <td
                     className="px-4 py-2.5 text-right font-code tabular-nums"
-                    style={{ color: row.live ? '#22c55e' : '#64748b' }}
+                    style={{ color: row.live ? '#22c55e' : '#8291aa' }}
                   >
                     {row.live ?? '—'}
                   </td>

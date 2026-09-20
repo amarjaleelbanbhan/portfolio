@@ -12,7 +12,7 @@ export default function Custom404() {
         noindex
       />
       <Navbar />
-      <main className="flex-1 section-container flex flex-col items-center justify-center text-center gap-4">
+      <main id="main-content" tabIndex={-1} className="flex-1 section-container flex flex-col items-center justify-center text-center gap-4">
         <p className="text-accent font-semibold">404</p>
         <h1 className="text-4xl font-bold text-slate-100">Page not found</h1>
         <p className="text-slate-300 max-w-md">

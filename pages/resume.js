@@ -85,7 +85,7 @@ export default function Resume() {
           <Navbar />
         </div>
 
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           {/* ── Screen-only controls ── */}
           <div className="resume-chrome mb-8 flex flex-wrap items-center gap-3">
             <PrintButton />

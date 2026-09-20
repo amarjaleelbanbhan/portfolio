@@ -176,6 +176,8 @@ export default function SecretProject() {
               width={350}
               height={150}
               className="w-full"
+              role="img"
+              aria-label={`Two sine waves on a dark field: a green target wave and a cyan wave you tune with the sliders below. Current match ${matchPercentage}%.`}
             />
             {/* Match indicator */}
             <div className="absolute top-2 right-2 text-xs">

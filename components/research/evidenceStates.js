@@ -36,7 +36,7 @@ export const EVIDENCE_STATE = {
   'not-built': {
     label: 'Not built, or not run',
     short: 'Not built',
-    color: '#64748b',
+    color: '#8291aa',
     detail:
       'Planned, proposed or pre-registered, and not done. Listed so that absence is visible rather than inferred from silence.',
   },

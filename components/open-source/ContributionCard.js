@@ -23,8 +23,8 @@ import { fadeUp } from '@/lib/motion';
 
 const STATUS = {
   merged: { label: 'Merged', color: '#22c55e' },
-  open: { label: 'Open', color: '#64748b' },
-  closed: { label: 'Closed', color: '#64748b' },
+  open: { label: 'Open', color: '#8291aa' },
+  closed: { label: 'Closed', color: '#8291aa' },
 };
 
 export default function ContributionCard({ contribution, daysToMerge, reduced = false, index = 0 }) {

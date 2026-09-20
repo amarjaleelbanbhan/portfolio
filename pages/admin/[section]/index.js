@@ -166,7 +166,7 @@ function RecordList({ schema, session, setSession }) {
                       <span
                         className="font-code text-[10px] uppercase tracking-wider"
                         style={{
-                          color: live ? '#22c55e' : label === 'Draft' ? '#64748b' : '#f59e0b',
+                          color: live ? '#22c55e' : label === 'Draft' ? '#8291aa' : '#f59e0b',
                         }}
                       >
                         {label}

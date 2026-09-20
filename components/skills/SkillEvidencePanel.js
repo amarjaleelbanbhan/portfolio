@@ -21,7 +21,7 @@ import { duration, ease } from '@/lib/motion';
 
 const GROUPS = [
   { key: 'projects', label: 'Built into', color: '#14b8a6' },
-  { key: 'research', label: 'Used in research', color: '#a855f7' },
+  { key: 'research', label: 'Used in research', color: '#af63f8' },
   { key: 'contributions', label: 'Upstream contributions', color: '#22c55e' },
 ];
 

@@ -28,7 +28,7 @@ import { useIsWide } from '@/lib/useMediaQuery';
 import { duration, ease } from '@/lib/motion';
 
 const MERGED = '#22c55e';
-const PENDING = '#64748b';
+const PENDING = '#8291aa';
 
 /** Ring geometry, in percentages of the container box. */
 function ringPosition(index, total) {

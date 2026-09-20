@@ -57,7 +57,7 @@ export default function Research() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container" data-domain="research">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container" data-domain="research">
           {/* ── Introduction ── */}
           <motion.div {...fadeUp()} className="mb-10">
             <p className="section-label">{'// research'}</p>

@@ -288,7 +288,7 @@ export default function RecordEditor({ schema, cms, recordId, onSaved }) {
             <span
               aria-hidden="true"
               className="h-1.5 w-1.5 rounded-full"
-              style={{ background: live ? '#22c55e' : 'transparent', border: live ? 'none' : '1px solid #64748b' }}
+              style={{ background: live ? '#22c55e' : 'transparent', border: live ? 'none' : '1px solid #8291aa' }}
             />
             {visibilityLabel(saved)}
           </span>

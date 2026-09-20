@@ -90,7 +90,7 @@ export default function About() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           {/* ── Identity ── */}
           <section aria-labelledby="about-heading" className="mb-16">
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">

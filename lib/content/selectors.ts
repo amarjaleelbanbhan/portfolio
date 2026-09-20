@@ -853,10 +853,10 @@ export function getProductionSystemCount(): number {
 
 const DOMAIN_COLORS: Record<Domain, string> = {
   product: '#14b8a6',
-  ai: '#8b5cf6',
+  ai: '#986ef7',
   security: '#f59e0b',
   systems: '#38bdf8',
-  research: '#a855f7',
+  research: '#af63f8',
   'open-source': '#22c55e',
 };
 

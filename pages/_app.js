@@ -60,6 +60,18 @@ export default function App({ Component, pageProps }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
+      {/* Skip link. First thing in the tab order on every page, so a keyboard
+          or switch user is not made to walk the eleven navigation links before
+          reaching the content — on every route, every time.
+
+          The admin has its own, targeting its own main, so this one stays out
+          of its way rather than pointing at an id that is not there. */}
+      {chrome !== 'admin' && (
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+      )}
+
       {showBoot && <LoadingScreen onComplete={handleLoadingComplete} />}
 
       {isPortfolio && (

@@ -148,7 +148,7 @@ export default function ProjectArchitecture({ architecture, accent, reduced = fa
                       y={(a.y + b.y) / 2 - 5}
                       textAnchor="middle"
                       className="font-code"
-                      style={{ fontSize: 7, fill: '#64748b' }}
+                      style={{ fontSize: 7, fill: '#8291aa' }}
                     >
                       {flow.label}
                     </text>
@@ -194,7 +194,7 @@ export default function ProjectArchitecture({ architecture, accent, reduced = fa
                       y={pos.y + 10}
                       textAnchor="middle"
                       className="font-code"
-                      style={{ fontSize: 6.5, fill: '#64748b' }}
+                      style={{ fontSize: 6.5, fill: '#8291aa' }}
                     >
                       {node.detail.length > 24 ? `${node.detail.slice(0, 22)}…` : node.detail}
                     </text>

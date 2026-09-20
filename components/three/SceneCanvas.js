@@ -81,7 +81,13 @@ export default function SceneCanvas({
       style={{ zIndex: 'var(--z-base)', ...style }}
     >
       {canRender3D ? (
+        // The canvas is hidden from assistive technology on purpose: every
+        // scene here has its information in the DOM beside it — the domain
+        // ring is real links, the skill galaxy is real buttons — so announcing
+        // the canvas as well would read the same content twice, the second
+        // time as an unnamed "graphic".
         <SceneErrorBoundary fallback={fallback}>
+        <div aria-hidden="true" className="w-full h-full">
         <Canvas
           dpr={DPR[tier] ?? DPR[1]}
           camera={camera}
@@ -95,6 +101,7 @@ export default function SceneCanvas({
         >
           <Suspense fallback={null}>{children}</Suspense>
         </Canvas>
+        </div>
         </SceneErrorBoundary>
       ) : (
         fallback

@@ -175,7 +175,7 @@ export default function Contact() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container max-w-5xl">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container max-w-5xl">
           {/* ── Header ── */}
           <motion.div {...fadeUp()} className="mb-10">
             <p className="section-label">{'// reach out'}</p>

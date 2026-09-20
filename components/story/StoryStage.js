@@ -140,7 +140,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
                     aria-hidden="true"
                     className="w-1.5 h-1.5 rounded-full shrink-0"
                     style={{ background: c.status === 'merged' ? stage.color : 'transparent',
-                             border: c.status === 'merged' ? 'none' : '1px solid #64748b' }}
+                             border: c.status === 'merged' ? 'none' : '1px solid #8291aa' }}
                   />
                   <span className="font-code text-xs text-slate-300 group-hover:text-white transition-colors truncate">
                     {c.repository}
@@ -148,7 +148,7 @@ export default function StoryStage({ stage, index, showDiagram = false, reduced 
                   </span>
                   <span
                     className="font-code text-[10px] uppercase tracking-wider shrink-0"
-                    style={{ color: c.status === 'merged' ? stage.color : '#64748b' }}
+                    style={{ color: c.status === 'merged' ? stage.color : '#8291aa' }}
                   >
                     {c.status}
                   </span>

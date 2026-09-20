@@ -24,8 +24,8 @@ const ACTION_TONE = {
   delete: '#f87171',
   publish: '#22c55e',
   unpublish: '#f59e0b',
-  migrate: '#a855f7',
-  'publish-all': '#a855f7',
+  migrate: '#af63f8',
+  'publish-all': '#af63f8',
   'delete-media': '#f87171',
 };
 

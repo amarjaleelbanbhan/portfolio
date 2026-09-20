@@ -51,7 +51,7 @@ const totals = {
   evidence: graph.nodes.reduce((sum, node) => sum + node.evidenceCount, 0),
 };
 
-const LEARNING_COLORS = ['#8b5cf6', '#ef4444', '#f59e0b', '#14b8a6'];
+const LEARNING_COLORS = ['#986ef7', '#ef4444', '#f59e0b', '#14b8a6'];
 
 // Areas of current focus. Deliberately not modelled as skills: there is no
 // evidence to attach yet, and a skill in this model must point at real work.
@@ -99,7 +99,7 @@ export default function Skills() {
       />
       <div className="min-h-screen flex flex-col bg-transparent">
         <Navbar />
-        <main className="flex-1 section-container">
+        <main id="main-content" tabIndex={-1} className="flex-1 section-container">
           {/* ── Header ── */}
           <motion.div {...fadeUp()} className="mb-8">
             <p className="section-label">{'// capabilities'}</p>

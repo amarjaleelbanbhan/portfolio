@@ -8,6 +8,27 @@ export default {
   theme: {
     extend: {
       colors: {
+        /* Tailwind's own slate 400–600 do not clear WCAG AA on this palette.
+           Measured against the lightest surface the site actually paints
+           (--surface-3 over --bg-raised, and --bg-elevated itself), stock
+           slate-500 lands at 3.07:1 and slate-600 at 1.93:1 — and both are
+           used for real text: dates, captions, the `//` annotations.
+
+           The scale is shifted up one rung rather than recoloured, so the
+           three muted steps stay visually distinct and every one of them
+           clears 4.5:1 on the worst background:
+
+             400  #aab6c9   7.14:1
+             500  #94a3b8   5.71:1   (Tailwind's old 400)
+             600  #8291aa   4.58:1
+
+           There is no room for a fourth step below this: on a background
+           this dark, anything dimmer than 600 fails AA for body text. */
+        slate: {
+          400: "#aab6c9",
+          500: "#94a3b8",
+          600: "#8291aa",
+        },
         midnight: "#0f172a",
         "midnight-light": "#1e293b",
         "midnight-deep": "#07111f",

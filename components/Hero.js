@@ -33,7 +33,7 @@ const floatingChips = [
   { label: 'Python',          color: '#3b82f6', delay: 0   },
   { label: 'Next.js',         color: '#14b8a6', delay: 0.4 },
   { label: 'Flutter',         color: '#f97316', delay: 0.8 },
-  { label: 'TypeScript',      color: '#6366f1', delay: 1.2 },
+  { label: 'TypeScript',      color: '#797bf3', delay: 1.2 },
   { label: 'RAG',             color: '#d946ef', delay: 1.6 },
   { label: 'Supabase',        color: '#22c55e', delay: 2.0 },
   { label: 'Static Analysis', color: '#f59e0b', delay: 2.4 },

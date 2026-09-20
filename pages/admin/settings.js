@@ -160,7 +160,7 @@ function Settings({ session, setSession }) {
                 </label>
                 <span
                   className="font-code text-[10px] uppercase tracking-wider"
-                  style={{ color: isPublic ? '#f59e0b' : '#64748b' }}
+                  style={{ color: isPublic ? '#f59e0b' : '#8291aa' }}
                 >
                   {isPublic ? 'served publicly' : 'private'}
                 </span>

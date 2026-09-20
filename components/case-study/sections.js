@@ -166,7 +166,7 @@ export function TestEvidence({ items = [], accent }) {
               className="mt-1 w-2 h-2 rounded-full shrink-0"
               style={{
                 background: item.verified ? accent : 'transparent',
-                border: item.verified ? 'none' : '1px solid #64748b',
+                border: item.verified ? 'none' : '1px solid #8291aa',
               }}
             />
             <div className="min-w-0">
@@ -174,7 +174,7 @@ export function TestEvidence({ items = [], accent }) {
                 {item.label}
                 <span
                   className="ml-2 font-code text-[10px] uppercase tracking-wider"
-                  style={{ color: item.verified ? accent : '#64748b' }}
+                  style={{ color: item.verified ? accent : '#8291aa' }}
                 >
                   {item.verified ? 'evidenced' : 'not publicly evidenced'}
                 </span>

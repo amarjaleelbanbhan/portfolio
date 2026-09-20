@@ -113,7 +113,7 @@ export default function SpotlightGrid() {
         </div>
 
         <p
-          className="text-center text-gray-600 text-xs mt-6 transition-opacity duration-300"
+          className="text-center text-slate-600 text-xs mt-6 transition-opacity duration-300"
           style={{ opacity: isHovering ? 0 : 1 }}
         >
           Move your mouse to reveal the tech stack
