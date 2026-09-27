@@ -1,0 +1,133 @@
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  isolation: isolate;
+  background: #060d19;
+  color: #f6f8fb;
+}
+
+.art, .approach, .image, .shade { position: absolute; inset: 0; }
+.art { overflow: hidden; }
+.approach {
+  background: #071221 url('/images/intro-amar-approach.webp') center center / cover no-repeat;
+  animation: approach 4.3s ease-in-out both;
+}
+.image {
+  background: #071221 url('/images/intro-amar-2d.webp') center center / cover no-repeat;
+  transform-origin: 78% 50%;
+  animation: sceneMove 4.3s cubic-bezier(.25,.65,.36,1) both;
+}
+.shade {
+  pointer-events: none;
+  background: linear-gradient(180deg, #06101ed9 0%, transparent 20%, transparent 65%, #060d19d9 100%);
+}
+.powerLight {
+  position: absolute;
+  left: 80.4%;
+  top: 69%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #bffffa;
+  box-shadow: 0 0 22px 8px #38e8db, 0 0 65px 22px #38e8db60;
+  animation: switchOn 4.3s both;
+}
+.screenLight {
+  position: absolute;
+  right: 8%;
+  top: 15%;
+  width: 25%;
+  height: 55%;
+  border-radius: 50%;
+  background: #39dacc55;
+  filter: blur(70px);
+  animation: switchOn 4.3s both;
+}
+.topline {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 4vh, 2.5rem) clamp(1rem, 5vw, 4rem);
+}
+.brand {
+  font: 700 .72rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .16em;
+  text-shadow: 0 1px 10px #000;
+}
+.brand span { color: #43e6d6; }
+.skip {
+  flex: none;
+  min-height: 44px;
+  border: 1px solid #c1e9e8a3;
+  border-radius: 999px;
+  padding: .65rem 1.1rem;
+  background: #06101ee8;
+  color: white;
+  font-size: .875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 180ms, color 180ms;
+}
+.skip:hover, .skip:focus-visible { background: #63ecdc; color: #04131e; }
+.skip:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+.skip span { margin-left: .3rem; }
+.caption {
+  position: absolute;
+  left: clamp(1rem, 5vw, 4rem);
+  bottom: clamp(2rem, 8vh, 5rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  font: 600 clamp(.8rem, 1.5vw, 1.08rem)/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .03em;
+  text-shadow: 0 2px 15px #000;
+  animation: captionIn 900ms 1.1s both;
+}
+.caption p { margin: 0; }
+.line { width: 2rem; height: 1px; background: #55e9da; box-shadow: 0 0 12px #55e9da; }
+.progress { position: absolute; inset: auto 0 0; height: 3px; background: #ffffff24; }
+.progress span { display: block; width: 100%; height: 100%; transform-origin: left; background: linear-gradient(90deg, #51b7ff, #9f79ed, #f0aa68, #4be0d2); animation: progress 4.3s linear both; }
+.leaving { animation: depart 350ms ease-out forwards; }
+
+@keyframes sceneMove {
+  0%, 25% { opacity: 0; filter: brightness(.46); transform: scale(1.02); }
+  38% { opacity: 1; filter: brightness(.52); transform: scale(1); }
+  62% { filter: brightness(1); transform: scale(1.04); }
+  78% { filter: brightness(1); transform: scale(1.1); }
+  100% { filter: brightness(1.08); transform: scale(1.8); }
+}
+@keyframes approach {
+  0% { opacity: 0; filter: brightness(.5); transform: scale(1.08) translateX(-1%); }
+  12% { opacity: 1; }
+  28% { opacity: 1; filter: brightness(.9); transform: scale(1) translateX(0); }
+  41%, 100% { opacity: 0; }
+}
+@keyframes switchOn { 0%, 35% { opacity: 0; } 41% { opacity: 1; } 46% { opacity: .4; } 51%, 100% { opacity: 1; } }
+@keyframes captionIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes depart { to { opacity: 0; visibility: hidden; } }
+
+@media (max-width: 640px) {
+  .approach { background-position: 35% center; }
+  .image { background-position: 29% center; transform-origin: 80% center; animation-name: mobileMove; }
+  .powerLight, .screenLight { display: none; }
+  .brand { max-width: 9rem; font-size: .6rem; letter-spacing: .1em; }
+  .caption { right: 1.25rem; font-size: .82rem; }
+  @keyframes mobileMove {
+    0%, 25% { opacity: 0; filter: brightness(.46); background-position: 29% center; transform: scale(1.02); }
+    38% { opacity: 1; filter: brightness(.52); background-position: 29% center; transform: scale(1); }
+    62% { filter: brightness(1); background-position: 65% center; transform: scale(1); }
+    100% { filter: brightness(1.08); background-position: 73% center; transform: scale(1.35); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene, .scene * { animation: none !important; transition: none !important; }
+}
