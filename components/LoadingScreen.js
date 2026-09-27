@@ -1,42 +1,68 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './LoadingScreen.module.css';
 
-const DURATION = 4300;
-const EXIT_DURATION = 350;
+const DURATION = 7800;
+const EXIT_DURATION = 550;
+const diagnostics = [
+  { command: 'verify --display', check: () => window.matchMedia('(min-width: 0px)').matches },
+  { command: 'verify --assets', check: async () => {
+    const image = new Image();
+    image.src = '/images/intro-amar-room.webp';
+    await image.decode();
+    return image.naturalWidth > 0;
+  } },
+  { command: 'verify --fonts', check: async () => {
+    await document.fonts.ready;
+    return document.fonts.status === 'loaded';
+  } },
+  { command: 'verify --portfolio', check: () => Boolean(document.querySelector('main')) },
+];
 
-/** A short illustrated scene, then a camera move into the live homepage. */
+/** A continuous illustrated scene; the boot readout performs browser checks. */
 export default function LoadingScreen({ onComplete }) {
   const [leaving, setLeaving] = useState(false);
+  const [lines, setLines] = useState([]);
   const skipRef = useRef(null);
   const finished = useRef(false);
-  const sceneTimer = useRef(null);
-  const exitTimer = useRef(null);
+  const timers = useRef([]);
   const complete = useRef(onComplete);
 
-  useEffect(() => {
-    complete.current = onComplete;
-  }, [onComplete]);
+  useEffect(() => { complete.current = onComplete; }, [onComplete]);
 
   const finish = useCallback((immediate = false) => {
     if (finished.current) return;
     finished.current = true;
-    clearTimeout(sceneTimer.current);
-    if (immediate) {
-      complete.current();
-    } else {
+    timers.current.forEach(clearTimeout);
+    if (immediate) complete.current();
+    else {
       setLeaving(true);
-      exitTimer.current = setTimeout(() => complete.current(), EXIT_DURATION);
+      timers.current.push(setTimeout(() => complete.current(), EXIT_DURATION));
     }
   }, []);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const reducedMotionTimer = setTimeout(() => finish(true), 0);
-      return () => clearTimeout(reducedMotionTimer);
+      const timer = setTimeout(() => finish(true), 0);
+      return () => clearTimeout(timer);
     }
-
+    let active = true;
+    const scheduled = timers.current;
     skipRef.current?.focus({ preventScroll: true });
-    sceneTimer.current = setTimeout(() => finish(), DURATION);
+    diagnostics.forEach(({ command, check }, index) => {
+      scheduled.push(setTimeout(async () => {
+        if (!active || finished.current) return;
+        setLines((current) => [...current, { command, status: 'RUNNING' }]);
+        try {
+          const result = await check();
+          if (active && !finished.current) setLines((current) => current.map((line) =>
+            line.command === command ? { command, status: result ? 'OK' : 'WAIT' } : line));
+        } catch {
+          if (active && !finished.current) setLines((current) => current.map((line) =>
+            line.command === command ? { command, status: 'WAIT' } : line));
+        }
+      }, 3000 + index * 590));
+    });
+    scheduled.push(setTimeout(() => finish(), DURATION));
     const onKeyDown = (event) => {
       if (event.key === 'Escape') finish(true);
       if (event.key === 'Tab') {
@@ -46,32 +72,46 @@ export default function LoadingScreen({ onComplete }) {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
+      active = false;
       window.removeEventListener('keydown', onKeyDown);
-      clearTimeout(sceneTimer.current);
-      clearTimeout(exitTimer.current);
+      scheduled.forEach(clearTimeout);
     };
   }, [finish]);
 
+  const readout = (
+    <div className={styles.terminal}>
+      <div className={styles.terminalHead}>AMAR / STARTUP <span className={styles.cursor}>_</span></div>
+      <div className={styles.log}>
+        {lines.map(({ command, status }) => (
+          <div key={command} className={styles.logLine}>
+            <span><span className={styles.prompt}>$</span> {command}</span>
+            <span className={status === 'OK' ? styles.ok : styles.pending}>{status}</span>
+          </div>
+        ))}
+      </div>
+      <span className={styles.terminalFoot}>portfolio://amarjaleel.me</span>
+    </div>
+  );
+
   return (
     <div className={`${styles.scene} ${leaving ? styles.leaving : ''}`} role="dialog" aria-modal="true" aria-label="Portfolio opening">
-      <div className={styles.art} aria-hidden="true">
-        {/* The illustration is decorative; the live portfolio supplies the content. */}
-        <div className={styles.approach} />
-        <div className={styles.image} />
-        <span className={styles.powerLight} />
-        <span className={styles.screenLight} />
+      <div className={styles.stage} aria-hidden="true">
+        <div className={styles.room} />
+        <div className={styles.character}>
+          <div className={styles.base} />
+          <div className={styles.walk} />
+          <div className={styles.press} />
+        </div>
+        <div className={styles.deskForeground} />
+        <div className={styles.powerLight} />
+        <div className={styles.monitor}>{readout}</div>
+        <div className={styles.screenGlow} />
       </div>
-      <div className={styles.shade} aria-hidden="true" />
       <div className={styles.topline}>
         <span className={styles.brand}>AMAR JALEEL <span aria-hidden="true">✳</span> PORTFOLIO</span>
-        <button ref={skipRef} type="button" className={styles.skip} onClick={() => finish(true)}>
-          Skip intro <span aria-hidden="true">↗</span>
-        </button>
+        <button ref={skipRef} type="button" className={styles.skip} onClick={() => finish(true)}>Skip intro <span aria-hidden="true">↗</span></button>
       </div>
-      <div className={styles.caption}>
-        <span className={styles.line} />
-        <p>One idea. One switch. A world of work.</p>
-      </div>
+      <div className={styles.mobileReadout} aria-hidden="true">{readout}</div>
       <div className={styles.progress} aria-hidden="true"><span /></div>
     </div>
   );
