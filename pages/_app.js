@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { MotionConfig } from 'framer-motion';
 import { chromeFor, useBootAlreadyPlayed, markBootPlayed } from '@/lib/routeChrome';
+import PortfolioMascot from '@/components/PortfolioMascot';
 
 const LoadingScreen = dynamic(() => import('../components/LoadingScreen'), { ssr: false });
 const ParticleNetwork = dynamic(() => import('../components/ParticleNetwork'), { ssr: false });
@@ -83,6 +84,7 @@ export default function App({ Component, pageProps }) {
       )}
 
       <Component {...pageProps} />
+      {isPortfolio && <PortfolioMascot />}
     </MotionConfig>
   );
 }
