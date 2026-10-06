@@ -584,33 +584,58 @@ a {
 .portfolio-mascot-orbit {
   position: relative;
   display: grid;
-  flex: 0 0 94px;
-  width: 94px;
-  height: 94px;
+  flex: 0 0 108px;
+  width: 108px;
+  height: 108px;
   place-items: center;
   isolation: isolate;
 }
 .portfolio-mascot-orbit__ring {
   position: absolute;
-  inset: 2px;
-  z-index: -1;
+  inset: 0;
+  z-index: 0;
+  border: 1px solid rgba(94, 234, 212, 0.16);
   border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0 18%, rgba(20, 184, 166, 0.72) 28%, rgba(217, 70, 239, 0.48) 56%, rgba(34, 197, 94, 0.42) 76%, transparent 92%);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
+  background: conic-gradient(
+    from 0deg,
+    rgba(20, 184, 166, 0.08) 0deg,
+    rgba(45, 212, 191, 0.9) 38deg,
+    rgba(20, 184, 166, 0.2) 74deg,
+    transparent 118deg 166deg,
+    rgba(217, 70, 239, 0.72) 208deg,
+    rgba(34, 197, 94, 0.52) 250deg,
+    transparent 292deg 326deg,
+    rgba(20, 184, 166, 0.08) 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  filter: drop-shadow(0 0 4px rgba(45, 212, 191, 0.24));
   animation: mascot-orbit-spin 30s linear infinite;
   pointer-events: none;
 }
 .portfolio-mascot-orbit__ring--inner {
   inset: 7px;
-  opacity: 0.65;
-  transform: rotate(180deg);
+  opacity: 0.88;
+  border-color: rgba(94, 234, 212, 0.08);
+  background: conic-gradient(
+    from 180deg,
+    transparent 0deg 26deg,
+    rgba(45, 212, 191, 0.86) 48deg,
+    rgba(45, 212, 191, 0.12) 86deg,
+    transparent 118deg 250deg,
+    rgba(217, 70, 239, 0.58) 286deg,
+    transparent 318deg 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 0.8px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 0.8px));
+  filter: drop-shadow(0 0 3px rgba(20, 184, 166, 0.22));
   animation-duration: 15s;
   animation-direction: reverse;
 }
 .portfolio-mascot-orbit__dot {
   position: absolute;
   inset: 0;
+  z-index: 2;
   border-radius: 50%;
   animation: mascot-orbit-spin 8s linear infinite;
   pointer-events: none;
@@ -642,6 +667,7 @@ a {
 }
 .portfolio-mascot-anchor {
   position: relative;
+  z-index: 1;
   flex: 0 0 76px;
   width: 76px;
   aspect-ratio: 1;

@@ -16,6 +16,15 @@ const SUGGESTIONS = [
   'What has he contributed to?',
 ];
 
+const PRESET_FALLBACKS = {
+  'What is Amar building?':
+    'Amar builds across product engineering, AI, security, and systems. His current portfolio highlights RODIFT, a field-reporting platform in production; VeriPatch, a released npm tool for verifying security fixes; KnowledgeGuard, a completed controlled RAG study; and Emergency Mesh, which is in active development.',
+  'Tell me about his research':
+    'Amar’s completed KnowledgeGuard study tested whether a RAG system can classify deficient evidence and use that diagnosis to choose a repair. Oracle routing improved F1 by 6.6 points, but routing from a real detector scored below a type-agnostic approach, so the result does not yet show a practical benefit. The study also reports limits around one corpus and an unfinished replication.',
+  'What has he contributed to?':
+    'Amar has six merged upstream pull requests across Pydantic AI, Promptfoo, Academy Software Foundation’s DNA, MCP-Audit/MCTS, and loop-engineering. The work includes a message-ordering fix with regression coverage, per-test repeat support, safer command execution, and more accurate cost estimates.',
+};
+
 export default function PortfolioMascot() {
   const { asPath } = useRouter();
   const [direction, setDirection] = useState([1, 1]);
@@ -170,9 +179,15 @@ export default function PortfolioMascot() {
       if (!response.ok) throw new Error(data.error || 'I could not answer just now. Please try again.');
       setMessages((current) => [...current, { role: 'assistant', text: data.reply }]);
     } catch (error) {
+      const fallback = PRESET_FALLBACKS[suggestedText];
       setMessages((current) => [
         ...current,
-        { role: 'assistant', text: error.message || 'I could not answer just now. Please try again.' },
+        {
+          role: 'assistant',
+          text: fallback
+            ? `${fallback}\n\nGemini is unavailable right now; this answer comes from Amar’s published portfolio.`
+            : error.message || 'I could not answer just now. Please try again.',
+        },
       ]);
     } finally {
       setBusy(false);
