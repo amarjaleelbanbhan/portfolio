@@ -170,7 +170,7 @@ export default function ContributionCard({ contribution, daysToMerge, reduced = 
 
       {contribution.issueRef && (
         <p className="font-code text-[10px] text-slate-600 mt-2 m-0">
-          {`// resolves ${contribution.repository}${contribution.issueRef}`}
+          {`Related issue: ${contribution.repository}${contribution.issueRef}`}
         </p>
       )}
     </motion.article>

@@ -187,4 +187,31 @@ export const researchProjects: ResearchProject[] = [
     projectSlug: 'scar-os',
     proof: [],
   },
+  {
+    id: 'res-ilp-runtime',
+    slug: 'ilp-runtime',
+    title: 'ILP — Declarative Interactive Learning Runtime',
+    status: 'active',
+    category: 'research-engineering',
+    publicStage: 'Experimental runtime built — evaluation pending',
+    researchQuestion:
+      'Can externally authored declarative lessons run on one unchanged runtime while remaining valid, interactive, and faithful to the source material?',
+    method:
+      'Separate lesson definitions from runtime implementation; validate schemas, references, expressions, and actions; exercise reusable renderers with four example lessons.',
+    limitations: [
+      'No authoring-reliability or learning-effectiveness results yet.',
+      'Known validation and rendering edge cases remain in the experimental runtime.',
+      'Working example lessons and regression tests do not establish authoring reliability or educational benefit.',
+    ],
+    futureWork: [
+      'Run the external lesson-authoring experiment against the unchanged runtime.',
+      'Evaluate learning effectiveness with learners after runtime hardening.',
+    ],
+    source: {
+      visibility: 'private',
+      label: 'Private repository',
+    },
+    projectSlug: 'ilp',
+    proof: [],
+  },
 ];

@@ -3,7 +3,7 @@ import type { OpenSourceContribution } from './types';
 /**
  * Upstream contributions.
  *
- * Every entry was re-verified against the GitHub API on 2026-09-20 — state,
+ * Every entry was re-verified against the GitHub API on 2026-10-06 — state,
  * merge flag, merge date, open date, author, title and diff size all read from
  * `/repos/{owner}/{repo}/pulls/{n}` and its `files` collection. This file is the
  * cached result, so the public site never depends on GitHub being reachable at
@@ -57,7 +57,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Merged upstream',
         sourceUrl: 'https://github.com/pydantic/pydantic-ai/pull/5969',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
       },
     ],
   },
@@ -109,7 +109,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Merged upstream',
         sourceUrl: 'https://github.com/promptfoo/promptfoo/pull/9781',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
       },
     ],
   },
@@ -147,7 +147,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Merged upstream',
         sourceUrl: 'https://github.com/cobusgreyling/loop-engineering/pull/395',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
       },
     ],
   },
@@ -193,7 +193,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Merged upstream',
         sourceUrl: 'https://github.com/cobusgreyling/loop-engineering/pull/437',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
       },
     ],
   },
@@ -235,7 +235,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Merged upstream',
         sourceUrl: 'https://github.com/MCP-Audit/MCTS/pull/233',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
       },
     ],
   },
@@ -276,7 +276,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Merged upstream',
         sourceUrl: 'https://github.com/AcademySoftwareFoundation/dna/pull/195',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
       },
     ],
   },
@@ -298,7 +298,7 @@ export const openSourceContributions: OpenSourceContribution[] = [
       'Core suite 75/75 and native suite 173/173 passing; the core workspace typecheck clean.',
     ],
     issueRef: '#58',
-    // Open, not merged. Re-checked against the API on 2026-09-20: state "open",
+    // Open, not merged. Re-checked against the API on 2026-10-06: state "open",
     // merged false, merged_at null.
     status: 'open',
     openedAt: '2026-07-26',
@@ -322,7 +322,319 @@ export const openSourceContributions: OpenSourceContribution[] = [
         label: 'Open upstream pull request',
         sourceUrl: 'https://github.com/shaal/eye-tracker/pull/61',
         verified: true,
-        asOf: '2026-09-20',
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  // Verified additions from the October 2026 synchronization.
+  {
+    id: 'oss-docling-4367',
+    title: 'Preserve mixed and numeric chart headers',
+    summary:
+      'Fixed chart-table header detection for mixed and numeric labels, corrected row-header classification, and added regression coverage for ambiguous numeric data and blank cells.',
+    problem:
+      'Chart extraction read CSV headers as ordinary rows. A numeric series label made the header detector reject the whole row, while textual body values outside the first column could be misclassified as row headers.',
+    change:
+      'Recognized mixed headers and monotone integer year/index headers when the following data row has a different pattern. Preserved ambiguous numeric-only grids, restricted row headers to non-blank textual cells in the first column, and normalized blank header cells. Review-driven regression cases cover the boundary conditions.',
+    verification: [
+      'Regression tests cover mixed and numeric headers, numeric-only data, blank header cells, textual body cells, and empty tables.',
+      'Maintainers reviewed the header heuristics and blank-cell handling; the inspected lint, core/ML test and build checks completed successfully. The fix was merged upstream.',
+    ],
+    issueRef: '#4346',
+    languages: ['Python'],
+    areas: ['AI', 'Data Analysis', 'Regression Tests'],
+    repository: 'docling-project/docling',
+    organization: 'docling-project',
+    prNumber: 4367,
+    url: 'https://github.com/docling-project/docling/pull/4367',
+    status: 'merged',
+    openedAt: '2026-09-24',
+    mergedAt: '2026-09-28',
+    diff: {
+      files: 2,
+      additions: 132,
+      deletions: 4,
+      paths: [
+        {
+          path: 'docling/models/stages/chart_extraction/granite_vision.py',
+          additions: 36,
+          deletions: 4,
+        },
+        {
+          path: 'tests/test_chart_extraction_tabledata.py',
+          additions: 96,
+          deletions: 0,
+        },
+      ],
+    },
+    proof: [
+      {
+        id: 'oss-docling-4367-merged',
+        type: 'merged-pr',
+        label: 'Merged upstream',
+        sourceUrl: 'https://github.com/docling-project/docling/pull/4367',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'oss-sktime-11379',
+    title: 'Fix benchmark CSV reloads with pandas time indexes',
+    summary:
+      'Proposed a restricted parser for benchmark CSV reloads containing pandas time indexes, with resume, round-trip, and rejected-call regression tests.',
+    problem:
+      'ForecastingBenchmark(return_data=True) stores fold data as pandas tight-dictionary representations. Period and Timestamp values cannot be read by ast.literal_eval, so running a benchmark again against an existing results CSV fails.',
+    change:
+      'Added a recursive AST parser permitting only Period and Timestamp constructors with literal arguments. Other calls, attribute access and argument expansion remain rejected, and the CSV format stays unchanged. Added storage round trips and a benchmark-resume regression.',
+    verification: [
+      'The PR documents test_forecastingbenchmark_resume_with_return_data failing on the pre-fix implementation and passing with the change.',
+      'Round-trip tests cover period, datetime, timezone-aware and hierarchical indexes; rejection tests cover disallowed expressions.',
+      'The current upstream PR is open. Local results documented in the request are not a completed upstream CI or merge outcome.',
+    ],
+    issueRef: '#11372',
+    languages: ['Python'],
+    areas: ['Developer Tools', 'Data Analysis', 'Regression Tests'],
+    repository: 'sktime/sktime',
+    organization: 'sktime',
+    prNumber: 11379,
+    url: 'https://github.com/sktime/sktime/pull/11379',
+    status: 'open',
+    openedAt: '2026-10-04',
+    diff: {
+      files: 4,
+      additions: 133,
+      deletions: 1,
+      paths: [
+        {
+          path: '.all-contributorsrc',
+          additions: 11,
+          deletions: 0,
+        },
+        {
+          path: 'sktime/benchmarking/_storage_handlers.py',
+          additions: 37,
+          deletions: 1,
+        },
+        {
+          path: 'sktime/benchmarking/tests/test_forecasting.py',
+          additions: 30,
+          deletions: 0,
+        },
+        {
+          path: 'sktime/benchmarking/tests/test_storage_handlers.py',
+          additions: 55,
+          deletions: 0,
+        },
+      ],
+    },
+    proof: [
+      {
+        id: 'oss-sktime-11379-open',
+        type: 'pull-request',
+        label: 'Open upstream pull request',
+        sourceUrl: 'https://github.com/sktime/sktime/pull/11379',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'oss-promptfoo-11058',
+    title: 'Preserve colons in fal image model IDs',
+    summary:
+      'Proposed preserving colon-delimited fal image model IDs by reusing the shared provider-path parser, with a focused registry regression test.',
+    problem:
+      'The fal image provider registry truncated fal:image:fal-ai/flux:v2 to fal-ai/flux, discarding a meaningful part of the model identifier.',
+    change:
+      'Reused modelNameFromProviderPath for the fal image registry route and added its colon-suffix case to the registry tests. After other provider routes were fixed upstream, the request was narrowed during maintainer collaboration to this remaining fal route.',
+    verification: [
+      'The PR documents its registry regression failing without the source change and passing with it.',
+      'The PR records 614 passing tests across the registry, fal, openclaw and shared provider suites, plus tsc --noEmit and Biome checks.',
+      'Inspected current-head checks completed successfully, but the request remains open and is not counted as merged.',
+    ],
+    issueRef: '#11056',
+    languages: ['TypeScript'],
+    areas: ['AI', 'Developer Tools', 'Regression Tests'],
+    repository: 'promptfoo/promptfoo',
+    organization: 'promptfoo',
+    prNumber: 11058,
+    url: 'https://github.com/promptfoo/promptfoo/pull/11058',
+    status: 'open',
+    openedAt: '2026-09-24',
+    diff: {
+      files: 2,
+      additions: 6,
+      deletions: 2,
+      paths: [
+        {
+          path: 'src/providers/registry.ts',
+          additions: 5,
+          deletions: 2,
+        },
+        {
+          path: 'test/providers/registry.test.ts',
+          additions: 1,
+          deletions: 0,
+        },
+      ],
+    },
+    proof: [
+      {
+        id: 'oss-promptfoo-11058-open',
+        type: 'pull-request',
+        label: 'Open upstream pull request',
+        sourceUrl: 'https://github.com/promptfoo/promptfoo/pull/11058',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'oss-sktime-11259',
+    title: 'Guard NeuralProphet against unsupported pandas versions',
+    summary:
+      'Added a temporary pandas version guard for NeuralProphet and a regression test for its declared dependency requirement.',
+    problem:
+      'The upstream NeuralProphet implementation uses APIs removed by pandas 3. Allowing that version in the optional forecaster\'s environment caused failures, and replacing one call in sktime would not repair the broader upstream incompatibility.',
+    change:
+      'Added pandas<3 to the forecaster\'s soft-dependency tag and documented the temporary requirement. The constraint applies to NeuralProphet alone, not sktime\'s core dependency, and does not claim pandas 3 compatibility.',
+    verification: [
+      'Added test_neuralprophet_pandas_version_requirement to check that the declared requirement accepts pandas 2 and rejects pandas 3.',
+      'The PR explicitly states the full NeuralProphet suite was not run locally. Upstream merge verifies acceptance of the guard, not a repair of every forecaster tracked by the issue.',
+    ],
+    issueRef: '#11228',
+    languages: ['Python'],
+    areas: ['Infrastructure', 'Regression Tests'],
+    repository: 'sktime/sktime',
+    organization: 'sktime',
+    prNumber: 11259,
+    url: 'https://github.com/sktime/sktime/pull/11259',
+    status: 'merged',
+    openedAt: '2026-09-22',
+    mergedAt: '2026-09-22',
+    diff: {
+      files: 2,
+      additions: 28,
+      deletions: 0,
+      paths: [
+        {
+          path: 'sktime/forecasting/neuralprophet.py',
+          additions: 7,
+          deletions: 0,
+        },
+        {
+          path: 'sktime/forecasting/tests/test_neuralprophet.py',
+          additions: 21,
+          deletions: 0,
+        },
+      ],
+    },
+    proof: [
+      {
+        id: 'oss-sktime-11259-merged',
+        type: 'merged-pr',
+        label: 'Merged upstream',
+        sourceUrl: 'https://github.com/sktime/sktime/pull/11259',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'oss-sktime-11381',
+    title: 'Enable SupervisedIntervals parameter coverage without numba',
+    summary:
+      'Added a dependency-free SupervisedIntervals test configuration and removed exclusions that skipped parameter-coverage checks.',
+    problem:
+      'Without numba, SupervisedIntervals.get_test_params() returned only one configuration, leaving test_get_test_params_coverage skipped and the estimator in the soft-dependency exclusion list.',
+    change:
+      'Added a second configuration using one interval, a fixed split point and minimum interval length four. Kept both numba-dependent configurations and removed the skip tag and exclusion entry. Estimator behaviour is unchanged.',
+    verification: [
+      'No new tests were added: the existing estimator and parameter-coverage checks exercise the additional configuration.',
+      'The PR was merged upstream. Inspected checks also contain full-suite, optional-estimator and dependency-monitor failures, so acceptance is not described as every CI job passing.',
+    ],
+    issueRef: '#3429',
+    languages: ['Python'],
+    areas: ['Developer Tools', 'Regression Tests'],
+    repository: 'sktime/sktime',
+    organization: 'sktime',
+    prNumber: 11381,
+    url: 'https://github.com/sktime/sktime/pull/11381',
+    status: 'merged',
+    openedAt: '2026-10-04',
+    mergedAt: '2026-10-04',
+    diff: {
+      files: 2,
+      additions: 10,
+      deletions: 11,
+      paths: [
+        {
+          path: 'sktime/tests/_config.py',
+          additions: 0,
+          deletions: 1,
+        },
+        {
+          path: 'sktime/transformations/supervised_intervals.py',
+          additions: 10,
+          deletions: 10,
+        },
+      ],
+    },
+    proof: [
+      {
+        id: 'oss-sktime-11381-merged',
+        type: 'merged-pr',
+        label: 'Merged upstream',
+        sourceUrl: 'https://github.com/sktime/sktime/pull/11381',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'oss-sktime-11380',
+    title: 'Document TimeSeriesAgglomerativeClustering with a doctest',
+    summary:
+      'Added an executable TimeSeriesAgglomerativeClustering example showing cluster labels and linkage-matrix output.',
+    problem:
+      'TimeSeriesAgglomerativeClustering had no Examples section demonstrating the input shape or the fitted outputs.',
+    change:
+      'Added a short doctest clustering four univariate series with Euclidean distance and showing labels_ and linkage_matrix_. No algorithm or estimator behaviour changed.',
+    verification: [
+      'No new test suite was added; the example is exercised by the existing test_class_has_doctest_example and test_doctest_examples checks.',
+      'The PR was merged upstream. The inspected dependency upper-bound monitor failed, so the record does not claim universal CI success.',
+    ],
+    issueRef: '#10782',
+    languages: ['Python'],
+    areas: ['Documentation'],
+    repository: 'sktime/sktime',
+    organization: 'sktime',
+    prNumber: 11380,
+    url: 'https://github.com/sktime/sktime/pull/11380',
+    status: 'merged',
+    openedAt: '2026-10-04',
+    mergedAt: '2026-10-04',
+    diff: {
+      files: 1,
+      additions: 23,
+      deletions: 0,
+      paths: [
+        {
+          path: 'sktime/clustering/agglomerative.py',
+          additions: 23,
+          deletions: 0,
+        },
+      ],
+    },
+    proof: [
+      {
+        id: 'oss-sktime-11380-merged',
+        type: 'merged-pr',
+        label: 'Merged upstream',
+        sourceUrl: 'https://github.com/sktime/sktime/pull/11380',
+        verified: true,
+        asOf: '2026-10-06',
       },
     ],
   },

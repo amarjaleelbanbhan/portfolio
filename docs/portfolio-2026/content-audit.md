@@ -1,5 +1,100 @@
 # Content Audit
 
+## Synchronization — 2026-10-06
+
+This update follows an approved source audit of portfolio commit
+`a8b51805c32fde6fd7b3748a06b0657131c3a421`. The historical audit below is retained.
+All 15 existing projects, four research entries, seven contribution records and
+11 credentials remain. Featured ranks, archive placement and design are preserved.
+
+### Upstream evidence
+
+Thirteen curated records now represent ten merged and three open pull requests
+across eight repositories. These are individually verified records, not all
+GitHub activity. State, author, dates and diff metadata were checked through the
+GitHub API on 2026-10-06. Existing records retain their descriptions and receive
+a refreshed verification date.
+
+| Addition | Status at verification | Scope and qualification |
+|---|---|---|
+| [Docling #4367](https://github.com/docling-project/docling/pull/4367) | Merged 2026-09-28 | Mixed/numeric chart headers, blank-cell handling and row-header classification; regression tests and maintainer review |
+| [sktime #11259](https://github.com/sktime/sktime/pull/11259) | Merged 2026-09-22 | Estimator-specific pandas guard; not pandas 3 compatibility or resolution of the whole tracking issue |
+| [sktime #11381](https://github.com/sktime/sktime/pull/11381) | Merged 2026-10-04 | Dependency-free parameter configuration and removal of coverage exclusions; no estimator behaviour change |
+| [sktime #11380](https://github.com/sktime/sktime/pull/11380) | Merged 2026-10-04 | Executable clustering example; no algorithm change |
+| [sktime #11379](https://github.com/sktime/sktime/pull/11379) | Open | Restricted time-index literal parsing and benchmark-resume regressions; upstream acceptance pending |
+| [Promptfoo #11058](https://github.com/promptfoo/promptfoo/pull/11058) | Open | Current diff concerns only fal image IDs; earlier multi-provider scope was superseded during review |
+
+Validation text distinguishes PR-reported local results, inspected CI and merge
+acceptance. Some merged sktime PRs contain failed CI jobs; no universal green-CI
+claim is made. Upstream suites were not rerun for this portfolio synchronization.
+The issue footer now says "Related issue" rather than implying an open PR has
+resolved an issue.
+
+### Project source snapshots
+
+| Project | Reviewed source commit | Portfolio treatment |
+|---|---|---|
+| ILP | `6acbe8dbc5324c98de676d33eed9dd5d7a83ccb0` | Private experimental MVP; secondary case study and linked research-engineering entry; authoring/learning evaluation pending |
+| Notebook, within `30-day-code/notebook` | `8bcf3adaee175893e1b42ca0f610f4705193037b` | Public prototype and case study; separate from archived Smart Notebook |
+| RepoMatch | `f6198a527c02b4bdb6f78d94ebe0ec49b4d2d9bc` | Public active secondary project and case study; heuristics and scheduled-run evidence, no adoption claim |
+| OKF Interop Lab | `21c19a53cd042b79dac2392e0257b1e9a6fa1a28` | Local developer tool/experiment; no upstream acceptance claim |
+| ProjectHunt AI | `a67be60e16085d6df342dd451a4ba8f7457349e9` | Local prototype; static findings and reviewable drafts, no sending/deliverability/revenue claim |
+| RELAY//7 | `07a8af29dfb855765a69e506a851694e701a854d` | Private browser-game prototype; source/test inspection is distinct from physical-device validation |
+| SceneForge | `799c535acc322d38e2d121020b87778e28355621` | Existing flagship retained; editor/packages, persistence and asynchronous rendering synchronized |
+
+Source and test files were reviewed; project suites were not independently rerun.
+New proof entries establish the existence and scope of inspected tests rather
+than claiming every suite passed locally. Public references use source snapshots
+where practical. Private repository URLs and private source excerpts are omitted.
+
+ILP's research entry records implemented runtime infrastructure separately from
+unperformed authoring and learning evaluations. Its known namespace, finite-value
+and rendering edge cases remain visible. SceneForge's same-machine renderer tests
+and hardware-specific benchmark documentation do not become general determinism,
+speed or production-readiness guarantees. Its in-memory job state is not a
+durable queue.
+
+### Deliberately unchanged or deferred
+
+- All existing credentials, education, archived work, flagship selection and
+  SCAR-OS architecture-stage status remain.
+- KnowledgeGuard's original measured results and correction remain; no new
+  replication results are added.
+- CortexWard's verification limitations remain; no completed dynamic pipeline
+  is claimed.
+- Closed/unmerged Docling #4358/#4343 and Pydantic AI #8580 are not achievements.
+- Docling #4342, sktime #11281, Haystack discussion #4029, personal portfolio
+  rebuilds, routine exercises and empty repositories are outside this update.
+- Own-repository Notebook/RepoMatch PRs are project evidence, not upstream PRs.
+- No database, dependency, authentication, deployment or general styling changes
+  are part of this synchronization. The existing admin tooling is acknowledged,
+  while public typed-content delivery remains accurately described.
+
+### Synchronization verification
+
+- `npm run validate:content`, `npm run lint`, `npx tsc --noEmit` and
+  `npm run build` pass. The production build generates all nine case studies.
+- Eleven targeted synchronization checks pass: existing-record preservation,
+  featured/archive order, GitHub metadata and diff totals, private-source handling,
+  research evidence state, route/sitemap agreement, diagram layout compatibility,
+  and rejection of merged proof on an open PR.
+- The production server serves all 22 public pages. Checks cover 80 internal
+  targets and 48 build assets, the legacy résumé redirect and unknown-project
+  404 behaviour. Fourteen skill hash targets use the existing client-side
+  selection handler and were checked against its source and canonical registry,
+  rather than treated as static DOM anchors.
+- All 40 canonical GitHub source/evidence URLs return HTTP 200.
+- `git diff --check` passes. No dependencies, original records, credentials,
+  existing routes or historical audit content were removed.
+- Visual responsive/reduced-motion/print verification is incomplete: the cloud
+  browser rejected the local preview URL with `ERR_BLOCKED_BY_CLIENT`. Existing
+  responsive components were retained; no rendered-layout success is claimed.
+- Codacy analysis could not run because no Codacy MCP capability is exposed.
+  Reconnecting that integration is required for its supplemental repository check.
+- No commits, pushes, merges or deployments were performed.
+
+---
+
 **Date:** 2026-09-18
 **Phase:** 1 — Credibility and Content Corrections
 **Purpose:** record every public claim that was inaccurate, stale, unsupported or

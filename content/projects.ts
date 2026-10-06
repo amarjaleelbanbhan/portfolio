@@ -1013,64 +1013,67 @@ limitations: [
     slug: 'sceneforge',
     seo: {
       description:
-        'Turns a JSON manifest of HTML/CSS/JS scenes into a single MP4. Headless Chrome renders frames, FFmpeg composes them. Runs locally — no cloud APIs, no uploads.',
+        'Local scene-to-video editor with templates, timeline, history and recovery, plus Chromium/FFmpeg rendering with progress and cancellation.',
     },
     title: 'SceneForge',
     summary:
-      'Turns a JSON manifest of HTML/CSS/JS scenes into a single MP4, scene by scene. Headless Chrome renders frames, FFmpeg composes them, and a React/Monaco editor drives it. Runs entirely locally — no cloud APIs, no uploads.',
+      'Local scene-to-video editor with a canonical project model, templates, timeline and history controls, autosave and recovery, and asynchronous Chromium/FFmpeg rendering with progress and cancellation.',
     tier: 'flagship',
     status: 'active-development',
     domains: ['systems', 'product'],
     featured: true,
     featuredRank: 5,
     sortOrder: 5,
-    updatedAt: '2026-08-16',
+    updatedAt: '2026-10-06',
     limitations: [
-      'Rendering is CPU-heavy and single-job; the documentation is explicit that it needs a queue in front of it before more than a handful of users use it.',
-      'The editor preview never executes scene JavaScript, so animation and dynamic behaviour are only visible after a full render.',
+      'Rendering remains CPU-heavy. Job status and cancellation are implemented, but jobs are tracked in memory rather than a durable queue; restarting the backend loses job state.',
+      'The preview uses sanitized markup and CSS in a sandboxed iframe without scene JavaScript. Playback controls do not establish parity with rendered JavaScript animation.',
       'The character engine is vendored as a pinned build because its published package fails to install, so updates are manual and can drift from upstream.',
-      'No render artifact is published with the project, and the documentation states no test counts, rendering benchmarks or determinism guarantee.',
+      'No committed render artifact is available to show. Tests and hardware-specific benchmarks are documented, but were not independently rerun for this portfolio update; no general performance guarantee is claimed.',
     ],
-    technologies: ['javascript', 'react', 'ffmpeg', 'headless-chrome', 'nodejs'],
-    tags: ['JavaScript', 'Express', 'Headless Chrome', 'FFmpeg', 'React'],
+    technologies: ['javascript', 'typescript', 'react', 'ffmpeg', 'headless-chrome', 'nodejs'],
+    tags: ['JavaScript', 'TypeScript', 'Express', 'Headless Chrome', 'FFmpeg', 'React'],
     links: {},
     source: { visibility: 'private', label: 'Private repository' },
     note: 'Repository private.',
     problem:
       'Producing short motion graphics from code normally means either a heavyweight editor or a cloud rendering service. Neither lets you write a scene as ordinary HTML, CSS and JavaScript and get a video file back on your own machine.',
     role:
-      'Sole engineer. Backend render pipeline, manifest model and validation, editor frontend, and the composition layer between them.',
-    // Derived from the private repository, reviewed 2026-09-20: README and the
-    // docs directory. Claims are limited to what that documentation states. In
-    // particular: no render artifact is committed to the repository, and no
-    // determinism guarantee is documented, so neither is claimed here.
+      'Sole engineer. Rendering and composition pipeline, canonical project model, templates and assets, editor history and persistence, and frontend/backend integration.',
+    // Reviewed 2026-10-06 against the private source at 799c535: editor,
+    // render API, package tests and rendering documentation. Legacy engineering
+    // decisions are retained; newer capabilities and validation limits are explicit.
     caseStudy: {
       context:
-        'A local tool for turning a JSON manifest of HTML, CSS and JavaScript scenes into a single MP4, scene by scene. No cloud APIs, no keys and no uploads — the whole pipeline runs on the machine that owns the files.',
+        'A local scene-to-video tool grown from its original manifest pipeline into an integrated editor. The canonical project model now connects templates, assets, timeline, history, persistence and rendering without cloud APIs or remote uploads.',
       constraints: [
         'Scene code is arbitrary HTML, CSS and JavaScript supplied by the user, so the editor preview and the renderer need different trust models.',
-        'Every scene shares one output document, so CSS from one scene must not leak into another.',
-        'Rendering drives a real browser and a real encoder, which makes it CPU-heavy and single-job rather than something to expose to concurrent users.',
-        'The stage is fixed at 1920x1080 and 30 frames per second, so timeline maths has to line up scene boundaries with frame boundaries.',
+        'Multiple scenes share a video timeline, so composition must keep their CSS isolated and their boundaries aligned.',
+        'Rendering drives a real browser and encoder. Progress and cancellation do not solve durable scheduling or capacity management.',
+        'Project settings carry output width, height and frame rate; scene boundaries must line up with the configured frame timeline.',
         'One upstream dependency could not be installed from its published package at all, which forced a vendoring decision.',
       ],
       built:
-        'An Express backend that compiles a scene manifest into per-scene compositions, drives headless Chrome to capture frames and hands them to FFmpeg, plus a React and Monaco editor with one editor per scene, a live preview and a render button. Timeline arithmetic comes from a dedicated package rather than being reimplemented.',
+        'A package-based toolchain for shared schemas, templates, composition, assets, timeline, persistence, renderer and editor history. The React/Monaco editor integrates visual controls, playback, undo/redo, autosave and recovery. The Express API renders canonical projects asynchronously with progress and cancellation while retaining the legacy manifest path.',
       architecture: {
         summary:
-          'A manifest becomes a video in stages: each scene is compiled to its own composition document, the timeline places those documents in time, headless Chrome renders frames, and FFmpeg encodes them into one MP4.',
+          'The editor maintains a canonical project with templates, assets and timeline settings. Persistence supports autosave and recovery; the API tracks render jobs while composition, Chromium capture and FFmpeg produce the video.',
         nodes: [
           { id: 'editor', label: 'Editor', kind: 'client', detail: 'React, Vite, Monaco' },
-          { id: 'manifest', label: 'Scene manifest', kind: 'data', detail: 'JSON, validated' },
-          { id: 'api', label: 'Express API', kind: 'service', detail: 'Local only' },
+          { id: 'manifest', label: 'Canonical project', kind: 'data', detail: 'Scenes, assets, settings' },
+          { id: 'api', label: 'Render jobs', kind: 'service', detail: 'Progress and cancellation; in memory' },
           { id: 'compose', label: 'Compositions', kind: 'process', detail: 'One document per scene' },
           { id: 'timeline', label: 'Timeline', kind: 'process', detail: 'Start and duration' },
           { id: 'chrome', label: 'Headless Chrome', kind: 'service', detail: 'Frame capture' },
           { id: 'ffmpeg', label: 'FFmpeg', kind: 'external', detail: 'Encode' },
-          { id: 'mp4', label: 'MP4', kind: 'data', detail: '1920x1080 at 30fps' },
+          { id: 'mp4', label: 'MP4', kind: 'data', detail: 'Configured dimensions and frame rate' },
+          { id: 'assets', label: 'Templates and assets', kind: 'data', detail: 'Local project resources' },
+          { id: 'persist', label: 'Persistence', kind: 'data', detail: 'Autosave, recovery, portable container' },
         ],
         flows: [
           { from: 'editor', to: 'manifest', label: 'author' },
+          { from: 'assets', to: 'manifest', label: 'resolve' },
+          { from: 'manifest', to: 'persist', label: 'save' },
           { from: 'manifest', to: 'api', label: 'submit' },
           { from: 'api', to: 'compose', label: 'compile' },
           { from: 'compose', to: 'timeline', label: 'place' },
@@ -1100,7 +1103,7 @@ limitations: [
           rationale:
             'The preview lives in the author\'s own browser session. Executing arbitrary scene JavaScript there would put the editor at the mercy of the content it is editing.',
           tradeoff:
-            'The preview cannot show anything the scene\'s JavaScript does, so animation and dynamic behaviour are only visible after a render.',
+            'The preview cannot show scene JavaScript behaviour; its playback controls are not proof of parity with the renderer.',
         },
         {
           id: 'sf-strip-scripts',
@@ -1144,9 +1147,9 @@ limitations: [
         },
         {
           id: 'sf-single-job',
-          title: 'Rendering is single-job by nature',
+          title: 'Render job state is not durable',
           detail:
-            'A render drives a browser and an encoder and is CPU-heavy, so the documentation is explicit that it needs a queue in front of it before more than a handful of users touch it.',
+            'The asynchronous API reports progress and supports cancellation through an AbortController. Its active-job map is in memory, not a persistent scheduler or a tested concurrent-service guarantee.',
         },
       ],
       verification: [
@@ -1154,7 +1157,7 @@ limitations: [
           id: 'sf-tests',
           label: 'Backend test suite',
           detail:
-            'Covers the timeline arithmetic, the shape of composition output, breakout escaping for style and script content, and every manifest-validation rule. No test count is quoted here because the repository documentation does not state one.',
+            'The legacy backend suite covers manifest validation, timeline arithmetic and breakout escaping. Package tests cover project schemas, renderer planning/capture, persistence and editor history. Test sources and documented runs were inspected, not rerun for this update.',
           verified: true,
         },
         {
@@ -1162,6 +1165,13 @@ limitations: [
           label: 'Environment check endpoint',
           detail:
             'A diagnostic endpoint reports whether Chrome, FFmpeg, disk and GPU are actually available, so a render failure can be told apart from a missing dependency.',
+          verified: true,
+        },
+        {
+          id: 'sf-benchmark-docs',
+          label: 'Hardware-specific benchmark documentation',
+          detail:
+            'The repository documents a pinned-rasterizer benchmark on named hardware and separates capture time from encoding time. It is a reported measurement, not a general speed claim or an independently repeated result.',
           verified: true,
         },
         {
@@ -1173,19 +1183,19 @@ limitations: [
         },
         {
           id: 'sf-determinism',
-          label: 'Determinism is not a documented guarantee',
+          label: 'Renderer determinism tests are documented',
           detail:
-            'Frames are captured from a real browser against a fixed stage and frame rate, but the project documentation makes no claim that two renders of the same manifest are byte-identical, so none is made here.',
-          verified: false,
+            'Renderer tests compare decoded frames from repeated renders and pin the rasterization backend. Documentation limits reproducibility to the same machine and configuration; these tests were not independently rerun here.',
+          verified: true,
         },
       ],
       results: [
-        'A manifest of HTML, CSS and JavaScript scenes compiles into per-scene composition documents and encodes to a single MP4 at a fixed 1920x1080, 30 frames per second stage.',
+        'The original manifest pipeline remains available; the integrated editor now renders canonical projects with configurable output settings and asynchronous job status.',
         'Scenes are CSS-isolated from each other by construction rather than by naming convention.',
         'Two upstream rendering quirks were diagnosed and worked around: a package that cannot be installed from its published manifest, and a build variant that throws inside its render loop under headless Chrome and paints nothing.',
       ],
       disclosure:
-        'The repository is private. This page describes the rendering architecture and the engineering decisions behind it. No editor screenshot, rendered frame or output video is shown, because none is published with the project — and no test counts or rendering benchmarks are quoted, because the repository documentation does not state any.',
+        'The repository is private. This page summarizes reviewed source and documentation, including the legacy pipeline and newer editor packages. No private source, editor screenshot, rendered frame or video is published. The repository contains tests and hardware-specific benchmark documentation; no general performance or production-readiness guarantee is inferred.',
     },
     proof: [],
   },
@@ -1527,16 +1537,16 @@ limitations: [
     summary:
       'This site. A content layer with an integrity gate that fails the build on a bad reference, a WebGL engineering core that degrades to a real 2D fallback, and a Supabase-backed client enquiry flow.',
     tier: 'secondary',
-    // Live and in use, but under active rebuild — the admin and CMS work is not
-    // done. "Production" is reserved for systems an organisation depends on.
+    // Live and in use, with implemented admin tooling. Public project delivery
+    // still uses typed modules; the existing active-development status remains.
     status: 'active-development',
     domains: ['product'],
     featured: false,
     sortOrder: 5,
-    updatedAt: '2026-09-20',
+    updatedAt: '2026-10-06',
     limitations: [
-      'Content lives in typed TypeScript modules, not a database. The admin CMS that would replace them is not built.',
-      'The client enquiry flow writes to Supabase; nothing else on the public site reads from it.',
+      'Public project, research, and contribution pages still read typed content modules. Admin tooling is implemented, and selected public settings are database-backed; public content delivery has not fully migrated.',
+      'The enquiry flow and public settings API use database-backed paths; public project and contribution records still come from the canonical content modules.',
     ],
     technologies: ['typescript', 'javascript', 'nextjs', 'react', 'webgl', 'supabase'],
     tags: ['Next.js', 'React', 'TypeScript', 'Three.js', 'Supabase', 'Tailwind'],
@@ -1572,6 +1582,746 @@ limitations: [
         sourceUrl: 'https://github.com/amarjaleelbanbhan/portfolio',
         verified: true,
         asOf: '2026-09-20',
+      },
+    ],
+  },
+
+  // Reviewed additions; flagship selection and archive remain unchanged.
+  {
+    id: 'prj-ilp',
+    slug: 'ilp',
+    title: 'ILP — Interactive Learning Runtime',
+    shortTitle: 'ILP',
+    summary:
+      'Experimental browser runtime for declarative interactive lessons, with schema validation, parsed expressions, reactive state, and DOM, SVG, and 3D rendering. Runtime implemented; authoring reliability and learning outcomes remain unevaluated.',
+    seo: {
+      description:
+        'Experimental declarative lesson runtime with validation, parsed expressions and reactive renderers. Built MVP; authoring and learning evaluation pending.',
+    },
+    tier: 'secondary',
+    status: 'prototype',
+    domains: ['product', 'research'],
+    featured: false,
+    sortOrder: 6,
+    updatedAt: '2026-10-06',
+    technologies: ['typescript', 'react', 'webgl'],
+    tags: ['TypeScript', 'React', 'Zod', 'SVG', 'React Three Fiber'],
+    links: {},
+    source: {
+      visibility: 'private',
+      label: 'Private repository',
+    },
+    researchSlug: 'ilp-runtime',
+    note:
+      'Experimental MVP. Known validation and rendering edge cases remain; no learning-effectiveness study has been completed.',
+    problem:
+      'Interactive lessons usually require topic-specific application code. A reusable runtime needs to interpret lesson definitions, validate their references and actions, and keep several renderers synchronized without executing arbitrary lesson code.',
+    role:
+      'Author and maintainer. Lesson schema and validator, expression parser, reactive runtime, shared rendering model, importer, examples and regression tests.',
+    limitations: [
+      'External lesson-authoring reliability and learning effectiveness have not been evaluated.',
+      'Known hardening gaps include fact-namespace lookup, non-finite numeric bindings, flow visibility/highlighting, and plot discontinuity handling.',
+      'No accounts, course backend or durable progress storage. The MVP supports four example lessons rather than a validated curriculum.',
+    ],
+    proof: [
+      {
+        id: 'ilp-runtime-tests',
+        type: 'test-suite',
+        label: 'Runtime and validator regression suites',
+        description:
+          'Inspected validator, expression and runtime/UI test sources and four example lessons. Repository-reported test results were not rerun for this portfolio update.',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+    caseStudy: {
+      context:
+        'An experimental local-first runtime separates the lesson document from the application that interprets it. A new topic should reuse the same state model, expression rules and rendering capabilities.',
+      constraints: [
+        'Lesson definitions must use a bounded expression and action vocabulary rather than arbitrary JavaScript.',
+        'References, dependencies and renderer capabilities must be checked before a lesson session starts.',
+        'A working example demonstrates runtime behaviour; it does not establish authoring reliability or learning benefit.',
+      ],
+      built:
+        'A TypeScript runtime with strict Zod schemas, staged lesson validation, a lexer and Pratt expression parser, dependency-ordered derived state, facts and allowlisted actions. DOM, SVG and React Three Fiber renderers share the lesson session. A paste/file importer and four example lessons exercise the MVP.',
+      architecture: {
+        summary:
+          'A lesson document is validated before a session resolves state and expressions for the reusable renderers.',
+        nodes: [
+          {
+            id: 'lesson',
+            label: 'Lesson JSON',
+            kind: 'data',
+            detail: 'Declarative content and actions',
+          },
+          {
+            id: 'validate',
+            label: 'Validator',
+            kind: 'process',
+            detail: 'Schemas, references, limits',
+          },
+          {
+            id: 'expressions',
+            label: 'Expression parser',
+            kind: 'process',
+            detail: 'Bounded syntax tree',
+          },
+          {
+            id: 'session',
+            label: 'Reactive session',
+            kind: 'service',
+            detail: 'State, facts, derived values',
+          },
+          {
+            id: 'render',
+            label: 'Shared renderers',
+            kind: 'client',
+            detail: 'DOM, SVG, 3D',
+          },
+        ],
+        flows: [
+          {
+            from: 'lesson',
+            to: 'validate',
+            label: 'check',
+          },
+          {
+            from: 'validate',
+            to: 'expressions',
+            label: 'parse',
+          },
+          {
+            from: 'expressions',
+            to: 'session',
+            label: 'evaluate',
+          },
+          {
+            from: 'session',
+            to: 'render',
+            label: 'resolve',
+          },
+        ],
+        caveat:
+          'Sanitized architecture from the private MVP source. It describes implemented components, not a completed security audit or an educational evaluation.',
+      },
+      decisions: [
+        {
+          id: 'ilp-declarative',
+          title: 'Keep lessons separate from runtime code',
+          decision: 'Represent lessons as JSON using a shared schema and capability vocabulary.',
+          rationale:
+            'Topic-specific content can reuse the runtime while validation catches unsupported references before rendering.',
+          tradeoff:
+            'The format cannot express arbitrary application behaviour; authors must work within the implemented capabilities.',
+        },
+        {
+          id: 'ilp-parse-expressions',
+          title: 'Parse expressions instead of evaluating JavaScript',
+          decision: 'Use a lexer and Pratt parser with bounded syntax-tree evaluation.',
+          rationale: 'Expressions can reference runtime state without gaining general JavaScript execution.',
+          tradeoff:
+            'A restricted language needs explicit semantics, validation and edge-case tests; current hardening gaps still need attention.',
+        },
+      ],
+      ladder: {
+        title: 'Runtime built, evaluation pending',
+        intro: 'The implemented MVP and its unperformed evaluation are recorded separately.',
+        stages: [
+          {
+            id: 'ilp-schema',
+            level: '1',
+            label: 'Lesson validation',
+            evidence: 'Schemas and validator tests',
+            meaning: 'Lesson structure, references and capabilities are checked before execution.',
+            status: 'implemented',
+          },
+          {
+            id: 'ilp-runtime',
+            level: '2',
+            label: 'Reactive runtime and renderers',
+            evidence: 'Runtime/UI tests and example lessons',
+            meaning: 'Expressions and actions drive a shared state model across DOM, SVG and 3D renderers.',
+            status: 'implemented',
+          },
+          {
+            id: 'ilp-hardening',
+            level: '3',
+            label: 'Expression and rendering hardening',
+            evidence: 'Known source-level edge cases',
+            meaning: 'The implemented runtime still has validation and rendering cases to correct.',
+            status: 'partial',
+            gap:
+              'Fact-namespace lookup, non-finite bindings, flow visibility and plot discontinuities remain known gaps.',
+          },
+          {
+            id: 'ilp-authoring',
+            level: '4',
+            label: 'Authoring reliability study',
+            evidence: 'External authoring evaluation',
+            meaning: 'Measure whether new declarative lessons work on the unchanged runtime.',
+            status: 'planned',
+            gap: 'The central authoring experiment has not been run.',
+          },
+          {
+            id: 'ilp-learning',
+            level: '5',
+            label: 'Learning-effectiveness evaluation',
+            evidence: 'Evaluation with learners',
+            meaning: 'Measure educational benefit rather than assuming it from interactivity.',
+            status: 'planned',
+            gap: 'No learner study or learning-outcome results exist.',
+          },
+        ],
+        caveat:
+          'Implemented means code exists in the reviewed source. It does not mean the runtime is fully hardened or that learning benefits have been demonstrated.',
+      },
+      verification: [
+        {
+          id: 'ilp-inspected-tests',
+          label: 'Validator and runtime test sources',
+          detail:
+            'Reviewed schema/reference validation and app interaction tests. The UI suite stubs the 3D canvas, so it does not verify real WebGL rendering.',
+          verified: true,
+        },
+        {
+          id: 'ilp-evaluation-pending',
+          label: 'Authoring and learner evaluation',
+          detail: 'Neither external authoring reliability nor learning effectiveness has been measured.',
+          verified: false,
+        },
+      ],
+      results: [
+        'The MVP runs declarative example lessons through one shared runtime.',
+        'No authoring-reliability or learning-effectiveness results are claimed.',
+      ],
+      disclosure:
+        'Repository private. This case study publishes a sanitized implementation summary and known limitations; it contains no private source links or lesson-material excerpts.',
+    },
+  },
+  {
+    id: 'prj-notebook',
+    slug: 'notebook',
+    title: 'Notebook — Course Memory and Recall',
+    shortTitle: 'Notebook',
+    summary:
+      'Course and lecture workspace with rich-text notes, drawing blocks, document ingestion, hybrid retrieval, cited answers, and study workflows. Includes PostgreSQL-backed integration tests and deterministic course-memory fixtures.',
+    seo: {
+      description:
+        'Lecture workspace with notes, document ingestion, hybrid course retrieval and cited recall. PostgreSQL integration tests; prototype limitations stated.',
+    },
+    tier: 'secondary',
+    status: 'prototype',
+    domains: ['product', 'ai'],
+    featured: false,
+    sortOrder: 7,
+    updatedAt: '2026-10-06',
+    technologies: ['typescript', 'nextjs', 'react', 'nodejs', 'sql', 'postgresql', 'rag', 'github-actions'],
+    tags: ['Next.js', 'TypeScript', 'PostgreSQL', 'pgvector', 'Tiptap', 'RAG'],
+    links: {
+      repository: 'https://github.com/amarjaleelbanbhan/30-day-code/tree/main/notebook',
+      documentation:
+        'https://github.com/amarjaleelbanbhan/30-day-code/blob/8bcf3adaee175893e1b42ca0f610f4705193037b/notebook/README.md',
+    },
+    source: {
+      visibility: 'public',
+      repositoryUrl: 'https://github.com/amarjaleelbanbhan/30-day-code',
+    },
+    note:
+      'Separate from archived Smart Notebook. Scanned-document OCR and a full offline app shell are not implemented.',
+    problem:
+      'Course evidence is spread across lecture notes, slides and uploaded documents. Search and recall need to retain the lecture, page, source type and user boundary instead of returning an untraceable answer.',
+    role:
+      'Author and maintainer. Course workspace, editing and autosave, ingestion and indexing jobs, retrieval and citation handling, study workflows and test fixtures.',
+    limitations: [
+      'Scanned-document OCR, handwriting recognition and a full offline app shell are not implemented.',
+      'Real embedding checks are opt-in; default model tests use a stub. Citation identity checks do not prove every answer is factually correct.',
+      'No measured educational outcomes or production deployment are established. Login rate limiting and an S3 storage adapter remain unbuilt.',
+    ],
+    proof: [
+      {
+        id: 'notebook-memory-tests',
+        type: 'test-suite',
+        label: 'Course-memory regression fixtures',
+        description:
+          'Inspected deterministic course fixtures, retrieval/recall checks and stubbed model tests. Real embedding tests require an explicitly configured local service.',
+        sourceUrl:
+          'https://github.com/amarjaleelbanbhan/30-day-code/blob/8bcf3adaee175893e1b42ca0f610f4705193037b/notebook/tests/memory.test.ts',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+      {
+        id: 'notebook-ci',
+        type: 'ci',
+        label: 'PostgreSQL integration workflow',
+        description:
+          'Notebook CI configures PostgreSQL with pgvector and runs typecheck, tests and build. Inspected Notebook workflow runs succeeded; this is not a claim that unrelated repository workflows pass.',
+        sourceUrl:
+          'https://github.com/amarjaleelbanbhan/30-day-code/blob/8bcf3adaee175893e1b42ca0f610f4705193037b/.github/workflows/notebook.yml',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+    caseStudy: {
+      context:
+        'A lecture workspace keeps student notes and source materials together, while answers retain links to the actual evidence used.',
+      constraints: [
+        'Uploads and notes must stay scoped to the authenticated user and course.',
+        'Editing should not wait for extraction, indexing or model calls.',
+        'Search-only use must remain available without a configured model.',
+        'Model-generated citation identifiers need validation against stored source identity.',
+      ],
+      built:
+        'A Next.js workspace with Tiptap notes and drawing blocks, local draft autosave, server synchronization and version history. PostgreSQL stores courses, documents, chunks and durable background jobs. Retrieval fuses full-text, fuzzy and optional current-model vector results. Intent-routed recall builds cited answers, while source-grounded study sessions retain attempt history.',
+      architecture: {
+        summary:
+          'Uploads and notes become course-scoped evidence; retrieval and context construction feed cited recall without blocking editing.',
+        nodes: [
+          {
+            id: 'workspace',
+            label: 'Lecture workspace',
+            kind: 'client',
+            detail: 'Notes, drawing, materials',
+          },
+          {
+            id: 'jobs',
+            label: 'Indexing jobs',
+            kind: 'process',
+            detail: 'Extract, normalize, chunk',
+          },
+          {
+            id: 'store',
+            label: 'Course memory',
+            kind: 'data',
+            detail: 'PostgreSQL and source identity',
+          },
+          {
+            id: 'retrieve',
+            label: 'Hybrid retrieval',
+            kind: 'process',
+            detail: 'Keyword, fuzzy, optional vector',
+          },
+          {
+            id: 'answer',
+            label: 'Cited recall',
+            kind: 'service',
+            detail: 'Context and citation validation',
+          },
+        ],
+        flows: [
+          {
+            from: 'workspace',
+            to: 'jobs',
+            label: 'enqueue',
+          },
+          {
+            from: 'jobs',
+            to: 'store',
+            label: 'index',
+          },
+          {
+            from: 'workspace',
+            to: 'retrieve',
+            label: 'query',
+          },
+          {
+            from: 'store',
+            to: 'retrieve',
+            label: 'scope',
+          },
+          {
+            from: 'retrieve',
+            to: 'answer',
+            label: 'evidence',
+          },
+        ],
+        caveat:
+          'Architecture reviewed against the public implementation. Optional model and embedding paths depend on configuration; this is not a deployment or educational-outcome claim.',
+      },
+      decisions: [
+        {
+          id: 'notebook-source-identity',
+          title: 'Keep source identity attached to retrieval chunks',
+          decision:
+            'Carry lecture, file, page/slide, source class and note-section identity through retrieval and context building.',
+          rationale: 'An answer can link back to the evidence the student can inspect.',
+          tradeoff:
+            'Valid citation numbers establish source identity, not the truth of every generated statement.',
+        },
+        {
+          id: 'notebook-background',
+          title: 'Move ingestion out of the editing path',
+          decision:
+            'Persist extraction and indexing work in PostgreSQL background jobs and keep draft edits locally before syncing.',
+          rationale: 'Document processing and model latency should not block note taking.',
+          tradeoff: 'Local draft recovery is not a complete offline application shell.',
+        },
+        {
+          id: 'notebook-current-embedder',
+          title: 'Ignore vectors from a different embedding model',
+          decision:
+            'Store embedding identity and restrict semantic retrieval to the current configured model.',
+          rationale: 'Vectors from incompatible model spaces should not silently enter one ranking.',
+          tradeoff:
+            'Switching models requires re-embedding; keyword and fuzzy retrieval remain available meanwhile.',
+        },
+      ],
+      verification: [
+        {
+          id: 'notebook-db-tests',
+          label: 'Database-backed integration and memory tests',
+          detail:
+            'Inspected real-PostgreSQL API tests and a deterministic seven-lecture course with typo, abbreviation, source-class and missing-topic cases. Suites were not rerun for this portfolio update.',
+          verified: true,
+        },
+        {
+          id: 'notebook-model-stub',
+          label: 'Model boundary and citation tests',
+          detail:
+            'Stubbed model tests exercise prompt construction, context budgets, invalid citation removal and course-only versus explanation modes.',
+          verified: true,
+        },
+        {
+          id: 'notebook-real-embeddings',
+          label: 'Real embedding evaluation',
+          detail:
+            'The semantic test block is opt-in and requires a configured local embedding endpoint; no general retrieval-quality benchmark is claimed.',
+          verified: false,
+        },
+      ],
+      results: [
+        'Implemented course-scoped retrieval and cited recall with inspectable source identity.',
+        'Search and extractive recall can operate without a configured language model.',
+      ],
+      disclosure:
+        'The application lives in the notebook subdirectory of 30-day-code. It is a separate project from the archived Smart Notebook and is not counted as an upstream contribution.',
+    },
+  },
+  {
+    id: 'prj-repomatch',
+    slug: 'repomatch',
+    title: 'RepoMatch',
+    summary:
+      'Open-source repository discovery with weighted matching, batch GitHub indexing, feedback signals, and embeddable SVG activity cards served from precomputed data.',
+    seo: {
+      description:
+        'Repository discovery with heuristic matching, batch GitHub indexing and SVG profile widgets served from precomputed data. Evaluation limits stated.',
+    },
+    tier: 'secondary',
+    status: 'active-development',
+    domains: ['product'],
+    featured: false,
+    sortOrder: 8,
+    updatedAt: '2026-10-06',
+    technologies: ['typescript', 'nextjs', 'react', 'nodejs', 'sql', 'postgresql', 'supabase', 'github-actions'],
+    tags: ['TypeScript', 'Next.js', 'GitHub GraphQL', 'SVG', 'Supabase', 'GitHub Actions'],
+    links: {
+      repository: 'https://github.com/amarjaleelbanbhan/repomatch',
+      documentation:
+        'https://github.com/amarjaleelbanbhan/repomatch/blob/f6198a527c02b4bdb6f78d94ebe0ec49b4d2d9bc/PROGRESS.md',
+    },
+    source: {
+      visibility: 'public',
+      repositoryUrl: 'https://github.com/amarjaleelbanbhan/repomatch',
+    },
+    note:
+      'Matching uses implemented heuristics; broader recommendation-quality evaluation and semantic matching remain incomplete.',
+    problem:
+      'Finding a suitable repository requires combining developer interests with repository health and contributor opportunities. Fetching GitHub data on every widget request also couples profile rendering to API latency and rate limits.',
+    role:
+      'Author and maintainer. Matching and eligibility rules, repository indexing, feedback adjustments, onboarding/dashboard flows, SVG widget delivery and transient-request regression tests.',
+    limitations: [
+      'Matching is heuristic, not an evaluated semantic recommender. Broader user-quality review remains incomplete.',
+      'Upstash caching, semantic matching, translated summaries and digest email are not implemented.',
+      'A successful scheduled run confirms job execution, not the quality of every recommendation or reliability during an extended GitHub outage.',
+    ],
+    proof: [
+      {
+        id: 'repomatch-matcher-tests',
+        type: 'test-suite',
+        label: 'Matching and request-retry tests',
+        description: 'Inspected matching, eligibility, feedback, SVG and bounded GraphQL retry test sources.',
+        sourceUrl:
+          'https://github.com/amarjaleelbanbhan/repomatch/blob/f6198a527c02b4bdb6f78d94ebe0ec49b4d2d9bc/packages/matcher/src/__tests__/score.test.ts',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+      {
+        id: 'repomatch-nightly-ci',
+        type: 'ci',
+        label: 'Scheduled indexing run',
+        description:
+          'Inspected a successful scheduled Nightly Index & Match run at the reviewed source commit. No adoption figures are inferred.',
+        sourceUrl: 'https://github.com/amarjaleelbanbhan/repomatch/actions/runs/37449122548',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+    caseStudy: {
+      context:
+        'An SVG embed in a profile README exposes precomputed activity and candidate repositories without running a GitHub query for every profile view.',
+      constraints: [
+        'GitHub data acquisition must remain outside the widget request path.',
+        'Owned, starred and hidden repositories should not reappear as candidate recommendations.',
+        'A temporary GitHub failure needs bounded retries; authentication and application errors should fail promptly.',
+      ],
+      built:
+        'A TypeScript monorepo with a pure matching package, batch repository indexing and user-stat jobs, precomputed recommendation storage, a Next.js dashboard and an SVG widget endpoint. Matching combines language/topic overlap and repository health, with feedback and contributor-readiness adjustments. GraphQL requests retry transient failures with bounded exponential backoff.',
+      architecture: {
+        summary:
+          'Batch jobs acquire GitHub data and compute matches; the web app and widget read stored results.',
+        nodes: [
+          {
+            id: 'github',
+            label: 'GitHub GraphQL',
+            kind: 'external',
+            detail: 'Repositories and activity',
+          },
+          {
+            id: 'batch',
+            label: 'Scheduled indexer',
+            kind: 'process',
+            detail: 'Acquire data, compute matches',
+          },
+          {
+            id: 'matcher',
+            label: 'Matching rules',
+            kind: 'process',
+            detail: 'Eligibility and weighted scores',
+          },
+          {
+            id: 'data',
+            label: 'Precomputed data',
+            kind: 'data',
+            detail: 'Profiles and recommendations',
+          },
+          {
+            id: 'views',
+            label: 'Web and SVG views',
+            kind: 'client',
+            detail: 'Dashboard and profile embed',
+          },
+        ],
+        flows: [
+          {
+            from: 'github',
+            to: 'batch',
+            label: 'fetch',
+          },
+          {
+            from: 'batch',
+            to: 'matcher',
+            label: 'rank',
+          },
+          {
+            from: 'matcher',
+            to: 'data',
+            label: 'store',
+          },
+          {
+            from: 'data',
+            to: 'views',
+            label: 'read',
+          },
+        ],
+        caveat:
+          'Architecture from the reviewed source. The SVG endpoint reads stored data and sets cache headers; a separate Upstash caching layer remains unimplemented.',
+      },
+      decisions: [
+        {
+          id: 'repomatch-batch',
+          title: 'Precompute data outside widget requests',
+          decision:
+            'Acquire GitHub data in scheduled jobs and serve widgets from stored activity and recommendations.',
+          rationale: 'Profile rendering avoids live GitHub queries and their rate-limit exposure.',
+          tradeoff: 'Data can be stale between successful indexing runs.',
+        },
+        {
+          id: 'repomatch-pure-matcher',
+          title: 'Keep matching rules testable without I/O',
+          decision: 'Implement scoring and eligibility as pure functions in a separate package.',
+          rationale: 'Ranking behaviour can be tested independently of API and database availability.',
+          tradeoff: 'Tested heuristics do not establish that users find the recommendations useful.',
+        },
+        {
+          id: 'repomatch-bounded-retries',
+          title: 'Retry only recoverable GitHub failures',
+          decision:
+            'Allow three attempts for network failures and transient HTTP responses; keep authentication and GraphQL application errors fail-fast.',
+          rationale: 'Recover brief outages without hiding permanent errors behind repeated requests.',
+          tradeoff: 'Long outages can still exhaust the retry budget.',
+        },
+      ],
+      verification: [
+        {
+          id: 'repomatch-unit',
+          label: 'Pure matcher and SVG tests',
+          detail:
+            'Inspected eligibility, scoring, feedback and widget tests. No recommendation-quality outcome is inferred from unit tests.',
+          verified: true,
+        },
+        {
+          id: 'repomatch-retry',
+          label: 'Transient-request regression tests',
+          detail:
+            'Own-repository PR #1 covers recovery, retry exhaustion, HTTP 401 and GraphQL errors with mocked responses.',
+          verified: true,
+        },
+        {
+          id: 'repomatch-job',
+          label: 'Scheduled run evidence',
+          detail: 'A recent Nightly Index & Match run completed successfully at the reviewed commit.',
+          verified: true,
+        },
+        {
+          id: 'repomatch-quality',
+          label: 'Broader matching-quality review',
+          detail: 'The progress report leaves the broader user evaluation gate incomplete.',
+          verified: false,
+        },
+      ],
+      results: [
+        'Widget serving reads precomputed data rather than calling GitHub directly.',
+        'Transient API retries are bounded and covered by focused tests.',
+      ],
+      disclosure:
+        'Own-repository PRs and workflow runs are project validation evidence. They are not included in merged upstream contribution counts.',
+    },
+  },
+  {
+    id: 'prj-okf-interop-lab',
+    slug: 'okf-interop-lab',
+    title: 'OKF Interop Lab',
+    summary:
+      'Local Markdown concept-link checker that builds a link graph, reports missing or unsafe targets, and exports JSON and SARIF diagnostics.',
+    tier: 'secondary',
+    status: 'prototype',
+    domains: ['systems'],
+    featured: false,
+    sortOrder: 9,
+    updatedAt: '2026-10-06',
+    technologies: ['python', 'cli', 'github-actions'],
+    tags: ['Python', 'Markdown', 'SARIF', 'CLI'],
+    links: {
+      repository: 'https://github.com/amarjaleelbanbhan/okf-interop-lab',
+      documentation:
+        'https://github.com/amarjaleelbanbhan/okf-interop-lab/blob/21c19a53cd042b79dac2392e0257b1e9a6fa1a28/README.md',
+    },
+    source: {
+      visibility: 'public',
+      repositoryUrl: 'https://github.com/amarjaleelbanbhan/okf-interop-lab',
+    },
+    problem:
+      'Markdown concept links can fail across bundle paths or escape the intended root. A local checker makes those failures inspectable without adding a network service.',
+    role:
+      'Author and maintainer. Markdown link extraction, bundle-path resolution, link graph, JSON/SARIF diagnostics, CLI and regression fixtures.',
+    note:
+      'Local developer tool and interoperability experiment; no accepted upstream OKF contribution is claimed.',
+    limitations: [
+      'Checks local Markdown targets rather than full interoperability across every OKF viewer.',
+      'Does not establish whether an in-document anchor exists or a linked concept is semantically correct.',
+      'Missing links are warnings by default; failing on them is opt-in.',
+    ],
+    proof: [
+      {
+        id: 'okf-linkcheck-tests',
+        type: 'test-suite',
+        label: 'Link-resolution regression suite',
+        description:
+          'Inspected relative/reference/encoded-path and unsafe-target checks, plus JSON/SARIF CLI validation configuration.',
+        sourceUrl:
+          'https://github.com/amarjaleelbanbhan/okf-interop-lab/blob/21c19a53cd042b79dac2392e0257b1e9a6fa1a28/tests/test_linkcheck.py',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'prj-projecthunt-ai',
+    slug: 'projecthunt-ai',
+    title: 'ProjectHunt AI',
+    summary:
+      'Local prospect-review service that turns sourced records and static website findings into scoped work and reviewable drafts, with authenticated API and MCP tooling.',
+    tier: 'secondary',
+    status: 'prototype',
+    domains: ['product'],
+    featured: false,
+    sortOrder: 10,
+    updatedAt: '2026-10-06',
+    technologies: ['python', 'postgresql', 'docker', 'github-actions'],
+    tags: ['Python', 'FastAPI', 'PostgreSQL', 'MCP', 'Beautiful Soup'],
+    links: {
+      repository: 'https://github.com/amarjaleelbanbhan/projecthunt-ai',
+      documentation:
+        'https://github.com/amarjaleelbanbhan/projecthunt-ai/blob/a67be60e16085d6df342dd451a4ba8f7457349e9/README.md',
+    },
+    source: {
+      visibility: 'public',
+      repositoryUrl: 'https://github.com/amarjaleelbanbhan/projecthunt-ai',
+    },
+    problem:
+      'A prospect list is not a defensible work proposal. Findings, scopes and contact decisions need source evidence, persisted review state and controls against drafting to suppressed contacts.',
+    role:
+      'Author and maintainer. Import and review workflow, static audit findings, scoped proposals, contact attestation, suppression, API/MCP interfaces and URL-fetch safety checks.',
+    note:
+      'Prepares drafts only. Contact review records an operator\'s attestation and does not prove deliverability.',
+    limitations: [
+      'Single-operator local prototype: no public deployment, verified ChatGPT cloud connection, email sending or revenue claim.',
+      'Static HTML checks do not run JavaScript, Lighthouse, accessibility crawlers or security scans.',
+      'API tests mock outbound fetching; production upgrades need versioned migrations and additional operational controls.',
+    ],
+    proof: [
+      {
+        id: 'projecthunt-api-tests',
+        type: 'test-suite',
+        label: 'API workflow and URL-fetch tests',
+        description:
+          'Inspected persisted workflow tests and public-IP pinning, redirect rejection and response-size tests. Outbound website fetching is mocked.',
+        sourceUrl:
+          'https://github.com/amarjaleelbanbhan/projecthunt-ai/blob/a67be60e16085d6df342dd451a4ba8f7457349e9/tests/test_security.py',
+        verified: true,
+        asOf: '2026-10-06',
+      },
+    ],
+  },
+  {
+    id: 'prj-relay-7',
+    slug: 'relay-7',
+    title: 'RELAY//7',
+    summary:
+      'Browser puzzle game with deterministic generation, an exact solver, legal replay verification, local persistence, and offline support. Repository private.',
+    tier: 'secondary',
+    status: 'prototype',
+    domains: ['product', 'systems'],
+    featured: false,
+    sortOrder: 11,
+    updatedAt: '2026-10-06',
+    technologies: ['typescript'],
+    tags: ['TypeScript', 'Phaser', 'Vite', 'IndexedDB', 'PWA'],
+    links: {},
+    source: {
+      visibility: 'private',
+      label: 'Private repository',
+    },
+    problem:
+      'Procedurally generated puzzles need to remain solvable under their actual move rules, while saves and replays need consistent behaviour across reloads.',
+    role:
+      'Author and maintainer. Puzzle rules and generation, exact solver, replay verification, campaign content, browser persistence and offline lifecycle tests.',
+    note:
+      'Documented browser tests do not establish validation on physical mobile devices or deployed online services.',
+    limitations: [
+      'Physical mobile-device, assistive-technology and HTTPS install/update validation remain incomplete.',
+      'Optional online services are not established as deployed or validated.',
+      'Private source; documented validation results were inspected rather than independently rerun.',
+    ],
+    proof: [
+      {
+        id: 'relay-engine-tests',
+        type: 'test-suite',
+        label: 'Deterministic puzzle and replay tests',
+        description:
+          'Inspected exact breadth-first solver and tests over deterministic seeds, legal moves, solvability and replay verification.',
+        verified: true,
+        asOf: '2026-10-06',
       },
     ],
   },

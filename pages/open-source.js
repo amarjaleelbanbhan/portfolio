@@ -97,7 +97,7 @@ export default function OpenSource() {
     <>
       <Seo
         title="Open Source — Upstream Contributions by Amar Jaleel"
-        description="Upstream pull requests into Pydantic AI, Promptfoo, the Academy Software Foundation and more — each with the problem it fixed, the change, its tests and its status."
+        description="Upstream contributions to sktime, Docling, Pydantic AI, Promptfoo and more, with verified status, problem, change and documented validation."
         path="/open-source"
       />
       <div className="min-h-screen flex flex-col bg-transparent">
