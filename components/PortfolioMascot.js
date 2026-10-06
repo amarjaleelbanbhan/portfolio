@@ -20,7 +20,7 @@ export default function PortfolioMascot() {
   const { asPath } = useRouter();
   const [direction, setDirection] = useState([1, 1]);
   const [reacting, setReacting] = useState(false);
-  const [anchorVisible, setAnchorVisible] = useState(asPath.split('?')[0] === '/');
+  const [anchorVisible, setAnchorVisible] = useState(asPath?.split('?')[0] === '/');
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [draft, setDraft] = useState('');
@@ -58,7 +58,7 @@ export default function PortfolioMascot() {
       const mascots = [...document.querySelectorAll('[data-portfolio-mascot], [data-portfolio-mascot-anchor]')];
       const mascot = mascots.find((element) => {
         const bounds = element.getBoundingClientRect();
-        return bounds.width > 0 && bounds.height > 0;
+        return bounds.width > 0 && bounds.height > 0 && getComputedStyle(element).visibility !== 'hidden';
       });
       if (!mascot) return;
       const bounds = mascot.getBoundingClientRect();
