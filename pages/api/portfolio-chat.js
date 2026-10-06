@@ -106,7 +106,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     return res.status(503).json({
-      error: 'I couldn't complete that answer just now. Please try again shortly.',
+      error: 'I could not complete that answer just now. Please try again shortly.',
     });
   }
 
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
 
   const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
   if (!/^[a-zA-Z0-9._-]+$/.test(model)) {
-    return res.status(500).json({ error: 'I couldn't complete that answer just now. Please try again shortly.' });
+    return res.status(500).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
   }
 
   const controller = new AbortController();
@@ -166,7 +166,7 @@ export default async function handler(req, res) {
       if (response.status === 429) {
         return res.status(429).json({ error: 'The assistant is temporarily busy. Please try again shortly.' });
       }
-      return res.status(502).json({ error: 'I couldn't complete that answer just now. Please try again shortly.' });
+      return res.status(502).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
     }
 
     const data = await response.json();
@@ -176,13 +176,13 @@ export default async function handler(req, res) {
       .trim();
 
     if (!reply) {
-      return res.status(502).json({ error: 'I couldn't complete that answer just now. Please try again shortly.' });
+      return res.status(502).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
     }
 
     return res.status(200).json({ reply });
   } catch (error) {
     if (error.name === 'AbortError') {
-      return res.status(504).json({ error: 'I couldn't complete that answer just now. Please try again shortly.' });
+      return res.status(504).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
     }
     console.error('portfolio-chat: request failed', error.message);
     return res.status(502).json({ error: 'The chat service is temporarily unavailable.' });
