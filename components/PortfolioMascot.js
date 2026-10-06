@@ -67,6 +67,10 @@ export default function PortfolioMascot() {
       const col = dx < -0.28 ? 0 : dx > 0.28 ? 2 : 1;
       const row = dy < -0.28 ? 0 : dy > 0.28 ? 2 : 1;
       const key = `${row}:${col}`;
+      const backgroundPosition = DIRECTIONS[row][col];
+      document.querySelectorAll('[data-portfolio-mascot-anchor] .portfolio-mascot__sprite').forEach((sprite) => {
+        sprite.style.backgroundPosition = backgroundPosition;
+      });
 
       if (key !== directionRef.current) {
         directionRef.current = key;

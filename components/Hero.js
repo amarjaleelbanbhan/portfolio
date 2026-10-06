@@ -165,7 +165,7 @@ export default function Hero() {
                 title="Ask me about my work"
                 onClick={() => window.dispatchEvent(new Event('portfolio-assistant:open'))}
               >
-                <span className="portfolio-mascot__sprite" aria-hidden="true" />
+                <span className="portfolio-mascot__sprite" aria-hidden="true" style={{ backgroundPosition: "50% 50%" }} />
               </button>
               <div className="min-w-0">
                 <p className="font-code text-[11px] font-semibold uppercase tracking-[0.28em] text-neon-cyan mb-1.5">
