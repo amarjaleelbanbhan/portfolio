@@ -216,16 +216,9 @@ export default function PortfolioMascot() {
       setMessages((current) => [...current, { role: 'assistant', text: data.reply }]);
     } catch {
       const fallback = PRESET_FALLBACKS[suggestedText];
-      setMessages((current) => [
-        ...current,
-        {
-          role: 'assistant',
-          text: fallback
-            ? `${fallback}          text: fallback
-            || 'I could not complete that answer just now. Try asking about a project, research, skills, or contributions.',n\nGemini is unavailable right now; this answer comes from Amar’s published portfolio.`
-            : error.message || 'I could not answer just now. Please try again.',
-        },
-      ]);
+      const safeMessage = fallback
+        || 'I could not complete that answer just now. Try asking about a project, research, skills, or contributions.';
+      setMessages((current) => [...current, { role: 'assistant', text: safeMessage }]);
     } finally {
       setBusy(false);
     }
