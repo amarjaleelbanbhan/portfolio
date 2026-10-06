@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import GlitchText from './GlitchText';
-import PortraitOrbit from './PortraitOrbit';
 import { getDomainColor, getProfile } from '@/lib/content';
 import { duration, ease, fadeUp } from '@/lib/motion';
 
@@ -158,7 +157,16 @@ export default function Hero() {
               {...fadeUp({ delay: 0.05 })}
               className="flex items-center gap-4 mb-6"
             >
-              <PortraitOrbit size="sm" showBadge={false} />
+              <button
+                type="button"
+                className="portfolio-mascot-anchor"
+                data-portfolio-mascot-anchor
+                aria-label="Ask Amar's portfolio assistant"
+                title="Ask me about my work"
+                onClick={() => window.dispatchEvent(new Event('portfolio-assistant:open'))}
+              >
+                <span className="portfolio-mascot__sprite" aria-hidden="true" style={{ backgroundPosition: "50% 50%" }} />
+              </button>
               <div className="min-w-0">
                 <p className="font-code text-[11px] font-semibold uppercase tracking-[0.28em] text-neon-cyan mb-1.5">
                   {profile.name}
