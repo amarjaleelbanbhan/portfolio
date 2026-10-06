@@ -47,7 +47,14 @@ export default function PortfolioMascot() {
     }
 
     const observer = new IntersectionObserver(
-      ([entry]) => setAnchorVisible(entry.isIntersecting),
+      ([entry]) => {
+        const visible = entry.isIntersecting;
+        setAnchorVisible(visible);
+        if (visible) {
+          directionRef.current = '1:1';
+          setDirection([1, 1]);
+        }
+      },
       { threshold: 0.05 }
     );
     observer.observe(anchor);
@@ -126,6 +133,35 @@ export default function PortfolioMascot() {
     };
   }, []);
 
+  // Touch devices have no cursor to follow. Once the hero has scrolled away,
+  // let the docked portrait make occasional, small gaze changes instead.
+  useEffect(() => {
+    if (anchorVisible || open) return undefined;
+
+    const mobileTouch = window.matchMedia('(max-width: 767px) and (pointer: coarse)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!mobileTouch.matches || reducedMotion.matches) return undefined;
+
+    const gazeDirections = ['1:0', '1:2', '0:1', '2:1', '1:1'];
+    let lastDirection = directionRef.current;
+    let timer;
+
+    const glance = () => {
+      if (document.visibilityState === 'visible') {
+        const choices = gazeDirections.filter((key) => key !== lastDirection);
+        const key = choices[Math.floor(Math.random() * choices.length)] || '1:1';
+        lastDirection = key;
+        const [row, col] = key.split(':').map(Number);
+        directionRef.current = key;
+        setDirection([row, col]);
+      }
+      timer = window.setTimeout(glance, 1700 + Math.random() * 1300);
+    };
+
+    timer = window.setTimeout(glance, 900 + Math.random() * 700);
+    return () => window.clearTimeout(timer);
+  }, [anchorVisible, open]);
+
   useEffect(() => () => window.clearTimeout(reactionTimer.current), []);
   useEffect(() => {
     const openAssistant = () => setOpen(true);
@@ -178,17 +214,11 @@ export default function PortfolioMascot() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'I could not answer just now. Please try again.');
       setMessages((current) => [...current, { role: 'assistant', text: data.reply }]);
-    } catch (error) {
+    } catch {
       const fallback = PRESET_FALLBACKS[suggestedText];
-      setMessages((current) => [
-        ...current,
-        {
-          role: 'assistant',
-          text: fallback
-            ? `${fallback}\n\nGemini is unavailable right now; this answer comes from Amar’s published portfolio.`
-            : error.message || 'I could not answer just now. Please try again.',
-        },
-      ]);
+      const safeMessage = fallback
+        || 'I could not complete that answer just now. Try asking about a project, research, skills, or contributions.';
+      setMessages((current) => [...current, { role: 'assistant', text: safeMessage }]);
     } finally {
       setBusy(false);
     }
@@ -269,7 +299,7 @@ export default function PortfolioMascot() {
             </button>
           </form>
           <p className="portfolio-assistant-note">
-            Questions and portfolio context go to Google Gemini. Chats are not saved here; Google may use free-tier prompts to improve its products.
+            Questions are processed by an external AI service using public portfolio information. Please don&apos;t share private details; chats aren&apos;t saved on this website.
           </p>
         </section>
       )}

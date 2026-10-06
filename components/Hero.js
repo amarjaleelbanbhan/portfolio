@@ -151,17 +151,12 @@ export default function Hero() {
             transition={{ duration: duration.slow, ease: ease.outExpo }}
             className="order-1 flex flex-col"
           >
-            {/* Identity row — the portrait keeps its rings and orbiting dots,
-                repositioned to support the headline rather than rival the core. */}
+            {/* Identity row — a larger, clean portrait with no orbit frame. */}
             <motion.div
               {...fadeUp({ delay: 0.05 })}
               className="flex items-center gap-4 mb-6"
             >
-              <div className="portfolio-mascot-orbit" aria-hidden="true">
-                <span className="portfolio-mascot-orbit__ring portfolio-mascot-orbit__ring--outer" />
-                <span className="portfolio-mascot-orbit__ring portfolio-mascot-orbit__ring--inner" />
-                <span className="portfolio-mascot-orbit__dot portfolio-mascot-orbit__dot--cyan"><i /></span>
-                <span className="portfolio-mascot-orbit__dot portfolio-mascot-orbit__dot--magenta"><i /></span>
+              <div className="portfolio-mascot-hero">
                 <button
                   type="button"
                   className="portfolio-mascot-anchor"

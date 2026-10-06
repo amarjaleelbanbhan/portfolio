@@ -581,95 +581,19 @@ a {
 
 
 /* Portfolio assistant mascot: the hero portrait becomes the chat entry point. */
-.portfolio-mascot-orbit {
+.portfolio-mascot-hero {
   position: relative;
   display: grid;
-  flex: 0 0 108px;
-  width: 108px;
-  height: 108px;
+  flex: 0 0 124px;
+  width: 124px;
+  height: 124px;
   place-items: center;
-  isolation: isolate;
-}
-.portfolio-mascot-orbit__ring {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border: 1px solid rgba(94, 234, 212, 0.16);
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    rgba(20, 184, 166, 0.08) 0deg,
-    rgba(45, 212, 191, 0.9) 38deg,
-    rgba(20, 184, 166, 0.2) 74deg,
-    transparent 118deg 166deg,
-    rgba(217, 70, 239, 0.72) 208deg,
-    rgba(34, 197, 94, 0.52) 250deg,
-    transparent 292deg 326deg,
-    rgba(20, 184, 166, 0.08) 360deg
-  );
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
-  filter: drop-shadow(0 0 4px rgba(45, 212, 191, 0.24));
-  animation: mascot-orbit-spin 30s linear infinite;
-  pointer-events: none;
-}
-.portfolio-mascot-orbit__ring--inner {
-  inset: 7px;
-  opacity: 0.88;
-  border-color: rgba(94, 234, 212, 0.08);
-  background: conic-gradient(
-    from 180deg,
-    transparent 0deg 26deg,
-    rgba(45, 212, 191, 0.86) 48deg,
-    rgba(45, 212, 191, 0.12) 86deg,
-    transparent 118deg 250deg,
-    rgba(217, 70, 239, 0.58) 286deg,
-    transparent 318deg 360deg
-  );
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 0.8px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 0.8px));
-  filter: drop-shadow(0 0 3px rgba(20, 184, 166, 0.22));
-  animation-duration: 15s;
-  animation-direction: reverse;
-}
-.portfolio-mascot-orbit__dot {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: 50%;
-  animation: mascot-orbit-spin 8s linear infinite;
-  pointer-events: none;
-}
-.portfolio-mascot-orbit__dot i {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  transform: translate(-50%, -1px);
-  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
-}
-.portfolio-mascot-orbit__dot--cyan { color: rgba(45, 212, 191, 0.95); }
-.portfolio-mascot-orbit__dot--cyan i { background: #2dd4bf; }
-.portfolio-mascot-orbit__dot--magenta {
-  inset: -2px;
-  animation-duration: 12s;
-  animation-direction: reverse;
-}
-.portfolio-mascot-orbit__dot--magenta i {
-  top: auto;
-  bottom: 10px;
-  background: #d946ef;
-}
-@keyframes mascot-orbit-spin {
-  to { transform: rotate(360deg); }
 }
 .portfolio-mascot-anchor {
   position: relative;
   z-index: 1;
-  flex: 0 0 76px;
-  width: 76px;
+  flex: 0 0 92px;
+  width: 92px;
   aspect-ratio: 1;
   padding: 0;
   overflow: visible;
@@ -683,6 +607,17 @@ a {
 }
 .portfolio-mascot-anchor:hover {
   transform: scale(1.04);
+}
+@media (max-width: 639px) {
+  .portfolio-mascot-hero {
+    flex-basis: 112px;
+    width: 112px;
+    height: 112px;
+  }
+  .portfolio-mascot-anchor {
+    flex-basis: 88px;
+    width: 88px;
+  }
 }
 .portfolio-assistant-trigger {
   transition: opacity 180ms ease, transform 180ms ease;
@@ -826,9 +761,7 @@ a {
 }
 @media (prefers-reduced-motion: reduce) {
   .portfolio-mascot-anchor,
-  .portfolio-assistant-trigger,
-  .portfolio-mascot-orbit__ring,
-  .portfolio-mascot-orbit__dot {
+  .portfolio-assistant-trigger {
     transition: none;
   }
 }

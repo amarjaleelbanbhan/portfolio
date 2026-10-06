@@ -106,7 +106,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     return res.status(503).json({
-      error: 'The portfolio chat is ready, but Amar still needs to add a Gemini API key before it can answer questions.',
+      error: 'I could not complete that answer just now. Please try again shortly.',
     });
   }
 
@@ -132,12 +132,12 @@ export default async function handler(req, res) {
   }
 
   if (isRateLimited(clientKey(req))) {
-    return res.status(429).json({ error: 'There have been several questions from this connection. Please try again in a few minutes.' });
+    return res.status(429).json({ error: 'Please wait a moment before asking again.' });
   }
 
   const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
   if (!/^[a-zA-Z0-9._-]+$/.test(model)) {
-    return res.status(500).json({ error: 'The chat model is not configured correctly.' });
+    return res.status(500).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
   }
 
   const controller = new AbortController();
@@ -162,11 +162,11 @@ export default async function handler(req, res) {
     );
 
     if (!response.ok) {
-      console.error('portfolio-chat: Gemini request failed', response.status);
+      console.error('portfolio-chat: upstream request failed', response.status);
       if (response.status === 429) {
-        return res.status(429).json({ error: 'Gemini is receiving too many requests right now. Please try again shortly.' });
+        return res.status(429).json({ error: 'The assistant is temporarily busy. Please try again shortly.' });
       }
-      return res.status(502).json({ error: 'Gemini could not answer just now. Please try again in a moment.' });
+      return res.status(502).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
     }
 
     const data = await response.json();
@@ -176,13 +176,13 @@ export default async function handler(req, res) {
       .trim();
 
     if (!reply) {
-      return res.status(502).json({ error: 'Gemini did not return an answer. Please try asking another way.' });
+      return res.status(502).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
     }
 
     return res.status(200).json({ reply });
   } catch (error) {
     if (error.name === 'AbortError') {
-      return res.status(504).json({ error: 'That took too long. Please try again.' });
+      return res.status(504).json({ error: 'I could not complete that answer just now. Please try again shortly.' });
     }
     console.error('portfolio-chat: request failed', error.message);
     return res.status(502).json({ error: 'The chat service is temporarily unavailable.' });
