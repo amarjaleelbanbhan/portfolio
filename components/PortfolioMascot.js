@@ -56,7 +56,7 @@ export default function PortfolioMascot() {
       if (!latestPointer) return;
 
       const mascots = [...document.querySelectorAll('[data-portfolio-mascot], [data-portfolio-mascot-anchor]')];
-      const mascot = mascots.find((element) => {
+      const isUsableMascot = (element) => {
         const bounds = element.getBoundingClientRect();
         const style = getComputedStyle(element);
         return (
@@ -71,7 +71,9 @@ export default function PortfolioMascot() {
           Number(style.opacity) > 0 &&
           style.pointerEvents !== 'none'
         );
-      });
+      };
+      const mascot = mascots.find((element) => element.matches('[data-portfolio-mascot]') && isUsableMascot(element))
+        || mascots.find(isUsableMascot);
       if (!mascot) return;
       const bounds = mascot.getBoundingClientRect();
       const dx = (latestPointer.x - (bounds.left + bounds.width / 2)) / bounds.width;
@@ -89,8 +91,14 @@ export default function PortfolioMascot() {
         setDirection([row, col]);
       }
     };
+    let scrollRefresh = 0;
     const scheduleGaze = () => {
       if (latestPointer && !frame) frame = window.requestAnimationFrame(updateGaze);
+    };
+    const onScroll = () => {
+      scheduleGaze();
+      window.clearTimeout(scrollRefresh);
+      scrollRefresh = window.setTimeout(scheduleGaze, 180);
     };
     const onPointerMove = (event) => {
       latestPointer = { x: event.clientX, y: event.clientY };
@@ -98,12 +106,13 @@ export default function PortfolioMascot() {
     };
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('scroll', scheduleGaze, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', scheduleGaze, { passive: true });
     return () => {
       window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('scroll', scheduleGaze);
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', scheduleGaze);
+      window.clearTimeout(scrollRefresh);
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
