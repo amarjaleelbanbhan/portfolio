@@ -227,7 +227,7 @@ export default function PortfolioMascot() {
             </button>
           </form>
           <p className="portfolio-assistant-note">
-            Replies use information published on this portfolio. Your question is sent to Google Gemini; chats are not saved here.
+            Questions and portfolio context go to Google Gemini. Chats are not saved here; Google may use free-tier prompts to improve its products.
           </p>
         </section>
       )}
