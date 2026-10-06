@@ -58,7 +58,19 @@ export default function PortfolioMascot() {
       const mascots = [...document.querySelectorAll('[data-portfolio-mascot], [data-portfolio-mascot-anchor]')];
       const mascot = mascots.find((element) => {
         const bounds = element.getBoundingClientRect();
-        return bounds.width > 0 && bounds.height > 0 && getComputedStyle(element).visibility !== 'hidden';
+        const style = getComputedStyle(element);
+        return (
+          bounds.width > 0 &&
+          bounds.height > 0 &&
+          bounds.bottom > 0 &&
+          bounds.right > 0 &&
+          bounds.top < window.innerHeight &&
+          bounds.left < window.innerWidth &&
+          style.display !== 'none' &&
+          style.visibility !== 'hidden' &&
+          Number(style.opacity) > 0 &&
+          style.pointerEvents !== 'none'
+        );
       });
       if (!mascot) return;
       const bounds = mascot.getBoundingClientRect();
@@ -77,15 +89,21 @@ export default function PortfolioMascot() {
         setDirection([row, col]);
       }
     };
-
+    const scheduleGaze = () => {
+      if (latestPointer && !frame) frame = window.requestAnimationFrame(updateGaze);
+    };
     const onPointerMove = (event) => {
       latestPointer = { x: event.clientX, y: event.clientY };
-      if (!frame) frame = window.requestAnimationFrame(updateGaze);
+      scheduleGaze();
     };
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('scroll', scheduleGaze, { passive: true });
+    window.addEventListener('resize', scheduleGaze, { passive: true });
     return () => {
       window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('scroll', scheduleGaze);
+      window.removeEventListener('resize', scheduleGaze);
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);

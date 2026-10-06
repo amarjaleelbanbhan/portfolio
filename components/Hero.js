@@ -157,16 +157,22 @@ export default function Hero() {
               {...fadeUp({ delay: 0.05 })}
               className="flex items-center gap-4 mb-6"
             >
-              <button
-                type="button"
-                className="portfolio-mascot-anchor"
-                data-portfolio-mascot-anchor
-                aria-label="Ask Amar's portfolio assistant"
-                title="Ask me about my work"
-                onClick={() => window.dispatchEvent(new Event('portfolio-assistant:open'))}
-              >
-                <span className="portfolio-mascot__sprite" aria-hidden="true" style={{ backgroundPosition: "50% 50%" }} />
-              </button>
+              <div className="portfolio-mascot-orbit" aria-hidden="true">
+                <span className="portfolio-mascot-orbit__ring portfolio-mascot-orbit__ring--outer" />
+                <span className="portfolio-mascot-orbit__ring portfolio-mascot-orbit__ring--inner" />
+                <span className="portfolio-mascot-orbit__dot portfolio-mascot-orbit__dot--cyan"><i /></span>
+                <span className="portfolio-mascot-orbit__dot portfolio-mascot-orbit__dot--magenta"><i /></span>
+                <button
+                  type="button"
+                  className="portfolio-mascot-anchor"
+                  data-portfolio-mascot-anchor
+                  aria-label="Ask Amar's portfolio assistant"
+                  title="Ask me about my work"
+                  onClick={() => window.dispatchEvent(new Event('portfolio-assistant:open'))}
+                >
+                  <span className="portfolio-mascot__sprite" aria-hidden="true" style={{ backgroundPosition: "50% 50%" }} />
+                </button>
+              </div>
               <div className="min-w-0">
                 <p className="font-code text-[11px] font-semibold uppercase tracking-[0.28em] text-neon-cyan mb-1.5">
                   {profile.name}
